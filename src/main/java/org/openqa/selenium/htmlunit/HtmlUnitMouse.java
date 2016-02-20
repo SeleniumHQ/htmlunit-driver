@@ -41,17 +41,6 @@ public class HtmlUnitMouse implements Mouse {
     this.keyboard = keyboard;
   }
 
-  /**
-   * @deprecated as of 2.47.0, please use {@link #HtmlUnitMouse(HtmlUnitKeyboard)} instead
-   *
-   * @param keyboard keyboard
-   * @param parent the htmlunitdriver object
-   */
-  @Deprecated
-  public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
-    this(keyboard);
-  }
-
   private HtmlElement getElementForOperation(Coordinates potentialCoordinates) {
     if (potentialCoordinates != null) {
       return (HtmlElement) potentialCoordinates.getAuxiliary();
