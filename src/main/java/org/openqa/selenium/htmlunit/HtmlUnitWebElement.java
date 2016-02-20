@@ -447,7 +447,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return "";
     }
 
-    final Object slotVal = element.getScriptObject().get(name);
+    final Object slotVal = element.getScriptableObject().get(name);
     if (slotVal instanceof String) {
         String strVal = (String) slotVal;
         if (!Strings.isNullOrEmpty(strVal)) {
