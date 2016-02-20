@@ -15,7 +15,26 @@ HtmlUnitDriver too. It's not a part of the main Selenium distribution since vers
 
 ### Maven/Gradle/...
 
-Add a dependency on the latest version available in the Maven Central.
+Add a dependency on the latest htmlunit-driver version available in the Maven Central along with dependencies on
+selenium-api and selenium-support:
+
+```
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>htmlunit-driver</artifactId>
+    <version>2.19.0</version>
+</dependency>
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-api</artifactId>
+    <version>2.53.0</version>
+</dependency>
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-support</artifactId>
+    <version>2.53.0</version>
+</dependency>
+```
 
 ### Single-Jar Installation for Java
 
@@ -33,7 +52,7 @@ Download Selenium Server Standalone distribution. Get the standalone JAR file of
 HtmlUnit with all the dependencies and HtmlUnitDriver. Start Selenium Server (standalone or a grid node) like this:
 
 ```
-java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.19.jar org.openqa.grid.selenium.GridLauncher <server options>
+java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.19.0.jar org.openqa.grid.selenium.GridLauncher <server options>
 ```
 
 ## License
