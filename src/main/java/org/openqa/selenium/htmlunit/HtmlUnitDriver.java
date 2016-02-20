@@ -382,9 +382,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         String noProxy = proxy.getNoProxy();
         if (noProxy != null && !noProxy.equals("")) {
           String[] hosts = noProxy.split(",");
-          for (int i = 0; i < hosts.length; i++) {
-            if (hosts[i].trim().length() > 0) {
-              noProxyHosts.add(hosts[i].trim());
+          for (String host : hosts) {
+            if (host.trim().length() > 0) {
+              noProxyHosts.add(host.trim());
             }
           }
         }
@@ -862,7 +862,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (value instanceof Number) {
       final Number n = (Number) value;
       final String s = n.toString();
-      if (s.indexOf(".") == -1 || s.endsWith(".0")) { // how safe it is? enough for the unit tests!
+      if (!s.contains(".") || s.endsWith(".0")) { // how safe it is? enough for the unit tests!
         return n.longValue();
       }
       return n.doubleValue();
