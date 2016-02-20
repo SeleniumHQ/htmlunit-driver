@@ -633,6 +633,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
+  @Deprecated // It's not a part of WebDriver API
   public List<WebElement> getElementsByTagName(String tagName) {
     assertElementNotStale();
 
