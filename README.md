@@ -5,7 +5,7 @@ HtmlUnitDriver is a WebDriver compatible driver for HtmlUnit headless browser.
 **WARNING: This instruction is written for future, it is not actual until Selenium 2.53 is released.**
 
 HtmlUnitDriver was a part of Selenium main distribution package prior to Selenium version 2.53. If you are using
-Selenium 2.52 or earlier you don't ned to download and install HtmlUnitDriver, it is already there.
+Selenium 2.52 or earlier you don't need to download and install HtmlUnitDriver, it is already there.
 
 According to Selenium evolution strategy drivers should be separated from Selenium, and a driver release cycle should
 be synchronized with the target browser release cycle instead of Selenium release cycle. So this happened to
