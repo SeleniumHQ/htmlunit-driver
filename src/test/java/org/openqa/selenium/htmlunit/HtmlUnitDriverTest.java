@@ -26,6 +26,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -139,13 +140,6 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
-  public void canExecuteAsync() {
-    Object result = driver.executeAsyncScript("arguments[arguments.length - 1](123);");
-    assertThat(result, instanceOf(Number.class));
-    assertThat(123, equalTo(((Number) result).intValue()));
-  }
-
-  @Test
   public void canFindElementByTagName() {
     driver.get(testServer.page("/form.html"));
     WebElement input = driver.findElement(By.tagName("form"))
@@ -205,10 +199,53 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  public void canFindElementsByName() {
+    driver.get(testServer.page("/form.html"));
+    List<WebElement> forms = driver.findElements(By.name("form_name"));
+    assertThat(forms.size(), equalTo(1));
+    List<WebElement> inputs = forms.get(0).findElements(By.name("text"));
+    assertThat(inputs.size(), equalTo(1));
+  }
+
+  @Test
   public void canFindElementById() {
     driver.get(testServer.page("/form.html"));
-    WebElement form = driver.findElement(By.id("form_id"));
-    assertThat(form.getTagName(), equalTo("form"));
+    WebElement input = driver.findElement(By.id("form_id"))
+        .findElement(By.id("text"));
+    assertThat(input.getTagName(), equalTo("input"));
+  }
+
+  @Test
+  public void canFindElementsById() {
+    driver.get(testServer.page("/form.html"));
+    List<WebElement> forms = driver.findElements(By.id("form_id"));
+    assertThat(forms.size(), equalTo(1));
+    List<WebElement> inputs = forms.get(0).findElements(By.id("text"));
+    assertThat(inputs.size(), equalTo(1));
+  }
+
+  @Test
+  public void canFindElementByLinkText() {
+    driver.get(testServer.page("/alert.html"));
+    WebElement link = driver.findElement(By.linkText("Click me to get an alert"));
+    assertThat(link.getTagName(), equalTo("a"));
+    assertThat(link.getText(), equalTo("Click me to get an alert"));
+
+    link = driver.findElement(By.tagName("body")).findElement(By.linkText("Click me to get an alert"));
+    assertThat(link.getTagName(), equalTo("a"));
+    assertThat(link.getText(), equalTo("Click me to get an alert"));
+  }
+
+  @Test
+  public void canFindElementByPartialLinkText() {
+    driver.get(testServer.page("/alert.html"));
+    WebElement link = driver.findElement(By.partialLinkText("Click me"));
+    assertThat(link.getTagName(), equalTo("a"));
+    assertThat(link.getText(), equalTo("Click me to get an alert"));
+
+    link = driver.findElement(By.tagName("body")).findElement(By.partialLinkText("Click me"));
+    assertThat(link.getTagName(), equalTo("a"));
+    assertThat(link.getText(), equalTo("Click me to get an alert"));
   }
 
   @Test
@@ -255,6 +292,28 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.get(testServer.page("/form.html"));
     driver.findElement(By.id("div")).submit();
     assertThat(driver.getCurrentUrl(), equalTo(testServer.page("/index.html")));
+  }
+
+  @Test
+  public void canGetSize() {
+    driver.get(testServer.page("/box.html"));
+    WebElement redBox = driver.findElement(By.id("red_box"));
+    assertThat(redBox.getSize(), equalTo(new Dimension(200, 201)));
+  }
+
+  @Test
+  public void canGetLocation() {
+    driver.get(testServer.page("/box.html"));
+    WebElement redBox = driver.findElement(By.id("red_box"));
+    assertThat(redBox.getLocation(), equalTo(new Point(100, 101)));
+  }
+
+  @Test
+  public void canGetRectangle() {
+    driver.get(testServer.page("/box.html"));
+    WebElement redBox = driver.findElement(By.id("red_box"));
+    assertThat(redBox.getRect().getPoint(), equalTo(new Point(100, 101)));
+    assertThat(redBox.getRect().getDimension(), equalTo(new Dimension(200, 201)));
   }
 
   @Test
@@ -323,6 +382,46 @@ public class HtmlUnitDriverTest extends TestBase {
     assertThat(driver.manage().getCookies().size(), equalTo(2));
     driver.manage().deleteAllCookies();
     assertThat(driver.manage().getCookies().size(), equalTo(0));
+  }
+
+  @Test
+  public void canExecuteScriptThatReturnsAString() {
+    driver.get(testServer.page("/"));
+    Object result = driver.executeScript("return window.location.href;");
+    assertThat(result, instanceOf(String.class));
+    assertThat(((String) result), equalTo(testServer.page("/")));
+  }
+
+  @Test
+  public void canExecuteScriptThatReturnsAnArray() {
+    driver.get(testServer.page("/"));
+    Object result = driver.executeScript("return [window.location.href];");
+    assertThat(result, instanceOf(List.class));
+    assertThat(((List<String>) result), equalTo(Arrays.asList(testServer.page("/"))));
+  }
+
+  @Test
+  public void canExecuteScriptThatReturnsAnElement() {
+    driver.get(testServer.page("/"));
+    Object result = driver.executeScript("return document.body;");
+    assertThat(result, instanceOf(WebElement.class));
+    assertThat(((WebElement) result).getTagName(), equalTo("body"));
+  }
+
+  @Test
+  public void canExecuteScriptThatReturnsAListOfElements() {
+    driver.get(testServer.page("/form.html"));
+    Object result = driver.executeScript("return document.getElementsByTagName('input');");
+    assertThat(result, instanceOf(List.class));
+    List<WebElement> elements = (List<WebElement>) result;
+    assertThat(elements.size(), equalTo(3));
+  }
+
+  @Test
+  public void canExecuteAsyncScript() {
+    Object result = driver.executeAsyncScript("arguments[arguments.length - 1](123);");
+    assertThat(result, instanceOf(Number.class));
+    assertThat(((Number) result).intValue(), equalTo(123));
   }
 
   private void openNewWindow(HtmlUnitDriver driver) {
