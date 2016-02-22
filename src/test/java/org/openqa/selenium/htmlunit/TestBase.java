@@ -36,6 +36,10 @@ public class TestBase {
       return webServer.getUri().toString() + pageAddress;
     }
 
+    public String domain() {
+      return webServer.getUri().getHost();
+    }
+
     @Override
     protected void before() throws Throwable {
       super.before();
