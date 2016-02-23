@@ -27,6 +27,8 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +68,12 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  public void canGetAPageByUrl() throws MalformedURLException {
+    driver.get(new URL(testServer.page("")));
+    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+  }
+
+  @Test
   public void canGetPageSource() {
     driver.get(testServer.page(""));
     assertThat(driver.getPageSource(), containsString("Hello"));
@@ -78,7 +86,13 @@ public class HtmlUnitDriverTest extends TestBase {
 
   @Test
   public void canNavigateToAPage() {
-    driver.get(testServer.page(""));
+    driver.navigate().to(testServer.page(""));
+    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+  }
+
+  @Test
+  public void canNavigateToAnUrl() throws MalformedURLException {
+    driver.navigate().to(new URL(testServer.page("")));
     assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
   }
 
@@ -87,6 +101,17 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.get(testServer.page(""));
     driver.navigate().refresh();
     assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+  }
+
+  @Test
+  public void canNavigateBackAndForward() {
+    driver.get(testServer.page("link.html"));
+    driver.findElement(By.id("link")).click();
+    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
+    driver.navigate().back();
+    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("link.html")));
+    driver.navigate().forward();
+    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
   }
 
   @Test
@@ -154,9 +179,10 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.get(testServer.page("frame.html"));
     driver.switchTo().frame(driver.findElement(By.id("iframe")));
     driver.switchTo().parentFrame();
-    driver.switchTo().frame(driver.findElement(By.id("iframe")));
+    driver.switchTo().frame("iframe");
+    driver.switchTo().parentFrame();
+    driver.switchTo().frame(0);
     driver.switchTo().defaultContent();
-    driver.switchTo().frame(driver.findElement(By.id("iframe")));
   }
 
   @Test
@@ -254,6 +280,16 @@ public class HtmlUnitDriverTest extends TestBase {
     link = driver.findElement(By.tagName("body")).findElement(By.linkText("Click me to get an alert"));
     assertThat(link.getTagName(), equalTo("a"));
     assertThat(link.getText(), equalTo("Click me to get an alert"));
+  }
+
+  @Test
+  public void canFindElementsByLinkText() {
+    driver.get(testServer.page("alert.html"));
+    List<WebElement> links = driver.findElements(By.linkText("Click me to get an alert"));
+    assertThat(links.size(), equalTo(1));
+
+    links = driver.findElement(By.tagName("body")).findElements(By.linkText("Click me to get an alert"));
+    assertThat(links.size(), equalTo(1));
   }
 
   @Test
@@ -438,15 +474,29 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
-  public void canSetAndGetWindowSize() {
+  public void canManageWindowSize() {
+    Dimension origSize = driver.manage().window().getSize();
     driver.manage().window().setSize(new Dimension(200, 300));
     assertThat(driver.manage().window().getSize(), equalTo(new Dimension(200, 300)));
+    driver.manage().window().maximize();
+    assertThat(driver.manage().window().getSize(), equalTo(origSize));
+    driver.manage().window().setSize(new Dimension(200, 300));
+    assertThat(driver.manage().window().getSize(), equalTo(new Dimension(200, 300)));
+    driver.manage().window().fullscreen();
+    assertThat(driver.manage().window().getSize(), equalTo(origSize));
   }
 
   @Test
-  public void canSetAndGetWindowPosition() {
+  public void canManageWindowPosition() {
+    Point origPosition = driver.manage().window().getPosition();
     driver.manage().window().setPosition(new Point(200, 300));
     assertThat(driver.manage().window().getPosition(), equalTo(new Point(200, 300)));
+    driver.manage().window().maximize();
+    assertThat(driver.manage().window().getPosition(), equalTo(origPosition));
+    driver.manage().window().setPosition(new Point(200, 300));
+    assertThat(driver.manage().window().getPosition(), equalTo(new Point(200, 300)));
+    driver.manage().window().fullscreen();
+    assertThat(driver.manage().window().getPosition(), equalTo(origPosition));
   }
 
   @Test
@@ -551,6 +601,12 @@ public class HtmlUnitDriverTest extends TestBase {
   public void coordinatesOnScreenAreNotSupported() {
     thrown.expect(UnsupportedOperationException.class);
     ((Locatable) driver.findElement(By.tagName("body"))).getCoordinates().onScreen();
+  }
+
+  @Test
+  public void imeIsNotSupported() {
+    thrown.expect(UnsupportedOperationException.class);
+    driver.manage().ime();
   }
 
   private void openNewWindow(HtmlUnitDriver driver) {
