@@ -17,14 +17,8 @@
 
 package org.openqa.selenium.htmlunit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.net.MalformedURLException;
@@ -38,28 +32,7 @@ import java.util.concurrent.TimeUnit;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
-/**
- * Test the proxy setting.
- */
 public class HtmlUnitDriverTest extends TestBase {
-
-  private HtmlUnitDriver driver;
-
-  @Before
-  public void initDriver() {
-    driver = new HtmlUnitDriver(true);
-    driver.get(testServer.page(""));
-  }
-
-  @After
-  public void stopDriver() {
-    if (driver != null) {
-      driver.quit();
-    }
-  }
-
-  @Rule
-  public ExpectedException thrown= ExpectedException.none();
 
   @Test
   public void canGetAPage() {
@@ -183,270 +156,6 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.switchTo().parentFrame();
     driver.switchTo().frame(0);
     driver.switchTo().defaultContent();
-  }
-
-  @Test
-  public void canFindElementByTagName() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.tagName("form"))
-        .findElement(By.tagName("input"));
-    assertThat(input.getTagName(), equalTo("input"));
-  }
-
-  @Test
-  public void canFindElementsByTagName() {
-    driver.get(testServer.page("form.html"));
-    List<WebElement> forms = driver.findElements(By.tagName("form"));
-    assertThat(forms.size(), equalTo(1));
-    List<WebElement> inputs = forms.get(0).findElements(By.tagName("input"));
-    assertThat(inputs.size(), equalTo(3));
-  }
-
-  @Test
-  public void canFindElementByCssSelector() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.cssSelector("#form_id"))
-        .findElement(By.cssSelector("input"));
-    assertThat(input.getTagName(), equalTo("input"));
-  }
-
-  @Test
-  public void canFindElementsByCssSelector() {
-    driver.get(testServer.page("form.html"));
-    List<WebElement> forms = driver.findElements(By.cssSelector("#form_id"));
-    assertThat(forms.size(), equalTo(1));
-    List<WebElement> inputs = forms.get(0).findElements(By.cssSelector("input"));
-    assertThat(inputs.size(), equalTo(3));
-  }
-
-  @Test
-  public void canFindElementByXpath() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.xpath("//form"))
-        .findElement(By.xpath("./input"));
-    assertThat(input.getTagName(), equalTo("input"));
-  }
-
-  @Test
-  public void canFindElementsByXpath() {
-    driver.get(testServer.page("form.html"));
-    List<WebElement> forms = driver.findElements(By.xpath("//form"));
-    assertThat(forms.size(), equalTo(1));
-    List<WebElement> inputs = forms.get(0).findElements(By.xpath("./input"));
-    assertThat(inputs.size(), equalTo(3));
-  }
-
-  @Test
-  public void canFindElementByName() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.name("form_name"))
-        .findElement(By.name("text"));
-    assertThat(input.getTagName(), equalTo("input"));
-  }
-
-  @Test
-  public void canFindElementsByName() {
-    driver.get(testServer.page("form.html"));
-    List<WebElement> forms = driver.findElements(By.name("form_name"));
-    assertThat(forms.size(), equalTo(1));
-    List<WebElement> inputs = forms.get(0).findElements(By.name("text"));
-    assertThat(inputs.size(), equalTo(1));
-  }
-
-  @Test
-  public void canFindElementById() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.id("form_id"))
-        .findElement(By.id("text"));
-    assertThat(input.getTagName(), equalTo("input"));
-  }
-
-  @Test
-  public void canFindElementsById() {
-    driver.get(testServer.page("form.html"));
-    List<WebElement> forms = driver.findElements(By.id("form_id"));
-    assertThat(forms.size(), equalTo(1));
-    List<WebElement> inputs = forms.get(0).findElements(By.id("text"));
-    assertThat(inputs.size(), equalTo(1));
-  }
-
-  @Test
-  public void canFindElementByLinkText() {
-    driver.get(testServer.page("alert.html"));
-    WebElement link = driver.findElement(By.linkText("Click me to get an alert"));
-    assertThat(link.getTagName(), equalTo("a"));
-    assertThat(link.getText(), equalTo("Click me to get an alert"));
-
-    link = driver.findElement(By.tagName("body")).findElement(By.linkText("Click me to get an alert"));
-    assertThat(link.getTagName(), equalTo("a"));
-    assertThat(link.getText(), equalTo("Click me to get an alert"));
-  }
-
-  @Test
-  public void canFindElementsByLinkText() {
-    driver.get(testServer.page("alert.html"));
-    List<WebElement> links = driver.findElements(By.linkText("Click me to get an alert"));
-    assertThat(links.size(), equalTo(1));
-
-    links = driver.findElement(By.tagName("body")).findElements(By.linkText("Click me to get an alert"));
-    assertThat(links.size(), equalTo(1));
-  }
-
-  @Test
-  public void canFindElementByPartialLinkText() {
-    driver.get(testServer.page("alert.html"));
-    WebElement link = driver.findElement(By.partialLinkText("Click me"));
-    assertThat(link.getTagName(), equalTo("a"));
-    assertThat(link.getText(), equalTo("Click me to get an alert"));
-
-    link = driver.findElement(By.tagName("body")).findElement(By.partialLinkText("Click me"));
-    assertThat(link.getTagName(), equalTo("a"));
-    assertThat(link.getText(), equalTo("Click me to get an alert"));
-  }
-
-  @Test
-  public void canFindElementsByPartialLinkText() {
-    driver.get(testServer.page("alert.html"));
-    List<WebElement> links = driver.findElements(By.partialLinkText("Click me"));
-    assertThat(links.size(), equalTo(1));
-
-    links = driver.findElement(By.tagName("body")).findElements(By.partialLinkText("Click me"));
-    assertThat(links.size(), equalTo(1));
-  }
-
-  @Test
-  public void canGetWrappedDriver() {
-    HtmlUnitWebElement body = (HtmlUnitWebElement) driver.findElement(By.tagName("body"));
-    assertThat(body.getWrappedDriver(), sameInstance((WebDriver) driver));
-  }
-
-  @Test
-  public void canSendKeysToAnInput() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.name("text"));
-    assertThat(input.getAttribute("value"), equalTo("default text"));
-    input.sendKeys(" changed");
-    assertThat(input.getAttribute("value"), equalTo("default text changed"));
-    input.clear();
-    assertThat(input.getAttribute("value"), equalTo(""));
-  }
-
-  @Test
-  public void canClickACheckbox() {
-    driver.get(testServer.page("form.html"));
-    WebElement input = driver.findElement(By.name("checkbox"));
-    assertThat(input.getAttribute("selected"), is(nullValue()));
-    assertThat(input.isSelected(), is(false));
-    input.click();
-    assertThat(input.getAttribute("selected"), is("true"));
-    assertThat(input.isSelected(), is(true));
-    input.click();
-    assertThat(input.getAttribute("selected"), is(nullValue()));
-    assertThat(input.isSelected(), is(false));
-  }
-
-  @Test
-  public void canGetHrefAttribute() {
-    driver.get(testServer.page("link.html"));
-    WebElement link = driver.findElement(By.id("link"));
-    assertThat(link.getAttribute("href"), equalTo(testServer.page("index.html")));
-  }
-
-  @Test
-  public void canGetBooleanAttribute() {
-    driver.get(testServer.page("disabled.html"));
-    WebElement disabled = driver.findElement(By.name("disabled"));
-    assertThat(disabled.getAttribute("disabled"), equalTo("true"));
-    WebElement enabled = driver.findElement(By.name("enabled"));
-    assertThat(enabled.getAttribute("enabled"), is(nullValue()));
-  }
-
-  @Test
-  public void throwsOnClickingInvisible() {
-    driver.get(testServer.page("invisible.html"));
-    thrown.expect(ElementNotVisibleException.class);
-    driver.findElement(By.id("link")).click();
-  }
-
-  @Test
-  public void textOfInvisibleIsEmptyString() {
-    driver.get(testServer.page("invisible.html"));
-    assertThat(driver.findElement(By.id("link")).getText(), equalTo(""));
-  }
-
-  @Test
-  public void textOfPreformattedIsPreformatted() {
-    driver.get(testServer.page("preformatted.html"));
-    assertThat(driver.findElement(By.id("pre")).getText(), equalTo("Preformatted\n    text"));
-  }
-
-  @Test
-  public void canSubmitAForm() {
-    driver.get(testServer.page("form.html"));
-    driver.findElement(By.tagName("form")).submit();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
-  }
-
-  @Test
-  public void canSubmitAFormFromAnInput() {
-    driver.get(testServer.page("form.html"));
-    driver.findElement(By.name("text")).submit();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
-  }
-
-  @Test
-  public void canSubmitAFormFromAnyElementInTheForm() {
-    driver.get(testServer.page("form.html"));
-    driver.findElement(By.id("div")).submit();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
-  }
-
-  @Test
-  public void canGetSize() {
-    driver.get(testServer.page("box.html"));
-    WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(redBox.getSize(), equalTo(new Dimension(200, 201)));
-  }
-
-  @Test
-  public void canGetLocation() {
-    driver.get(testServer.page("box.html"));
-    WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(redBox.getLocation(), equalTo(new Point(100, 101)));
-  }
-
-  @Test
-  public void canGetRectangle() {
-    driver.get(testServer.page("box.html"));
-    WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(redBox.getRect(), equalTo(new Rectangle(new Point(100, 101), new Dimension(200, 201))));
-  }
-
-  @Test
-  public void canGetCoordinatesOnPage() {
-    driver.get(testServer.page("box.html"));
-    WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(((Locatable) redBox).getCoordinates().onPage(), equalTo(new Point(100, 101)));
-  }
-
-  @Test
-  public void canGetCoordinatesInViewport() {
-    driver.get(testServer.page("box.html"));
-    WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(((Locatable) redBox).getCoordinates().inViewPort(), equalTo(new Point(100, 101)));
-  }
-
-  @Test
-  public void canUseActions() {
-    driver.get(testServer.page("form.html"));
-    WebElement text = driver.findElement(By.name("text"));
-    WebElement checkbox = driver.findElement(By.name("checkbox"));
-    new Actions(driver)
-        .click(text).keyDown(Keys.SHIFT).sendKeys("changed ").keyUp(Keys.SHIFT)
-        .click(checkbox)
-        .perform();
-    assertThat(text.getAttribute("value"), equalTo("default textCHANGED "));
-    assertThat(checkbox.isSelected(), is(true));
   }
 
   @Test
@@ -574,13 +283,6 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
-  public void elementToStringShouldLookNice() {
-    driver.get(testServer.page("link.html"));
-    WebElement a = driver.findElement(By.id("link"));
-    assertThat(a.toString(), is("<a id=\"link\" href=\"/index.html\">"));
-  }
-
-  @Test
   public void shouldNotReturnSourceOfOldPageWhenLoadFailsDueToABadHost() {
     driver.get(testServer.page(""));
     String originalSource = driver.getPageSource();
@@ -589,18 +291,6 @@ public class HtmlUnitDriverTest extends TestBase {
     String currentSource = driver.getPageSource();
 
     assertThat(currentSource, not(equalTo(originalSource)));
-  }
-
-  @Test
-  public void elementScreenshotIsNotSupported() {
-    thrown.expect(UnsupportedOperationException.class);
-    driver.findElement(By.tagName("body")).getScreenshotAs(OutputType.BASE64);
-  }
-
-  @Test
-  public void coordinatesOnScreenAreNotSupported() {
-    thrown.expect(UnsupportedOperationException.class);
-    ((Locatable) driver.findElement(By.tagName("body"))).getCoordinates().onScreen();
   }
 
   @Test

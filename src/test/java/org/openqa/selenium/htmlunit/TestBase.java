@@ -17,7 +17,11 @@
 
 package org.openqa.selenium.htmlunit;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
@@ -70,4 +74,23 @@ public class TestBase {
 
   @ClassRule
   public static TestServer testServer = new TestServer();
+
+  public HtmlUnitDriver driver;
+
+  @Before
+  public void initDriver() {
+    driver = new HtmlUnitDriver(true);
+    driver.get(testServer.page(""));
+  }
+
+  @After
+  public void stopDriver() {
+    if (driver != null) {
+      driver.quit();
+    }
+  }
+
+  @Rule
+  public ExpectedException thrown= ExpectedException.none();
+
 }
