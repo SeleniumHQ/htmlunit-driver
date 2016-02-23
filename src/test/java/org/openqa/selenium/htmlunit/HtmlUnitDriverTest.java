@@ -524,6 +524,24 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  public void elementToStringShouldLookNice() {
+    driver.get(testServer.page("link.html"));
+    WebElement a = driver.findElement(By.id("link"));
+    assertThat(a.toString(), is("<a id=\"link\" href=\"/index.html\">"));
+  }
+
+  @Test
+  public void shouldNotReturnSourceOfOldPageWhenLoadFailsDueToABadHost() {
+    driver.get(testServer.page(""));
+    String originalSource = driver.getPageSource();
+
+    driver.get("http://thishostdoesnotexist.norshallitever");
+    String currentSource = driver.getPageSource();
+
+    assertThat(currentSource, not(equalTo(originalSource)));
+  }
+
+  @Test
   public void elementScreenshotIsNotSupported() {
     thrown.expect(UnsupportedOperationException.class);
     driver.findElement(By.tagName("body")).getScreenshotAs(OutputType.BASE64);
