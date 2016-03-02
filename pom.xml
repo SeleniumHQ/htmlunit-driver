@@ -4,7 +4,7 @@
 
   <groupId>org.seleniumhq.selenium</groupId>
   <artifactId>htmlunit-driver</artifactId>
-  <version>2.19.0-SNAPSHOT</version>
+  <version>2.20.0-SNAPSHOT</version>
 
   <name>htmlunit-driver</name>
   <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -164,6 +164,20 @@
           <showWarnings>true</showWarnings>
           <encoding>utf-8</encoding>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
