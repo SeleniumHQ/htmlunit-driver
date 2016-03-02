@@ -39,7 +39,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
-        BrowserVersion.INTERNET_EXPLORER_11);
+        BrowserVersion.INTERNET_EXPLORER);
 
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
@@ -63,13 +63,7 @@ public class HtmlUnitCapabilitiesTest {
         new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
     assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
-        BrowserVersion.INTERNET_EXPLORER_11);
-
-    DesiredCapabilities ie8Capabilities =
-        new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer-8", Platform.ANY);
-
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(ie8Capabilities),
-        BrowserVersion.INTERNET_EXPLORER_8);
+        BrowserVersion.INTERNET_EXPLORER);
   }
 
   @Test

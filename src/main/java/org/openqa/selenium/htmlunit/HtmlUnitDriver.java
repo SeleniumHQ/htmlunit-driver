@@ -279,18 +279,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (BrowserType.FIREFOX.equals(browserName)) {
-      // Try and convert the version
-      try {
-        int version = Integer.parseInt(browserVersion);
-        switch (version) {
-          case 31:
-            return BrowserVersion.FIREFOX_31;
-          default:
-            return BrowserVersion.FIREFOX_38;
-        }
-      } catch (NumberFormatException e) {
-        return BrowserVersion.FIREFOX_38;
-      }
+      return BrowserVersion.FIREFOX_38;
     }
 
     if (BrowserType.CHROME.equals(browserName)) {
@@ -298,18 +287,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (BrowserType.IE.equals(browserName)) {
-      // Try and convert the version
-      try {
-        int version = Integer.parseInt(browserVersion);
-        switch (version) {
-          case 8:
-            return BrowserVersion.INTERNET_EXPLORER_8;
-          default:
-            return BrowserVersion.INTERNET_EXPLORER_11;
-        }
-      } catch (NumberFormatException e) {
-        return BrowserVersion.INTERNET_EXPLORER_11;
-      }
+      return BrowserVersion.INTERNET_EXPLORER;
     }
 
     return BrowserVersion.getDefault();
