@@ -36,17 +36,12 @@ selenium-api and selenium-support:
 
 ### Single-Jar Installation for Java
 
-Get the standalone JAR file of the latest release that includes HtmlUnit with all the dependencies and HtmlUnitDriver
+Get the [standalone JAR file of the latest release](https://github.com/SeleniumHQ/htmlunit-driver/releases) that includes HtmlUnit with all the dependencies and HtmlUnitDriver
 and add it to the classpath.
-
-### Multi-Jar Installation for Java
-
-Get a ZIP archive of the latest release that includes HtmlUnit with all the dependencies and HtmlUnitDriver
-and add desired JAR files from this archive to the classpath.
 
 ### Deploying HtmlUnitDriver to Selenium Server
 
-Download Selenium Server Standalone distribution. Get the standalone JAR file of the latest release that includes
+Download [Selenium Server Standalone](http://docs.seleniumhq.org/download/). Get the [standalone JAR file of the latest release](https://github.com/SeleniumHQ/htmlunit-driver/releases) that includes
 HtmlUnit with all the dependencies and HtmlUnitDriver. Start Selenium Server (standalone or a grid node) like this:
 
 ```
