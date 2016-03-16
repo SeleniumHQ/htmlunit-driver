@@ -2,9 +2,7 @@
 
 HtmlUnitDriver is a WebDriver compatible driver for HtmlUnit headless browser.
 
-**WARNING: This instruction is written for future, it is not actual until Selenium 2.53 is released.**
-
-HtmlUnitDriver was a part of Selenium main distribution package prior to Selenium version 2.53. If you are using
+**WARNING:** HtmlUnitDriver was a part of Selenium main distribution package prior to Selenium version 2.53. If you are using
 Selenium 2.52 or earlier you don't need to download and install HtmlUnitDriver, it is already there.
 
 According to Selenium evolution strategy drivers should be separated from Selenium, and a driver release cycle should
@@ -22,7 +20,7 @@ selenium-api and selenium-support:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.19.0</version>
+    <version>2.20</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
@@ -52,7 +50,7 @@ Download Selenium Server Standalone distribution. Get the standalone JAR file of
 HtmlUnit with all the dependencies and HtmlUnitDriver. Start Selenium Server (standalone or a grid node) like this:
 
 ```
-java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.19.0.jar org.openqa.grid.selenium.GridLauncher <server options>
+java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.20.jar org.openqa.grid.selenium.GridLauncher <server options>
 ```
 
 ## License
