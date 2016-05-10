@@ -121,7 +121,6 @@ import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 /**
@@ -279,7 +278,17 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (BrowserType.FIREFOX.equals(browserName)) {
-      return BrowserVersion.FIREFOX_38;
+      try {
+        int version = Integer.parseInt(browserVersion);
+        switch (version) {
+          case 38:
+            return BrowserVersion.FIREFOX_38;
+          default:
+            return BrowserVersion.FIREFOX_45;
+        }
+      } catch (NumberFormatException e) {
+          return BrowserVersion.FIREFOX_45;
+      }
     }
 
     if (BrowserType.CHROME.equals(browserName)) {
@@ -666,7 +675,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     try {
       result = page.executeJavaScriptFunctionIfPossible(
           func,
-          (ScriptableObject) getCurrentWindow().getScriptableObject(),
+          getCurrentWindow().getScriptableObject(),
           parameters,
           page.getDocumentElement());
     } catch (Throwable ex) {
@@ -688,7 +697,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
-    final Scriptable scope = (Scriptable) page.getEnclosingWindow().getScriptableObject();
+    final Scriptable scope = page.getEnclosingWindow().getScriptableObject();
 
     final Object[] parameters = new Object[args.length];
     final ContextAction action = new ContextAction() {
@@ -1316,7 +1325,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         DomElement element = ((InteractivePage) page).getFocusedElement();
         if (element == null || element instanceof HtmlHtml) {
           List<? extends HtmlElement> allBodies =
-              ((HtmlPage) page).getDocumentElement().getHtmlElementsByTagName("body");
+              ((HtmlPage) page).getDocumentElement().getElementsByTagName("body");
           if (!allBodies.isEmpty()) {
             return newHtmlUnitWebElement(allBodies.get(0));
           }
@@ -1398,20 +1407,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public void back() {
-      try {
-        getCurrentWindow().getHistory().back();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      getCurrentWindow().getHistory().back();
     }
 
     @Override
     public void forward() {
-      try {
-        getCurrentWindow().getHistory().forward();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      getCurrentWindow().getHistory().forward();
     }
 
     @Override
