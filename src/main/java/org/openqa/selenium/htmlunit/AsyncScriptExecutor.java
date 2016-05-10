@@ -172,11 +172,11 @@ class AsyncScriptExecutor {
      * This method has public visibility for Rhino and should never be called by code outside of
      * Rhino.
      *
-     * @param value The asynchronous script result.
+     * @param callbackValue The asynchronous script result.
      */
-    public void callback(Object value) {
+    public void callback(Object callbackValue) {
       if (latch.getCount() > 0) {
-        this.value = value;
+        this.value = callbackValue;
         latch.countDown();
       }
     }
