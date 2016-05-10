@@ -192,10 +192,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
   private void submitForm(HtmlForm form) {
     assertElementNotStale();
 
-    List<String> names = new ArrayList<>();
-    names.add("input");
-    names.add("button");
-    List<? extends HtmlElement> allElements = form.getHtmlElementsByTagNames(names);
+    List<HtmlElement> allElements = new ArrayList<>();
+    allElements.addAll(form.getElementsByTagName("input"));
+    allElements.addAll(form.getElementsByTagName("button"));
 
     HtmlElement submit = null;
     for (HtmlElement element : allElements) {
@@ -514,6 +513,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
+  @Override
   public Rectangle getRect() {
     return new Rectangle(getLocation(), getSize());
   }
@@ -780,7 +780,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     assertElementNotStale();
 
     String expectedText = linkText.trim();
-    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
+    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getElementsByTagName("a");
     List<WebElement> webElements = new ArrayList<>();
     for (DomElement e : htmlElements) {
       if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
@@ -806,7 +806,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByPartialLinkText(String linkText) {
     assertElementNotStale();
 
-    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getHtmlElementsByTagName("a");
+    List<? extends HtmlElement> htmlElements = ((HtmlElement) element).getElementsByTagName("a");
     List<WebElement> webElements = new ArrayList<>();
     for (HtmlElement e : htmlElements) {
       if (e.getTextContent().contains(linkText)
@@ -832,7 +832,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public List<WebElement> findElementsByTagName(String name) {
     assertElementNotStale();
 
-    List<HtmlElement> elements = ((HtmlElement) element).getHtmlElementsByTagName(name);
+    List<HtmlElement> elements = ((HtmlElement) element).getElementsByTagName(name);
     List<WebElement> toReturn = new ArrayList<>(elements.size());
     for (HtmlElement element : elements) {
       toReturn.add(parent.newHtmlUnitWebElement(element));
@@ -1003,6 +1003,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     };
   }
 
+  @Override
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     throw new UnsupportedOperationException(
       "Screenshots are not enabled for HtmlUnitDriver");
