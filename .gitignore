@@ -9,3 +9,6 @@ buildNumber.properties
 .mvn/timing.properties
 selenium-htmlunit-driver.iml
 .idea/
+.classpath
+.project
+.settings/
