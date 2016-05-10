@@ -856,6 +856,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (value instanceof NativeObject) {
+      @SuppressWarnings("unchecked")
       final Map<String, Object> map = Maps.newHashMap((NativeObject) value);
       for (final Entry<String, Object> e : map.entrySet()) {
         e.setValue(parseNativeJavascriptResult(e.getValue()));
@@ -910,7 +911,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return value;
   }
 
-  private Map<String, Object> convertLocationToMap(Location location) {
+  private static Map<String, Object> convertLocationToMap(Location location) {
     Map<String, Object> map = Maps.newHashMap();
     map.put("href", location.getHref());
     map.put("protocol", location.getProtocol());

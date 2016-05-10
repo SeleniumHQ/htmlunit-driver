@@ -197,13 +197,13 @@ public class HtmlUnitWebElement implements WrapsDriver,
     allElements.addAll(form.getElementsByTagName("button"));
 
     HtmlElement submit = null;
-    for (HtmlElement element : allElements) {
-      if (!isSubmitElement(element)) {
+    for (HtmlElement e : allElements) {
+      if (!isSubmitElement(e)) {
         continue;
       }
 
       if (submit == null) {
-        submit = element;
+        submit = e;
       }
     }
 
@@ -224,7 +224,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private boolean isSubmitElement(HtmlElement element) {
+  private static boolean isSubmitElement(HtmlElement element) {
     HtmlElement candidate = null;
 
     if (element instanceof HtmlSubmitInput && !((HtmlSubmitInput) element).isDisabled()) {
@@ -457,7 +457,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return null;
   }
 
-  private String trueOrNull(boolean condition) {
+  private static String trueOrNull(boolean condition) {
     return condition ? "true" : null;
   }
 
@@ -601,7 +601,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private boolean isBlockLevel(DomNode node) {
+  private static boolean isBlockLevel(DomNode node) {
     // From the HTML spec (http://www.w3.org/TR/html401/sgml/dtd.html#block)
     // <!ENTITY % block
     // "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
@@ -622,12 +622,12 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return false;
   }
 
-  private String collapseWhitespace(StringBuffer textSoFar) {
+  private static String collapseWhitespace(StringBuffer textSoFar) {
     String textToAdd = textSoFar.toString();
     return textToAdd.replaceAll("\\p{javaWhitespace}+", " ").replaceAll("\r", "");
   }
 
-  private void getPreformattedText(DomNode node, StringBuffer toReturn) {
+  private static void getPreformattedText(DomNode node, StringBuffer toReturn) {
     if (node.isDisplayed()) {
       toReturn.append(node.getTextContent());
     }
@@ -834,8 +834,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     List<HtmlElement> elements = ((HtmlElement) element).getElementsByTagName(name);
     List<WebElement> toReturn = new ArrayList<>(elements.size());
-    for (HtmlElement element : elements) {
-      toReturn.add(parent.newHtmlUnitWebElement(element));
+    for (HtmlElement e : elements) {
+      toReturn.add(parent.newHtmlUnitWebElement(e));
     }
 
     return toReturn;
