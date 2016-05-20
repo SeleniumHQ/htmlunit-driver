@@ -20,7 +20,7 @@ selenium-api and selenium-support:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.20</version>
+    <version>2.21</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
@@ -45,7 +45,7 @@ Download [Selenium Server Standalone](http://docs.seleniumhq.org/download/). Get
 HtmlUnit with all the dependencies and HtmlUnitDriver. Start Selenium Server (standalone or a grid node) like this:
 
 ```
-java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.20.jar org.openqa.grid.selenium.GridLauncher <server options>
+java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.21.jar org.openqa.grid.selenium.GridLauncher <server options>
 ```
 
 ## License
