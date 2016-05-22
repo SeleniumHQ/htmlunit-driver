@@ -12,3 +12,4 @@ buildNumber.properties
 .classpath
 .project
 .settings/
+/log.txt
