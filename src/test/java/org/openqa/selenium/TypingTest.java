@@ -643,7 +643,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("foobar"));
   }
 
-  @Ignore(value = {HTMLUNIT}, reason = "inconsistent test")
   @Test
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
