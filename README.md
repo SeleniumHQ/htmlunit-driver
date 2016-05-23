@@ -22,6 +22,11 @@ selenium-api and selenium-support:
     <artifactId>htmlunit-driver</artifactId>
     <version>2.21</version>
 </dependency>
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-support</artifactId>
+    <version>2.53.0</version>
+</dependency>
 ```
 
 ### Single-Jar Installation for Java
