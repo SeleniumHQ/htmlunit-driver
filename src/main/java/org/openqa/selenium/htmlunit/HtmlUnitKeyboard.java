@@ -26,10 +26,6 @@ import org.openqa.selenium.interactions.Keyboard;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPasswordInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 
@@ -66,40 +62,27 @@ public class HtmlUnitKeyboard implements Keyboard {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
-      if (element instanceof HtmlTextArea) {
-        HtmlTextArea area = (HtmlTextArea) element;
-        String text = area.getText();
-        area.setSelectionStart(text.length());
-        area.setSelectionEnd(text.length());
-      }
-      else if (element instanceof HtmlTextInput) {
-        HtmlTextInput input = (HtmlTextInput) element;
-        String text = input.getText();
-        input.setSelectionStart(text.length());
-        input.setSelectionEnd(text.length());
-      }
-      else if (element instanceof HtmlPasswordInput) {
-        HtmlPasswordInput input = (HtmlPasswordInput) element;
-        String text = input.getText();
-        input.setSelectionStart(text.length());
-        input.setSelectionEnd(text.length());
-      }
       try {
-        element.type(keysToSend.toString());
+        String keysSequence = keysToSend.toString();
+        element.type(asHtmlUnitKeyboard(keysSequence));
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
-    } else if (element instanceof HtmlInput) {
-      HtmlInput input = (HtmlInput) element;
-
-      input.setValueAttribute((currentValue == null ? "" : currentValue) + keysToSend.toString());
-    } else if (element instanceof HtmlTextArea) {
-      ((HtmlTextArea) element).setText(
-          (currentValue == null ? "" : currentValue) + keysToSend.toString());
-    } else {
-      throw new UnsupportedOperationException(
-          "You may only set the value of elements that are input elements");
     }
+  }
+
+  private com.gargoylesoftware.htmlunit.html.Keyboard asHtmlUnitKeyboard(final String keysSequence) {
+    com.gargoylesoftware.htmlunit.html.Keyboard keyboard = new com.gargoylesoftware.htmlunit.html.Keyboard();
+    for (int i = 0; i < keysSequence.length(); i++) {
+      char ch = keysSequence.charAt(i);
+      if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
+        keyboard.press(HtmlUnitKeyboardMapping.getKeysMapping(ch)); 
+      }
+      else {
+        keyboard.type(ch);
+      }
+    }
+    return keyboard;
   }
 
   @Override

@@ -35,7 +35,6 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import org.eclipse.jetty.io.SelectorManager;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -150,7 +149,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is(""));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToUseArrowKeys() {
     driver.get(pages.javascriptPage);
@@ -262,7 +260,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {IE, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeys() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -290,7 +287,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
     assumeFalse(Browser.detect() == Browser.opera &&
@@ -397,7 +393,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testArrowKeysAndPageUpAndDown() {
     driver.get(pages.javascriptPage);
@@ -410,7 +405,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -427,7 +421,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testDeleteAndBackspaceKeys() {
     driver.get(pages.javascriptPage);
@@ -445,7 +438,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testSpecialSpaceKeys() {
@@ -458,7 +450,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testNumberpadKeys() {
@@ -488,7 +479,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Ignore(value = {SAFARI}, reason = "Safari: issue 4221", issues = {4221})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -504,7 +494,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordControlHomeShiftEndDelete() {
@@ -527,7 +516,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordReveseShiftHomeSelectionDeletes() {
@@ -561,7 +549,6 @@ public class TypingTest extends JUnit4TestBase {
   // and linux, but not on the MAC.
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   @Test
   @Ignore(MARIONETTE)
   public void testChordControlCutAndPaste() {
