@@ -26,6 +26,7 @@ import org.openqa.selenium.interactions.Keyboard;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
+import com.gargoylesoftware.htmlunit.html.impl.SelectableTextInput;
 import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 
@@ -36,6 +37,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 public class HtmlUnitKeyboard implements Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
+  private HtmlElement lastElement;
 
   HtmlUnitKeyboard(HtmlUnitDriver parent) {
     this.parent = parent;
@@ -62,6 +64,10 @@ public class HtmlUnitKeyboard implements Keyboard {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
+      if (lastElement != element && element instanceof SelectableTextInput) {
+        SelectableTextInput selectableTextInput = (SelectableTextInput) element;
+        selectableTextInput.setSelectionStart(selectableTextInput.getText().length());
+      }
       try {
         String keysSequence = keysToSend.toString();
         element.type(asHtmlUnitKeyboard(keysSequence));
@@ -69,6 +75,7 @@ public class HtmlUnitKeyboard implements Keyboard {
         throw new WebDriverException(e);
       }
     }
+    lastElement = element;
   }
 
   private com.gargoylesoftware.htmlunit.html.Keyboard asHtmlUnitKeyboard(final String keysSequence) {
@@ -110,7 +117,6 @@ public class HtmlUnitKeyboard implements Keyboard {
 
     Event keyEvent = new KeyboardEvent(element, eventDescription, 0, shiftKey, ctrlKey, altKey);
     element.fireEvent(keyEvent);
-
   }
 
   public boolean isShiftPressed() {
