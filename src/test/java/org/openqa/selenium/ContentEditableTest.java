@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -35,7 +34,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ContentEditableTest extends JUnit4TestBase {
 
@@ -84,8 +82,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertEquals("Fishee!", element.getText());
   }
 
-  @Ignore(value = {SAFARI, HTMLUNIT}, reason = "Untested browsers;" +
-      " Safari: cannot type on contentEditable with synthetic events",
+  @Ignore(value = SAFARI, reason = "Safari: cannot type on contentEditable with synthetic events",
       issues = {3127})
   @Test
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
@@ -97,7 +94,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE})
+  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE})
   @Test
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
@@ -109,7 +106,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, HTMLUNIT, MARIONETTE},
+  @Ignore(value = {IE, SAFARI, MARIONETTE},
           reason = "Untested browsers;" +
                    " Safari: cannot type on contentEditable with synthetic events",
           issues = {3127})
@@ -126,7 +123,7 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, HTMLUNIT, MARIONETTE},
+  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE},
     reason = "Untested browsers;" +
              " Safari: cannot type on contentEditable with synthetic events",
     issues = {3127})

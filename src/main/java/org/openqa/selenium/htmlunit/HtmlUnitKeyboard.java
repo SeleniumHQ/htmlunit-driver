@@ -22,11 +22,10 @@ import java.io.IOException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Keyboard;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
-import com.gargoylesoftware.htmlunit.html.impl.SelectableTextInput;
+import com.gargoylesoftware.htmlunit.html.Keyboard;
 import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
 import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 
@@ -34,7 +33,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
  * Implements keyboard operations using the HtmlUnit WebDriver.
  *
  */
-public class HtmlUnitKeyboard implements Keyboard {
+public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
   private HtmlElement lastElement;
@@ -64,13 +63,9 @@ public class HtmlUnitKeyboard implements Keyboard {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
-      if (lastElement != element && element instanceof SelectableTextInput) {
-        SelectableTextInput selectableTextInput = (SelectableTextInput) element;
-        selectableTextInput.setSelectionStart(selectableTextInput.getText().length());
-      }
       try {
         String keysSequence = keysToSend.toString();
-        element.type(asHtmlUnitKeyboard(keysSequence));
+        element.type(asHtmlUnitKeyboard(lastElement != element, keysSequence));
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
@@ -78,8 +73,8 @@ public class HtmlUnitKeyboard implements Keyboard {
     lastElement = element;
   }
 
-  private com.gargoylesoftware.htmlunit.html.Keyboard asHtmlUnitKeyboard(final String keysSequence) {
-    com.gargoylesoftware.htmlunit.html.Keyboard keyboard = new com.gargoylesoftware.htmlunit.html.Keyboard();
+  private static Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final String keysSequence) {
+    Keyboard keyboard = new Keyboard(startAtEnd);
     for (int i = 0; i < keysSequence.length(); i++) {
       char ch = keysSequence.charAt(i);
       if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
