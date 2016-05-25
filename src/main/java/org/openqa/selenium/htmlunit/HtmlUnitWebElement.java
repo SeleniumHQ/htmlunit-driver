@@ -306,23 +306,12 @@ public class HtmlUnitWebElement implements WrapsDriver,
     element.focus();
   }
 
-  void sendKeyDownEvent(CharSequence modifierKey) {
-    sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_DOWN);
-  }
-
-  void sendKeyUpEvent(CharSequence modifierKey) {
-    sendSingleKeyEvent(modifierKey, Event.TYPE_KEY_UP);
-  }
-
-  private void sendSingleKeyEvent(CharSequence modifierKey, String eventDescription) {
-    verifyCanInteractWithElement();
-    switchFocusToThisIfNeeded();
-    HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.performSingleKeyAction((HtmlElement) getElement(), modifierKey, eventDescription);
-  }
-
   @Override
   public void sendKeys(CharSequence... value) {
+    sendKeys(true, value);
+  }
+
+  void sendKeys(boolean releaseAllAtEnd, CharSequence... value) {
     verifyCanInteractWithElement();
 
     InputKeysContainer keysContainer = new InputKeysContainer(isInputElement(), value);
@@ -330,7 +319,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer);
+    keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer, releaseAllAtEnd);
 
     if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
       submit();

@@ -39,30 +39,30 @@ class KeyboardModifiersState {
     return altPressed;
   }
 
-  public void storeKeyDown(CharSequence key) {
+  public void storeKeyDown(char key) {
     storeIfEqualsShift(key, true);
     storeIfEqualsCtrl(key, true);
     storeIfEqualsAlt(key, true);
   }
 
-  public void storeKeyUp(CharSequence key) {
+  public void storeKeyUp(char key) {
     storeIfEqualsShift(key, false);
     storeIfEqualsCtrl(key, false);
     storeIfEqualsAlt(key, false);
   }
 
-  private void storeIfEqualsShift(CharSequence key, boolean keyState) {
-    if (key.equals(Keys.SHIFT))
+  private void storeIfEqualsShift(char key, boolean keyState) {
+    if (key == Keys.SHIFT.charAt(0))
       shiftPressed = keyState;
   }
 
-  private void storeIfEqualsCtrl(CharSequence key, boolean keyState) {
-    if (key.equals(Keys.CONTROL))
+  private void storeIfEqualsCtrl(char key, boolean keyState) {
+    if (key == Keys.CONTROL.charAt(0))
       ctrlPressed = keyState;
   }
 
-  private void storeIfEqualsAlt(CharSequence key, boolean keyState) {
-    if (key.equals(Keys.ALT))
+  private void storeIfEqualsAlt(char key, boolean keyState) {
+    if (key == Keys.ALT.charAt(0))
       altPressed = keyState;
   }
 }

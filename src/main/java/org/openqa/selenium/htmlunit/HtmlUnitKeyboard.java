@@ -26,8 +26,6 @@ import org.openqa.selenium.WebElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.Keyboard;
-import com.gargoylesoftware.htmlunit.javascript.host.event.Event;
-import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
@@ -56,16 +54,29 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElem = getElementToSend(toElement);
-    htmlElem.sendKeys(keysToSend);
+    htmlElem.sendKeys(false, keysToSend);
   }
 
-  public void sendKeys(HtmlElement element, String currentValue, InputKeysContainer keysToSend) {
+  public void sendKeys(HtmlElement element, String currentValue, InputKeysContainer keysToSend,
+      boolean releaseAllAtEnd) {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
 
     if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
       try {
         String keysSequence = keysToSend.toString();
-        element.type(asHtmlUnitKeyboard(lastElement != element, keysSequence));
+        Keyboard keyboard = asHtmlUnitKeyboard(lastElement != element, keysSequence, true);
+        if (releaseAllAtEnd) {
+          if (isShiftPressed()) {
+            addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false);
+          }
+          if (isAltPressed()) {
+            addToKeyboard(keyboard, Keys.ALT.charAt(0), false);
+          }
+          if (isCtrlPressed()) {
+            addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false);
+          }
+        }
+        element.type(keyboard);
       } catch (IOException e) {
         throw new WebDriverException(e);
       }
@@ -73,18 +84,31 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     lastElement = element;
   }
 
-  private static Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final String keysSequence) {
+  private Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final CharSequence keysSequence,
+      final boolean isPress) {
     Keyboard keyboard = new Keyboard(startAtEnd);
     for (int i = 0; i < keysSequence.length(); i++) {
       char ch = keysSequence.charAt(i);
-      if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
-        keyboard.press(HtmlUnitKeyboardMapping.getKeysMapping(ch)); 
-      }
-      else {
-        keyboard.type(ch);
-      }
+      addToKeyboard(keyboard, ch, isPress);
     }
     return keyboard;
+  }
+
+  private void addToKeyboard(final Keyboard keyboard, char ch, final boolean isPress) {
+    if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
+      int keyCode = HtmlUnitKeyboardMapping.getKeysMapping(ch);
+      if (isPress) {
+        keyboard.press(keyCode);
+        modifiersState.storeKeyDown(ch);
+      }
+      else {
+        keyboard.release(keyCode);
+        modifiersState.storeKeyUp(ch);
+      }
+    }
+    else {
+      keyboard.type(ch);
+    }
   }
 
   @Override
@@ -92,8 +116,12 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
-    modifiersState.storeKeyDown(keyToPress);
-    htmlElement.sendKeyDownEvent(keyToPress);
+    HtmlElement element = (HtmlElement) htmlElement.element;
+    try {
+      element.type(asHtmlUnitKeyboard(lastElement != element, keyToPress, true));
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   @Override
@@ -101,17 +129,12 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     WebElement toElement = parent.switchTo().activeElement();
 
     HtmlUnitWebElement htmlElement = getElementToSend(toElement);
-    modifiersState.storeKeyUp(keyToRelease);
-    htmlElement.sendKeyUpEvent(keyToRelease);
-  }
-
-  void performSingleKeyAction(HtmlElement element, CharSequence modifierKey, String eventDescription) {
-    boolean shiftKey = modifierKey.equals(Keys.SHIFT);
-    boolean ctrlKey = modifierKey.equals(Keys.CONTROL);
-    boolean altKey = modifierKey.equals(Keys.ALT);
-
-    Event keyEvent = new KeyboardEvent(element, eventDescription, 0, shiftKey, ctrlKey, altKey);
-    element.fireEvent(keyEvent);
+    HtmlElement element = (HtmlElement) htmlElement.element;
+    try {
+      element.type(asHtmlUnitKeyboard(lastElement != element, keyToRelease, false));
+    } catch (IOException e) {
+      throw new WebDriverException(e);
+    }
   }
 
   public boolean isShiftPressed() {
