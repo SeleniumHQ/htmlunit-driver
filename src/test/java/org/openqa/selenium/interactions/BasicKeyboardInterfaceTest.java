@@ -213,7 +213,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectByWord() {
     assumeFalse(
         "MacOS has alternative keyboard",
@@ -240,7 +239,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testSelectionSelectAll() {
     assumeFalse(
         "MacOS has alternative keyboard",
