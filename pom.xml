@@ -67,7 +67,7 @@
       <dependency>
         <groupId>net.sourceforge.htmlunit</groupId>
         <artifactId>htmlunit</artifactId>
-        <version>2.22-SNAPSHOT</version>
+        <version>2.22</version>
         <exclusions>
           <exclusion>
             <groupId>org.eclipse.jetty.websocket</groupId>
@@ -284,7 +284,7 @@
         <artifactId>maven-release-plugin</artifactId>
         <version>2.5.3</version>
       </plugin>
-<!--       <plugin>
+       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>1.6</version>
@@ -298,7 +298,6 @@
           </execution>
         </executions>
       </plugin>
- -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
