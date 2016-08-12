@@ -152,6 +152,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public static final String INVALIDSELECTIONERROR =
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
+  public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+
   /**
    * Constructs a new instance with JavaScript disabled,
    * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
@@ -277,29 +279,36 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       browserVersion = capabilities.getVersion();
     }
 
+    BrowserVersion browserVersionObject = BrowserVersion.getDefault();
+
     if (BrowserType.FIREFOX.equals(browserName)) {
       try {
         int version = Integer.parseInt(browserVersion);
         switch (version) {
           case 38:
-            return BrowserVersion.FIREFOX_38;
+            browserVersionObject = BrowserVersion.FIREFOX_38;
           default:
-            return BrowserVersion.FIREFOX_45;
+            browserVersionObject = BrowserVersion.FIREFOX_45;
         }
       } catch (NumberFormatException e) {
-          return BrowserVersion.FIREFOX_45;
+          browserVersionObject = BrowserVersion.FIREFOX_45;
       }
     }
 
     if (BrowserType.CHROME.equals(browserName)) {
-      return BrowserVersion.CHROME;
+      browserVersionObject = BrowserVersion.CHROME;
     }
 
     if (BrowserType.IE.equals(browserName)) {
-      return BrowserVersion.INTERNET_EXPLORER;
+      browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
     }
 
-    return BrowserVersion.getDefault();
+    Object rawLanguage = capabilities.getCapability(BROWSER_LANGUAGE_CAPABILITY);
+    if (rawLanguage instanceof String) {
+      browserVersionObject.setBrowserLanguage((String) rawLanguage);
+    }
+
+    return browserVersionObject;
   }
 
   private WebClient createWebClient(BrowserVersion version) {

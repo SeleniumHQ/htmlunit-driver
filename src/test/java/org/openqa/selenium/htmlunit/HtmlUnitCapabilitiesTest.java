@@ -87,4 +87,15 @@ public class HtmlUnitCapabilitiesTest {
     assertFalse(jsDisabled.isJavascriptEnabled());
   }
 
+  @Test
+  public void configurationOfBrowserLanguage() {
+    String browserLanguage = "es-ES";
+
+    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
+
+    assertEquals(HtmlUnitDriver.determineBrowserVersion(capabilities).getBrowserLanguage(),
+            browserLanguage);
+  }
+
 }
