@@ -1408,12 +1408,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public void back() {
-      getCurrentWindow().getHistory().back();
+      try {
+        getCurrentWindow().getHistory().back();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
     @Override
     public void forward() {
-      getCurrentWindow().getHistory().forward();
+      try {
+        getCurrentWindow().getHistory().forward();
+      } catch (IOException e) {
+        throw new WebDriverException(e);
+      }
     }
 
     @Override
