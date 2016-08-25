@@ -19,7 +19,6 @@ package org.openqa.selenium.htmlunit;
 
 import org.junit.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.remote.SessionNotFoundException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -102,7 +101,7 @@ public class HtmlUnitDriverTest extends TestBase {
   @Test
   public void throwsOnAnyOperationAfterQuit() {
     driver.quit();
-    thrown.expect(SessionNotFoundException.class);
+    thrown.expect(NoSuchSessionException.class);
     driver.get(testServer.page(""));
   }
 
