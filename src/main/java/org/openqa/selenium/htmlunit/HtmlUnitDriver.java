@@ -71,7 +71,7 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.SessionNotFoundException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.w3c.css.sac.CSSException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -546,7 +546,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       // This might be expected
     } catch (SocketTimeoutException e) {
       throw new TimeoutException(e);
-    } catch (SessionNotFoundException e) {
+    } catch (NoSuchSessionException e) {
       throw e;
     } catch (Exception e) {
       throw new WebDriverException(e);
@@ -1391,7 +1391,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   protected WebClient getWebClient() {
     if (webClient == null) {
-      throw new SessionNotFoundException("Session is closed");
+      throw new NoSuchSessionException("Session is closed");
     }
     return webClient;
   }
