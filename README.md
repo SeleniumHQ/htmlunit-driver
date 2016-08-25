@@ -1,3 +1,5 @@
+![Travis Build Status](https://travis-ci.org/SeleniumHQ/htmlunit-driver.svg?branch=master)
+
 # HtmlUnitDriver
 
 HtmlUnitDriver is a WebDriver compatible driver for HtmlUnit headless browser.
@@ -20,12 +22,12 @@ selenium-api and selenium-support:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.21</version>
+    <version>2.23</version>
 </dependency>
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-support</artifactId>
-    <version>2.53.0</version>
+    <version>3.0.0-beta2</version>
 </dependency>
 ```
 
@@ -40,7 +42,7 @@ Download [Selenium Server Standalone](http://docs.seleniumhq.org/download/). Get
 HtmlUnit with all the dependencies and HtmlUnitDriver. Start Selenium Server (standalone or a grid node) like this:
 
 ```
-java -cp selenium-server-standalone-2.53.0.jar;htmlunit-driver-standalone-2.21.jar org.openqa.grid.selenium.GridLauncher <server options>
+java -cp selenium-server-standalone-3.0.0-beta2.jar;htmlunit-driver-standalone-2.23.jar org.openqa.grid.selenium.GridLauncher <server options>
 ```
 
 ## License
