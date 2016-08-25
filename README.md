@@ -1,4 +1,4 @@
-![Travis Build Status](https://travis-ci.org/SeleniumHQ/htmlunit-driver.svg?branch=master)
+[![Travis Build Status](https://travis-ci.org/SeleniumHQ/htmlunit-driver.svg?branch=master)](https://travis-ci.org/SeleniumHQ/htmlunit-driver/)
 
 # HtmlUnitDriver
 
