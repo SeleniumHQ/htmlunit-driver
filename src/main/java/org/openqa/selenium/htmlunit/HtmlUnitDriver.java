@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.client.CredentialsProvider;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
@@ -261,7 +262,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
     String browserName = null;
     String browserVersion = null;
-
     String rawVersion = capabilities.getVersion();
     String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split("-");
     if (splitVersion.length > 1) {
@@ -494,6 +494,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
     getWebClient().getOptions().setProxyConfig(proxyConfig);
+  }
+
+  /**
+   * Sets credentials provider used by WebClient
+   *
+   * @param credentialsProvider Provider to use by the WebClient
+   */
+  public void setCredentialsProvider(final CredentialsProvider credentialsProvider) {
+    getWebClient().setCredentialsProvider(credentialsProvider);
   }
 
   @Override
