@@ -60,26 +60,32 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
   public void sendKeys(HtmlElement element, String currentValue, InputKeysContainer keysToSend,
       boolean releaseAllAtEnd) {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
+    String keysSequence = keysToSend.toString();
 
-    if (parent.isJavascriptEnabled() && !(element instanceof HtmlFileInput)) {
-      try {
-        String keysSequence = keysToSend.toString();
-        Keyboard keyboard = asHtmlUnitKeyboard(lastElement != element, keysSequence, true);
-        if (releaseAllAtEnd) {
-          if (isShiftPressed()) {
-            addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false);
-          }
-          if (isAltPressed()) {
-            addToKeyboard(keyboard, Keys.ALT.charAt(0), false);
-          }
-          if (isCtrlPressed()) {
-            addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false);
-          }
+    // HtmlElement.type doesn't modify the value of a file input element. Special case.
+    if (element instanceof HtmlFileInput) {
+      HtmlFileInput fileInput = (HtmlFileInput) element;
+      fileInput.setValueAttribute(keysSequence);
+      fileInput.fireEvent("change");
+      return;
+    }
+
+    try {
+      Keyboard keyboard = asHtmlUnitKeyboard(lastElement != element, keysSequence, true);
+      if (releaseAllAtEnd) {
+        if (isShiftPressed()) {
+          addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false);
         }
-        element.type(keyboard);
-      } catch (IOException e) {
-        throw new WebDriverException(e);
+        if (isAltPressed()) {
+          addToKeyboard(keyboard, Keys.ALT.charAt(0), false);
+        }
+        if (isCtrlPressed()) {
+          addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false);
+        }
       }
+      element.type(keyboard);
+    } catch (IOException e) {
+      throw new WebDriverException(e);
     }
     lastElement = element;
   }

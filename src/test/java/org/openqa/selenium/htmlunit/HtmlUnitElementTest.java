@@ -46,6 +46,14 @@ public class HtmlUnitElementTest extends TestBase {
   }
 
   @Test
+  public void canSendKeysToAFileInput() {
+    driver.get(testServer.page("formPage.html"));
+    WebElement input = driver.findElement(By.id("upload"));
+    input.sendKeys("example.txt");
+    assertThat(input.getAttribute("value"), equalTo("example.txt"));
+  }
+
+  @Test
   public void canSendKeysUsingActions() {
     driver.get(testServer.page("form.html"));
     WebElement input = driver.findElement(By.name("text"));
