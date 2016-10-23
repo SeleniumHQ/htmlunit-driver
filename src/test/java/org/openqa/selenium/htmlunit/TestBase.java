@@ -23,12 +23,17 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
+import org.openqa.selenium.net.PortProber;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
 import org.webbitserver.handler.EmbeddedResourceHandler;
+import org.webbitserver.helpers.NamingThreadFactory;
 
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class TestBase {
 
@@ -53,7 +58,19 @@ public class TestBase {
           command.run();
         }
       };
-      webServer = WebServers.createWebServer(2713)
+
+      // We need to specify the correct localhost to use to avoid nasty
+      // networking issues on OS X without a working Net connection.
+      String hostname = System.getenv("HOSTNAME");
+      hostname = hostname == null ? "localhost" : hostname;
+      // Slightly racy because we don't lock, but it'll probably be fine.
+      int port = PortProber.findFreePort();
+      URI uri = URI.create(String.format("http://%s:%d/", hostname, port));
+
+      webServer = WebServers.createWebServer(
+              Executors.newSingleThreadExecutor(new NamingThreadFactory("htmlunit-driver-tests")),
+              new InetSocketAddress(port),
+              uri)
           .add(new EmbeddedResourceHandler("web", immediateExecutor, getClass()))
           .start()
           .get();
