@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
 
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriverException;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
@@ -154,7 +154,7 @@ class AsyncScriptExecutor {
       if (isTimeout) {
         long elapsedTimeNanos = System.nanoTime() - startTimeNanos;
         long elapsedTimeMillis = TimeUnit.NANOSECONDS.toMillis(elapsedTimeNanos);
-        throw new TimeoutException(
+        throw new ScriptTimeoutException(
             "Timed out waiting for async script result after " + elapsedTimeMillis + "ms");
       }
 

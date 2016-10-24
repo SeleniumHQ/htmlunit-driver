@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class HtmlUnitDriverTest extends TestBase {
 
@@ -279,6 +280,12 @@ public class HtmlUnitDriverTest extends TestBase {
     Object result = driver.executeAsyncScript("arguments[arguments.length - 1](123);");
     assertThat(result, instanceOf(Number.class));
     assertThat(((Number) result).intValue(), equalTo(123));
+  }
+
+  @Test(expected = ScriptTimeoutException.class)
+  public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
+    driver.get(testServer.page("ajaxy_page.html"));
+    driver.executeAsyncScript("window.setTimeout(function() {}, 0);");
   }
 
   @Test
