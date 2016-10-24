@@ -259,48 +259,39 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   // Package visibility for testing
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
-    String browserName = null;
-    String browserVersion = null;
+    String browserName;
 
     String rawVersion = capabilities.getVersion();
     String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split("-");
     if (splitVersion.length > 1) {
-      browserVersion = splitVersion[1];
       browserName = splitVersion[0];
     } else {
       browserName = capabilities.getVersion();
-      browserVersion = "";
     }
 
     // This is for backwards compatibility - in case there are users who are trying to
     // configure the HtmlUnitDriver by using the c'tor with capabilities.
     if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
       browserName = capabilities.getBrowserName();
-      browserVersion = capabilities.getVersion();
     }
 
-    BrowserVersion browserVersionObject = BrowserVersion.getDefault();
+    BrowserVersion browserVersionObject;
+    switch (browserName) {
+      case BrowserType.CHROME:
+        browserVersionObject = BrowserVersion.CHROME;
+        break;
 
-    if (BrowserType.FIREFOX.equals(browserName)) {
-      try {
-        int version = Integer.parseInt(browserVersion);
-        switch (version) {
-          case 38:
-            browserVersionObject = BrowserVersion.FIREFOX_38;
-          default:
-            browserVersionObject = BrowserVersion.FIREFOX_45;
-        }
-      } catch (NumberFormatException e) {
-          browserVersionObject = BrowserVersion.FIREFOX_45;
-      }
-    }
+      case BrowserType.IE:
+        browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
+        break;
 
-    if (BrowserType.CHROME.equals(browserName)) {
-      browserVersionObject = BrowserVersion.CHROME;
-    }
+      case BrowserType.FIREFOX:
+        browserVersionObject = BrowserVersion.FIREFOX_45;
+        break;
 
-    if (BrowserType.IE.equals(browserName)) {
-      browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
+      default:
+        browserVersionObject = BrowserVersion.getDefault();
+        break;
     }
 
     Object rawLanguage = capabilities.getCapability(BROWSER_LANGUAGE_CAPABILITY);
