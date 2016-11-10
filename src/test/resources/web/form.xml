@@ -1,0 +1,11 @@
+<xml>
+<head><title>Hello, world!</title></head>
+<body>
+<form name="form_name" id="form_id" action="index.html" method="POST">
+<div id="div">This is a form</div>
+<input name="text" id="text" type="text" value="default text"></input>
+<input name="checkbox" type="checkbox"></input>
+<input name="submit" type="submit"></input>
+</form>
+</body>
+</xml>

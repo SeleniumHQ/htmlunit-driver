@@ -1098,7 +1098,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
-    return convertRawHtmlElementsToWebElements(allElements);
+    return convertRawDomElementsToWebElements(allElements);
   }
 
   @Override
@@ -1129,8 +1129,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
     for (int i = 0; i < allElements.getLength(); i++) {
       Node item = allElements.item(i);
-      if (item instanceof HtmlElement) {
-        toReturn.add(newHtmlUnitWebElement((HtmlElement) item));
+      if (item instanceof DomElement) {
+        toReturn.add(newHtmlUnitWebElement((DomElement) item));
       }
     }
     return toReturn;
@@ -1165,15 +1165,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsByXPath(String selector) {
-    if (!(lastPage() instanceof HtmlPage)) {
+    if (!(lastPage() instanceof SgmlPage)) {
       return new ArrayList<>();
     }
 
     List<?> nodes;
     List<WebElement> result;
     try {
-      nodes = ((HtmlPage) lastPage()).getByXPath(selector);
-      result = convertRawHtmlElementsToWebElements(nodes);
+      nodes = ((SgmlPage) lastPage()).getByXPath(selector);
+      result = convertRawDomElementsToWebElements(nodes);
     } catch (RuntimeException ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
@@ -1197,12 +1197,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return result;
   }
 
-  private List<WebElement> convertRawHtmlElementsToWebElements(List<?> nodes) {
+  private List<WebElement> convertRawDomElementsToWebElements(List<?> nodes) {
     List<WebElement> elements = new ArrayList<>();
 
     for (Object node : nodes) {
-      if (node instanceof HtmlElement) {
-        elements.add(newHtmlUnitWebElement((HtmlElement) node));
+      if (node instanceof DomElement) {
+        elements.add(newHtmlUnitWebElement((DomElement) node));
       }
     }
 

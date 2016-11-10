@@ -76,14 +76,24 @@ public class ElementFindingTest extends TestBase {
   }
 
   @Test
-  public void canFindElementsByXpath() {
+  public void canFindElementsByXpathInHtmlDocument() {
     driver.get(testServer.page("form.html"));
+    canFindElementsByXpath();
+  }
+
+  @Test
+  public void canFindElementsByXpathInXmlDocument() {
+    driver.get(testServer.page("form.xml"));
+    canFindElementsByXpath();
+  }
+  
+  public void canFindElementsByXpath() {
     List<WebElement> forms = driver.findElements(By.xpath("//form"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.xpath("./input"));
-    assertThat(inputs.size(), equalTo(3));
+	    assertThat(inputs.size(), equalTo(3));
   }
-
+  
   @Test
   public void canFindElementByName() {
     driver.get(testServer.page("form.html"));

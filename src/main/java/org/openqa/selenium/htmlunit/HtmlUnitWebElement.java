@@ -729,18 +729,18 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     List<WebElement> webElements = new ArrayList<>();
 
-    List<?> htmlElements;
+    List<?> domElements;
     try {
-      htmlElements = element.getByXPath(xpathExpr);
+      domElements = element.getByXPath(xpathExpr);
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
           String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
-    for (Object e : htmlElements) {
-      if (e instanceof HtmlElement) {
-        webElements.add(getParent().newHtmlUnitWebElement((HtmlElement) e));
+    for (Object e : domElements) {
+      if (e instanceof DomElement) {
+        webElements.add(getParent().newHtmlUnitWebElement((DomElement) e));
       }
       else {
         // The xpath selector selected something different than a WebElement. The selector is
