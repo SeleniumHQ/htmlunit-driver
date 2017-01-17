@@ -32,8 +32,6 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import java.util.Map;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -281,10 +279,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  private int getFieldValue(Map<String, Object> sizeRect, String fieldName) {
-    return (int) Double.parseDouble(sizeRect.get(fieldName).toString());
-  }
-
   @Ignore(value = {IE, CHROME, FIREFOX}, reason = "Not implemented yet.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -460,7 +454,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));
     WebElement redbox = driver.findElement(By.id("redbox"));
-    Dimension size = redbox.getSize();
     Point greenboxPosition = greenbox.getLocation();
     Point redboxPosition = redbox.getLocation();
     int shiftX = redboxPosition.getX() - greenboxPosition.getX();

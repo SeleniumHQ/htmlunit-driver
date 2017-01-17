@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class HtmlUnitDriverTest extends TestBase {
 
@@ -243,6 +242,7 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsAnArray() {
     driver.get(testServer.page(""));
     Object result = driver.executeScript("return [window.location.href];");
@@ -259,6 +259,7 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsAListOfElements() {
     driver.get(testServer.page("form.html"));
     Object result = driver.executeScript("return document.getElementsByTagName('input');");
@@ -268,6 +269,7 @@ public class HtmlUnitDriverTest extends TestBase {
   }
 
   @Test
+  @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsLocation() {
     driver.get(testServer.page(""));
     Object result = driver.executeScript("return window.location;");
