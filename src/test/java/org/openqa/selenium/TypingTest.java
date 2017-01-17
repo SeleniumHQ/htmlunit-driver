@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -683,7 +682,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {HTMLUNIT, MARIONETTE, CHROME}, reason = "Failed with JS enabled, passed otherwise")
+  @Ignore(value = {MARIONETTE, CHROME}, reason = "Failed with JS enabled, passed otherwise")
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));
