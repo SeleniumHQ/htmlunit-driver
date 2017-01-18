@@ -8,3 +8,5 @@
 .travis.yml text
 
 src/test/resources/web/htmlunit/newline.html binary
+src/test/resources/web/htmlunit/newline2.html binary
+src/test/resources/web/htmlunit/newline3.html binary

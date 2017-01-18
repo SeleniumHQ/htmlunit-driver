@@ -24,8 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotVisibleException;
@@ -56,7 +54,6 @@ import org.w3c.dom.NamedNodeMap;
 import com.gargoylesoftware.htmlunit.ScriptResult;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -65,14 +62,13 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLabel;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlPreformattedText;
-import com.gargoylesoftware.htmlunit.html.HtmlScript;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
+import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
@@ -80,10 +76,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   protected final HtmlUnitDriver parent;
   protected final DomElement element;
-  private static final char nbspChar = 160;
-  private static final String[] blockLevelsTagNames =
-  {"p", "h1", "h2", "h3", "h4", "h5", "h6", "dl", "div", "noscript",
-      "blockquote", "form", "hr", "table", "fieldset", "address", "ul", "ol", "pre", "br"};
   private static final String[] booleanAttributes = {
     "async",
     "autofocus",
@@ -514,28 +506,17 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return Math.round(Float.parseFloat(cssValue));
   }
 
-  // This isn't very pretty. Sorry.
   @Override
   public String getText() {
     assertElementNotStale();
 
-    StringBuffer toReturn = new StringBuffer();
-    StringBuffer textSoFar = new StringBuffer();
-
-    boolean isPreformatted = element instanceof HtmlPreformattedText;
-    getTextFromNode(element, toReturn, textSoFar, isPreformatted);
-
-    String text = toReturn.toString() + collapseWhitespace(textSoFar);
-
-    if (!isPreformatted) {
-      text = text.trim();
-    } else {
-      if (text.endsWith("\n")) {
-        text = text.substring(0, text.length()-1);
-      }
+    if (element instanceof HtmlInput) {
+        return "";
     }
-
-    return text.replace(nbspChar, ' ');
+    String text = element.asText();
+    text = text.replace('\t', ' ');
+    text = text.replace("\r", "");
+    return text;
   }
 
   protected HtmlUnitDriver getParent() {
@@ -544,81 +525,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   protected DomElement getElement() {
     return element;
-  }
-
-  private void getTextFromNode(DomNode node, StringBuffer toReturn, StringBuffer textSoFar,
-      boolean isPreformatted) {
-    if (node instanceof HtmlScript) {
-      return;
-    }
-    if (isPreformatted) {
-      getPreformattedText(node, toReturn);
-
-    } else {
-      for (DomNode child : node.getChildren()) {
-        // Do we need to collapse the text so far?
-        if (child instanceof HtmlPreformattedText) {
-          if (child.isDisplayed()) {
-            String textToAdd = collapseWhitespace(textSoFar);
-            if (! " ".equals(textToAdd)) {
-              toReturn.append(textToAdd);
-            }
-            textSoFar.delete(0, textSoFar.length());
-          }
-          getTextFromNode(child, toReturn, textSoFar, true);
-          continue;
-        }
-
-        // Or is this just plain text?
-        if (child instanceof DomText) {
-          if (child.isDisplayed()) {
-            String textToAdd = ((DomText) child).getData();
-            textSoFar.append(textToAdd);
-          }
-          continue;
-        }
-
-        // Treat as another child node.
-        getTextFromNode(child, toReturn, textSoFar, false);
-      }
-    }
-
-    if (isBlockLevel(node)) {
-      toReturn.append(collapseWhitespace(textSoFar).trim()).append("\n");
-      textSoFar.delete(0, textSoFar.length());
-    }
-  }
-
-  private static boolean isBlockLevel(DomNode node) {
-    // From the HTML spec (http://www.w3.org/TR/html401/sgml/dtd.html#block)
-    // <!ENTITY % block
-    // "P | %heading; | %list; | %preformatted; | DL | DIV | NOSCRIPT | BLOCKQUOTE | FORM | HR | TABLE | FIELDSET | ADDRESS">
-    // <!ENTITY % heading "H1|H2|H3|H4|H5|H6">
-    // <!ENTITY % list "UL | OL">
-    // <!ENTITY % preformatted "PRE">
-
-    if (!(node instanceof HtmlElement)) {
-      return false;
-    }
-
-    String tagName = ((HtmlElement) node).getTagName().toLowerCase();
-    for (String blockLevelsTagName : blockLevelsTagNames) {
-      if (blockLevelsTagName.equals(tagName)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static String collapseWhitespace(StringBuffer textSoFar) {
-    String textToAdd = textSoFar.toString();
-    return textToAdd.replaceAll("\\p{javaWhitespace}+", " ").replaceAll("\r", "");
-  }
-
-  private static void getPreformattedText(DomNode node, StringBuffer toReturn) {
-    if (node.isDisplayed()) {
-      toReturn.append(node.getTextContent());
-    }
   }
 
   @Deprecated // It's not a part of WebDriver API

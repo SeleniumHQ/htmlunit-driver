@@ -127,11 +127,29 @@ public class HtmlUnitElementTest extends TestBase {
   }
 
   @Test
-  @Ignore
   public void newline() {
     driver.get(testServer.page("htmlunit/newline.html"));
     assertThat(driver.findElement(By.id("textArea1")).getText(),
             equalTo(" foo \n bar\n test\n a <p>html snippet</p>"));
+  }
+
+  @Test
+  public void newlineForm() {
+    driver.get(testServer.page("htmlunit/newline.html"));
+    assertThat(driver.findElement(By.id("form1")).getText(),
+            equalTo(" foo \n bar\n test\n a <p>html snippet</p>"));
+  }
+
+  @Test
+  public void newline2() {
+    driver.get(testServer.page("htmlunit/newline2.html"));
+    assertThat(driver.findElement(By.id("foo")).getText(), equalTo("  hello   abc"));
+  }
+
+  @Test
+  public void newline3() {
+    driver.get(testServer.page("htmlunit/newline3.html"));
+    assertThat(driver.findElement(By.id("foo")).getText(), equalTo("start\n  hello   abc \nend"));
   }
 
   @Test
