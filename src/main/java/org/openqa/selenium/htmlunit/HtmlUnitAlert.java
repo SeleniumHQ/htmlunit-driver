@@ -96,7 +96,7 @@ class HtmlUnitAlert implements Alert, AlertHandler {
    * Closes the current window.
    */
   void close() {
-    queues.remove(driver.getCurrentWindow());
+    queues.remove(driver.getCurrentWindow().getEnclosedPage());
   }
 
 }
