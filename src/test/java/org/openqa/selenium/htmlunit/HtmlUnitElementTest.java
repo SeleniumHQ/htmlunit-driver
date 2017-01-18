@@ -17,14 +17,25 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
+
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.Locatable;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
 
 public class HtmlUnitElementTest extends TestBase {
 
@@ -113,6 +124,14 @@ public class HtmlUnitElementTest extends TestBase {
   public void textOfInvisibleIsEmptyString() {
     driver.get(testServer.page("invisible.html"));
     assertThat(driver.findElement(By.id("link")).getText(), equalTo(""));
+  }
+
+  @Test
+  @Ignore
+  public void newline() {
+    driver.get(testServer.page("htmlunit/newline.html"));
+    assertThat(driver.findElement(By.id("textArea1")).getText(),
+            equalTo(" foo \n bar\n test\n a <p>html snippet</p>"));
   }
 
   @Test

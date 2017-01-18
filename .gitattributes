@@ -6,3 +6,5 @@
 *.js     text
 *.xml    text
 .travis.yml text
+
+src/test/resources/web/htmlunit/newline.html binary
