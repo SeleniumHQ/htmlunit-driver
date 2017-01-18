@@ -78,7 +78,6 @@ import org.w3c.dom.NodeList;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.ElementNotFoundException;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -1000,12 +999,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate element by id for " + lastPage());
     }
 
-    try {
-      DomElement element = ((HtmlPage) lastPage()).getElementById(id);
-      return newHtmlUnitWebElement(element);
-    } catch (ElementNotFoundException e) {
+    DomElement element = ((HtmlPage) lastPage()).getElementById(id);
+    if (element == null) {
       throw new NoSuchElementException("Unable to locate element with ID: " + id);
     }
+    return newHtmlUnitWebElement(element);
   }
 
   @Override

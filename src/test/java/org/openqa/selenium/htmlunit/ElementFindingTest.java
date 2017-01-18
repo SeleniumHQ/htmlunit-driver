@@ -172,4 +172,10 @@ public class ElementFindingTest extends TestBase {
     assertThat(links.size(), equalTo(1));
   }
 
+  @Test(expected = NoSuchElementException.class)
+  public void noElement() {
+    driver.get(testServer.page("form.html"));
+    driver.findElement(By.id("nothing"));
+  }
+
 }
