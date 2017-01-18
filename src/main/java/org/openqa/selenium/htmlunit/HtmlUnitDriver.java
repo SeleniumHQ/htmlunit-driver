@@ -45,6 +45,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
@@ -71,7 +72,6 @@ import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.NoSuchSessionException;
 import org.w3c.css.sac.CSSException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -79,7 +79,6 @@ import org.w3c.dom.NodeList;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.ElementNotFoundException;
-import com.gargoylesoftware.htmlunit.InteractivePage;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -1323,7 +1322,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     public WebElement activeElement() {
       Page page = lastPage();
       if (page instanceof HtmlPage) {
-        DomElement element = ((InteractivePage) page).getFocusedElement();
+        DomElement element = ((HtmlPage) page).getFocusedElement();
         if (element == null || element instanceof HtmlHtml) {
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getElementsByTagName("body");
