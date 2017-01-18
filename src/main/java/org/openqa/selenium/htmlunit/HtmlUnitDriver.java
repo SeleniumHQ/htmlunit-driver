@@ -1002,7 +1002,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     try {
-      HtmlElement element = ((HtmlPage) lastPage()).getHtmlElementById(id);
+      DomElement element = ((HtmlPage) lastPage()).getElementById(id);
       return newHtmlUnitWebElement(element);
     } catch (ElementNotFoundException e) {
       throw new NoSuchElementException("Unable to locate element with ID: " + id);
