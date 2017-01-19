@@ -1722,6 +1722,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       if (!found.isEmpty()) {
         return found;
       }
+      sleepQuietly(200);
     } while (System.currentTimeMillis() < end);
 
     return found;
