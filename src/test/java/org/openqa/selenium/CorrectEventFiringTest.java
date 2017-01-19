@@ -335,7 +335,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, HTMLUNIT})
+  @Ignore(value = {SAFARI, HTMLUNIT}, reason="Fixed in HtmlUnit 2.25")
   @Test
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
