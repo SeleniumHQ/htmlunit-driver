@@ -383,7 +383,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
+  @Ignore(value = {SAFARI, MARIONETTE},
       reason = "Does not yet support file uploads", issues = {4220})
   @Test
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
