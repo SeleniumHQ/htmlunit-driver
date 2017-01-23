@@ -24,18 +24,20 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 public class I18nTest extends JUnit4TestBase {
@@ -123,6 +125,7 @@ public class I18nTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE},
           reason = "Not implemented on anything other than Firefox/Linux at the moment.")
+  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
