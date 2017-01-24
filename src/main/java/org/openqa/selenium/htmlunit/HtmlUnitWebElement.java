@@ -509,14 +509,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public String getText() {
     assertElementNotStale();
-
-    if (element instanceof HtmlInput) {
-        return "";
-    }
-    String text = element.asText();
-    text = text.replace('\t', ' ');
-    text = text.replace("\r", "");
-    return text;
+    return HtmlSerializer.getText(element);
   }
 
   protected HtmlUnitDriver getParent() {

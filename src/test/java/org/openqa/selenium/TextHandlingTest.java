@@ -69,7 +69,6 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldIgnoreScriptElements() {
     driver.get(pages.javascriptEnhancedForm);
     WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
