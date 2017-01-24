@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -33,8 +32,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
-
-import java.awt.GraphicsEnvironment;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -60,7 +57,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  public void testShouldFireKeyDownEvents() throws Exception {
+  public void testShouldFireKeyDownEvents() {
     driver.get(pages.javascriptPage);
 
     WebElement keyReporter = driver.findElement(By.id("keyReporter"));
@@ -439,7 +436,6 @@ public class TypingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
   public void testSpecialSpaceKeys() {
     driver.get(pages.javascriptPage);
 
@@ -478,7 +474,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI}, reason = "Safari: issue 4221", issues = {4221})
+  @Ignore(value = SAFARI, reason = "Safari: issue 4221", issues = {4221})
   @Test
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
@@ -554,7 +550,6 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
-    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 
@@ -682,7 +677,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {MARIONETTE, CHROME}, reason = "Failed with JS enabled, passed otherwise")
+  @Ignore(value = MARIONETTE, reason = "Failed with JS enabled, passed otherwise")
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));
