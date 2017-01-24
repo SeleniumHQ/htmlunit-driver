@@ -24,7 +24,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -553,7 +552,7 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
-    assumeTrue(GraphicsEnvironment.isHeadless());
+    assumeFalse(GraphicsEnvironment.isHeadless());
     driver.get(pages.javascriptPage);
 
     WebElement element = driver.findElement(By.id("keyReporter"));
