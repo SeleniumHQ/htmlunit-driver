@@ -17,10 +17,14 @@
 
 package org.openqa.selenium.testing;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.openqa.selenium.WebDriverException;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import com.google.common.base.Preconditions;
 
 public class InProject {
   /**
@@ -31,14 +35,14 @@ public class InProject {
    * @throws org.openqa.selenium.WebDriverException wrapped FileNotFoundException if file could not
    *         be found
    */
-  public static File locate(String path) {
-    File dir = new File("src/test/resources").getAbsoluteFile();
-    while (dir != null) {
-      File needle = new File(dir, path);
-      if (needle.exists()) {
-        return needle;
-      }
-      dir = dir.getParentFile();
+  public static Path locate(String path) {
+    Path dir = Paths.get("src/test/resources").toAbsolutePath();
+    Preconditions.checkNotNull(dir, "Unable to find root of project");
+    dir = dir.normalize();
+
+    Path needle = dir.resolve(path);
+    if (Files.exists(needle)) {
+      return needle;
     }
 
     throw new WebDriverException(new FileNotFoundException(

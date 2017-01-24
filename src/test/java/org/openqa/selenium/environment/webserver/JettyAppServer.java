@@ -20,13 +20,19 @@ package org.openqa.selenium.environment.webserver;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import com.google.common.collect.ImmutableList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.EnumSet;
 
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.testing.InProject;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.http.MimeTypes;
-import org.eclipse.jetty.io.SelectorManager;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -42,16 +48,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.testing.InProject;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.EnumSet;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.collect.ImmutableList;
 
 public class JettyAppServer implements AppServer {
 
@@ -98,6 +98,8 @@ public class JettyAppServer implements AppServer {
 
     ServletContextHandler defaultContext = addResourceHandler(
         DEFAULT_CONTEXT_PATH, locate("web"));
+    ServletContextHandler jsContext = addResourceHandler(
+        JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
@@ -185,14 +187,14 @@ public class JettyAppServer implements AppServer {
     http.setPort(port);
     http.setIdleTimeout(500000);
 
-    File keystore = getKeyStore();
-    if (!keystore.exists()) {
+    Path keystore = getKeyStore();
+    if (!Files.exists(keystore)) {
       throw new RuntimeException(
-        "Cannot find keystore for SSL cert: " + keystore.getAbsolutePath());
+        "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
-    sslContextFactory.setKeyStorePath(keystore.getAbsolutePath());
+    sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
     sslContextFactory.setKeyStorePassword("password");
     sslContextFactory.setKeyManagerPassword("password");
 
@@ -215,7 +217,7 @@ public class JettyAppServer implements AppServer {
     }
   }
 
-  protected File getKeyStore() {
+  protected Path getKeyStore() {
     return InProject.locate("org/openqa/selenium/environment/webserver/keystore");
   }
 
@@ -267,13 +269,13 @@ public class JettyAppServer implements AppServer {
 
   }
 
-  protected ServletContextHandler addResourceHandler(String contextPath, File resourceBase) {
+  protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
     ServletContextHandler context = new ServletContextHandler();
 
     ResourceHandler staticResource = new ResourceHandler2();
     staticResource.setDirectoriesListed(true);
     staticResource.setWelcomeFiles(new String[] { "index.html" });
-    staticResource.setResourceBase(resourceBase.getAbsolutePath());
+    staticResource.setResourceBase(resourceBase.toAbsolutePath().toString());
     MimeTypes mimeTypes = new MimeTypes();
     mimeTypes.addMimeMapping("appcache", "text/cache-manifest");
     staticResource.setMimeTypes(mimeTypes);

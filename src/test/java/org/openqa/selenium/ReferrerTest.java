@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.assertEquals;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -54,6 +56,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import com.google.common.base.Charsets;
@@ -61,7 +64,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
@@ -107,9 +109,9 @@ public class ReferrerTest extends JUnit4TestBase {
 
   @BeforeClass
   public static void readPages() throws IOException {
-    page1 = Files.toString(locate("web/proxy/page1.html"), Charsets.UTF_8);
-    page2 = Files.toString(locate("web/proxy/page2.html"), Charsets.UTF_8);
-    page3 = Files.toString(locate("web/proxy/page3.html"), Charsets.UTF_8);
+    page1 = new String(Files.readAllBytes(locate("web/proxy/page1.html")), UTF_8);
+    page2 = new String(Files.readAllBytes(locate("web/proxy/page2.html")), UTF_8);
+    page3 = new String(Files.readAllBytes(locate("web/proxy/page3.html")), UTF_8);
   }
 
   /**

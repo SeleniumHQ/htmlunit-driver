@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import java.io.File;
-
+import org.openqa.selenium.Build;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.testing.InProject;
+
+import java.io.File;
 
 public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
   public LocallyBuiltInternetExplorerDriver(Capabilities capabilities) {
@@ -31,10 +32,12 @@ public class LocallyBuiltInternetExplorerDriver extends InternetExplorerDriver {
   }
 
   private static InternetExplorerDriverService getService() {
+    new Build().of("//cpp/iedriverserver:win32").go();
+
     InternetExplorerDriverService.Builder builder =
         new InternetExplorerDriverService.Builder()
           .usingDriverExecutable(
-            InProject.locate("build/cpp/Win32/Release/IEDriverServer.exe"))
+            InProject.locate("build/cpp/Win32/Release/IEDriverServer.exe").toFile())
           .usingAnyFreePort()
           .withLogFile(new File("iedriver.log"))
           .withLogLevel(InternetExplorerDriverLogLevel.valueOf(
