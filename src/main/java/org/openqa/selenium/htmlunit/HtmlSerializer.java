@@ -37,10 +37,13 @@ class HtmlSerializer {
     if (element instanceof HtmlLabel) {
       return getDirectChildren(element);
     }
-    if (element instanceof HtmlTextArea) {
-      return ((HtmlTextArea) element).getDefaultValue();
-    }
     String text = element.asText();
+    if (element instanceof HtmlTextArea) {
+      text = ((HtmlTextArea) element).getDefaultValue();
+      if (text.endsWith("\n")) {
+        text = text.substring(0,  text.length() - 1);
+      }
+    }
     text = text.replace('\t', ' ');
     text = text.replace("\r", "");
     return text;
