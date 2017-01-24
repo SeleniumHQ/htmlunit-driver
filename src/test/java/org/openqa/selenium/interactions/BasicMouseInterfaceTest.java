@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -31,6 +32,8 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+
+import java.util.Map;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -461,19 +464,17 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
     new Actions(driver).moveToElement(greenbox, 2, 2).perform();
 
-    assertEquals(
-      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
 
     new Actions(driver).moveToElement(greenbox, 2, 2)
       .moveByOffset(shiftX, shiftY).perform();
-    assertEquals(
-      Colors.RED.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.RED.getColorValue().asRgba()));
 
     new Actions(driver).moveToElement(greenbox, 2, 2)
       .moveByOffset(shiftX, shiftY)
       .moveByOffset(-shiftX, -shiftY).perform();
-    assertEquals(
-      Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    shortWait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
   @JavascriptEnabled
@@ -502,8 +503,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     // would be happy with 1.
     new Actions(driver).moveToElement(redbox, size.getWidth() + 2, size.getHeight() + 2)
         .perform();
-    assertEquals(
-        Colors.GREEN.getColorValue(), Color.fromString(redbox.getCssValue("background-color")));
+
+    wait.until(attributeToBe(redbox, "background-color", Colors.GREEN.getColorValue().asRgba()));
   }
 
   private boolean fuzzyPositionMatching(int expectedX, int expectedY, String locationTouple) {
