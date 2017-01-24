@@ -23,6 +23,7 @@ import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlBreak;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLabel;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 
 /**
  * Supports specific WebDriver requirements.
@@ -35,6 +36,9 @@ class HtmlSerializer {
     }
     if (element instanceof HtmlLabel) {
       return getDirectChildren(element);
+    }
+    if (element instanceof HtmlTextArea) {
+      return ((HtmlTextArea) element).getDefaultValue();
     }
     String text = element.asText();
     text = text.replace('\t', ' ');

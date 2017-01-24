@@ -29,7 +29,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 
 import java.util.regex.Pattern;
@@ -41,7 +40,6 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 public class TextHandlingTest extends JUnit4TestBase {
@@ -349,7 +347,6 @@ public class TextHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -361,7 +358,6 @@ public class TextHandlingTest extends JUnit4TestBase {
   @Test
   @JavascriptEnabled
   @Ignore(value = IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
