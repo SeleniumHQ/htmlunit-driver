@@ -66,7 +66,6 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     if (element instanceof HtmlFileInput) {
       HtmlFileInput fileInput = (HtmlFileInput) element;
       fileInput.setValueAttribute(keysSequence);
-      fileInput.fireEvent("change");
       return;
     }
 
@@ -128,6 +127,10 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
+    for (int i = 0; i < keyToPress.length(); i++) {
+      char ch = keyToPress.charAt(i);
+      modifiersState.storeKeyDown(ch);
+    }
   }
 
   @Override
@@ -140,6 +143,10 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
       element.type(asHtmlUnitKeyboard(lastElement != element, keyToRelease, false));
     } catch (IOException e) {
       throw new WebDriverException(e);
+    }
+    for (int i = 0; i < keyToRelease.length(); i++) {
+      char ch = keyToRelease.charAt(i);
+      modifiersState.storeKeyUp(ch);
     }
   }
 

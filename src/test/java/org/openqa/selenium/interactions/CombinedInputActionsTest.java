@@ -66,7 +66,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(value = HTMLUNIT, reason = "implemented in HtmlUnit 2.25")
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
