@@ -48,6 +48,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.testing.InProject;
 
@@ -270,18 +271,14 @@ public class JettyAppServer implements AppServer {
   }
 
   protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
-    ServletContextHandler context = new ServletContextHandler();
-
-    ResourceHandler staticResource = new ResourceHandler2();
-    staticResource.setDirectoriesListed(true);
-    staticResource.setWelcomeFiles(new String[] { "index.html" });
-    staticResource.setResourceBase(resourceBase.toAbsolutePath().toString());
+    WebAppContext context = new WebAppContext();
+    context.setWelcomeFiles(new String[] { "index.html" });
+    context.setResourceBase(resourceBase.toAbsolutePath().toString());
     MimeTypes mimeTypes = new MimeTypes();
     mimeTypes.addMimeMapping("appcache", "text/cache-manifest");
-    staticResource.setMimeTypes(mimeTypes);
+    context.setMimeTypes(mimeTypes);
 
     context.setContextPath(contextPath);
-    context.setHandler(staticResource);
     context.setAliasChecks(ImmutableList.of(new ApproveAliases(), new AllowSymLinkAliasChecker()));
 
     handlers.addHandler(context);
