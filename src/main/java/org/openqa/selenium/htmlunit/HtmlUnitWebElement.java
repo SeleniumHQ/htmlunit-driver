@@ -245,6 +245,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlInput.setValueAttribute("");
+      htmlInput.fireEvent("change");
     } else if (element instanceof HtmlTextArea) {
       HtmlTextArea htmlTextArea = (HtmlTextArea) element;
       if (htmlTextArea.isReadOnly()) {
