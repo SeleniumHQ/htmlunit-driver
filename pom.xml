@@ -72,7 +72,7 @@
       <dependency>
         <groupId>net.sourceforge.htmlunit</groupId>
         <artifactId>htmlunit</artifactId>
-        <version>2.24</version>
+        <version>2.25-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
@@ -106,7 +106,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.2.18.v20160721</version>
+        <version>9.3.16.v20170120</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
