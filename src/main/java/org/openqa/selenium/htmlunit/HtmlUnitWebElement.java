@@ -56,6 +56,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
@@ -65,6 +66,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 
@@ -404,6 +406,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if ("value".equals(lowerName)) {
+      if (element instanceof HtmlFileInput) {
+        return ((HTMLInputElement) element.getScriptableObject()).getValue();
+      }
       if (element instanceof HtmlTextArea) {
         return ((HtmlTextArea) element).getText();
       }
