@@ -418,7 +418,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // if the value attribute doesn't exist, getting the "value" attribute defers to the
       // option's content.
       if (element instanceof HtmlOption && !element.hasAttribute("value")) {
-    	  return element.getTextContent();
+        return element.getTextContent();
       }
 
       return value == null ? "" : value;
@@ -434,10 +434,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     final Object slotVal = element.getScriptableObject().get(name);
     if (slotVal instanceof String) {
-        String strVal = (String) slotVal;
-        if (!Strings.isNullOrEmpty(strVal)) {
-            return strVal;
-        }
+      String strVal = (String) slotVal;
+      if (!Strings.isNullOrEmpty(strVal)) {
+        return strVal;
+      }
     }
 
     return null;
@@ -752,7 +752,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       for (int i = 0; i < n; ++i) {
         Attr a = (Attr) attributes.item(i);
         sb.append(' ').append(a.getName()).append("=\"")
-            .append(a.getValue().replace("\"", "&quot;")).append("\"");
+          .append(a.getValue().replace("\"", "&quot;")).append("\"");
       }
       if (element.hasChildNodes()) {
         sb.append('>');
@@ -807,27 +807,27 @@ public class HtmlUnitWebElement implements WrapsDriver,
     while ("inherit".equals(value)) {
       // Hat-tip to the Selenium team
       Object result =
-          parent
-              .executeScript(
-                  "if (window.getComputedStyle) { "
-                      +
-                      "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
-                      +
-                      "} "
-                      +
-                      "if (arguments[0].currentStyle) { "
-                      +
-                      "    return arguments[0].currentStyle[arguments[1]]; "
-                      +
-                      "} "
-                      +
-                      "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
-                      +
-                      "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
-                      +
-                      "} ",
-                  current, propertyName
-              );
+        parent
+          .executeScript(
+            "if (window.getComputedStyle) { "
+              +
+              "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
+              +
+              "} "
+              +
+              "if (arguments[0].currentStyle) { "
+              +
+              "    return arguments[0].currentStyle[arguments[1]]; "
+              +
+              "} "
+              +
+              "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
+              +
+              "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
+              +
+              "} ",
+            current, propertyName
+          );
 
       if (!(result instanceof Undefined)) {
         value = String.valueOf(result);
