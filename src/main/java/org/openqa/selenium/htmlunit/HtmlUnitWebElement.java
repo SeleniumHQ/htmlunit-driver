@@ -68,7 +68,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
@@ -131,17 +130,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void click() {
-    try {
-      verifyCanInteractWithElement();
-    } catch (InvalidElementStateException e) {
-      Throwables.propagateIfInstanceOf(e, ElementNotVisibleException.class);
-      // Swallow disabled element case
-      // Clicking disabled elements should still be passed through,
-      // we just don't expect any state change
-
-      // TODO: The javadoc for this method implies we shouldn't throw for
-      // element not visible either
-    }
+    verifyCanInteractWithElement(true);
 
     HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
     mouse.click(getCoordinates());
@@ -262,7 +251,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private void verifyCanInteractWithElement() {
+  private void verifyCanInteractWithElement(boolean ignoreDisabled) {
     assertElementNotStale();
 
     Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
@@ -276,7 +265,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
 
-    if (!isEnabled()) {
+    if (!ignoreDisabled && !isEnabled()) {
       throw new InvalidElementStateException("You may only interact with enabled elements");
     }
   }
@@ -306,7 +295,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   void sendKeys(boolean releaseAllAtEnd, CharSequence... value) {
-    verifyCanInteractWithElement();
+    verifyCanInteractWithElement(false);
 
     InputKeysContainer keysContainer = new InputKeysContainer(isInputElement(), value);
 
