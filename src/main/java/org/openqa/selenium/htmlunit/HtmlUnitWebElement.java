@@ -305,20 +305,17 @@ public class HtmlUnitWebElement implements WrapsDriver,
   void sendKeys(boolean releaseAllAtEnd, CharSequence... value) {
     verifyCanInteractWithElement();
 
-    InputKeysContainer keysContainer = new InputKeysContainer(isInputElement(), value);
+    final boolean inputElement = element instanceof HtmlInput;
+    InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
 
     switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
     keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer, releaseAllAtEnd);
 
-    if (isInputElement() && keysContainer.wasSubmitKeyFound()) {
+    if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
       submit();
     }
-  }
-
-  private boolean isInputElement() {
-    return element instanceof HtmlInput;
   }
 
   @Override
