@@ -60,7 +60,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlLabel;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
@@ -131,16 +130,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public void click() {
     verifyCanInteractWithElement(true);
-
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.click(getCoordinates());
-
-    if (element instanceof HtmlLabel) {
-      HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();
-      if (referencedElement != null) {
-        new HtmlUnitWebElement(parent, referencedElement).click();
-      }
-    }
+    parent.getMouse().click(getCoordinates());
   }
 
   @Override
