@@ -28,7 +28,7 @@ public class Session {
   private static SecureRandom random = new SecureRandom();
 
   private String id;
-  private HtmlUnitServerDriver driver;
+  private HtmlUnitLocalDriver driver;
   
   private static synchronized Session createSession() {
     String id;
@@ -39,7 +39,7 @@ public class Session {
 
     Session session = new Session();
     session.id = id;
-    session.driver = new HtmlUnitServerDriver();
+    session.driver = new HtmlUnitLocalDriver();
     sessions.put(id, session);
     return session;
   }
@@ -48,7 +48,7 @@ public class Session {
     return new BigInteger(16 * 8, random).toString(16);
   }
 
-  private static HtmlUnitServerDriver getDriver(String sessionId) {
+  private static HtmlUnitLocalDriver getDriver(String sessionId) {
     return sessions.get(sessionId).driver;
   }
 

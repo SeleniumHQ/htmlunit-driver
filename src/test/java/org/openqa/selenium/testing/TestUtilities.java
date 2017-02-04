@@ -25,7 +25,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
+import org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -38,8 +38,8 @@ public class TestUtilities {
   }
 
   public static String getUserAgent(WebDriver driver) {
-    if (driver instanceof HtmlUnitServerDriver) {
-      return ((HtmlUnitServerDriver) driver).getBrowserVersion().getUserAgent();
+    if (driver instanceof HtmlUnitLocalDriver) {
+      return ((HtmlUnitLocalDriver) driver).getBrowserVersion().getUserAgent();
     }
     try {
       return (String) ((JavascriptExecutor) driver).executeScript(
@@ -77,8 +77,8 @@ public class TestUtilities {
     if (!isInternetExplorer(driver)) {
       return false;
     }
-    if (driver instanceof HtmlUnitServerDriver) {
-      String applicationVersion = ((HtmlUnitServerDriver) driver).getBrowserVersion().getApplicationVersion();
+    if (driver instanceof HtmlUnitLocalDriver) {
+      String applicationVersion = ((HtmlUnitLocalDriver) driver).getBrowserVersion().getApplicationVersion();
       return Double.parseDouble(applicationVersion.split(" ")[0]) < 5;
     }
     try {

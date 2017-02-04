@@ -23,7 +23,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
-import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
+import org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver;
 import org.openqa.selenium.net.PortProber;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
@@ -93,11 +93,11 @@ public class TestBase {
   @ClassRule
   public static TestServer testServer = new TestServer();
 
-  public HtmlUnitServerDriver driver;
+  public HtmlUnitLocalDriver driver;
 
   @Before
   public void initDriver() {
-    driver = new HtmlUnitServerDriver(true);
+    driver = new HtmlUnitLocalDriver(true);
     driver.get(testServer.page(""));
   }
 

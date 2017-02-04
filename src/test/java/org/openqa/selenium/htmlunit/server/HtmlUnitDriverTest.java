@@ -19,7 +19,7 @@ package org.openqa.selenium.htmlunit.server;
 
 import org.junit.Test;
 import org.openqa.selenium.*;
-import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
+import org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -308,7 +308,7 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.manage().ime();
   }
 
-  private void openNewWindow(HtmlUnitServerDriver driver) {
+  private void openNewWindow(HtmlUnitLocalDriver driver) {
     driver.executeScript("window.open('new')");
   }
 

@@ -22,7 +22,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
+import org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -39,13 +39,13 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(ieCapabilities),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(ieCapabilities),
         BrowserVersion.INTERNET_EXPLORER);
 
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(firefoxCapabilities),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(firefoxCapabilities),
         BrowserVersion.FIREFOX_45);
   }
 
@@ -54,7 +54,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(firefoxCapabilities),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(firefoxCapabilities),
         BrowserVersion.FIREFOX_45);
   }
 
@@ -63,7 +63,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(ieCapabilities),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(ieCapabilities),
         BrowserVersion.INTERNET_EXPLORER);
   }
 
@@ -71,17 +71,17 @@ public class HtmlUnitCapabilitiesTest {
   public void tetsDefautlBrowserVersion() {
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(capabilities),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(capabilities),
         BrowserVersion.getDefault());
   }
 
   @Test
   public void htmlUnitReportsCapabilities() {
-    HtmlUnitServerDriver driver = new HtmlUnitServerDriver(true);
+    HtmlUnitLocalDriver driver = new HtmlUnitLocalDriver(true);
     Capabilities jsEnabled = driver.getCapabilities();
     driver.quit();
 
-    driver = new HtmlUnitServerDriver(false);
+    driver = new HtmlUnitLocalDriver(false);
     Capabilities jsDisabled = driver.getCapabilities();
 
     assertTrue(jsEnabled.isJavascriptEnabled());
@@ -93,9 +93,9 @@ public class HtmlUnitCapabilitiesTest {
     String browserLanguage = "es-ES";
 
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setCapability(HtmlUnitServerDriver.BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
+    capabilities.setCapability(HtmlUnitLocalDriver.BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
 
-    assertEquals(HtmlUnitServerDriver.determineBrowserVersion(capabilities).getBrowserLanguage(),
+    assertEquals(HtmlUnitLocalDriver.determineBrowserVersion(capabilities).getBrowserLanguage(),
             browserLanguage);
   }
 

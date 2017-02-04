@@ -127,7 +127,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
  * which is a headless (GUI-less) browser simulator.
  * <p>The main supported browsers are Chrome, Firefox and Internet Explorer.
  */
-public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
+public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
 
@@ -161,7 +161,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
    * Constructs a new instance with JavaScript disabled,
    * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
    */
-  public HtmlUnitServerDriver() {
+  public HtmlUnitLocalDriver() {
     this(false);
   }
 
@@ -171,7 +171,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
    *
    * @param enableJavascript whether to enable JavaScript support or not
    */
-  public HtmlUnitServerDriver(boolean enableJavascript) {
+  public HtmlUnitLocalDriver(boolean enableJavascript) {
     this(BrowserVersion.getDefault(), enableJavascript);
   }
 
@@ -181,7 +181,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
    * @param version the browser version to use
    * @param enableJavascript whether to enable JavaScript support or not
    */
-  public HtmlUnitServerDriver(BrowserVersion version, boolean enableJavascript) {
+  public HtmlUnitLocalDriver(BrowserVersion version, boolean enableJavascript) {
     this(version);
     setJavascriptEnabled(enableJavascript);
   }
@@ -191,7 +191,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
    *
    * @param version the browser version to use
    */
-  public HtmlUnitServerDriver(BrowserVersion version) {
+  public HtmlUnitLocalDriver(BrowserVersion version) {
     webClient = createWebClient(version);
     alert = new HtmlUnitAlert(this);
     currentWindow = webClient.getCurrentWindow();
@@ -248,7 +248,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
    *
    * @param capabilities desired capabilities requested for the htmlunit driver session
    */
-  public HtmlUnitServerDriver(Capabilities capabilities) {
+  public HtmlUnitLocalDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
@@ -256,7 +256,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
     setProxySettings(Proxy.extractFrom(capabilities));
   }
 
-  public HtmlUnitServerDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+  public HtmlUnitLocalDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
   }
 
@@ -1251,7 +1251,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
           throw new NoSuchFrameException("Cannot find frame: " + index);
         }
       }
-      return HtmlUnitServerDriver.this;
+      return HtmlUnitLocalDriver.this;
     }
 
     @Override
@@ -1262,7 +1262,7 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
         for (final FrameWindow frameWindow : ((HtmlPage) page).getFrames()) {
           if (frameWindow.getName().equals(nameOrId)) {
             currentWindow = frameWindow;
-            return HtmlUnitServerDriver.this;
+            return HtmlUnitLocalDriver.this;
           }
         }
       }
@@ -1273,11 +1273,11 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
       // driver.switchTo().frame(frameElement);
       try {
         HtmlUnitWebElement element =
-            (HtmlUnitWebElement) HtmlUnitServerDriver.this.findElementById(nameOrId);
+            (HtmlUnitWebElement) HtmlUnitLocalDriver.this.findElementById(nameOrId);
         DomElement domElement = element.getElement();
         if (domElement instanceof BaseFrameElement) {
           currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
-          return HtmlUnitServerDriver.this;
+          return HtmlUnitLocalDriver.this;
         }
       } catch (NoSuchElementException ignored) {
       }
@@ -1300,13 +1300,13 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
       }
 
       currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
-      return HtmlUnitServerDriver.this;
+      return HtmlUnitLocalDriver.this;
     }
 
     @Override
     public WebDriver parentFrame() {
       currentWindow = currentWindow.getParentWindow();
-      return HtmlUnitServerDriver.this;
+      return HtmlUnitLocalDriver.this;
     }
 
     @Override
@@ -1331,13 +1331,13 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
       getWebClient().setCurrentWindow(window);
       currentWindow = window;
       pickWindow();
-      return HtmlUnitServerDriver.this;
+      return HtmlUnitLocalDriver.this;
     }
 
     @Override
     public WebDriver defaultContent() {
       switchToDefaultContentOfWindow(getCurrentWindow().getTopWindow());
-      return HtmlUnitServerDriver.this;
+      return HtmlUnitLocalDriver.this;
     }
 
     @Override
@@ -1634,14 +1634,14 @@ public class HtmlUnitServerDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public Timeouts implicitlyWait(long time, TimeUnit unit) {
-      HtmlUnitServerDriver.this.implicitWait =
+      HtmlUnitLocalDriver.this.implicitWait =
           TimeUnit.MILLISECONDS.convert(Math.max(0, time), unit);
       return this;
     }
 
     @Override
     public Timeouts setScriptTimeout(long time, TimeUnit unit) {
-      HtmlUnitServerDriver.this.scriptTimeout = TimeUnit.MILLISECONDS.convert(time, unit);
+      HtmlUnitLocalDriver.this.scriptTimeout = TimeUnit.MILLISECONDS.convert(time, unit);
       return this;
     }
 

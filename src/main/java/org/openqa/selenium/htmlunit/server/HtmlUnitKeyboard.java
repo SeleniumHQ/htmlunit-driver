@@ -33,10 +33,10 @@ import com.gargoylesoftware.htmlunit.html.Keyboard;
  */
 public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
-  private final HtmlUnitServerDriver parent;
+  private final HtmlUnitLocalDriver parent;
   private HtmlElement lastElement;
 
-  HtmlUnitKeyboard(HtmlUnitServerDriver parent) {
+  HtmlUnitKeyboard(HtmlUnitLocalDriver parent) {
     this.parent = parent;
   }
 

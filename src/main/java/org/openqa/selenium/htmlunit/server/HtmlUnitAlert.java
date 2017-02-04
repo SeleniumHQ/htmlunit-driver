@@ -32,10 +32,10 @@ import com.gargoylesoftware.htmlunit.Page;
 
 class HtmlUnitAlert implements Alert, AlertHandler {
 
-  private HtmlUnitServerDriver driver;
+  private HtmlUnitLocalDriver driver;
   private Map<Page, Queue<String>> queues = new HashMap<>();
 
-  HtmlUnitAlert(HtmlUnitServerDriver driver) {
+  HtmlUnitAlert(HtmlUnitLocalDriver driver) {
     this.driver = driver;
     driver.getWebClient().setAlertHandler(this);
   }
