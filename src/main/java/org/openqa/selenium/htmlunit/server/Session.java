@@ -70,7 +70,7 @@ public class Session {
   public static Response go(@PathParam("session") String session, String content) {
     String url = new JsonToBeanConverter().convert(Map.class, content).get("url").toString();
     getDriver(session).get(url);
-    return getResponse(session, 0, new HashMap<>());
+    return getResponse(session, 0, null);
   }
 
   @SuppressWarnings("unchecked")
@@ -126,9 +126,20 @@ public class Session {
 
   @GET
   @Path("{session}/element/{elementId}/attribute/{name}")
-  public static Response keys(@PathParam("session") String session, @PathParam("elementId") String elementId,
-          @PathParam("name") String name) {
+  public static Response getElementAttribute(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId,
+      @PathParam("name") String name) {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getAttribute(name);
+    return getResponse(session, 0, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/text")
+  public static Response getElementText(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getText();
     return getResponse(session, 0, value);
   }
 }
