@@ -147,7 +147,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (element instanceof HtmlLabel) {
       HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();
       if (referencedElement != null) {
-        new HtmlUnitWebElement(parent, referencedElement).click();
+        parent.newHtmlUnitWebElement(referencedElement).click();
       }
     }
   }
