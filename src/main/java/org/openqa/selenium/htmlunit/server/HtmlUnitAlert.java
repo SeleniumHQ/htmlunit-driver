@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,10 +32,10 @@ import com.gargoylesoftware.htmlunit.Page;
 
 class HtmlUnitAlert implements Alert, AlertHandler {
 
-  private HtmlUnitDriver driver;
+  private HtmlUnitServerDriver driver;
   private Map<Page, Queue<String>> queues = new HashMap<>();
 
-  HtmlUnitAlert(HtmlUnitDriver driver) {
+  HtmlUnitAlert(HtmlUnitServerDriver driver) {
     this.driver = driver;
     driver.getWebClient().setAlertHandler(this);
   }

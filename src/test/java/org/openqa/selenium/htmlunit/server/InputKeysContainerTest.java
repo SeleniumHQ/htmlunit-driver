@@ -16,10 +16,11 @@
 // under the License.
 
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import org.junit.Test;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.htmlunit.server.InputKeysContainer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import java.io.IOException;
 

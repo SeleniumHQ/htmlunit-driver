@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -74,7 +74,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
     FindsByCssSelector, Locatable, WebElement {
 
-  protected final HtmlUnitDriver parent;
+  protected final HtmlUnitServerDriver parent;
+  protected final int id;
   protected final DomElement element;
   private static final String[] booleanAttributes = {
     "async",
@@ -122,8 +123,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private String toString;
 
-  public HtmlUnitWebElement(HtmlUnitDriver parent, DomElement element) {
+  public HtmlUnitWebElement(HtmlUnitServerDriver parent, int id, DomElement element) {
     this.parent = parent;
+    this.id = id;
     this.element = element;
   }
 
@@ -147,7 +149,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     if (element instanceof HtmlLabel) {
       HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();
       if (referencedElement != null) {
-        new HtmlUnitWebElement(parent, referencedElement).click();
+        parent.newHtmlUnitWebElement(referencedElement).click();
       }
     }
   }
@@ -278,7 +280,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private void switchFocusToThisIfNeeded() {
+  void switchFocusToThisIfNeeded() {
     HtmlUnitWebElement oldActiveElement =
         ((HtmlUnitWebElement) parent.switchTo().activeElement());
 
@@ -307,8 +309,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     final boolean inputElement = element instanceof HtmlInput;
     InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
-
-    switchFocusToThisIfNeeded();
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
     keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer, releaseAllAtEnd);
@@ -509,7 +509,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return HtmlSerializer.getText(element);
   }
 
-  protected HtmlUnitDriver getParent() {
+  protected HtmlUnitServerDriver getParent() {
     return parent;
   }
 
@@ -603,7 +603,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
-          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
+          String.format(HtmlUnitServerDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
     if (node == null) {
@@ -615,7 +615,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     // The xpath selector selected something different than a WebElement. The selector is therefore
     // invalid
     throw new InvalidSelectorException(
-        String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
+        String.format(HtmlUnitServerDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
   }
 
   @Override
@@ -630,7 +630,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
-          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
+          String.format(HtmlUnitServerDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
     for (Object e : domElements) {
@@ -641,7 +641,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         // The xpath selector selected something different than a WebElement. The selector is
         // therefore invalid
         throw new InvalidSelectorException(
-            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR,
+            String.format(HtmlUnitServerDriver.INVALIDSELECTIONERROR,
                 xpathExpr, e.getClass().toString()));
       }
     }

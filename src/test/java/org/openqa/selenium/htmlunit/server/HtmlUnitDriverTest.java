@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import org.junit.Test;
 import org.openqa.selenium.*;
+import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -307,7 +308,7 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.manage().ime();
   }
 
-  private void openNewWindow(HtmlUnitDriver driver) {
+  private void openNewWindow(HtmlUnitServerDriver driver) {
     driver.executeScript("window.open('new')");
   }
 

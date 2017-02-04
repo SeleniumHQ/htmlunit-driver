@@ -22,6 +22,7 @@ import static org.openqa.selenium.testing.DevMode.isInDevMode;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
+import org.apache.log4j.LogManager;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -82,11 +83,11 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         className = "org.openqa.selenium.firefox.FirefoxDriver";
       }
     } else if (DesiredCapabilities.htmlUnit().getBrowserName().equals(name)) {
-      if (caps.isJavascriptEnabled()) {
-        className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
-      } else {
+//      if (caps.isJavascriptEnabled()) {
+//        className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
+//      } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
-      }
+//      }
     } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
     } else if (DesiredCapabilities.safari().getBrowserName().equals(name)) {

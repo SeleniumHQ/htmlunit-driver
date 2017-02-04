@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +23,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.ExternalResource;
+import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
 import org.openqa.selenium.net.PortProber;
 import org.webbitserver.WebServer;
 import org.webbitserver.WebServers;
@@ -92,11 +93,11 @@ public class TestBase {
   @ClassRule
   public static TestServer testServer = new TestServer();
 
-  public HtmlUnitDriver driver;
+  public HtmlUnitServerDriver driver;
 
   @Before
   public void initDriver() {
-    driver = new HtmlUnitDriver(true);
+    driver = new HtmlUnitServerDriver(true);
     driver.get(testServer.page(""));
   }
 

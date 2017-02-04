@@ -15,15 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.server;
 
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.htmlunit.server.HtmlUnitServerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class JavascriptEnabledHtmlUnitDriverTests {
 
   // Used by the reflection-based supplier
-  public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
+  public static class HtmlUnitDriverForTest extends HtmlUnitServerDriver {
     public HtmlUnitDriverForTest(Capabilities capabilities) {
       super(tweak(capabilities));
     }
