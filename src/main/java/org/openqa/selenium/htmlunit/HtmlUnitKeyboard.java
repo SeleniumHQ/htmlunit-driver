@@ -57,8 +57,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     htmlElem.sendKeys(false, keysToSend);
   }
 
-  public void sendKeys(HtmlElement element, String currentValue, InputKeysContainer keysToSend,
-      boolean releaseAllAtEnd) {
+  public void sendKeys(HtmlElement element, InputKeysContainer keysToSend, boolean releaseAllAtEnd) {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
     String keysSequence = keysToSend.toString();
 
