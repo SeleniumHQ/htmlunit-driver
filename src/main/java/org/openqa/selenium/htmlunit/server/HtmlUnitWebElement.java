@@ -311,7 +311,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
 
     HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys((HtmlElement) element, getAttribute("value"), keysContainer, releaseAllAtEnd);
+    keyboard.sendKeys((HtmlElement) element, keysContainer, releaseAllAtEnd);
 
     if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
       submit();
