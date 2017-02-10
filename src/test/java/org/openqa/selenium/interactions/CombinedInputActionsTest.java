@@ -207,7 +207,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     navigateToClicksPageAndClickLink();
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);

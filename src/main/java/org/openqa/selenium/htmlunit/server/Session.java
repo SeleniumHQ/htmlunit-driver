@@ -5,6 +5,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,7 +17,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BeanToJsonConverter;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
 @Path("/session")
@@ -30,7 +34,7 @@ public class Session {
   private String id;
   private HtmlUnitLocalDriver driver;
   
-  private static synchronized Session createSession() {
+  private static synchronized Session createSession(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     String id;
     do {
       id = createSessionId();
@@ -39,7 +43,7 @@ public class Session {
 
     Session session = new Session();
     session.id = id;
-    session.driver = new HtmlUnitLocalDriver();
+    session.driver = new HtmlUnitLocalDriver(desiredCapabilities, requiredCapabilities);
     sessions.put(id, session);
     return session;
   }
@@ -53,8 +57,12 @@ public class Session {
   }
 
   @POST
-  public Response newSession() {
-    return getResponse(createSession().id, 0, new HashMap<>());
+  @SuppressWarnings("unchecked")
+  public Response newSession(String content) {
+    Map<String, ?> map = new JsonToBeanConverter().convert(Map.class, content);
+    Capabilities desiredCapabilities = new DesiredCapabilities((Map<String, ?>) map.get("desiredCapabilities"));
+    Capabilities requiredCapabilities = new DesiredCapabilities((Map<String, ?>) map.get("requiredCapabilities"));
+    return getResponse(createSession(desiredCapabilities, requiredCapabilities).id, 0, new HashMap<>());
   }
 
   private static Response getResponse(String sessionId, int status, Object value){
@@ -81,6 +89,43 @@ public class Session {
   @POST
   @Path("{session}/element")
   public static Response findElement(@PathParam("session") String session, String content) {
+    By by = getBy(content);
+    HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).findElement(by);
+    Map<String, Object> valueMap = new HashMap<>();
+    valueMap.put("ELEMENT", e.id);
+    return getResponse(session, 0, valueMap);
+  }
+
+  @POST
+  @Path("{session}/elements")
+  public static Response findElements(@PathParam("session") String session, String content) {
+    By by = getBy(content);
+    
+    List<Map<String, Integer>> list = getElements(getDriver(session).findElements(by));
+    return getResponse(session, 0, list);
+  }
+
+  private static List<Map<String, Integer>> getElements(List<WebElement> list) {
+    return list.stream().map(i -> {
+      Map<String, Integer> map2 = new HashMap<>();
+      map2.put("ELEMENT", ((HtmlUnitWebElement) i).id);
+      return map2;
+    }).collect(Collectors.toList());
+  }
+
+  @POST
+  @Path("{session}/element/{elementId}/elements")
+  public static Response findElementsFromElement(@PathParam("session") String session,
+      @PathParam("elementId") String elementId,
+      String content) {
+    By by = getBy(content);
+
+    WebElement element = getDriver(session).getElementById(Integer.valueOf(elementId));
+    List<Map<String, Integer>> list = getElements(element.findElements(by));
+    return getResponse(session, 0, list);
+  }
+
+  private static By getBy(final String content) {
     Map<String, String> map = getMap(content);
     String value = map.get("value");
     By by;
@@ -89,13 +134,14 @@ public class Session {
         by = By.id(value);
         break;
 
+      case "tag name":
+        by = By.tagName(value);
+        break;
+
       default:
         throw new IllegalArgumentException();
     }
-    HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).findElement(by);
-    Map<String, Object> valueMap = new HashMap<>();
-    valueMap.put("ELEMENT", e.id);
-    return getResponse(session, 0, valueMap);
+    return by;
   }
 
   @POST
@@ -142,4 +188,39 @@ public class Session {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getText();
     return getResponse(session, 0, value);
   }
+
+  @GET
+  @Path("{session}/title")
+  public static Response getTitle(@PathParam("session") String session) {
+    String value = getDriver(session).getTitle();
+    return getResponse(session, 0, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/displayed")
+  public static Response elementDisplayed(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    boolean value = getDriver(session).getElementById(Integer.valueOf(elementId)).isDisplayed();
+    return getResponse(session, 0, value);
+  }
+
+  @POST
+  @Path("{session}/element/{elementId}/click")
+  public static Response elementClick(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    getDriver(session).getElementById(Integer.valueOf(elementId)).click();
+    return getResponse(session, 0, null);
+  }
+
+  @POST
+  @Path("{session}/element/{elementId}/clear")
+  public static Response elementClear(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    getDriver(session).getElementById(Integer.valueOf(elementId)).clear();
+    return getResponse(session, 0, null);
+  }
+
 }

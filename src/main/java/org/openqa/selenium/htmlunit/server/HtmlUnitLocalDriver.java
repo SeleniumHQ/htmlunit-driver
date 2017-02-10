@@ -987,7 +987,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void moveTo(int elementId) {
     lastElement = elementsMap.get(elementId);
-    lastElement.switchFocusToThisIfNeeded();
+    getMouse().mouseMove(lastElement.getCoordinates());
   }
 
   protected void click() {
