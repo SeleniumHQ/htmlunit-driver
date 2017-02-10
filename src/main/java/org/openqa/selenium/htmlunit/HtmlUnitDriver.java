@@ -251,11 +251,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     setProxySettings(Proxy.extractFrom(capabilities));
 
-    setDownloadImages(isDownloadImages(capabilities));
-  }
-
-  private static boolean isDownloadImages(Capabilities capabilities) {
-    return capabilities.is(DOWNLOAD_IMAGES_CAPABILITY);
+    setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
