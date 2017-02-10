@@ -255,16 +255,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private static boolean isDownloadImages(Capabilities capabilities) {
-    Object raw = capabilities.getCapability(DOWNLOAD_IMAGES_CAPABILITY);
-    boolean value = false;
-    if (raw != null) {
-      if (raw instanceof String) {
-        value = Boolean.parseBoolean((String) raw);
-      } else if (raw instanceof Boolean) {
-        value = ((Boolean) raw).booleanValue();
-      }
-    }
-    return value;
+    return capabilities.is(DOWNLOAD_IMAGES_CAPABILITY);
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
