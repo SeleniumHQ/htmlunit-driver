@@ -151,6 +151,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+  public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -249,6 +250,21 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
     setProxySettings(Proxy.extractFrom(capabilities));
+
+    setDownloadImages(isDownloadImages(capabilities));
+  }
+
+  private static boolean isDownloadImages(Capabilities capabilities) {
+    Object raw = capabilities.getCapability(DOWNLOAD_IMAGES_CAPABILITY);
+    boolean value = false;
+    if (raw != null) {
+      if (raw instanceof String) {
+        value = Boolean.parseBoolean((String) raw);
+      } else if (raw instanceof Boolean) {
+        value = ((Boolean) raw).booleanValue();
+      }
+    }
+    return value;
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -1213,6 +1229,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public void setJavascriptEnabled(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
     getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
+  }
+
+  public boolean isDownloadImages() {
+    return getWebClient().getOptions().isDownloadImages();
+  }
+
+  public void setDownloadImages(boolean downloadImages) {
+    getWebClient().getOptions().setDownloadImages(downloadImages);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
