@@ -143,6 +143,18 @@ public class Session {
         by = By.tagName(value);
         break;
 
+      case "css selector":
+        by = By.cssSelector(value);
+        break;
+
+      case "class name":
+        by = By.className(value);
+        break;
+
+      case "link text":
+        by = By.linkText(value);
+        break;
+
       default:
         throw new IllegalArgumentException();
     }

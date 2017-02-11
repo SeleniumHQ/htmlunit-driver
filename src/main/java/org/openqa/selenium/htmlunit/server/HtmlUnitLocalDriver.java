@@ -63,6 +63,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.ClickAction;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.KeyDownAction;
+import org.openqa.selenium.interactions.KeyUpAction;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.MoveMouseAction;
@@ -1004,7 +1005,14 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void keys(String string) {
     Keys keys = Keys.getKeyFromUnicode(string.charAt(0));
-    new KeyDownAction(keyboard, mouse, null, keys).perform();
+    if (keys == Keys.CONTROL && keyboard.isCtrlPressed()
+        || keys == Keys.SHIFT && keyboard.isShiftPressed()
+        || keys == Keys.ALT && keyboard.isAltPressed()) {
+      new KeyUpAction(keyboard, mouse, null, keys).perform();
+    }
+    else {
+      new KeyDownAction(keyboard, mouse, null, keys).perform();
+    }
   }
 
   @Override
