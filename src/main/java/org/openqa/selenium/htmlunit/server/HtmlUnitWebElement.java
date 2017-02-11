@@ -56,17 +56,17 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlLabel;
 import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
@@ -131,27 +131,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void click() {
-    try {
-      verifyCanInteractWithElement();
-    } catch (InvalidElementStateException e) {
-      Throwables.propagateIfInstanceOf(e, ElementNotVisibleException.class);
-      // Swallow disabled element case
-      // Clicking disabled elements should still be passed through,
-      // we just don't expect any state change
-
-      // TODO: The javadoc for this method implies we shouldn't throw for
-      // element not visible either
-    }
-
-    HtmlUnitMouse mouse = (HtmlUnitMouse) parent.getMouse();
-    mouse.click(getCoordinates());
-
-    if (element instanceof HtmlLabel) {
-      HtmlElement referencedElement = ((HtmlLabel)element).getReferencedElement();
-      if (referencedElement != null) {
-        parent.newHtmlUnitWebElement(referencedElement).click();
-      }
-    }
+    verifyCanInteractWithElement(true);
+    parent.getMouse().click(getCoordinates());
   }
 
   @Override
@@ -247,6 +228,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlInput.setValueAttribute("");
+      htmlInput.fireEvent("change");
     } else if (element instanceof HtmlTextArea) {
       HtmlTextArea htmlTextArea = (HtmlTextArea) element;
       if (htmlTextArea.isReadOnly()) {
@@ -261,7 +243,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private void verifyCanInteractWithElement() {
+  void verifyCanInteractWithElement(boolean ignoreDisabled) {
     assertElementNotStale();
 
     Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
@@ -275,7 +257,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
 
-    if (!isEnabled()) {
+    if (!ignoreDisabled && !isEnabled()) {
       throw new InvalidElementStateException("You may only interact with enabled elements");
     }
   }
@@ -301,21 +283,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void sendKeys(CharSequence... value) {
-    sendKeys(true, value);
-  }
-
-  void sendKeys(boolean releaseAllAtEnd, CharSequence... value) {
-    verifyCanInteractWithElement();
-
-    final boolean inputElement = element instanceof HtmlInput;
-    InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
-
-    HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys((HtmlElement) element, keysContainer, releaseAllAtEnd);
-
-    if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
-      submit();
-    }
+    ((HtmlUnitKeyboard) parent.getKeyboard()).sendKeys(this, true, value);
   }
 
   @Override
@@ -400,6 +368,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if ("value".equals(lowerName)) {
+      if (element instanceof HtmlFileInput) {
+        return ((HTMLInputElement) element.getScriptableObject()).getValue();
+      }
       if (element instanceof HtmlTextArea) {
         return ((HtmlTextArea) element).getText();
       }
@@ -409,7 +380,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       // if the value attribute doesn't exist, getting the "value" attribute defers to the
       // option's content.
       if (element instanceof HtmlOption && !element.hasAttribute("value")) {
-    	  return element.getTextContent();
+        return element.getTextContent();
       }
 
       return value == null ? "" : value;
@@ -425,10 +396,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     final Object slotVal = element.getScriptableObject().get(name);
     if (slotVal instanceof String) {
-        String strVal = (String) slotVal;
-        if (!Strings.isNullOrEmpty(strVal)) {
-            return strVal;
-        }
+      String strVal = (String) slotVal;
+      if (!Strings.isNullOrEmpty(strVal)) {
+        return strVal;
+      }
     }
 
     return null;
@@ -743,7 +714,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       for (int i = 0; i < n; ++i) {
         Attr a = (Attr) attributes.item(i);
         sb.append(' ').append(a.getName()).append("=\"")
-            .append(a.getValue().replace("\"", "&quot;")).append("\"");
+          .append(a.getValue().replace("\"", "&quot;")).append("\"");
       }
       if (element.hasChildNodes()) {
         sb.append('>');
@@ -798,27 +769,27 @@ public class HtmlUnitWebElement implements WrapsDriver,
     while ("inherit".equals(value)) {
       // Hat-tip to the Selenium team
       Object result =
-          parent
-              .executeScript(
-                  "if (window.getComputedStyle) { "
-                      +
-                      "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
-                      +
-                      "} "
-                      +
-                      "if (arguments[0].currentStyle) { "
-                      +
-                      "    return arguments[0].currentStyle[arguments[1]]; "
-                      +
-                      "} "
-                      +
-                      "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
-                      +
-                      "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
-                      +
-                      "} ",
-                  current, propertyName
-              );
+        parent
+          .executeScript(
+            "if (window.getComputedStyle) { "
+              +
+              "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
+              +
+              "} "
+              +
+              "if (arguments[0].currentStyle) { "
+              +
+              "    return arguments[0].currentStyle[arguments[1]]; "
+              +
+              "} "
+              +
+              "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
+              +
+              "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
+              +
+              "} ",
+            current, propertyName
+          );
 
       if (!(result instanceof Undefined)) {
         value = String.valueOf(result);

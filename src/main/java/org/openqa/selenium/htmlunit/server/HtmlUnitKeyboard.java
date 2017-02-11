@@ -21,10 +21,10 @@ import java.io.IOException;
 
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
 
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.Keyboard;
 
 /**
@@ -40,24 +40,29 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     this.parent = parent;
   }
 
-  private HtmlUnitWebElement getElementToSend(WebElement toElement) {
-    WebElement sendToElement = toElement;
-    if (sendToElement == null) {
-      sendToElement = parent.switchTo().activeElement();
-    }
-
-    return (HtmlUnitWebElement) sendToElement;
-  }
-
   @Override
   public void sendKeys(CharSequence... keysToSend) {
-    WebElement toElement = parent.switchTo().activeElement();
-
-    HtmlUnitWebElement htmlElem = getElementToSend(toElement);
-    htmlElem.sendKeys(false, keysToSend);
+    HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) parent.switchTo().activeElement();
+    sendKeys(htmlElem, false, keysToSend);
   }
 
-  public void sendKeys(HtmlElement element, InputKeysContainer keysToSend, boolean releaseAllAtEnd) {
+  void sendKeys(HtmlUnitWebElement htmlElem, boolean releaseAllAtEnd, CharSequence... value) {
+    htmlElem.verifyCanInteractWithElement(false);
+
+    final HtmlElement element = (HtmlElement) htmlElem.element;
+    final boolean inputElement = element instanceof HtmlInput;
+    InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
+
+    htmlElem.switchFocusToThisIfNeeded();
+
+    sendKeys(element, keysContainer, releaseAllAtEnd);
+
+    if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
+      htmlElem.submit();
+    }
+  }
+
+  private void sendKeys(HtmlElement element, InputKeysContainer keysToSend, boolean releaseAllAtEnd) {
     keysToSend.setCapitalization(modifiersState.isShiftPressed());
     String keysSequence = keysToSend.toString();
 
@@ -88,8 +93,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     lastElement = element;
   }
 
-  private Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final CharSequence keysSequence,
-      final boolean isPress) {
+  private Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final CharSequence keysSequence, final boolean isPress) {
     Keyboard keyboard = new Keyboard(startAtEnd);
     for (int i = 0; i < keysSequence.length(); i++) {
       char ch = keysSequence.charAt(i);
@@ -117,9 +121,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
 
   @Override
   public void pressKey(CharSequence keyToPress) {
-    WebElement toElement = parent.switchTo().activeElement();
-
-    HtmlUnitWebElement htmlElement = getElementToSend(toElement);
+    HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent.switchTo().activeElement();
     HtmlElement element = (HtmlElement) htmlElement.element;
     try {
       element.type(asHtmlUnitKeyboard(lastElement != element, keyToPress, true));
@@ -134,9 +136,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
 
   @Override
   public void releaseKey(CharSequence keyToRelease) {
-    WebElement toElement = parent.switchTo().activeElement();
-
-    HtmlUnitWebElement htmlElement = getElementToSend(toElement);
+    HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent.switchTo().activeElement();
     HtmlElement element = (HtmlElement) htmlElement.element;
     try {
       element.type(asHtmlUnitKeyboard(lastElement != element, keyToRelease, false));

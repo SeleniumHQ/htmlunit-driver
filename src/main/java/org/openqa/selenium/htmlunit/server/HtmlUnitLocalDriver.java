@@ -156,6 +156,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+  public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -254,6 +255,8 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
     setProxySettings(Proxy.extractFrom(capabilities));
+
+    setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
   }
 
   public HtmlUnitLocalDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -530,7 +533,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     try {
       getWebClient().getPage(fullUrl);
       // A "get" works over the entire page
-      currentWindow = getCurrentWindow().getTopWindow();
+      currentWindow = getWebClient().getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
       getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
           new StringWebResponse("Unknown host", fullUrl),
@@ -1237,6 +1240,14 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   public void setJavascriptEnabled(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
     getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
+  }
+
+  public boolean isDownloadImages() {
+    return getWebClient().getOptions().isDownloadImages();
+  }
+
+  public void setDownloadImages(boolean downloadImages) {
+    getWebClient().getOptions().setDownloadImages(downloadImages);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {

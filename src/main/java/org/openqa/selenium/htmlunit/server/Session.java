@@ -134,6 +134,10 @@ public class Session {
         by = By.id(value);
         break;
 
+      case "name":
+        by = By.name(value);
+        break;
+
       case "tag name":
         by = By.tagName(value);
         break;

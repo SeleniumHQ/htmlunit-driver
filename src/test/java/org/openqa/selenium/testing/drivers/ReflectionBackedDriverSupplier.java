@@ -87,6 +87,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 //        className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
 //      } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
+        className = "org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver";
 //      }
     } else if (DesiredCapabilities.internetExplorer().getBrowserName().equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
