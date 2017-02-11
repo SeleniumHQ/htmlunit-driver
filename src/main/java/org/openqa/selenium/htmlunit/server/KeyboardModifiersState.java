@@ -17,15 +17,19 @@
 
 package org.openqa.selenium.htmlunit.server;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.openqa.selenium.Keys;
 
 /**
- * Holds the state of the modifier keys (Shift, ctrl, alt) for HtmlUnit.
+ * Holds the state of the modifier keys (Shift, ctrl, alt).
  */
 class KeyboardModifiersState {
-  private boolean shiftPressed = false;
-  private boolean ctrlPressed = false;
-  private boolean altPressed = false;
+  private Set<Character> set = new HashSet<>();
+  private boolean shiftPressed;
+  private boolean ctrlPressed;
+  private boolean altPressed;
 
   public boolean isShiftPressed() {
     return shiftPressed;
@@ -43,12 +47,14 @@ class KeyboardModifiersState {
     storeIfEqualsShift(key, true);
     storeIfEqualsCtrl(key, true);
     storeIfEqualsAlt(key, true);
+    set.add(key);
   }
 
   public void storeKeyUp(char key) {
     storeIfEqualsShift(key, false);
     storeIfEqualsCtrl(key, false);
     storeIfEqualsAlt(key, false);
+    set.remove(key);
   }
 
   private void storeIfEqualsShift(char key, boolean keyState) {
@@ -64,5 +70,13 @@ class KeyboardModifiersState {
   private void storeIfEqualsAlt(char key, boolean keyState) {
     if (key == Keys.ALT.charAt(0))
       altPressed = keyState;
+  }
+
+  boolean isPressed(Keys keys) {
+    return isPressed(keys.charAt(0));
+  }
+
+  boolean isPressed(char ch) {
+    return set.contains(ch);
   }
 }

@@ -545,7 +545,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
           new StringWebResponse("Unknown host", fullUrl),
           getCurrentWindow().getTopWindow()
-      ));
+          ));
     } catch (ConnectException e) {
       // This might be expected
     } catch (SocketTimeoutException e) {
@@ -792,7 +792,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       Scriptable map = context.newObject(scope);
       for (Object key: argmap.keySet()) {
         map.put((String) key, map, parseArgumentIntoJavascriptParameter(context, scope,
-                                                                        argmap.get(key)));
+            argmap.get(key)));
       }
       return map;
 
@@ -808,7 +808,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     if (!currentPage.equals(elementPage)) {
       throw new StaleElementReferenceException(
           "Element appears to be stale. Did you navigate away from the page that contained it? "
-          + " And is the current window focussed the same as the one holding this element?");
+              + " And is the current window focussed the same as the one holding this element?");
     }
 
     // We need to walk the DOM to determine if the element is actually attached
@@ -820,7 +820,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     if (parentElement == null) {
       throw new StaleElementReferenceException(
           "The element seems to be disconnected from the DOM. "
-          + " This means that a user cannot interact with it.");
+              + " This means that a user cannot interact with it.");
     }
   }
 
@@ -1007,32 +1007,30 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   protected void keys(String string) {
     for (int i = 0; i < string.length(); i++) {
       char ch = string.charAt(i);
-      if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
-        Keys keys = Keys.getKeyFromUnicode(ch);
-        if (keys == Keys.CONTROL && keyboard.isCtrlPressed()
-            || keys == Keys.SHIFT && keyboard.isShiftPressed()
-            || keys == Keys.ALT && keyboard.isAltPressed()) {
-          new KeyUpAction(keyboard, mouse, null, keys).perform();
+      if (ch == Keys.NULL.charAt(0)) {
+        if (keyboard.isPressed(Keys.CONTROL)) {
+          new KeyUpAction(keyboard, mouse, null, Keys.CONTROL).perform();
         }
-        else {
-          if (keys == Keys.NULL) {
-            if (keyboard.isCtrlPressed()) {
-              new KeyUpAction(keyboard, mouse, null, Keys.CONTROL).perform();
-            }
-            if (keyboard.isAltPressed()) {
-              new KeyUpAction(keyboard, mouse, null, Keys.ALT).perform();
-            }
-            if (keyboard.isShiftPressed()) {
-              new KeyUpAction(keyboard, mouse, null, Keys.SHIFT).perform();
-            }
+        if (keyboard.isPressed(Keys.ALT)) {
+          new KeyUpAction(keyboard, mouse, null, Keys.ALT).perform();
+        }
+        if (keyboard.isPressed(Keys.SHIFT)) {
+          new KeyUpAction(keyboard, mouse, null, Keys.SHIFT).perform();
+        }
+      }
+      else {
+        if (ch == Keys.SHIFT.charAt(0) || ch == Keys.CONTROL.charAt(0) || ch == Keys.ALT.charAt(0)) {
+          Keys keys = Keys.getKeyFromUnicode(ch);
+          if (keyboard.isPressed(ch)) {
+            new KeyUpAction(keyboard, mouse, null, keys).perform();
           }
           else {
             new KeyDownAction(keyboard, mouse, null, keys).perform();
           }
         }
-      }
-      else {
-        new SendKeysAction(keyboard, mouse, lastElement, String.valueOf(ch)).perform();
+        else {
+          new SendKeysAction(keyboard, mouse, lastElement, String.valueOf(ch)).perform();
+        }
       }
     }
   }
@@ -1608,7 +1606,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       URL url = getRawUrl();
       Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
       for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
-          cookieManager.removeCookie(cookie);
+        cookieManager.removeCookie(cookie);
       }
     }
 
@@ -1638,22 +1636,22 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
           cookie.getExpiry(),
           cookie.isSecure(),
           cookie.isHttpOnly()
-      );
+          );
     }
 
     private final com.google.common.base.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie> htmlUnitCookieToSeleniumCookieTransformer =
         new com.google.common.base.Function<com.gargoylesoftware.htmlunit.util.Cookie, org.openqa.selenium.Cookie>() {
-          @Override
-          public org.openqa.selenium.Cookie apply(com.gargoylesoftware.htmlunit.util.Cookie c) {
-            return new Cookie.Builder(c.getName(), c.getValue())
-                .domain(c.getDomain())
-                .path(c.getPath())
-                .expiresOn(c.getExpires())
-                .isSecure(c.isSecure())
-                .isHttpOnly(c.isHttpOnly())
-                .build();
-          }
-        };
+      @Override
+      public org.openqa.selenium.Cookie apply(com.gargoylesoftware.htmlunit.util.Cookie c) {
+        return new Cookie.Builder(c.getName(), c.getValue())
+            .domain(c.getDomain())
+            .path(c.getPath())
+            .expiresOn(c.getExpires())
+            .isSecure(c.isSecure())
+            .isHttpOnly(c.isHttpOnly())
+            .build();
+      }
+    };
 
     private String getDomainForCookie() {
       URL current = getRawUrl();

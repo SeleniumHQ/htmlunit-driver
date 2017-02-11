@@ -156,6 +156,14 @@ public class Session {
         by = By.linkText(value);
         break;
 
+      case "partial link text":
+        by = By.partialLinkText(value);
+        break;
+
+      case "xpath":
+        by = By.xpath(value);
+        break;
+
       default:
         throw new IllegalArgumentException();
     }
@@ -175,6 +183,7 @@ public class Session {
   @Path("{session}/click")
   public static Response click(@PathParam("session") String session, String content) {
     Map<String, ?> map = getMap(content);
+    @SuppressWarnings("unused")
     int button = ((Long) map.get("button")).intValue();
     getDriver(session).click();
     return getResponse(session, 0, null);
@@ -204,6 +213,16 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getText();
+    return getResponse(session, 0, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/css/{propertyName}")
+  public static Response getElementCssValue(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId,
+      @PathParam("propertyName") String propertyName) {
+    String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getCssValue(propertyName);
     return getResponse(session, 0, value);
   }
 

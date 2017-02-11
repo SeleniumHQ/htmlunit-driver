@@ -161,4 +161,11 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     return modifiersState.isAltPressed();
   }
 
+  boolean isPressed(char ch) {
+    return modifiersState.isPressed(ch);
+  }
+
+  boolean isPressed(Keys keys) {
+    return modifiersState.isPressed(keys);
+  }
 }
