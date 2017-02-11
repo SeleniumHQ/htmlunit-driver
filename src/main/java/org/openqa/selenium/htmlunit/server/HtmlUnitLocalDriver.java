@@ -43,6 +43,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -59,9 +60,12 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.ClickAction;
 import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.KeyDownAction;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.MoveMouseAction;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -69,6 +73,7 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
+import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
@@ -990,15 +995,16 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void moveTo(int elementId) {
     lastElement = elementsMap.get(elementId);
-    getMouse().mouseMove(lastElement.getCoordinates());
+    new MoveMouseAction(mouse, (Locatable) lastElement).perform();
   }
 
   protected void click() {
-    lastElement.click();
+    new ClickAction(mouse, lastElement).perform();
   }
 
-  protected void keys(String keys) {
-    lastElement.sendKeys(keys);
+  protected void keys(String string) {
+    Keys keys = Keys.getKeyFromUnicode(string.charAt(0));
+    new KeyDownAction(keyboard, mouse, null, keys).perform();
   }
 
   @Override
