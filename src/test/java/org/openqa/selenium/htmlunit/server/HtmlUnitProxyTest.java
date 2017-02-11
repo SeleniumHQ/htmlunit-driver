@@ -30,6 +30,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -105,7 +106,7 @@ public class HtmlUnitProxyTest {
 
     HtmlUnitLocalDriver driver = new HtmlUnitLocalDriver();
 
-    ArrayList<String> noProxy = new ArrayList<>();
+    List<String> noProxy = new ArrayList<>();
     noProxy.add("localhost");
     noProxy.add("127.0.0.1");
     driver.setHTTPProxy("http.proxy", 0, noProxy);
@@ -172,7 +173,7 @@ public class HtmlUnitProxyTest {
   @Test
   public void testManualSocksProxyWithNoProxyDirectly() {
     HtmlUnitLocalDriver driver = new HtmlUnitLocalDriver();
-    ArrayList<String> noProxy = new ArrayList<>();
+    List<String> noProxy = new ArrayList<>();
     noProxy.add("localhost");
     driver.setSocksProxy("socks.proxy", 0, noProxy);
 
