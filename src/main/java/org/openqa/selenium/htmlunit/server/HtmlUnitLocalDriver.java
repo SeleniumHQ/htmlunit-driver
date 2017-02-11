@@ -67,6 +67,7 @@ import org.openqa.selenium.interactions.KeyUpAction;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.MoveMouseAction;
+import org.openqa.selenium.interactions.SendKeysAction;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -1004,14 +1005,35 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void keys(String string) {
-    Keys keys = Keys.getKeyFromUnicode(string.charAt(0));
-    if (keys == Keys.CONTROL && keyboard.isCtrlPressed()
-        || keys == Keys.SHIFT && keyboard.isShiftPressed()
-        || keys == Keys.ALT && keyboard.isAltPressed()) {
-      new KeyUpAction(keyboard, mouse, null, keys).perform();
-    }
-    else {
-      new KeyDownAction(keyboard, mouse, null, keys).perform();
+    for (int i = 0; i < string.length(); i++) {
+      char ch = string.charAt(i);
+      if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
+        Keys keys = Keys.getKeyFromUnicode(ch);
+        if (keys == Keys.CONTROL && keyboard.isCtrlPressed()
+            || keys == Keys.SHIFT && keyboard.isShiftPressed()
+            || keys == Keys.ALT && keyboard.isAltPressed()) {
+          new KeyUpAction(keyboard, mouse, null, keys).perform();
+        }
+        else {
+          if (keys == Keys.NULL) {
+            if (keyboard.isCtrlPressed()) {
+              new KeyUpAction(keyboard, mouse, null, Keys.CONTROL).perform();
+            }
+            if (keyboard.isAltPressed()) {
+              new KeyUpAction(keyboard, mouse, null, Keys.ALT).perform();
+            }
+            if (keyboard.isShiftPressed()) {
+              new KeyUpAction(keyboard, mouse, null, Keys.SHIFT).perform();
+            }
+          }
+          else {
+            new KeyDownAction(keyboard, mouse, null, keys).perform();
+          }
+        }
+      }
+      else {
+        new SendKeysAction(keyboard, mouse, lastElement, String.valueOf(ch)).perform();
+      }
     }
   }
 

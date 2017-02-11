@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -254,6 +255,30 @@ public class Session {
         .map(driver::getElementById).toArray(size -> new HtmlUnitWebElement[size]);
 
     driver.executeScript(script, (Object[]) array);
+    return getResponse(session, 0, null);
+  }
+
+  @GET
+  @Path("{session}/window_handles")
+  public static Response getWindowHandles(@PathParam("session") String session) {
+    Set<String> value = getDriver(session).getWindowHandles();
+    return getResponse(session, 0, value);
+  }
+
+  @POST
+  @Path("{session}/frame")
+  public static Response frame(@PathParam("session") String session, String content) {
+    Map<String, Map<String, ?>> map = getMap(content);
+    HtmlUnitLocalDriver driver = getDriver(session);
+    Map<String, ?> subMap = map.get("id");
+    if (subMap != null) {
+      int id = Integer.parseInt((String) subMap.get("ELEMENT"));
+      HtmlUnitWebElement frame = driver.getElementById(id);
+      driver.switchTo().frame(frame.getAttribute("id"));
+    }
+    else {
+      driver.switchTo().parentFrame();
+    }
     return getResponse(session, 0, null);
   }
 
