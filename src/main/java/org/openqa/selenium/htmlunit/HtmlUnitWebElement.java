@@ -241,7 +241,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private void verifyCanInteractWithElement(boolean ignoreDisabled) {
+  void verifyCanInteractWithElement(boolean ignoreDisabled) {
     assertElementNotStale();
 
     Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
@@ -260,7 +260,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
   }
 
-  private void switchFocusToThisIfNeeded() {
+  void switchFocusToThisIfNeeded() {
     HtmlUnitWebElement oldActiveElement =
         ((HtmlUnitWebElement) parent.switchTo().activeElement());
 
@@ -281,23 +281,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void sendKeys(CharSequence... value) {
-    sendKeys(true, value);
-  }
-
-  void sendKeys(boolean releaseAllAtEnd, CharSequence... value) {
-    verifyCanInteractWithElement(false);
-
-    final boolean inputElement = element instanceof HtmlInput;
-    InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
-
-    switchFocusToThisIfNeeded();
-
-    HtmlUnitKeyboard keyboard = (HtmlUnitKeyboard) parent.getKeyboard();
-    keyboard.sendKeys((HtmlElement) element, keysContainer, releaseAllAtEnd);
-
-    if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
-      submit();
-    }
+    ((HtmlUnitKeyboard) parent.getKeyboard()).sendKeys(this, true, value);
   }
 
   @Override

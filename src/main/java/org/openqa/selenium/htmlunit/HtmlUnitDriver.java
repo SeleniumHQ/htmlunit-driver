@@ -528,7 +528,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     try {
       getWebClient().getPage(fullUrl);
       // A "get" works over the entire page
-      currentWindow = getCurrentWindow().getTopWindow();
+      currentWindow = getWebClient().getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
       getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
           new StringWebResponse("Unknown host", fullUrl),
