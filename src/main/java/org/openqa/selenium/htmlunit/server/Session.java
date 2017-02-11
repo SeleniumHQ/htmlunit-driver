@@ -2,6 +2,7 @@ package org.openqa.selenium.htmlunit.server;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,6 +225,23 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     getDriver(session).getElementById(Integer.valueOf(elementId)).clear();
+    return getResponse(session, 0, null);
+  }
+
+  @POST
+  @Path("{session}/execute")
+  public static Response execute(@PathParam("session") String session, String content) {
+    Map<String, ?> map = getMap(content);
+    String script = (String) map.get("script");
+    HtmlUnitLocalDriver driver = getDriver(session);
+
+    @SuppressWarnings("unchecked")
+    ArrayList<Map<String, String>> args = (ArrayList<Map<String, String>>) map.get("args");
+    HtmlUnitWebElement[] array =
+        args.stream().map(i -> Integer.valueOf(i.get("ELEMENT")))
+        .map(driver::getElementById).toArray(size -> new HtmlUnitWebElement[size]);
+
+    driver.executeScript(script, (Object[]) array);
     return getResponse(session, 0, null);
   }
 
