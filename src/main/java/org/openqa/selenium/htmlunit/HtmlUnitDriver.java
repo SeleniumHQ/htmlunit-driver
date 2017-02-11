@@ -366,7 +366,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     switch (proxy.getProxyType()) {
       case MANUAL:
 
-        ArrayList<String> noProxyHosts = new ArrayList<>();
+        List<String> noProxyHosts = new ArrayList<>();
         String noProxy = proxy.getNoProxy();
         if (noProxy != null && !noProxy.equals("")) {
           String[] hosts = noProxy.split(",");
@@ -435,7 +435,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
    * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
    */
-  public void setHTTPProxy(String host, int port, ArrayList<String> noProxyHosts) {
+  public void setHTTPProxy(String host, int port, List<String> noProxyHosts) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyHost(host);
     proxyConfig.setProxyPort(port);
@@ -464,7 +464,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
    * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
    */
-  public void setSocksProxy(String host, int port, ArrayList<String> noProxyHosts) {
+  public void setSocksProxy(String host, int port, List<String> noProxyHosts) {
     proxyConfig = new ProxyConfig();
     proxyConfig.setProxyHost(host);
     proxyConfig.setProxyPort(port);
