@@ -116,6 +116,20 @@ public class Session {
   }
 
   @POST
+  @Path("{session}/element/{elementId}/element")
+  public static Response findElementFromElement(@PathParam("session") String session,
+      @PathParam("elementId") String elementId,
+      String content) {
+    By by = getBy(content);
+    WebElement element = getDriver(session).getElementById(Integer.valueOf(elementId));
+
+    HtmlUnitWebElement e = (HtmlUnitWebElement) element.findElement(by);
+    Map<String, Object> valueMap = new HashMap<>();
+    valueMap.put("ELEMENT", e.id);
+    return getResponse(session, 0, valueMap);
+  }
+
+  @POST
   @Path("{session}/element/{elementId}/elements")
   public static Response findElementsFromElement(@PathParam("session") String session,
       @PathParam("elementId") String elementId,
@@ -302,4 +316,17 @@ public class Session {
     return getResponse(session, 0, null);
   }
 
+  @POST
+  @Path("{session}/buttondown")
+  public static Response buttondown(@PathParam("session") String session) {
+    getDriver(session).buttondown();
+    return getResponse(session, 0, null);
+  }
+
+  @POST
+  @Path("{session}/buttonup")
+  public static Response buttonup(@PathParam("session") String session) {
+    getDriver(session).buttonup();
+    return getResponse(session, 0, null);
+  }
 }

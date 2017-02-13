@@ -60,7 +60,9 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.ButtonReleaseAction;
 import org.openqa.selenium.interactions.ClickAction;
+import org.openqa.selenium.interactions.ClickAndHoldAction;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.KeyDownAction;
 import org.openqa.selenium.interactions.KeyUpAction;
@@ -1009,6 +1011,14 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   protected void click(HtmlUnitWebElement element) {
     this.lastElement = element;
     click();
+  }
+
+  protected void buttondown() {
+    new ClickAndHoldAction(mouse, lastElement).perform();
+  }
+
+  protected void buttonup() {
+    new ButtonReleaseAction(mouse, lastElement).perform();
   }
 
   protected void keys(String string) {
