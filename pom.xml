@@ -291,6 +291,8 @@
 				<configuration>
 					<includes>
 						<include>**/HtmlUnitDriverTest.java</include>
+						<include>**/BasicKeyboardInterfaceTest.java</include>
+						<include>**/CombinedInputActionsTest.java</include>
 					</includes>
 				</configuration>
 			</plugin>

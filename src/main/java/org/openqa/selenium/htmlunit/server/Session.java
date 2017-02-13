@@ -247,7 +247,8 @@ public class Session {
   public static Response elementClick(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    getDriver(session).getElementById(Integer.valueOf(elementId)).click();
+    HtmlUnitLocalDriver driver = getDriver(session);
+    driver.click(driver.getElementById(Integer.valueOf(elementId)));
     return getResponse(session, 0, null);
   }
 

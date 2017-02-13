@@ -1006,6 +1006,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     new ClickAction(mouse, lastElement).perform();
   }
 
+  protected void click(HtmlUnitWebElement element) {
+    this.lastElement = element;
+    click();
+  }
+
   protected void keys(String string) {
     for (int i = 0; i < string.length(); i++) {
       char ch = string.charAt(i);
