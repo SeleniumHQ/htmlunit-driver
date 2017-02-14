@@ -217,6 +217,25 @@ public class Session {
     return getResponse(session, 0, null);
   }
 
+  @POST
+  @Path("{session}/element/{elementId}/value")
+  public static Response elementSendKeys(@PathParam("session") String session, @PathParam("elementId") String elementId, String content) {
+    Map<String, List<String>> map = getMap(content);
+    int id = Integer.parseInt(elementId);
+    HtmlUnitWebElement element = getDriver(session).getElementById(id);
+    element.sendKeys(map.get("value").get(0));
+    return getResponse(session, 0, null);
+  }
+
+  @POST
+  @Path("{session}/element/active")
+  public static Response getActiveElement(@PathParam("session") String session) {
+    HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).switchTo().activeElement();
+    Map<String, Object> valueMap = new HashMap<>();
+    valueMap.put("ELEMENT", e.id);
+    return getResponse(session, 0, valueMap);
+  }
+
   @GET
   @Path("{session}/element/{elementId}/attribute/{name}")
   public static Response getElementAttribute(
