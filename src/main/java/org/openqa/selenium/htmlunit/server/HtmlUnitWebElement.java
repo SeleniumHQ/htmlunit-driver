@@ -500,7 +500,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
 
       HtmlElement child = (HtmlElement) o;
-      elements.add(getParent().newHtmlUnitWebElement(child));
+      elements.add(getParent().toWebElement(child));
     }
     return elements;
   }
@@ -581,7 +581,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       throw new NoSuchElementException("Unable to find an element with xpath " + xpathExpr);
     }
     if (node instanceof HtmlElement) {
-      return getParent().newHtmlUnitWebElement((HtmlElement) node);
+      return getParent().toWebElement((HtmlElement) node);
     }
     // The xpath selector selected something different than a WebElement. The selector is therefore
     // invalid
@@ -606,7 +606,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
     for (Object e : domElements) {
       if (e instanceof DomElement) {
-        webElements.add(getParent().newHtmlUnitWebElement((DomElement) e));
+        webElements.add(getParent().toWebElement((DomElement) e));
       }
       else {
         // The xpath selector selected something different than a WebElement. The selector is
@@ -639,7 +639,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     List<WebElement> webElements = new ArrayList<>();
     for (DomElement e : htmlElements) {
       if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
-        webElements.add(getParent().newHtmlUnitWebElement(e));
+        webElements.add(getParent().toWebElement(e));
       }
     }
     return webElements;
@@ -666,7 +666,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     for (HtmlElement e : htmlElements) {
       if (e.getTextContent().contains(linkText)
           && e.getAttribute("href") != null) {
-        webElements.add(getParent().newHtmlUnitWebElement(e));
+        webElements.add(getParent().toWebElement(e));
       }
     }
     return webElements;
@@ -690,7 +690,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     List<HtmlElement> elements = ((HtmlElement) element).getElementsByTagName(name);
     List<WebElement> toReturn = new ArrayList<>(elements.size());
     for (HtmlElement e : elements) {
-      toReturn.add(parent.newHtmlUnitWebElement(e));
+      toReturn.add(parent.toWebElement(e));
     }
 
     return toReturn;
@@ -701,7 +701,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     while (!(current == null || current instanceof HtmlForm)) {
       current = current.getParentNode();
     }
-    return getParent().newHtmlUnitWebElement((HtmlForm) current);
+    return getParent().toWebElement((HtmlForm) current);
   }
 
   @Override

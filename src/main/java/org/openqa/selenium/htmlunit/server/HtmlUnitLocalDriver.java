@@ -160,7 +160,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   private boolean gotPage;
 
   private int elementsCounter;
-  private Map<Integer, HtmlUnitWebElement> elementsMap = new HashMap<>();
+  private Map<DomElement, HtmlUnitWebElement> elementsMap = new HashMap<>();
   private HtmlUnitWebElement lastElement;
 
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
@@ -854,13 +854,13 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       value = result;
     }
     if (value instanceof HTMLElement) {
-      return newHtmlUnitWebElement(((HTMLElement) value).getDomNodeOrDie());
+      return toWebElement(((HTMLElement) value).getDomNodeOrDie());
     }
 
     if (value instanceof DocumentProxy) {
       Element element = ((DocumentProxy) value).getDelegee().getDocumentElement();
       if (element instanceof HTMLElement) {
-        return newHtmlUnitWebElement(((HTMLElement) element).getDomNodeOrDie());
+        return toWebElement(((HTMLElement) element).getDomNodeOrDie());
       }
       throw new WebDriverException("Do not know how to coerce to an HTMLElement: " + element);
     }
@@ -985,20 +985,28 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText().trim())) {
-        return newHtmlUnitWebElement(anchor);
+        return toWebElement(anchor);
       }
     }
     throw new NoSuchElementException("No link found with text: " + expectedText);
   }
 
-  protected WebElement newHtmlUnitWebElement(DomElement element) {
-    HtmlUnitWebElement e = new HtmlUnitWebElement(this, ++elementsCounter, element);
-    elementsMap.put(e.id, e);
+  protected WebElement toWebElement(DomElement element) {
+    HtmlUnitWebElement e = elementsMap.get(element);
+    if (e == null) {
+      e = new HtmlUnitWebElement(this, ++elementsCounter, element);
+      elementsMap.put(element, e);
+    }
     return e;
   }
 
   protected HtmlUnitWebElement getElementById(int id) {
-    return elementsMap.get(id);
+    for (HtmlUnitWebElement e : elementsMap.values()) {
+      if (e.id == id) {
+        return e;
+      }
+    }
+    return null;
   }
 
   protected void moveTo(int elementId) {
@@ -1076,7 +1084,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText().trim())) {
-        elements.add(newHtmlUnitWebElement(anchor));
+        elements.add(toWebElement(anchor));
       }
     }
     return elements;
@@ -1092,7 +1100,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     if (element == null) {
       throw new NoSuchElementException("Unable to locate element with ID: " + id);
     }
-    return newHtmlUnitWebElement(element);
+    return toWebElement(element);
   }
 
   @Override
@@ -1130,7 +1138,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (node instanceof DomElement) {
-      return newHtmlUnitWebElement((DomElement) node);
+      return toWebElement((DomElement) node);
     }
 
     throw new NoSuchElementException("Returned node was not a DOM element");
@@ -1154,7 +1162,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     for (DomNode node : allNodes) {
       if (node instanceof DomElement) {
-        toReturn.add(newHtmlUnitWebElement((DomElement) node));
+        toReturn.add(toWebElement((DomElement) node));
       } else {
         throw new NoSuchElementException("Returned node was not a DOM element");
       }
@@ -1171,7 +1179,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
     if (!allElements.isEmpty()) {
-      return newHtmlUnitWebElement(allElements.get(0));
+      return toWebElement(allElements.get(0));
     }
 
     throw new NoSuchElementException("Unable to locate element with name: " + name);
@@ -1195,7 +1203,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
     if (allElements.getLength() > 0) {
-      return newHtmlUnitWebElement((HtmlElement) allElements.item(0));
+      return toWebElement((HtmlElement) allElements.item(0));
     }
 
     throw new NoSuchElementException("Unable to locate element with name: " + name);
@@ -1216,7 +1224,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     for (int i = 0; i < allElements.getLength(); i++) {
       Node item = allElements.item(i);
       if (item instanceof DomElement) {
-        toReturn.add(newHtmlUnitWebElement((DomElement) item));
+        toReturn.add(toWebElement((DomElement) item));
       }
     }
     return toReturn;
@@ -1241,7 +1249,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       throw new NoSuchElementException("Unable to locate a node using " + selector);
     }
     if (node instanceof DomElement) {
-      return newHtmlUnitWebElement((DomElement) node);
+      return toWebElement((DomElement) node);
     }
     // The xpath expression selected something different than a WebElement.
     // The selector is therefore invalid
@@ -1288,7 +1296,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     for (Object node : nodes) {
       if (node instanceof DomElement) {
-        elements.add(newHtmlUnitWebElement((DomElement) node));
+        elements.add(toWebElement((DomElement) node));
       }
     }
 
@@ -1422,10 +1430,10 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
           List<? extends HtmlElement> allBodies =
               ((HtmlPage) page).getDocumentElement().getElementsByTagName("body");
           if (!allBodies.isEmpty()) {
-            return newHtmlUnitWebElement(allBodies.get(0));
+            return toWebElement(allBodies.get(0));
           }
         } else {
-          return newHtmlUnitWebElement(element);
+          return toWebElement(element);
         }
       }
 
@@ -1783,7 +1791,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (anchor.asText().contains(using)) {
-        return newHtmlUnitWebElement(anchor);
+        return toWebElement(anchor);
       }
     }
     throw new NoSuchElementException("No link found with text: " + using);
@@ -1795,7 +1803,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     List<WebElement> elements = new ArrayList<>();
     for (HtmlAnchor anchor : anchors) {
       if (anchor.asText().contains(using)) {
-        elements.add(newHtmlUnitWebElement(anchor));
+        elements.add(toWebElement(anchor));
       }
     }
     return elements;
