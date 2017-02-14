@@ -19,6 +19,7 @@ package org.openqa.selenium;
 
 import static com.google.common.base.StandardSystemProperty.LINE_SEPARATOR;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
 import com.google.common.base.Preconditions;

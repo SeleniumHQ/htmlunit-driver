@@ -20,7 +20,6 @@ package org.openqa.selenium.environment.webserver;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -28,8 +27,6 @@ import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.http.MimeTypes;
@@ -43,10 +40,8 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
 import org.eclipse.jetty.server.handler.ContextHandler.ApproveAliases;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.openqa.selenium.net.NetworkUtils;
@@ -258,16 +253,6 @@ public class JettyAppServer implements AppServer {
       String path,
       DispatcherType dispatches) {
     context.addFilter(filter, path, EnumSet.of(dispatches));
-  }
-
-  private static class ResourceHandler2 extends ResourceHandler {
-    @Override
-    protected void doDirectory(HttpServletRequest request, HttpServletResponse response, Resource resource) throws IOException {
-      String listing = resource.getListHTML(request.getRequestURI(), request.getPathInfo() != null && request.getPathInfo().lastIndexOf("/") > 0);
-      response.setContentType("text/html; charset=UTF-8");
-      response.getWriter().println(listing);
-    }
-
   }
 
   protected ServletContextHandler addResourceHandler(String contextPath, Path resourceBase) {
