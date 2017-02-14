@@ -1010,7 +1010,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void moveTo(int elementId) {
-    lastElement = elementsMap.get(elementId);
+    lastElement = getElementById(elementId);
     new MoveMouseAction(mouse, (Locatable) lastElement).perform();
   }
 
