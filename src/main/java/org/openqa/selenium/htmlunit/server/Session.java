@@ -86,6 +86,13 @@ public class Session {
     return getResponse(session, null);
   }
 
+  @GET
+  @Path("{session}/url")
+  public static Response getCurrentUrl(@PathParam("session") String session) {
+    String value = getDriver(session).getCurrentUrl();
+    return getResponse(session, value);
+  }
+
   @SuppressWarnings("unchecked")
   private static <T> Map<String, T> getMap(String content) {
     return new JsonToBeanConverter().convert(Map.class, content);
