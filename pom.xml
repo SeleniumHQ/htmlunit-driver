@@ -101,7 +101,7 @@
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.3.16.v20170120</version>
+        <version>9.4.1.v20170120</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -230,12 +230,12 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.3.16.v20170120</version>
+      <version>9.4.1.v20170120</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>9.3.16.v20170120</version>
+      <version>9.4.1.v20170120</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
