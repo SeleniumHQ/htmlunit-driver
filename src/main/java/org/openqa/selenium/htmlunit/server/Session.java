@@ -204,6 +204,13 @@ public class Session {
   }
 
   @POST
+  @Path("{session}/doubleclick")
+  public static Response doubleclick(@PathParam("session") String session) {
+    getDriver(session).doubleclick();
+    return getResponse(session, 0, null);
+  }
+
+  @POST
   @Path("{session}/keys")
   public static Response keys(@PathParam("session") String session, String content) {
     Map<String, List<String>> map = getMap(content);
