@@ -383,7 +383,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
         List<String> noProxyHosts = new ArrayList<>();
         String noProxy = proxy.getNoProxy();
-        if (noProxy != null && !noProxy.equals("")) {
+        if (noProxy != null && !noProxy.isEmpty()) {
           String[] hosts = noProxy.split(",");
           for (String host : hosts) {
             if (host.trim().length() > 0) {
@@ -393,7 +393,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
         }
 
         String httpProxy = proxy.getHttpProxy();
-        if (httpProxy != null && !httpProxy.equals("")) {
+        if (httpProxy != null && !httpProxy.isEmpty()) {
           String host = httpProxy;
           int port = 0;
 
@@ -407,7 +407,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
         }
 
         String socksProxy = proxy.getSocksProxy();
-        if (socksProxy != null && !socksProxy.equals("")) {
+        if (socksProxy != null && !socksProxy.isEmpty()) {
           String host = socksProxy;
           int port = 0;
 
@@ -426,7 +426,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
         break;
       case PAC:
         String pac = proxy.getProxyAutoconfigUrl();
-        if (pac != null && !pac.equals("")) {
+        if (pac != null && !pac.isEmpty()) {
           setAutoProxy(pac);
         }
         break;
