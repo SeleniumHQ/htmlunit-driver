@@ -23,6 +23,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.ErrorCodes;
 import org.openqa.selenium.remote.JsonToBeanConverter;
 
 @Path("/session")
@@ -64,14 +65,19 @@ public class Session {
     Map<String, ?> map = new JsonToBeanConverter().convert(Map.class, content);
     Capabilities desiredCapabilities = new DesiredCapabilities((Map<String, ?>) map.get("desiredCapabilities"));
     Capabilities requiredCapabilities = new DesiredCapabilities((Map<String, ?>) map.get("requiredCapabilities"));
-    return getResponse(createSession(desiredCapabilities, requiredCapabilities).id, 0, new HashMap<>());
+    return getResponse(createSession(desiredCapabilities, requiredCapabilities).id, null, new HashMap<>());
   }
 
-  private static Response getResponse(String sessionId, int status, Object value){
+  private static Response getResponse(String sessionId, Throwable t, Object value){
     Map<String, Object> map = new HashMap<>();
+    if (t != null) {
+      map.put("message", t.getMessage());
+    }
+    else {
+      map.put("value", value);
+    }
     map.put("sessionId", sessionId);
-    map.put("status", status);
-    map.put("value", value);
+    map.put("status", new ErrorCodes().toStatusCode(t));
     return Response.ok(new BeanToJsonConverter().convert(map), MediaType.APPLICATION_JSON).build();
   }
 
@@ -80,7 +86,7 @@ public class Session {
   public static Response go(@PathParam("session") String session, String content) {
     String url = new JsonToBeanConverter().convert(Map.class, content).get("url").toString();
     getDriver(session).get(url);
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @SuppressWarnings("unchecked")
@@ -95,7 +101,7 @@ public class Session {
     HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).findElement(by);
     Map<String, Object> valueMap = new HashMap<>();
     valueMap.put("ELEMENT", e.id);
-    return getResponse(session, 0, valueMap);
+    return getResponse(session, null, valueMap);
   }
 
   @POST
@@ -104,7 +110,7 @@ public class Session {
     By by = getBy(content);
     
     List<Map<String, Integer>> list = getElements(getDriver(session).findElements(by));
-    return getResponse(session, 0, list);
+    return getResponse(session, null, list);
   }
 
   private static List<Map<String, Integer>> getElements(List<WebElement> list) {
@@ -126,7 +132,7 @@ public class Session {
     HtmlUnitWebElement e = (HtmlUnitWebElement) element.findElement(by);
     Map<String, Object> valueMap = new HashMap<>();
     valueMap.put("ELEMENT", e.id);
-    return getResponse(session, 0, valueMap);
+    return getResponse(session, null, valueMap);
   }
 
   @POST
@@ -138,7 +144,7 @@ public class Session {
 
     WebElement element = getDriver(session).getElementById(Integer.valueOf(elementId));
     List<Map<String, Integer>> list = getElements(element.findElements(by));
-    return getResponse(session, 0, list);
+    return getResponse(session, null, list);
   }
 
   private static By getBy(final String content) {
@@ -190,7 +196,7 @@ public class Session {
     Map<String, ?> map = getMap(content);
     Integer elementId = Integer.parseInt((String) map.get("element"));
     getDriver(session).moveTo(elementId);
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
@@ -199,14 +205,14 @@ public class Session {
     Map<String, ?> map = getMap(content);
     int button = ((Long) map.get("button")).intValue();
     getDriver(session).click(button);
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
   @Path("{session}/doubleclick")
   public static Response doubleclick(@PathParam("session") String session) {
     getDriver(session).doubleclick();
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
@@ -214,7 +220,7 @@ public class Session {
   public static Response keys(@PathParam("session") String session, String content) {
     Map<String, List<String>> map = getMap(content);
     getDriver(session).keys(map.get("value").get(0));
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
@@ -223,8 +229,14 @@ public class Session {
     Map<String, List<String>> map = getMap(content);
     List<String> keys = map.get("value");
     HtmlUnitWebElement element = getDriver(session).getElementById(Integer.parseInt(elementId));
-    element.sendKeys(keys.toArray(new String[keys.size()]));
-    return getResponse(session, 0, null);
+    Throwable t = null;
+    try {
+      element.sendKeys(keys.toArray(new String[keys.size()]));
+    }
+    catch (Throwable e) {
+      t = e;
+    }
+    return getResponse(session, t, null);
   }
 
   @POST
@@ -233,7 +245,7 @@ public class Session {
     HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).switchTo().activeElement();
     Map<String, Object> valueMap = new HashMap<>();
     valueMap.put("ELEMENT", e.id);
-    return getResponse(session, 0, valueMap);
+    return getResponse(session, null, valueMap);
   }
 
   @GET
@@ -243,7 +255,7 @@ public class Session {
       @PathParam("elementId") String elementId,
       @PathParam("name") String name) {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getAttribute(name);
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @GET
@@ -252,7 +264,7 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getText();
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @GET
@@ -262,14 +274,14 @@ public class Session {
       @PathParam("elementId") String elementId,
       @PathParam("propertyName") String propertyName) {
     String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getCssValue(propertyName);
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @GET
   @Path("{session}/title")
   public static Response getTitle(@PathParam("session") String session) {
     String value = getDriver(session).getTitle();
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @GET
@@ -278,7 +290,7 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     boolean value = getDriver(session).getElementById(Integer.valueOf(elementId)).isDisplayed();
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @POST
@@ -288,7 +300,7 @@ public class Session {
       @PathParam("elementId") String elementId) {
     HtmlUnitLocalDriver driver = getDriver(session);
     driver.click(driver.getElementById(Integer.valueOf(elementId)));
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
@@ -297,7 +309,34 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     getDriver(session).getElementById(Integer.valueOf(elementId)).clear();
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/enabled")
+  public static Response isElementEnabled(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    boolean value = getDriver(session).getElementById(Integer.valueOf(elementId)).isEnabled();
+    return getResponse(session, null, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/selected")
+  public static Response isElementSelected(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    boolean value = getDriver(session).getElementById(Integer.valueOf(elementId)).isSelected();
+    return getResponse(session, null, value);
+  }
+
+  @POST
+  @Path("{session}/element/{elementId}/submit")
+  public static Response elementSubmit(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    getDriver(session).getElementById(Integer.valueOf(elementId)).submit();
+    return getResponse(session, null, null);
   }
 
   @POST
@@ -314,14 +353,14 @@ public class Session {
         .map(driver::getElementById).toArray(size -> new HtmlUnitWebElement[size]);
 
     Object value = driver.executeScript(script, (Object[]) array);
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @GET
   @Path("{session}/window_handles")
   public static Response getWindowHandles(@PathParam("session") String session) {
     Set<String> value = getDriver(session).getWindowHandles();
-    return getResponse(session, 0, value);
+    return getResponse(session, null, value);
   }
 
   @POST
@@ -338,20 +377,20 @@ public class Session {
     else {
       driver.switchTo().parentFrame();
     }
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
   @Path("{session}/buttondown")
   public static Response buttondown(@PathParam("session") String session) {
     getDriver(session).buttondown();
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 
   @POST
   @Path("{session}/buttonup")
   public static Response buttonup(@PathParam("session") String session) {
     getDriver(session).buttonup();
-    return getResponse(session, 0, null);
+    return getResponse(session, null, null);
   }
 }
