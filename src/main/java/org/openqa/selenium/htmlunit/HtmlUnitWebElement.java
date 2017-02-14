@@ -466,7 +466,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private int readAndRound(final String property) {
     final String cssValue = getCssValue(property).replaceAll("[^0-9\\.]", "");
-    if (cssValue.length() == 0) {
+    if (cssValue.isEmpty()) {
       return 5; // wrong... but better than nothing
     }
     return Math.round(Float.parseFloat(cssValue));
