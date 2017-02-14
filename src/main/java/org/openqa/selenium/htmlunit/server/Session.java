@@ -313,8 +313,8 @@ public class Session {
         args.stream().map(i -> Integer.valueOf(i.get("ELEMENT")))
         .map(driver::getElementById).toArray(size -> new HtmlUnitWebElement[size]);
 
-    driver.executeScript(script, (Object[]) array);
-    return getResponse(session, 0, null);
+    Object value = driver.executeScript(script, (Object[]) array);
+    return getResponse(session, 0, value);
   }
 
   @GET

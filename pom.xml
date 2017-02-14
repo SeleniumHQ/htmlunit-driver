@@ -294,6 +294,7 @@
 						<include>**/BasicKeyboardInterfaceTest.java</include>
 						<include>**/BasicMouseInterfaceTest.java</include>
 						<include>**/CombinedInputActionsTest.java</include>
+						<include>**/ContentEditableTest.java</include>
 					</includes>
 				</configuration>
 			</plugin>
