@@ -38,7 +38,7 @@ class HtmlSerializer {
       return getDirectChildren(element);
     }
     String text = element.asText();
-    if (element instanceof HtmlTextArea) {
+    if (element instanceof HtmlTextArea && element.isDisplayed()) {
       text = ((HtmlTextArea) element).getDefaultValue();
       if (text.endsWith("\n")) {
         text = text.substring(0,  text.length() - 1);

@@ -66,7 +66,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
-  @NotYetImplemented(value = HTMLUNIT, reason = "implemented in HtmlUnit 2.25")
   public void testPlainClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -91,7 +90,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX})
-  @NotYetImplemented(value = HTMLUNIT, reason = "implemented in HtmlUnit 2.25")
   public void testShiftClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -117,7 +115,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore({CHROME, IE, FIREFOX, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
   public void testControlClickingOnMultiSelectionList() {
     driver.get(pages.formSelectionPage);
 
@@ -317,7 +314,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testCombiningShiftAndClickResultsInANewWindow() {
     driver.get(pages.linkedImage);

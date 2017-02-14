@@ -89,6 +89,7 @@ import com.gargoylesoftware.htmlunit.Version;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
@@ -151,6 +152,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+  public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -249,6 +251,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setJavascriptEnabled(capabilities.isJavascriptEnabled());
 
     setProxySettings(Proxy.extractFrom(capabilities));
+
+    setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -365,7 +369,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
         List<String> noProxyHosts = new ArrayList<>();
         String noProxy = proxy.getNoProxy();
-        if (noProxy != null && !noProxy.isEmpty()) {
+        if (noProxy != null && !noProxy.equals("")) {
           String[] hosts = noProxy.split(",");
           for (String host : hosts) {
             if (host.trim().length() > 0) {
@@ -375,7 +379,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         }
 
         String httpProxy = proxy.getHttpProxy();
-        if (httpProxy != null && !httpProxy.isEmpty()) {
+        if (httpProxy != null && !httpProxy.equals("")) {
           String host = httpProxy;
           int port = 0;
 
@@ -389,7 +393,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         }
 
         String socksProxy = proxy.getSocksProxy();
-        if (socksProxy != null && !socksProxy.isEmpty()) {
+        if (socksProxy != null && !socksProxy.equals("")) {
           String host = socksProxy;
           int port = 0;
 
@@ -408,7 +412,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         break;
       case PAC:
         String pac = proxy.getProxyAutoconfigUrl();
-        if (pac != null && !pac.isEmpty()) {
+        if (pac != null && !pac.equals("")) {
           setAutoProxy(pac);
         }
         break;
@@ -523,7 +527,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    */
   protected void get(URL fullUrl) {
     try {
-      getWebClient().getPage(fullUrl);
+      getWebClient().getPage(getCurrentWindow().getTopWindow(),
+          new WebRequest(fullUrl, getBrowserVersion().getHtmlAcceptHeader()));
       // A "get" works over the entire page
       currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
@@ -1213,6 +1218,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public void setJavascriptEnabled(boolean enableJavascript) {
     this.enableJavascript = enableJavascript;
     getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
+  }
+
+  public boolean isDownloadImages() {
+    return getWebClient().getOptions().isDownloadImages();
+  }
+
+  public void setDownloadImages(boolean downloadImages) {
+    getWebClient().getOptions().setDownloadImages(downloadImages);
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
