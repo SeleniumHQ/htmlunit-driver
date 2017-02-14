@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +21,7 @@ import javax.ws.rs.core.Response;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -109,15 +111,20 @@ public class Session {
   public static Response findElements(@PathParam("session") String session, String content) {
     By by = getBy(content);
     
-    List<Map<String, Integer>> list = getElements(getDriver(session).findElements(by));
+    List<?> list = toElements(getDriver(session).findElements(by));
     return getResponse(session, null, list);
   }
 
-  private static List<Map<String, Integer>> getElements(List<WebElement> list) {
+  private static List<?> toElements(List<?> list) {
     return list.stream().map(i -> {
-      Map<String, Integer> map2 = new HashMap<>();
-      map2.put("ELEMENT", ((HtmlUnitWebElement) i).id);
-      return map2;
+      if (i instanceof HtmlUnitWebElement) {
+        Map<String, Integer> map2 = new HashMap<>();
+        map2.put("ELEMENT", ((HtmlUnitWebElement) i).id);
+        return map2;
+      }
+      else {
+        return i;
+      }
     }).collect(Collectors.toList());
   }
 
@@ -143,7 +150,7 @@ public class Session {
     By by = getBy(content);
 
     WebElement element = getDriver(session).getElementById(Integer.valueOf(elementId));
-    List<Map<String, Integer>> list = getElements(element.findElements(by));
+    List<?> list = toElements(element.findElements(by));
     return getResponse(session, null, list);
   }
 
@@ -249,6 +256,15 @@ public class Session {
   }
 
   @GET
+  @Path("{session}/element/{elementId}/name")
+  public static Response getElementTagName(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    String value = getDriver(session).getElementById(Integer.valueOf(elementId)).getTagName();
+    return getResponse(session, null, value);
+  }
+
+  @GET
   @Path("{session}/element/{elementId}/attribute/{name}")
   public static Response getElementAttribute(
       @PathParam("session") String session,
@@ -348,11 +364,27 @@ public class Session {
 
     @SuppressWarnings("unchecked")
     ArrayList<Map<String, String>> args = (ArrayList<Map<String, String>>) map.get("args");
-    HtmlUnitWebElement[] array =
+    Object[] array =
         args.stream().map(i -> Integer.valueOf(i.get("ELEMENT")))
-        .map(driver::getElementById).toArray(size -> new HtmlUnitWebElement[size]);
+        .map(driver::getElementById).toArray(size -> new Object[size]);
 
-    Object value = driver.executeScript(script, (Object[]) array);
+    Object value = driver.executeScript(script, array);
+    return getResponse(session, null, value);
+  }
+
+  @POST
+  @Path("{session}/execute_async")
+  public static Response executeAsync(@PathParam("session") String session, String content) {
+    Map<String, ?> map = getMap(content);
+    String script = (String) map.get("script");
+    HtmlUnitLocalDriver driver = getDriver(session);
+
+    ArrayList<?> args = (ArrayList<?>) map.get("args");
+    Object[] array = args.toArray(new Object[args.size()]);
+    Object value = driver.executeAsyncScript(script, array);
+    if (value instanceof List) {
+      value = toElements((List<?>) value);
+    }
     return getResponse(session, null, value);
   }
 
@@ -391,6 +423,29 @@ public class Session {
   @Path("{session}/buttonup")
   public static Response buttonup(@PathParam("session") String session) {
     getDriver(session).buttonup();
+    return getResponse(session, null, null);
+  }
+
+  @POST
+  @Path("{session}/timeouts")
+  public static Response setTimeouts(@PathParam("session") String session, String content) {
+    Map<String, ?> map = getMap(content);
+    String type = (String) map.get("type"); 
+    long millis = (Long) map.get("ms");
+    Timeouts timeouts = getDriver(session).manage().timeouts();
+    switch (type) {
+      case "script":
+        timeouts.setScriptTimeout(millis, TimeUnit.MILLISECONDS);
+        break;
+      
+      case "page load":
+        timeouts.pageLoadTimeout(millis, TimeUnit.MILLISECONDS);
+        break;
+
+      case "implicit":
+        timeouts.implicitlyWait(millis, TimeUnit.MILLISECONDS);
+        break;
+    }
     return getResponse(session, null, null);
   }
 }
