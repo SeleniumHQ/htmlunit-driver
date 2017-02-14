@@ -260,7 +260,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Ignore(value = {FIREFOX, IE, REMOTE, CHROME},
           reason = "Behaviour not finalized yet regarding linked images.")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);

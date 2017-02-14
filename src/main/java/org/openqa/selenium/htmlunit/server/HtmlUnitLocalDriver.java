@@ -63,6 +63,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.ButtonReleaseAction;
 import org.openqa.selenium.interactions.ClickAction;
 import org.openqa.selenium.interactions.ClickAndHoldAction;
+import org.openqa.selenium.interactions.ContextClickAction;
 import org.openqa.selenium.interactions.DoubleClickAction;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.KeyDownAction;
@@ -1005,8 +1006,13 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     new MoveMouseAction(mouse, (Locatable) lastElement).perform();
   }
 
-  protected void click() {
-    new ClickAction(mouse, lastElement).perform();
+  protected void click(int button) {
+    if (button == 2) {
+      new ContextClickAction(mouse, lastElement).perform();
+    }
+    else {
+      new ClickAction(mouse, lastElement).perform();
+    }
   }
 
   protected void doubleclick() {
@@ -1015,7 +1021,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void click(HtmlUnitWebElement element) {
     this.lastElement = element;
-    click();
+    click(0);
   }
 
   protected void buttondown() {

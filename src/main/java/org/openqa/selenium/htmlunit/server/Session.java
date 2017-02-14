@@ -197,9 +197,8 @@ public class Session {
   @Path("{session}/click")
   public static Response click(@PathParam("session") String session, String content) {
     Map<String, ?> map = getMap(content);
-    @SuppressWarnings("unused")
     int button = ((Long) map.get("button")).intValue();
-    getDriver(session).click();
+    getDriver(session).click(button);
     return getResponse(session, 0, null);
   }
 
