@@ -15,7 +15,7 @@ selenium-api and selenium-support:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.23.2</version>
+    <version>2.24</version>
 </dependency>
 ```
 

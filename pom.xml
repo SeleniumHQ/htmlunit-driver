@@ -254,6 +254,12 @@
       <version>0.4.15</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.6.8</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -290,11 +296,7 @@
         <version>2.19.1</version>
         <configuration>
           <includes>
-            <include>**/HtmlUnitDriverTest.java</include>
-            <include>**/BasicKeyboardInterfaceTest.java</include>
-            <include>**/BasicMouseInterfaceTest.java</include>
-            <include>**/CombinedInputActionsTest.java</include>
-            <include>**/ContentEditableTest.java</include>
+            <include>**/*.java</include>
           </includes>
         </configuration>
       </plugin>
