@@ -62,7 +62,7 @@ public class HtmlUnitElementTest extends TestBase {
     driver.get(testServer.page("formPage.html"));
     WebElement input = driver.findElement(By.id("upload"));
     input.sendKeys("example.txt");
-    assertThat(input.getAttribute("value"), equalTo("example.txt"));
+    assertThat(input.getAttribute("value"), equalTo("C:\\fakepath\\example.txt"));
   }
 
   @Test

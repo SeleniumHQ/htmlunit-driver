@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -78,6 +79,14 @@ public class Session {
     return Response.ok(new BeanToJsonConverter().convert(map), MediaType.APPLICATION_JSON).build();
   }
 
+  @DELETE
+  @Path("{session}")
+  public Response deleteSession(@PathParam("session") String session) {
+    getDriver(session).quit();
+    sessions.remove(session);
+    return getResponse(session, null);
+  }
+
   @POST
   @Path("{session}/url")
   public static Response go(@PathParam("session") String session, String content) {
@@ -90,6 +99,13 @@ public class Session {
   @Path("{session}/url")
   public static Response getCurrentUrl(@PathParam("session") String session) {
     String value = getDriver(session).getCurrentUrl();
+    return getResponse(session, value);
+  }
+
+  @GET
+  @Path("{session}/source")
+  public static Response getPageSource(@PathParam("session") String session) {
+    String value = getDriver(session).getPageSource();
     return getResponse(session, value);
   }
 
@@ -347,16 +363,19 @@ public class Session {
 
   @POST
   @Path("{session}/execute")
+  @SuppressWarnings("unchecked")
   public static Response execute(@PathParam("session") String session, String content) {
     Map<String, ?> map = getMap(content);
     String script = (String) map.get("script");
     HtmlUnitLocalDriver driver = getDriver(session);
 
-    @SuppressWarnings("unchecked")
-    ArrayList<Map<String, String>> args = (ArrayList<Map<String, String>>) map.get("args");
-    Object[] array =
-        args.stream().map(i -> Integer.valueOf(i.get("ELEMENT")))
-        .map(driver::getElementById).toArray(size -> new Object[size]);
+    List<?> args = (ArrayList<?>) map.get("args");
+    Object[] array = args.stream().map(i -> {
+      if (i instanceof Map) {
+        return driver.getElementById(Integer.parseInt(((Map<String, String>) i).get("ELEMENT")));
+      }
+      return i;
+    }).toArray(size -> new Object[size]);
 
     Object value = driver.executeScript(script, array);
     return getResponse(session, value);
@@ -369,7 +388,7 @@ public class Session {
       String script = (String) map.get("script");
       HtmlUnitLocalDriver driver = getDriver(session);
 
-      ArrayList<?> args = (ArrayList<?>) map.get("args");
+      List<?> args = (ArrayList<?>) map.get("args");
       Object[] array = args.toArray(new Object[args.size()]);
       Object value = driver.executeAsyncScript(script, array);
       if (value instanceof List) {

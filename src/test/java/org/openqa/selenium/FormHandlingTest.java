@@ -263,6 +263,7 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = {PHANTOMJS, SAFARI, MARIONETTE},
           reason = "untested")
+  @NotYetImplemented
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
