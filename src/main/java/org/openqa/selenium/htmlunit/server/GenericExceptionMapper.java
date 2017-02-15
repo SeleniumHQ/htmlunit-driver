@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.ErrorCodes;
 
@@ -22,7 +23,11 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
   @Override
   public Response toResponse(Throwable exception) {
     Map<String, Object> map = new HashMap<>();
-    map.put("message", exception.getMessage());
+    String message = exception.getMessage();
+    if (exception instanceof UnhandledAlertException) {
+      map.put("alertText", ((UnhandledAlertException) exception).getAlertText());
+    }
+    map.put("message", message);
     map.put("sessionId", request.getPathInfo().split("/")[2]);
     map.put("status", new ErrorCodes().toStatusCode(exception));
     return Response.ok(new BeanToJsonConverter().convert(map), MediaType.APPLICATION_JSON).build();

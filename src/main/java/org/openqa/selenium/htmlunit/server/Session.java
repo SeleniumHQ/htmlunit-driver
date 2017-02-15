@@ -320,8 +320,10 @@ public class Session {
   public static Response elementClick(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    HtmlUnitLocalDriver driver = getDriver(session);
-    driver.click(driver.getElementById(Integer.valueOf(elementId)));
+    new Thread(() -> {
+      HtmlUnitLocalDriver driver = getDriver(session);
+      driver.click(driver.getElementById(Integer.valueOf(elementId)));
+    }).start();
     return getResponse(session, null);
   }
 
@@ -416,7 +418,7 @@ public class Session {
     if (subMap != null) {
       int id = Integer.parseInt((String) subMap.get("ELEMENT"));
       HtmlUnitWebElement frame = driver.getElementById(id);
-      driver.switchTo().frame(frame.getAttribute("id"));
+      driver.switchTo().frame(frame);
     }
     else {
       driver.switchTo().parentFrame();
@@ -460,4 +462,34 @@ public class Session {
     }
     return getResponse(session, null);
   }
+
+  @GET
+  @Path("{session}/alert_text")
+  public static Response alertText(@PathParam("session") String session) {
+    String value = getDriver(session).switchTo().alert().getText();
+    return getResponse(session, value);
+  }
+
+  @POST
+  @Path("{session}/alert_text")
+  public static Response alertTextPost(@PathParam("session") String session, String content) {
+    Map<String, String> map = getMap(content);
+    getDriver(session).switchTo().alert().sendKeys(map.get("text"));
+    return getResponse(session, null);
+  }
+
+  @POST
+  @Path("{session}/accept_alert")
+  public static Response acceptAlert(@PathParam("session") String session) {
+    getDriver(session).switchTo().alert().accept();
+    return getResponse(session, null);
+  }
+
+  @POST
+  @Path("{session}/dismiss_alert")
+  public static Response dismissAlert(@PathParam("session") String session) {
+    getDriver(session).switchTo().alert().dismiss();
+    return getResponse(session, null);
+  }
+
 }

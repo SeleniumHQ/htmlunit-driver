@@ -17,57 +17,39 @@
 
 package org.openqa.selenium.htmlunit.server;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-
 import org.openqa.selenium.Alert;
-import org.openqa.selenium.ElementNotVisibleException;
-import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.security.Credentials;
 
-import com.gargoylesoftware.htmlunit.AlertHandler;
 import com.gargoylesoftware.htmlunit.Page;
 
-class HtmlUnitAlert implements Alert, AlertHandler {
+class HtmlUnitAlert implements Alert {
 
   private HtmlUnitLocalDriver driver;
-  private Map<Page, Queue<String>> queues = new HashMap<>();
+  private AlertPromptHandler handler;
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
     this.driver = driver;
-    driver.getWebClient().setAlertHandler(this);
+    handler = new AlertPromptHandler(driver.getWebClient());
   }
 
   @Override
   public void dismiss() {
-    accept();
+    handler.accept(getPage(), null);
   }
 
   @Override
   public void accept() {
-    Queue<String> queue = getCurrentQueue();
-    if (queue == null || queue.poll() == null) {
-      throw new NoAlertPresentException();
-    }
+    handler.accept(getPage(), null);
   }
 
   @Override
   public String getText() {
-    Queue<String> queue = getCurrentQueue();
-    if (queue != null) {
-      String text = queue.peek();
-      if (text != null) {
-        return text;
-      }
-    }
-    throw new NoAlertPresentException();
+    return handler.getMessage(getPage());
   }
 
   @Override
   public void sendKeys(String keysToSend) {
-    throw new ElementNotVisibleException("alert is not visible");
+    handler.accept(getPage(), keysToSend);
   }
 
   @Override
@@ -78,25 +60,18 @@ class HtmlUnitAlert implements Alert, AlertHandler {
   public void setCredentials(Credentials credentials) {
   }
 
-  @Override
-  public void handleAlert(Page page, String message) {
-    Queue<String> queue = queues.get(page);
-    if (queue == null) {
-      queue = new LinkedList<>();
-      queues.put(page, queue);
-    }
-    queue.add(message);
-  }
-
-  Queue<String> getCurrentQueue() {
-    return queues.get(driver.getCurrentWindow().getEnclosedPage());
+  private Page getPage() {
+    return driver.getCurrentWindow().getEnclosedPage();
   }
 
   /**
    * Closes the current window.
    */
   void close() {
-    queues.remove(driver.getCurrentWindow().getEnclosedPage());
+    handler.close(getPage());
   }
 
+  boolean isLocked() {
+    return handler.isLocked(getPage());
+  }
 }

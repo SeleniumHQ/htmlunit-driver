@@ -595,8 +595,8 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public String getTitle() {
-    if (alert.getCurrentQueue() != null && alert.getCurrentQueue().peek() != null) {
-      throw new UnhandledAlertException("Alert found", alert.getCurrentQueue().peek());
+    if (!alert.isLocked()) {
+      throw new UnhandledAlertException("Alert found", alert.getText());
     }
     Page page = lastPage();
     if (page == null || !(page instanceof HtmlPage)) {
@@ -1442,9 +1442,6 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public Alert alert() {
-      if (alert.getCurrentQueue() == null) {
-        throw new NoAlertPresentException();
-      }
       return alert;
     }
   }
