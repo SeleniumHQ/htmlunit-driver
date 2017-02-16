@@ -18,38 +18,89 @@
 package org.openqa.selenium.htmlunit.server;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.security.Credentials;
 
+import com.gargoylesoftware.htmlunit.AlertHandler;
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.PromptHandler;
+import com.gargoylesoftware.htmlunit.WebClient;
 
-class HtmlUnitAlert implements Alert {
+class HtmlUnitAlert implements Alert, AlertHandler, PromptHandler {
 
-  private HtmlUnitLocalDriver driver;
-  private AlertPromptHandler handler;
+  private AlertLock lock_;
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
-    this.driver = driver;
-    handler = new AlertPromptHandler(driver.getWebClient());
+    WebClient webClient = driver.getWebClient();
+    webClient.setAlertHandler(this);
+    webClient.setPromptHandler(this);
+  }
+
+  @Override
+  public void handleAlert(Page page, String message) {
+    lock_ = new AlertLock(message);
+
+    synchronized (lock_) {
+      try {
+        lock_.wait();
+      } catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    close();
+  }
+
+  @Override
+  public String handlePrompt(Page page, String message, String defaultMessage) {
+    lock_ = new PromptLock(message, defaultMessage);
+
+    synchronized (lock_) {
+      try {
+        lock_.wait();
+      } catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    String value = ((PromptLock) lock_).value;
+    close();
+    return value;
   }
 
   @Override
   public void dismiss() {
-    handler.accept(getPage(), null);
+    if (lock_ == null) {
+      throw new NoAlertPresentException();
+    }
+    synchronized (lock_) {
+      lock_.notify();
+    }
   }
 
   @Override
   public void accept() {
-    handler.accept(getPage(), null);
+    if (lock_ == null) {
+      throw new NoAlertPresentException();
+    }
+    synchronized (lock_) {
+      lock_.notify();
+    }
   }
 
   @Override
   public String getText() {
-    return handler.getMessage(getPage());
+    if (lock_ == null) {
+      throw new NoAlertPresentException();
+    }
+    return lock_.message;
   }
 
   @Override
   public void sendKeys(String keysToSend) {
-    handler.accept(getPage(), keysToSend);
+    if (lock_ == null) {
+      throw new NoAlertPresentException();
+    }
+    lock_.sendKeys(keysToSend);
   }
 
   @Override
@@ -60,18 +111,48 @@ class HtmlUnitAlert implements Alert {
   public void setCredentials(Credentials credentials) {
   }
 
-  private Page getPage() {
-    return driver.getCurrentWindow().getEnclosedPage();
-  }
-
   /**
    * Closes the current window.
    */
   void close() {
-    handler.close(getPage());
+    lock_ = null;
   }
 
   boolean isLocked() {
-    return handler.isLocked(getPage());
+    return lock_ != null;
   }
+
+  private static class AlertLock {
+    String message;
+
+    AlertLock(final String message) {
+      this.message = message;
+    }
+
+    void sendKeys(String keysToSend) {
+      if (keysToSend != null) {
+          throw new ElementNotVisibleException("alert is not visible");
+      }
+    }
+  }
+
+  private static class PromptLock extends AlertLock {
+
+    String defaultMessage;
+    String value;
+
+    public PromptLock(String message, String defaultMessage) {
+      super(message);
+      this.defaultMessage = defaultMessage;
+    }
+  
+    @Override
+    void sendKeys(String keysToSend) {
+      if (keysToSend == null) {
+        keysToSend = defaultMessage;
+      }
+      this.value = keysToSend;
+    }
+  }
+
 }

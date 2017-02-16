@@ -49,7 +49,7 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore({PHANTOMJS, SAFARI, HTMLUNIT})
+@Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -187,8 +187,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testShouldAllowTheUserToGetTheTextOfAPrompt() {
     driver.findElement(By.id("prompt")).click();
 
@@ -285,8 +283,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread.")
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -298,8 +294,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.findElement(By.id("prompt-with-default")).click();
 
@@ -312,8 +306,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   @JavascriptEnabled
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: click()/prompt need to run in different threads.")
   public void testHandlesTwoAlertsFromOneInteraction() {
     wait.until(presenceOfElementLocated(By.id("double-prompt"))).click();
 
@@ -391,8 +383,6 @@ public class AlertsTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Ignore(value = {CHROME})
   @Test
-  @NotYetImplemented(value = HTMLUNIT,
-    reason = "HtmlUnit: runs on the same test thread, and .back() already changs the current window.")
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);

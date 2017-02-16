@@ -403,10 +403,32 @@ public class Session {
   }
 
   @GET
+  @Path("{session}/window_handle")
+  public static Response getWindowHandle(@PathParam("session") String session) {
+    String value = getDriver(session).getWindowHandle();
+    return getResponse(session, value);
+  }
+
+  @GET
   @Path("{session}/window_handles")
   public static Response getWindowHandles(@PathParam("session") String session) {
     Set<String> value = getDriver(session).getWindowHandles();
     return getResponse(session, value);
+  }
+
+  @POST
+  @Path("{session}/window")
+  public static Response switchToWindow(@PathParam("session") String session, String content) {
+    Map<String, String> map = getMap(content);
+    getDriver(session).switchTo().window(map.get("name"));
+    return getResponse(session, null);
+  }
+
+  @DELETE
+  @Path("{session}/window")
+  public static Response closeWindow(@PathParam("session") String session) {
+    getDriver(session).close();
+    return getResponse(session, null);
   }
 
   @POST
@@ -489,6 +511,13 @@ public class Session {
   @Path("{session}/dismiss_alert")
   public static Response dismissAlert(@PathParam("session") String session) {
     getDriver(session).switchTo().alert().dismiss();
+    return getResponse(session, null);
+  }
+
+  @POST
+  @Path("{session}/back")
+  public static Response back(@PathParam("session") String session) {
+    getDriver(session).navigate().back();
     return getResponse(session, null);
   }
 

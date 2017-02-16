@@ -595,7 +595,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public String getTitle() {
-    if (!alert.isLocked()) {
+    if (alert.isLocked()) {
       throw new UnhandledAlertException("Alert found", alert.getText());
     }
     Page page = lastPage();
@@ -1442,6 +1442,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public Alert alert() {
+      getCurrentWindow();
       return alert;
     }
   }
