@@ -3,6 +3,7 @@ package org.openqa.selenium.htmlunit.server;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ public class Session {
   private static Map<String, Session> sessions = new HashMap<>();
   private static SecureRandom random = new SecureRandom();
 
+  private static List<HtmlUnitLocalDriver> lockedDrivers = Collections.synchronizedList(new ArrayList<>());
+
   private String id;
   private HtmlUnitLocalDriver driver;
   
@@ -59,8 +62,17 @@ public class Session {
   }
 
   private static HtmlUnitLocalDriver getDriver(String sessionId) {
-    return sessions.get(sessionId).driver;
+    return getDriver(sessionId, true);
   }
+
+  private static HtmlUnitLocalDriver getDriver(String sessionId, boolean ensureUnLock) {
+    HtmlUnitLocalDriver driver = sessions.get(sessionId).driver;
+    if (ensureUnLock) {
+      waitForUnlock(driver);
+    }
+    return driver;
+  }
+
 
   @POST
   @SuppressWarnings("unchecked")
@@ -91,8 +103,41 @@ public class Session {
   @Path("{session}/url")
   public static Response go(@PathParam("session") String session, String content) {
     String url = new JsonToBeanConverter().convert(Map.class, content).get("url").toString();
-    getDriver(session).get(url);
+
+    HtmlUnitLocalDriver driver = getDriver(session);
+    runAsync(driver, () -> {
+      driver.get(url);
+    });
+
     return getResponse(session, null);
+  }
+
+  private static void runAsync(HtmlUnitLocalDriver driver, Runnable runnable) {
+    waitForUnlock(driver);
+    new Thread(() -> {
+      runnable.run();
+      unlockDriver(driver);
+    }).start();
+    lockDriver(driver);
+  }
+
+  private static void lockDriver(HtmlUnitLocalDriver driver) {
+    waitForUnlock(driver);
+    lockedDrivers.add(driver);
+  }
+
+  private static void waitForUnlock(HtmlUnitLocalDriver driver) {
+    while (lockedDrivers.contains(driver)) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+  }
+
+  private static void unlockDriver(HtmlUnitLocalDriver driver) {
+    lockedDrivers.remove(driver);
   }
 
   @GET
@@ -320,10 +365,10 @@ public class Session {
   public static Response elementClick(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    new Thread(() -> {
-      HtmlUnitLocalDriver driver = getDriver(session);
+    HtmlUnitLocalDriver driver = getDriver(session);
+    runAsync(driver, () -> {
       driver.click(driver.getElementById(Integer.valueOf(elementId)));
-    }).start();
+    });
     return getResponse(session, null);
   }
 
@@ -488,7 +533,16 @@ public class Session {
   @GET
   @Path("{session}/alert_text")
   public static Response alertText(@PathParam("session") String session) {
-    String value = getDriver(session).switchTo().alert().getText();
+    HtmlUnitLocalDriver driver = getDriver(session, false);
+    HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
+    while (lockedDrivers.contains(driver) && !alert.isLocked()) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    String value = alert.getText();
     return getResponse(session, value);
   }
 
@@ -503,7 +557,7 @@ public class Session {
   @POST
   @Path("{session}/accept_alert")
   public static Response acceptAlert(@PathParam("session") String session) {
-    getDriver(session).switchTo().alert().accept();
+    getDriver(session, false).switchTo().alert().accept();
     return getResponse(session, null);
   }
 
@@ -517,7 +571,11 @@ public class Session {
   @POST
   @Path("{session}/back")
   public static Response back(@PathParam("session") String session) {
-    getDriver(session).navigate().back();
+    HtmlUnitLocalDriver driver = getDriver(session);
+    
+    runAsync(driver, () -> {
+      driver.navigate().back();
+    });
     return getResponse(session, null);
   }
 
