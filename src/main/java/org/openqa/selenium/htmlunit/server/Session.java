@@ -39,6 +39,7 @@ public class Session {
   private static SecureRandom random = new SecureRandom();
 
   private static List<HtmlUnitLocalDriver> lockedDrivers = Collections.synchronizedList(new ArrayList<>());
+  private static Map<HtmlUnitLocalDriver, RuntimeException> exceptionsMap = Collections.synchronizedMap(new HashMap<>());
 
   private String id;
   private HtmlUnitLocalDriver driver;
@@ -115,8 +116,13 @@ public class Session {
   private static void runAsync(HtmlUnitLocalDriver driver, Runnable runnable) {
     waitForUnlock(driver);
     new Thread(() -> {
-      runnable.run();
-      unlockDriver(driver);
+      try {
+        runnable.run();
+        unlockDriver(driver);
+      }
+      catch (RuntimeException e) {
+        exceptionsMap.put(driver, e);
+      }
     }).start();
     lockDriver(driver);
   }
@@ -404,7 +410,11 @@ public class Session {
   public static Response elementSubmit(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    getDriver(session).getElementById(Integer.valueOf(elementId)).submit();
+    HtmlUnitLocalDriver driver = getDriver(session);
+    runAsync(driver, () -> {
+      driver.getElementById(Integer.valueOf(elementId)).submit();
+    });
+    waitForUnlockedOrAlert(driver);
     return getResponse(session, null);
   }
 
@@ -457,7 +467,7 @@ public class Session {
   @GET
   @Path("{session}/window_handles")
   public static Response getWindowHandles(@PathParam("session") String session) {
-    Set<String> value = getDriver(session).getWindowHandles();
+    Set<String> value = getDriver(session, false).getWindowHandles();
     return getResponse(session, value);
   }
 
@@ -534,16 +544,27 @@ public class Session {
   @Path("{session}/alert_text")
   public static Response alertText(@PathParam("session") String session) {
     HtmlUnitLocalDriver driver = getDriver(session, false);
+    HtmlUnitAlert alert = waitForUnlockedOrAlert(driver);
+    String value = alert.getText();
+    return getResponse(session, value);
+  }
+
+  private static HtmlUnitAlert waitForUnlockedOrAlert(HtmlUnitLocalDriver driver) {
     HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
     while (lockedDrivers.contains(driver) && !alert.isLocked()) {
+      RuntimeException t = exceptionsMap.get(driver);
+      if (t != null) {
+        exceptionsMap.remove(driver);
+        unlockDriver(driver);
+        throw t;
+      }
       try {
         Thread.sleep(10);
       } catch (InterruptedException e) {
         throw new IllegalStateException(e);
       }
     }
-    String value = alert.getText();
-    return getResponse(session, value);
+    return alert;
   }
 
   @POST
