@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.io.ByteStreams;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +26,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openqa.selenium.io.IOUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.google.common.io.ByteStreams;
 
 public class ManifestServlet extends HttpServlet {
   @Override
