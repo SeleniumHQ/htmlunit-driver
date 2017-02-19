@@ -37,7 +37,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <selenium.version>[3.0.1,4.0.0)</selenium.version>
+    <selenium.version>[3.1.0,4.0.0)</selenium.version>
   </properties>
 
   <dependencyManagement>
@@ -78,7 +78,7 @@
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>20.0</version>
+        <version>21.0</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>
