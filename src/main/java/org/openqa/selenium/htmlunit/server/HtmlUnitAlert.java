@@ -27,18 +27,18 @@ import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.PromptHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 
-class HtmlUnitAlert implements Alert, AlertHandler, PromptHandler {
+class HtmlUnitAlert implements Alert {
 
   private AlertLock lock_;
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
     WebClient webClient = driver.getWebClient();
-    webClient.setAlertHandler(this);
-    webClient.setPromptHandler(this);
+    webClient.setAlertHandler(this::alertHandler);
+    webClient.setPromptHandler(this::promptHandler);
+    webClient.setOnbeforeunloadHandler(this::onbeforeunloadHandler);
   }
 
-  @Override
-  public void handleAlert(Page page, String message) {
+  private void alertHandler(Page page, String message) {
     lock_ = new AlertLock(message);
 
     synchronized (lock_) {
@@ -51,8 +51,7 @@ class HtmlUnitAlert implements Alert, AlertHandler, PromptHandler {
     close();
   }
 
-  @Override
-  public String handlePrompt(Page page, String message, String defaultMessage) {
+  private String promptHandler(Page page, String message, String defaultMessage) {
     lock_ = new PromptLock(message, defaultMessage);
 
     synchronized (lock_) {
@@ -65,6 +64,20 @@ class HtmlUnitAlert implements Alert, AlertHandler, PromptHandler {
     String value = ((PromptLock) lock_).value;
     close();
     return value;
+  }
+
+  private boolean onbeforeunloadHandler(Page page, String returnValue) {
+    lock_ = new AlertLock(returnValue);
+
+    synchronized (lock_) {
+      try {
+        lock_.wait();
+      } catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    close();
+    return false;
   }
 
   @Override

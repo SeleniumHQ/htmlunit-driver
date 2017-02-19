@@ -349,7 +349,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {CHROME, IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlert() {
     driver.get(pages.simpleTestPage);
@@ -368,7 +367,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {CHROME, IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScript() {
     driver.get(pages.slowLoadingAlertPage);
@@ -385,7 +383,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = {CHROME, IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfScriptTriggersAlertWhichTimesOut() {
     driver.get(pages.simpleTestPage);
@@ -404,7 +401,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {CHROME, IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
     driver.get(pages.slowLoadingAlertPage);

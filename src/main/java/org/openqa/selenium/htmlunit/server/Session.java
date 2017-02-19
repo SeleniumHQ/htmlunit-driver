@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
@@ -23,6 +24,8 @@ import javax.ws.rs.core.Response;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.BeanToJsonConverter;
@@ -134,8 +137,16 @@ public class Session {
 
   private static void waitForUnlock(HtmlUnitLocalDriver driver) {
     while (lockedDrivers.contains(driver)) {
+      RuntimeException t = exceptionsMap.get(driver);
+      if (t != null) {
+        exceptionsMap.remove(driver);
+        unlockDriver(driver);
+        if (!(t instanceof ScriptTimeoutException)) {
+          throw t;
+        }
+      }
       try {
-        Thread.sleep(100);
+        Thread.sleep(10);
       } catch (InterruptedException e) {
         throw new IllegalStateException(e);
       }
@@ -447,14 +458,29 @@ public class Session {
 
       List<?> args = (ArrayList<?>) map.get("args");
       Object[] array = args.toArray(new Object[args.size()]);
-      Object value = driver.executeAsyncScript(script, array);
-      if (value instanceof List) {
-        value = toElements((List<?>) value);
+      AtomicReference<Object> value = new AtomicReference<>();
+
+      runAsync(driver, () -> {
+        Object result = driver.executeAsyncScript(script, array);
+        if (result instanceof List) {
+          value.set(toElements((List<?>) result));
+        }
+        else {
+          value.set(toElement(result));
+        }
+      });
+
+      waitForUnlockedOrAlert(driver);
+      HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
+      
+      if (alert.isLocked()) {
+        String text = alert.getText();
+        alert.accept();
+        waitForUnlock(driver);
+        throw new UnhandledAlertException(text);
       }
-      else {
-        value = toElement(value);
-      }
-      return getResponse(session, value);
+
+      return getResponse(session, value.get());
   }
 
   @GET
@@ -585,7 +611,7 @@ public class Session {
   @POST
   @Path("{session}/dismiss_alert")
   public static Response dismissAlert(@PathParam("session") String session) {
-    getDriver(session).switchTo().alert().dismiss();
+    getDriver(session, false).switchTo().alert().dismiss();
     return getResponse(session, null);
   }
 
