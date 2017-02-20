@@ -100,6 +100,7 @@ class HtmlUnitAlert implements Alert {
     if (lock_ == null) {
       throw new NoAlertPresentException();
     }
+    lock_.accept();
     synchronized (lock_) {
       lock_.notify();
     }
@@ -152,6 +153,9 @@ class HtmlUnitAlert implements Alert {
           throw new ElementNotVisibleException("alert is not visible");
       }
     }
+
+    void accept() {
+    }
   }
 
   private static class PromptLock extends AlertLock {
@@ -170,6 +174,12 @@ class HtmlUnitAlert implements Alert {
         keysToSend = defaultMessage;
       }
       this.value = keysToSend;
+    }
+
+    void accept() {
+      if (value == null) {
+        value = defaultMessage;
+      }
     }
   }
 
