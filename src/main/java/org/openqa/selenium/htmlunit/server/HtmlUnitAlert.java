@@ -22,14 +22,13 @@ import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.security.Credentials;
 
-import com.gargoylesoftware.htmlunit.AlertHandler;
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.PromptHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 class HtmlUnitAlert implements Alert {
 
   private AlertLock lock_;
+  private boolean autoAccept_;
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
     WebClient webClient = driver.getWebClient();
@@ -69,15 +68,21 @@ class HtmlUnitAlert implements Alert {
   private boolean onbeforeunloadHandler(Page page, String returnValue) {
     lock_ = new AlertLock(returnValue);
 
-    synchronized (lock_) {
-      try {
-        lock_.wait();
-      } catch (InterruptedException e) {
-        throw new IllegalStateException(e);
+    if (!autoAccept_) {
+      synchronized (lock_) {
+        try {
+          lock_.wait();
+        } catch (InterruptedException e) {
+          throw new IllegalStateException(e);
+        }
       }
     }
     close();
     return false;
+  }
+
+  void setAutoAccept(boolean autoAccept) {
+    this.autoAccept_ = autoAccept;
   }
 
   @Override

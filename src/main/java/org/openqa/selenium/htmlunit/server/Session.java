@@ -98,7 +98,14 @@ public class Session {
   @DELETE
   @Path("{session}")
   public Response deleteSession(@PathParam("session") String session) {
-    getDriver(session).quit();
+    HtmlUnitLocalDriver driver = getDriver(session, false);
+    HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
+    if (alert.isLocked()) {
+      alert.accept();
+    }
+    alert.setAutoAccept(true);
+
+    driver.quit();
     sessions.remove(session);
     return getResponse(session, null);
   }
@@ -597,7 +604,7 @@ public class Session {
   @Path("{session}/alert_text")
   public static Response alertTextPost(@PathParam("session") String session, String content) {
     Map<String, String> map = getMap(content);
-    getDriver(session).switchTo().alert().sendKeys(map.get("text"));
+    getDriver(session, false).switchTo().alert().sendKeys(map.get("text"));
     return getResponse(session, null);
   }
 
