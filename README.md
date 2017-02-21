@@ -8,10 +8,9 @@ HtmlUnitDriver is a WebDriver compatible driver for HtmlUnit headless browser.
 
 ### Maven/Gradle/...
 
-Add a dependency on the latest htmlunit-driver version available in the Maven Central along with dependencies on
-selenium-api and selenium-support:
+Add a dependency on the latest `htmlunit-driver` version available in the Maven Central, please note the `artifact-id` has changed and version changed to match HtmlUnit:
 
-```
+```xml
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
