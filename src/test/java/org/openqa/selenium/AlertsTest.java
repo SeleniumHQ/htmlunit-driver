@@ -49,7 +49,7 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.Set;
 
-@Ignore({PHANTOMJS, SAFARI, HTMLUNIT})
+@Ignore({PHANTOMJS, SAFARI})
 public class AlertsTest extends JUnit4TestBase {
 
   @Before
@@ -350,7 +350,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE}, reason = "IE: fails in versions 6 and 7")
+  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE, HTMLUNIT},
+    reason = "IE: fails in versions 6 and 7, HTMLUNIT: how to throw AssertionError?")
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();
@@ -473,7 +474,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(HTMLUNIT)
   public void testCanQuitWhenAnAlertIsPresent() {
     driver.get(pages.alertsPage);
     driver.findElement(By.id("alert")).click();

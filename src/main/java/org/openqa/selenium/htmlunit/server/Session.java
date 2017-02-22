@@ -115,7 +115,11 @@ public class Session {
   public static Response go(@PathParam("session") String session, String content) {
     String url = new JsonToBeanConverter().convert(Map.class, content).get("url").toString();
 
-    HtmlUnitLocalDriver driver = getDriver(session);
+    HtmlUnitLocalDriver driver = getDriver(session, false);
+    HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
+    if (alert.isLocked()) {
+      alert.dismiss();
+    }
     runAsync(driver, () -> {
       driver.get(url);
     });
@@ -128,10 +132,14 @@ public class Session {
     new Thread(() -> {
       try {
         runnable.run();
+        Thread.sleep(200);
         unlockDriver(driver);
       }
       catch (RuntimeException e) {
         exceptionsMap.put(driver, e);
+      }
+      catch (InterruptedException e) {
+        throw new RuntimeException(e);
       }
     }).start();
     lockDriver(driver);
@@ -371,7 +379,7 @@ public class Session {
   @GET
   @Path("{session}/title")
   public static Response getTitle(@PathParam("session") String session) {
-    String value = getDriver(session).getTitle();
+    String value = getDriver(session, false).getTitle();
     return getResponse(session, value);
   }
 
@@ -508,7 +516,7 @@ public class Session {
   @Path("{session}/window")
   public static Response switchToWindow(@PathParam("session") String session, String content) {
     Map<String, String> map = getMap(content);
-    getDriver(session).switchTo().window(map.get("name"));
+    getDriver(session, false).switchTo().window(map.get("name"));
     return getResponse(session, null);
   }
 

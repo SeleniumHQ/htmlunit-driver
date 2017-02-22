@@ -24,13 +24,16 @@ import org.openqa.selenium.security.Credentials;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebWindow;
 
 class HtmlUnitAlert implements Alert {
 
+  HtmlUnitLocalDriver driver;
   private AlertLock lock_;
   private boolean autoAccept_;
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
+    this.driver = driver;
     WebClient webClient = driver.getWebClient();
     webClient.setAlertHandler(this::alertHandler);
     webClient.setPromptHandler(this::promptHandler);
@@ -38,7 +41,7 @@ class HtmlUnitAlert implements Alert {
   }
 
   private void alertHandler(Page page, String message) {
-    lock_ = new AlertLock(message);
+    lock_ = new AlertLock(page.getEnclosingWindow(), message);
 
     synchronized (lock_) {
       try {
@@ -51,7 +54,7 @@ class HtmlUnitAlert implements Alert {
   }
 
   private String promptHandler(Page page, String message, String defaultMessage) {
-    lock_ = new PromptLock(message, defaultMessage);
+    lock_ = new PromptLock(page.getEnclosingWindow(), message, defaultMessage);
 
     synchronized (lock_) {
       try {
@@ -66,7 +69,7 @@ class HtmlUnitAlert implements Alert {
   }
 
   private boolean onbeforeunloadHandler(Page page, String returnValue) {
-    lock_ = new AlertLock(returnValue);
+    lock_ = new AlertLock(page.getEnclosingWindow(), returnValue);
 
     if (!autoAccept_) {
       synchronized (lock_) {
@@ -77,8 +80,9 @@ class HtmlUnitAlert implements Alert {
         }
       }
     }
+    boolean accepted = lock_.isAccepted();
     close();
-    return false;
+    return accepted;
   }
 
   void setAutoAccept(boolean autoAccept) {
@@ -111,6 +115,9 @@ class HtmlUnitAlert implements Alert {
     if (lock_ == null) {
       throw new NoAlertPresentException();
     }
+    if (lock_.webWindow != driver.getCurrentWindow()) {
+      throw new AssertionError();
+    }
     return lock_.message;
   }
 
@@ -142,9 +149,12 @@ class HtmlUnitAlert implements Alert {
   }
 
   private static class AlertLock {
+    WebWindow webWindow;
     String message;
+    boolean accepted;
 
-    AlertLock(final String message) {
+    AlertLock(WebWindow webWindow, String message) {
+      this.webWindow = webWindow;
       this.message = message;
     }
 
@@ -155,6 +165,11 @@ class HtmlUnitAlert implements Alert {
     }
 
     void accept() {
+      accepted = true;
+    }
+
+    boolean isAccepted() {
+      return accepted;
     }
   }
 
@@ -163,8 +178,8 @@ class HtmlUnitAlert implements Alert {
     String defaultMessage;
     String value;
 
-    public PromptLock(String message, String defaultMessage) {
-      super(message);
+    public PromptLock(WebWindow webWindow, String message, String defaultMessage) {
+      super(webWindow, message);
       this.defaultMessage = defaultMessage;
     }
   
