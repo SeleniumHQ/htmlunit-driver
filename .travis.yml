@@ -2,4 +2,4 @@ language: java
 jdk:
   - oraclejdk8
 script:
-  mvn test
+  mvn test javadoc:javadoc
