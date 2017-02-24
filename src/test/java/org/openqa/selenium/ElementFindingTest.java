@@ -26,7 +26,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
@@ -401,7 +400,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({IE, SAFARI, CHROME})
-  @NotYetImplemented(value = HTMLUNIT, reason = "This used to work in HtmlUnit 2.23")
   @Test
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
