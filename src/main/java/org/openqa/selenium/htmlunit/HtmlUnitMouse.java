@@ -25,6 +25,7 @@ import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 import com.google.common.base.Preconditions;
@@ -35,15 +36,15 @@ import com.google.common.base.Preconditions;
  */
 public class HtmlUnitMouse implements Mouse {
   private final HtmlUnitKeyboard keyboard;
-  private HtmlElement currentActiveElement = null;
+  private DomElement currentActiveElement;
 
   public HtmlUnitMouse(HtmlUnitKeyboard keyboard) {
     this.keyboard = keyboard;
   }
 
-  private HtmlElement getElementForOperation(Coordinates potentialCoordinates) {
+  private DomElement getElementForOperation(Coordinates potentialCoordinates) {
     if (potentialCoordinates != null) {
-      return (HtmlElement) potentialCoordinates.getAuxiliary();
+      return (DomElement) potentialCoordinates.getAuxiliary();
     }
 
     if (currentActiveElement == null) {
@@ -56,7 +57,7 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void click(Coordinates elementCoordinates) {
-    HtmlElement element = getElementForOperation(elementCoordinates);
+    DomElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -76,7 +77,7 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  private void moveOutIfNeeded(HtmlElement element) {
+  private void moveOutIfNeeded(DomElement element) {
     try {
       if ((currentActiveElement != element)) {
         if (currentActiveElement != null) {
@@ -98,7 +99,7 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  private void updateActiveElement(HtmlElement element) {
+  private void updateActiveElement(DomElement element) {
     if (element != null) {
       currentActiveElement = element;
     }
@@ -110,7 +111,7 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void doubleClick(Coordinates elementCoordinates) {
-    HtmlElement element = getElementForOperation(elementCoordinates);
+    DomElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -127,7 +128,7 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void contextClick(Coordinates elementCoordinates) {
-    HtmlElement element = getElementForOperation(elementCoordinates);
+    DomElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -139,7 +140,7 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void mouseDown(Coordinates elementCoordinates) {
-    HtmlElement element = getElementForOperation(elementCoordinates);
+    DomElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -152,7 +153,7 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void mouseUp(Coordinates elementCoordinates) {
-    HtmlElement element = getElementForOperation(elementCoordinates);
+    DomElement element = getElementForOperation(elementCoordinates);
 
     moveOutIfNeeded(element);
 
@@ -173,7 +174,7 @@ public class HtmlUnitMouse implements Mouse {
     updateActiveElement(element);
   }
 
-  private void mouseMove(HtmlElement element) {
+  private void mouseMove(DomElement element) {
     element.mouseMove(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
         MouseEvent.BUTTON_LEFT);
