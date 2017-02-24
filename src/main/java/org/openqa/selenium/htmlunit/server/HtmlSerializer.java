@@ -21,6 +21,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomText;
 import com.gargoylesoftware.htmlunit.html.HtmlBreak;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlLabel;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
@@ -46,6 +47,9 @@ class HtmlSerializer {
     }
     text = text.replace('\t', ' ');
     text = text.replace("\r", "");
+    if (!(element instanceof HtmlElement)) {
+      text = text.replaceAll("\\p{javaWhitespace}+", " ").trim();
+    }
     return text;
   }
 
