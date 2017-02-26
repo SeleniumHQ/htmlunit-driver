@@ -127,6 +127,7 @@ public class Session {
       driver.get(url);
     });
 
+    waitForUnlockedOrAlert(driver);
     return getResponse(session, null);
   }
 
