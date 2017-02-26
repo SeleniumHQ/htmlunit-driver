@@ -24,6 +24,9 @@ import javax.ws.rs.core.Response;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver.Timeouts;
@@ -389,6 +392,42 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     boolean value = getDriver(session).getElementById(Integer.valueOf(elementId)).isDisplayed();
+    return getResponse(session, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/size")
+  public static Response elementSize(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    Dimension value = getDriver(session).getElementById(Integer.valueOf(elementId)).getSize();
+    return getResponse(session, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/rect")
+  public static Response elementRect(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    Rectangle value = getDriver(session).getElementById(Integer.valueOf(elementId)).getRect();
+    return getResponse(session, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/location")
+  public static Response elementLocation(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    Point value = getDriver(session).getElementById(Integer.valueOf(elementId)).getLocation();
+    return getResponse(session, value);
+  }
+
+  @GET
+  @Path("{session}/element/{elementId}/location_in_view")
+  public static Response elementLocationInView(
+      @PathParam("session") String session,
+      @PathParam("elementId") String elementId) {
+    Point value = getDriver(session).getElementById(Integer.valueOf(elementId)).getCoordinates().inViewPort();
     return getResponse(session, value);
   }
 

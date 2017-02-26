@@ -43,28 +43,30 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
 //we migrated to 'remote' WebDriver
 @Ignore
-public class HtmlUnitDriverTest extends TestBase {
+public class HtmlUnitDriverTest extends JUnit4TestBase {
 
   @Test
   public void canGetAPage() {
-    driver.get(testServer.page(""));
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+    driver.get(appServer.whereIs(""));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("")));
   }
 
   @Test
   public void canGetAPageByUrl() throws MalformedURLException {
-    driver.get(new URL(testServer.page("")));
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+    driver.get(appServer.whereIs(""));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("")));
   }
 
   @Test
   public void canGetPageSource() {
-    driver.get(testServer.page(""));
+    driver.get(appServer.whereIs(""));
     assertThat(driver.getPageSource(), containsString("Hello"));
   }
 
@@ -75,37 +77,36 @@ public class HtmlUnitDriverTest extends TestBase {
 
   @Test
   public void canNavigateToAPage() {
-    driver.navigate().to(testServer.page(""));
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+    driver.navigate().to(appServer.whereIs(""));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("")));
   }
 
   @Test
   public void canNavigateToAnUrl() throws MalformedURLException {
-    driver.navigate().to(new URL(testServer.page("")));
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+    driver.navigate().to(new URL(appServer.whereIs("")));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("")));
   }
 
   @Test
   public void canRefreshAPage() {
-    driver.get(testServer.page(""));
+    driver.get(appServer.whereIs(""));
     driver.navigate().refresh();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("")));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("")));
   }
 
   @Test
   public void canNavigateBackAndForward() {
-    driver.get(testServer.page("link.html"));
+    driver.get(appServer.whereIs("link.html"));
     driver.findElement(By.id("link")).click();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("index.html")));
     driver.navigate().back();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("link.html")));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("link.html")));
     driver.navigate().forward();
-    assertThat(driver.getCurrentUrl(), equalTo(testServer.page("index.html")));
+    assertThat(driver.getCurrentUrl(), equalTo(appServer.whereIs("index.html")));
   }
 
-  @Test
+  @Test(expected = WebDriverException.class)
   public void throwsOnMalformedUrl() {
-    thrown.expect(WebDriverException.class);
     driver.get("www.test.com");
   }
 
@@ -115,16 +116,15 @@ public class HtmlUnitDriverTest extends TestBase {
     assertThat(driver.getCurrentUrl(), equalTo("http://www.thisurldoesnotexist.comx/"));
   }
 
-  @Test
+  @Test(expected = NoSuchSessionException.class)
   public void throwsOnAnyOperationAfterQuit() {
     driver.quit();
-    thrown.expect(NoSuchSessionException.class);
-    driver.get(testServer.page(""));
+    driver.get(appServer.whereIs(""));
   }
 
   @Test
   public void canGetPageTitle() {
-    driver.get(testServer.page(""));
+    driver.get(appServer.whereIs(""));
     assertThat(driver.getTitle(), equalTo("Hello, world!"));
   }
 
@@ -165,7 +165,7 @@ public class HtmlUnitDriverTest extends TestBase {
 
   @Test
   public void canSwitchToFrame() {
-    driver.get(testServer.page("frame.html"));
+    driver.get(appServer.whereIs("frame.html"));
     driver.switchTo().frame(driver.findElement(By.id("iframe")));
     driver.switchTo().parentFrame();
     driver.switchTo().frame("iframe");
@@ -174,15 +174,14 @@ public class HtmlUnitDriverTest extends TestBase {
     driver.switchTo().defaultContent();
   }
 
-  @Test
+  @Test(expected = NoAlertPresentException.class)
   public void throwsOnMissingAlertAcceptAnAlert() {
-    thrown.expect(NoAlertPresentException.class);
     driver.switchTo().alert();
   }
 
   @Test
   public void canAcceptAnAlert() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     driver.findElement(By.id("link")).click();
     Alert alert = driver.switchTo().alert();
     assertThat(alert.getText(), equalTo("An alert"));
@@ -191,7 +190,7 @@ public class HtmlUnitDriverTest extends TestBase {
 
   @Test
   public void canDismissAnAlert() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     driver.findElement(By.id("link")).click();
     Alert alert = driver.switchTo().alert();
     assertThat(alert.getText(), equalTo("An alert"));
@@ -237,7 +236,7 @@ public class HtmlUnitDriverTest extends TestBase {
   @Test
   public void canDeleteCookieObject() {
     driver.manage().addCookie(new Cookie("xxx", "yyy"));
-    driver.manage().deleteCookie(new Cookie("xxx", "yyy", testServer.domain(), "/", null));
+    driver.manage().deleteCookie(new Cookie("xxx", "yyy", appServer.getHostName(), "/", null));
     assertThat(driver.manage().getCookieNamed("xxx"), is(nullValue()));
   }
 
@@ -252,25 +251,25 @@ public class HtmlUnitDriverTest extends TestBase {
 
   @Test
   public void canExecuteScriptThatReturnsAString() {
-    driver.get(testServer.page(""));
-    Object result = driver.executeScript("return window.location.href;");
+    driver.get(appServer.whereIs(""));
+    Object result = getWebDriver().executeScript("return window.location.href;");
     assertThat(result, instanceOf(String.class));
-    assertThat(((String) result), equalTo(testServer.page("")));
+    assertThat(((String) result), equalTo(appServer.whereIs("")));
   }
 
   @Test
   @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsAnArray() {
-    driver.get(testServer.page(""));
-    Object result = driver.executeScript("return [window.location.href];");
+    driver.get(appServer.whereIs(""));
+    Object result = getWebDriver().executeScript("return [window.location.href];");
     assertThat(result, instanceOf(List.class));
-    assertThat(((List<String>) result), equalTo(Arrays.asList(testServer.page(""))));
+    assertThat(((List<String>) result), equalTo(Arrays.asList(appServer.whereIs(""))));
   }
 
   @Test
   public void canExecuteScriptThatReturnsAnElement() {
-    driver.get(testServer.page(""));
-    Object result = driver.executeScript("return document.body;");
+    driver.get(appServer.whereIs(""));
+    Object result = getWebDriver().executeScript("return document.body;");
     assertThat(result, instanceOf(WebElement.class));
     assertThat(((WebElement) result).getTagName(), equalTo("body"));
   }
@@ -278,8 +277,8 @@ public class HtmlUnitDriverTest extends TestBase {
   @Test
   @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsAListOfElements() {
-    driver.get(testServer.page("form.html"));
-    Object result = driver.executeScript("return document.getElementsByTagName('input');");
+    driver.get(appServer.whereIs("form.html"));
+    Object result = getWebDriver().executeScript("return document.getElementsByTagName('input');");
     assertThat(result, instanceOf(List.class));
     List<WebElement> elements = (List<WebElement>) result;
     assertThat(elements.size(), equalTo(3));
@@ -288,28 +287,28 @@ public class HtmlUnitDriverTest extends TestBase {
   @Test
   @SuppressWarnings("unchecked")
   public void canExecuteScriptThatReturnsLocation() {
-    driver.get(testServer.page(""));
-    Object result = driver.executeScript("return window.location;");
+    driver.get(appServer.whereIs(""));
+    Object result = getWebDriver().executeScript("return window.location;");
     assertThat(result, instanceOf(Map.class));
-    assertThat(((Map<String, Object>) result).get("href"), equalTo((Object) testServer.page("")));
+    assertThat(((Map<String, Object>) result).get("href"), equalTo((Object) appServer.whereIs("")));
   }
 
   @Test
   public void canExecuteAsyncScript() {
-    Object result = driver.executeAsyncScript("arguments[arguments.length - 1](123);");
+    Object result = getWebDriver().executeAsyncScript("arguments[arguments.length - 1](123);");
     assertThat(result, instanceOf(Number.class));
     assertThat(((Number) result).intValue(), equalTo(123));
   }
 
   @Test(expected = ScriptTimeoutException.class)
   public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() {
-    driver.get(testServer.page("ajaxy_page.html"));
-    driver.executeAsyncScript("window.setTimeout(function() {}, 0);");
+    driver.get(appServer.whereIs("ajaxy_page.html"));
+    getWebDriver().executeAsyncScript("window.setTimeout(function() {}, 0);");
   }
 
   @Test
   public void shouldNotReturnSourceOfOldPageWhenLoadFailsDueToABadHost() {
-    driver.get(testServer.page(""));
+    driver.get(appServer.whereIs(""));
     String originalSource = driver.getPageSource();
 
     driver.get("http://thishostdoesnotexist.norshallitever");
@@ -318,14 +317,16 @@ public class HtmlUnitDriverTest extends TestBase {
     assertThat(currentSource, not(equalTo(originalSource)));
   }
 
-  @Test
+  @Test(expected = UnsupportedOperationException.class)
   public void imeIsNotSupported() {
-    thrown.expect(UnsupportedOperationException.class);
     driver.manage().ime();
   }
 
-  private void openNewWindow(HtmlUnitLocalDriver driver) {
-    driver.executeScript("window.open('new')");
+  private HtmlUnitLocalDriver getWebDriver() {
+    return ((HtmlUnitLocalDriver) driver);
+  }
+  private void openNewWindow(WebDriver driver) {
+    ((HtmlUnitLocalDriver) driver).executeScript("window.open('new')");
   }
 
 }

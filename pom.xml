@@ -120,18 +120,6 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.webbitserver</groupId>
-      <artifactId>webbit</artifactId>
-      <version>0.4.15</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.bytebuddy</groupId>
-      <artifactId>byte-buddy</artifactId>
-      <version>1.6.8</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
   <build>

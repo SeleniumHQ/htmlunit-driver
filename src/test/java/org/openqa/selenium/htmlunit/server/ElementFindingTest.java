@@ -17,16 +17,19 @@
 
 package org.openqa.selenium.htmlunit.server;
 
-import org.junit.Test;
-import org.openqa.selenium.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.testing.JUnit4TestBase;
 
-public class ElementFindingTest extends TestBase {
+public class ElementFindingTest extends JUnit4TestBase {
 
   @Test
   public void canSetImplicitWaitTimeout() {
@@ -35,7 +38,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementByTagName() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     WebElement input = driver.findElement(By.tagName("form"))
         .findElement(By.tagName("input"));
     assertThat(input.getTagName(), equalTo("input"));
@@ -43,7 +46,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByTagName() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     List<WebElement> forms = driver.findElements(By.tagName("form"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.tagName("input"));
@@ -52,7 +55,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementByCssSelector() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     WebElement input = driver.findElement(By.cssSelector("#form_id"))
         .findElement(By.cssSelector("input"));
     assertThat(input.getTagName(), equalTo("input"));
@@ -60,7 +63,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByCssSelector() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     List<WebElement> forms = driver.findElements(By.cssSelector("#form_id"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.cssSelector("input"));
@@ -69,7 +72,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementByXpath() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     WebElement input = driver.findElement(By.xpath("//form"))
         .findElement(By.xpath("./input"));
     assertThat(input.getTagName(), equalTo("input"));
@@ -77,13 +80,13 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByXpathInHtmlDocument() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     canFindElementsByXpath();
   }
 
   @Test
   public void canFindElementsByXpathInXmlDocument() {
-    driver.get(testServer.page("form.xml"));
+    driver.get(appServer.whereIs("form.xml"));
     canFindElementsByXpath();
   }
   
@@ -96,7 +99,7 @@ public class ElementFindingTest extends TestBase {
   
   @Test
   public void canFindElementByName() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     WebElement input = driver.findElement(By.name("form_name"))
         .findElement(By.name("text"));
     assertThat(input.getTagName(), equalTo("input"));
@@ -104,7 +107,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByName() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     List<WebElement> forms = driver.findElements(By.name("form_name"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.name("text"));
@@ -113,7 +116,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementById() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     WebElement input = driver.findElement(By.id("form_id"))
         .findElement(By.id("text"));
     assertThat(input.getTagName(), equalTo("input"));
@@ -121,7 +124,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsById() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     List<WebElement> forms = driver.findElements(By.id("form_id"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.id("text"));
@@ -130,7 +133,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementByLinkText() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     WebElement link = driver.findElement(By.linkText("Click me to get an alert"));
     assertThat(link.getTagName(), equalTo("a"));
     assertThat(link.getText(), equalTo("Click me to get an alert"));
@@ -142,7 +145,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByLinkText() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     List<WebElement> links = driver.findElements(By.linkText("Click me to get an alert"));
     assertThat(links.size(), equalTo(1));
 
@@ -152,7 +155,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementByPartialLinkText() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     WebElement link = driver.findElement(By.partialLinkText("Click me"));
     assertThat(link.getTagName(), equalTo("a"));
     assertThat(link.getText(), equalTo("Click me to get an alert"));
@@ -164,7 +167,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test
   public void canFindElementsByPartialLinkText() {
-    driver.get(testServer.page("alert.html"));
+    driver.get(appServer.whereIs("alert.html"));
     List<WebElement> links = driver.findElements(By.partialLinkText("Click me"));
     assertThat(links.size(), equalTo(1));
 
@@ -174,7 +177,7 @@ public class ElementFindingTest extends TestBase {
 
   @Test(expected = NoSuchElementException.class)
   public void noElement() {
-    driver.get(testServer.page("form.html"));
+    driver.get(appServer.whereIs("form.html"));
     driver.findElement(By.id("nothing"));
   }
 
