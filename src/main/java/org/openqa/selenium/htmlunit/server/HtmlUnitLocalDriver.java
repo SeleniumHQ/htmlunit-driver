@@ -59,18 +59,10 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.ButtonReleaseAction;
-import org.openqa.selenium.interactions.ClickAction;
-import org.openqa.selenium.interactions.ClickAndHoldAction;
-import org.openqa.selenium.interactions.ContextClickAction;
-import org.openqa.selenium.interactions.DoubleClickAction;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.KeyDownAction;
-import org.openqa.selenium.interactions.KeyUpAction;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.MoveMouseAction;
-import org.openqa.selenium.interactions.SendKeysAction;
 import org.openqa.selenium.internal.FindsByClassName;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
@@ -78,7 +70,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
@@ -1010,20 +1001,20 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void moveTo(int elementId) {
     lastElement = getElementById(elementId);
-    new MoveMouseAction(mouse, (Locatable) lastElement).perform();
+    new Actions(this).moveToElement(lastElement).perform();;
   }
 
   protected void click(int button) {
     if (button == 2) {
-      new ContextClickAction(mouse, lastElement).perform();
+      new Actions(this).contextClick(lastElement).perform();;
     }
     else {
-      new ClickAction(mouse, lastElement).perform();
+      new Actions(this).click(lastElement).perform();;
     }
   }
 
   protected void doubleclick() {
-    new DoubleClickAction(mouse, lastElement).perform();
+    new Actions(this).doubleClick(lastElement).perform();;
   }
 
   protected void click(HtmlUnitWebElement element) {
@@ -1032,11 +1023,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void buttondown() {
-    new ClickAndHoldAction(mouse, lastElement).perform();
+    new Actions(this).clickAndHold(lastElement).perform();;
   }
 
   protected void buttonup() {
-    new ButtonReleaseAction(mouse, lastElement).perform();
+    new Actions(this).release(lastElement).perform();;
   }
 
   protected void keys(String string) {
@@ -1044,27 +1035,27 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       char ch = string.charAt(i);
       if (ch == Keys.NULL.charAt(0)) {
         if (keyboard.isPressed(Keys.CONTROL)) {
-          new KeyUpAction(keyboard, mouse, null, Keys.CONTROL).perform();
+          new Actions(this).keyUp(Keys.CONTROL).perform();;
         }
         if (keyboard.isPressed(Keys.ALT)) {
-          new KeyUpAction(keyboard, mouse, null, Keys.ALT).perform();
+          new Actions(this).keyUp(Keys.ALT).perform();;
         }
         if (keyboard.isPressed(Keys.SHIFT)) {
-          new KeyUpAction(keyboard, mouse, null, Keys.SHIFT).perform();
+          new Actions(this).keyUp(Keys.SHIFT).perform();;
         }
       }
       else {
         if (ch == Keys.SHIFT.charAt(0) || ch == Keys.CONTROL.charAt(0) || ch == Keys.ALT.charAt(0)) {
           Keys keys = Keys.getKeyFromUnicode(ch);
           if (keyboard.isPressed(ch)) {
-            new KeyUpAction(keyboard, mouse, null, keys).perform();
+            new Actions(this).keyUp(keys).perform();;
           }
           else {
-            new KeyDownAction(keyboard, mouse, null, keys).perform();
+            new Actions(this).keyDown(keys).perform();;
           }
         }
         else {
-          new SendKeysAction(keyboard, mouse, lastElement, String.valueOf(ch)).perform();
+          new Actions(this).sendKeys(lastElement, String.valueOf(ch)).perform();;
         }
       }
     }
