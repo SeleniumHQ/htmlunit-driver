@@ -26,7 +26,6 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 import com.google.common.base.Preconditions;
 
@@ -167,7 +166,7 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void mouseMove(Coordinates elementCoordinates) {
     Preconditions.checkNotNull(elementCoordinates);
-    HtmlElement element = (HtmlElement) elementCoordinates.getAuxiliary();
+    DomElement element = (DomElement) elementCoordinates.getAuxiliary();
 
     moveOutIfNeeded(element);
 
