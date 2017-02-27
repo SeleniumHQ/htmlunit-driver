@@ -21,15 +21,15 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
   private HttpServletRequest request;
   
   @Override
-  public Response toResponse(Throwable exception) {
+  public Response toResponse(Throwable throwable) {
     Map<String, Object> map = new HashMap<>();
-    String message = exception.getMessage();
-    if (exception instanceof UnhandledAlertException) {
-      map.put("alertText", ((UnhandledAlertException) exception).getAlertText());
+    String message = throwable.getMessage();
+    if (throwable instanceof UnhandledAlertException) {
+      map.put("alertText", ((UnhandledAlertException) throwable).getAlertText());
     }
     map.put("message", message);
     map.put("sessionId", request.getPathInfo().split("/")[2]);
-    map.put("status", new ErrorCodes().toStatusCode(exception));
+    map.put("status", new ErrorCodes().toStatusCode(throwable));
     return Response.ok(new BeanToJsonConverter().convert(map), MediaType.APPLICATION_JSON).build();
   }
 }

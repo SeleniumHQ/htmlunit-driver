@@ -501,7 +501,7 @@ public class Session {
     }).toArray(size -> new Object[size]);
 
     Object value = driver.executeScript(script, array);
-    return getResponse(session, value);
+    return getResponse(session, toElement(value));
   }
 
   @POST
@@ -579,7 +579,7 @@ public class Session {
       driver.switchTo().frame(frame);
     }
     else {
-      driver.switchTo().parentFrame();
+      driver.switchTo().defaultContent();
     }
     return getResponse(session, null);
   }
