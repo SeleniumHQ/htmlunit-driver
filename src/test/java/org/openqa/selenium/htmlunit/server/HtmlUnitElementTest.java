@@ -119,7 +119,6 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
   }
 
   @Test(expected = ElementNotVisibleException.class)
-  @NotYetImplemented
   public void throwsOnClickingInvisible() {
     driver.get(appServer.whereIs("invisible.html"));
     driver.findElement(By.id("link")).click();

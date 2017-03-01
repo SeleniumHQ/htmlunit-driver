@@ -1798,6 +1798,9 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   }
 
   WebElement findElement(final By locator, final SearchContext context) {
+    if (alert.isLocked()) {
+      throw new UnhandledAlertException(alert.getText());
+    }
     return implicitlyWaitFor(new Callable<WebElement>() {
 
       @Override
