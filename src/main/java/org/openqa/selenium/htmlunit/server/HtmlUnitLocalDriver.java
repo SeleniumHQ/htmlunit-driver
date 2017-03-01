@@ -1001,20 +1001,20 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   protected void moveTo(int elementId) {
     lastElement = getElementById(elementId);
-    new Actions(this).moveToElement(lastElement).perform();;
+    new Actions(this).moveToElement(lastElement).perform();
   }
 
   protected void click(int button) {
     if (button == 2) {
-      new Actions(this).contextClick(lastElement).perform();;
+      new Actions(this).contextClick(lastElement).perform();
     }
     else {
-      new Actions(this).click(lastElement).perform();;
+      new Actions(this).click(lastElement).perform();
     }
   }
 
   protected void doubleclick() {
-    new Actions(this).doubleClick(lastElement).perform();;
+    new Actions(this).doubleClick(lastElement).perform();
   }
 
   protected void click(HtmlUnitWebElement element) {
@@ -1023,11 +1023,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected void buttondown() {
-    new Actions(this).clickAndHold(lastElement).perform();;
+    new Actions(this).clickAndHold(lastElement).perform();
   }
 
   protected void buttonup() {
-    new Actions(this).release(lastElement).perform();;
+    new Actions(this).release(lastElement).perform();
   }
 
   protected void keys(String string) {
@@ -1035,27 +1035,27 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       char ch = string.charAt(i);
       if (ch == Keys.NULL.charAt(0)) {
         if (keyboard.isPressed(Keys.CONTROL)) {
-          new Actions(this).keyUp(Keys.CONTROL).perform();;
+          new Actions(this).keyUp(Keys.CONTROL).perform();
         }
         if (keyboard.isPressed(Keys.ALT)) {
-          new Actions(this).keyUp(Keys.ALT).perform();;
+          new Actions(this).keyUp(Keys.ALT).perform();
         }
         if (keyboard.isPressed(Keys.SHIFT)) {
-          new Actions(this).keyUp(Keys.SHIFT).perform();;
+          new Actions(this).keyUp(Keys.SHIFT).perform();
         }
       }
       else {
         if (ch == Keys.SHIFT.charAt(0) || ch == Keys.CONTROL.charAt(0) || ch == Keys.ALT.charAt(0)) {
           Keys keys = Keys.getKeyFromUnicode(ch);
           if (keyboard.isPressed(ch)) {
-            new Actions(this).keyUp(keys).perform();;
+            new Actions(this).keyUp(keys).perform();
           }
           else {
-            new Actions(this).keyDown(keys).perform();;
+            new Actions(this).keyDown(keys).perform();
           }
         }
         else {
-          new Actions(this).sendKeys(lastElement, String.valueOf(ch)).perform();;
+          new Actions(this).sendKeys(lastElement, String.valueOf(ch)).perform();
         }
       }
     }

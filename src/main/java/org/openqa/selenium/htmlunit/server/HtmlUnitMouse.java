@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit.server;
 
 import java.io.IOException;
 
+import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.Mouse;
@@ -57,6 +58,10 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
+
+    if (!element.isDisplayed()) {
+      throw new ElementNotVisibleException("You may only interact with visible elements");
+    }
 
     moveOutIfNeeded(element);
 

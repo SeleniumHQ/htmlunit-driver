@@ -438,9 +438,8 @@ public class Session {
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
     HtmlUnitLocalDriver driver = getDriver(session);
-    runAsync(driver, () -> {
-      driver.click(driver.getElementById(Integer.valueOf(elementId)));
-    });
+    runAsync(driver, () -> driver.click(driver.getElementById(Integer.valueOf(elementId))));
+    waitForUnlockedOrAlert(driver);
     return getResponse(session, null);
   }
 
