@@ -330,8 +330,10 @@ public class Session {
   public static Response elementSendKeys(@PathParam("session") String session, @PathParam("elementId") String elementId, String content) {
     Map<String, List<String>> map = getMap(content);
     List<String> keys = map.get("value");
-    HtmlUnitWebElement element = getDriver(session).getElementById(Integer.parseInt(elementId));
-    element.sendKeys(keys.toArray(new String[keys.size()]));
+    HtmlUnitLocalDriver driver = getDriver(session);
+    HtmlUnitWebElement element = driver.getElementById(Integer.parseInt(elementId));
+    runAsync(driver, () -> element.sendKeys(keys.toArray(new String[keys.size()])));
+    waitForUnlockedOrAlert(driver);
     return getResponse(session, null);
   }
 
