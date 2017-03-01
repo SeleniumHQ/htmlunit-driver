@@ -199,7 +199,7 @@ public class Session {
   @Path("{session}/element")
   public static Response findElement(@PathParam("session") String session, String content) {
     By by = getBy(content);
-    HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session).findElement(by);
+    HtmlUnitWebElement e = (HtmlUnitWebElement) getDriver(session, false).findElement(by);
     return getResponse(session, toElement(e));
   }
 
@@ -231,7 +231,7 @@ public class Session {
       @PathParam("elementId") String elementId,
       String content) {
     By by = getBy(content);
-    WebElement element = getDriver(session).getElementById(Integer.valueOf(elementId));
+    WebElement element = getDriver(session, false).getElementById(Integer.valueOf(elementId));
 
     HtmlUnitWebElement e = (HtmlUnitWebElement) element.findElement(by);
     return getResponse(session, toElement(e));
