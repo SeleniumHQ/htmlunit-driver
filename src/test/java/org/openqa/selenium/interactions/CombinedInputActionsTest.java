@@ -205,6 +205,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(HTMLUNIT)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
@@ -260,6 +261,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * up at the wrong coordinates.
    */
   @Test
+  @Ignore(HTMLUNIT)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 

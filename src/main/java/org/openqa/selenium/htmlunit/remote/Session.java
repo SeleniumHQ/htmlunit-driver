@@ -1,4 +1,21 @@
-package org.openqa.selenium.htmlunit.server;
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+package org.openqa.selenium.htmlunit.remote;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -31,6 +48,8 @@ import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver.Timeouts;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.local.HtmlUnitAlert;
+import org.openqa.selenium.htmlunit.local.HtmlUnitWebElement;
 import org.openqa.selenium.remote.BeanToJsonConverter;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.ErrorCodes;
@@ -44,11 +63,11 @@ public class Session {
   private static Map<String, Session> sessions = new HashMap<>();
   private static SecureRandom random = new SecureRandom();
 
-  private static List<HtmlUnitLocalDriver> lockedDrivers = Collections.synchronizedList(new ArrayList<>());
-  private static Map<HtmlUnitLocalDriver, RuntimeException> exceptionsMap = Collections.synchronizedMap(new HashMap<>());
+  private static List<RemoteDriverWrapper> lockedDrivers = Collections.synchronizedList(new ArrayList<>());
+  private static Map<RemoteDriverWrapper, RuntimeException> exceptionsMap = Collections.synchronizedMap(new HashMap<>());
 
   private String id;
-  private HtmlUnitLocalDriver driver;
+  private RemoteDriverWrapper driver;
   
   private static synchronized Session createSession(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
     String id;
@@ -59,7 +78,7 @@ public class Session {
 
     Session session = new Session();
     session.id = id;
-    session.driver = new HtmlUnitLocalDriver(desiredCapabilities, requiredCapabilities);
+    session.driver = new RemoteDriverWrapper(desiredCapabilities, requiredCapabilities);
     sessions.put(id, session);
     return session;
   }
@@ -68,12 +87,12 @@ public class Session {
     return new BigInteger(16 * 8, random).toString(16);
   }
 
-  private static HtmlUnitLocalDriver getDriver(String sessionId) {
+  private static RemoteDriverWrapper getDriver(String sessionId) {
     return getDriver(sessionId, true);
   }
 
-  private static HtmlUnitLocalDriver getDriver(String sessionId, boolean ensureUnLock) {
-    HtmlUnitLocalDriver driver = sessions.get(sessionId).driver;
+  private static RemoteDriverWrapper getDriver(String sessionId, boolean ensureUnLock) {
+    RemoteDriverWrapper driver = sessions.get(sessionId).driver;
     if (ensureUnLock) {
       waitForUnlock(driver);
     }
@@ -101,7 +120,7 @@ public class Session {
   @DELETE
   @Path("{session}")
   public Response deleteSession(@PathParam("session") String session) {
-    HtmlUnitLocalDriver driver = getDriver(session, false);
+    RemoteDriverWrapper driver = getDriver(session, false);
     HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
     if (alert.isLocked()) {
       alert.accept();
@@ -118,7 +137,7 @@ public class Session {
   public static Response go(@PathParam("session") String session, String content) {
     String url = new JsonToBeanConverter().convert(Map.class, content).get("url").toString();
 
-    HtmlUnitLocalDriver driver = getDriver(session, false);
+    RemoteDriverWrapper driver = getDriver(session, false);
     HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
     if (alert.isLocked()) {
       alert.dismiss();
@@ -131,7 +150,7 @@ public class Session {
     return getResponse(session, null);
   }
 
-  private static void runAsync(HtmlUnitLocalDriver driver, Runnable runnable) {
+  private static void runAsync(RemoteDriverWrapper driver, Runnable runnable) {
     waitForUnlock(driver);
     new Thread(() -> {
       try {
@@ -149,12 +168,12 @@ public class Session {
     lockDriver(driver);
   }
 
-  private static void lockDriver(HtmlUnitLocalDriver driver) {
+  private static void lockDriver(RemoteDriverWrapper driver) {
     waitForUnlock(driver);
     lockedDrivers.add(driver);
   }
 
-  private static void waitForUnlock(HtmlUnitLocalDriver driver) {
+  private static void waitForUnlock(RemoteDriverWrapper driver) {
     while (lockedDrivers.contains(driver)) {
       RuntimeException t = exceptionsMap.get(driver);
       if (t != null) {
@@ -172,7 +191,7 @@ public class Session {
     }
   }
 
-  private static void unlockDriver(HtmlUnitLocalDriver driver) {
+  private static void unlockDriver(RemoteDriverWrapper driver) {
     lockedDrivers.remove(driver);
   }
 
@@ -219,7 +238,7 @@ public class Session {
   private static Object toElement(Object object) {
     if (object instanceof HtmlUnitWebElement) {
       Map<String, Integer> map2 = new HashMap<>();
-      map2.put("ELEMENT", ((HtmlUnitWebElement) object).id);
+      map2.put("ELEMENT", ((HtmlUnitWebElement) object).getId());
       return map2;
     }
     return object;
@@ -330,7 +349,7 @@ public class Session {
   public static Response elementSendKeys(@PathParam("session") String session, @PathParam("elementId") String elementId, String content) {
     Map<String, List<String>> map = getMap(content);
     List<String> keys = map.get("value");
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
     HtmlUnitWebElement element = driver.getElementById(Integer.parseInt(elementId));
     runAsync(driver, () -> element.sendKeys(keys.toArray(new String[keys.size()])));
     waitForUnlockedOrAlert(driver);
@@ -439,7 +458,7 @@ public class Session {
   public static Response elementClick(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
     runAsync(driver, () -> driver.click(driver.getElementById(Integer.valueOf(elementId))));
     waitForUnlockedOrAlert(driver);
     return getResponse(session, null);
@@ -477,7 +496,7 @@ public class Session {
   public static Response elementSubmit(
       @PathParam("session") String session,
       @PathParam("elementId") String elementId) {
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
     runAsync(driver, () -> {
       driver.getElementById(Integer.valueOf(elementId)).submit();
     });
@@ -491,7 +510,7 @@ public class Session {
   public static Response execute(@PathParam("session") String session, String content) {
     Map<String, ?> map = getMap(content);
     String script = (String) map.get("script");
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
 
     List<?> args = (ArrayList<?>) map.get("args");
     Object[] array = args.stream().map(i -> {
@@ -510,7 +529,7 @@ public class Session {
   public static Response executeAsync(@PathParam("session") String session, String content) {
       Map<String, ?> map = getMap(content);
       String script = (String) map.get("script");
-      HtmlUnitLocalDriver driver = getDriver(session);
+      RemoteDriverWrapper driver = getDriver(session);
 
       List<?> args = (ArrayList<?>) map.get("args");
       Object[] array = args.toArray(new Object[args.size()]);
@@ -572,7 +591,7 @@ public class Session {
   @Path("{session}/frame")
   public static Response frame(@PathParam("session") String session, String content) {
     Map<String, Map<String, ?>> map = getMap(content);
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
     Map<String, ?> subMap = map.get("id");
     if (subMap != null) {
       int id = Integer.parseInt((String) subMap.get("ELEMENT"));
@@ -625,13 +644,13 @@ public class Session {
   @GET
   @Path("{session}/alert_text")
   public static Response alertText(@PathParam("session") String session) {
-    HtmlUnitLocalDriver driver = getDriver(session, false);
+    RemoteDriverWrapper driver = getDriver(session, false);
     HtmlUnitAlert alert = waitForUnlockedOrAlert(driver);
     String value = alert.getText();
     return getResponse(session, value);
   }
 
-  private static HtmlUnitAlert waitForUnlockedOrAlert(HtmlUnitLocalDriver driver) {
+  private static HtmlUnitAlert waitForUnlockedOrAlert(RemoteDriverWrapper driver) {
     HtmlUnitAlert alert = (HtmlUnitAlert) driver.switchTo().alert();
     while (lockedDrivers.contains(driver) && !alert.isLocked()) {
       RuntimeException t = exceptionsMap.get(driver);
@@ -674,11 +693,9 @@ public class Session {
   @POST
   @Path("{session}/back")
   public static Response back(@PathParam("session") String session) {
-    HtmlUnitLocalDriver driver = getDriver(session);
+    RemoteDriverWrapper driver = getDriver(session);
     
-    runAsync(driver, () -> {
-      driver.navigate().back();
-    });
+    runAsync(driver, () -> driver.navigate().back());
     return getResponse(session, null);
   }
 

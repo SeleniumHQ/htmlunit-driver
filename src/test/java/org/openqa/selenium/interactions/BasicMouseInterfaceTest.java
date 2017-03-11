@@ -258,7 +258,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME},
+  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME, HTMLUNIT},
           reason = "Behaviour not finalized yet regarding linked images.")
   @Test
   public void testMovingIntoAnImageEnclosedInALink() {
@@ -368,10 +368,9 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
           reason = "Advanced mouse actions only implemented in rendered browsers",
           issues = {4136})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testMovingMouseByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);

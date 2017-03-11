@@ -46,6 +46,7 @@ import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 //we migrated to 'remote' WebDriver

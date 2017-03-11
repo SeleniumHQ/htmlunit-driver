@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +39,7 @@ class AsyncScriptExecutor {
 
   private final HtmlPage page;
   private final long timeoutMillis;
+  private AsyncScriptResult asyncResult;
 
   /**
    * Prepares a new asynchronous script for execution.
@@ -51,6 +52,10 @@ class AsyncScriptExecutor {
     this.timeoutMillis = timeoutMillis;
   }
 
+  void alertTriggered() {
+    asyncResult.alert();
+  }
+
   /**
    * Injects an asynchronous script for execution and waits for its result.
    *
@@ -60,20 +65,25 @@ class AsyncScriptExecutor {
    * @return The script result.
    */
   public Object execute(String scriptBody, Object[] parameters) {
-    AsyncScriptResult asyncResult = new AsyncScriptResult();
-    Function function = createInjectedScriptFunction(scriptBody, asyncResult);
-
     try {
-      page.executeJavaScriptFunctionIfPossible(function, function, parameters,
-          page.getDocumentElement());
-    } catch (ScriptException e) {
-      throw new WebDriverException(e);
+      asyncResult = new AsyncScriptResult();
+      Function function = createInjectedScriptFunction(scriptBody, asyncResult);
+
+      try {
+        page.executeJavaScriptFunctionIfPossible(function, function, parameters,
+            page.getDocumentElement());
+      } catch (ScriptException e) {
+        throw new WebDriverException(e);
+      }
+
+      try {
+        return asyncResult.waitForResult(timeoutMillis);
+      } catch (InterruptedException e) {
+        throw new WebDriverException(e);
+      }
     }
-
-    try {
-      return asyncResult.waitForResult();
-    } catch (InterruptedException e) {
-      throw new WebDriverException(e);
+    finally {
+      asyncResult = null;
     }
   }
 
@@ -138,9 +148,10 @@ class AsyncScriptExecutor {
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    private volatile Object value = null;
-    private volatile boolean isTimeout = false;
-    private volatile boolean unloadDetected = false;
+    private volatile Object value;
+    private volatile boolean isTimeout;
+    private volatile boolean isAlert;
+    private volatile boolean unloadDetected;
 
     /**
      * Waits for the script to signal it is done by calling {@link #callback(Object) callback}.
@@ -148,9 +159,11 @@ class AsyncScriptExecutor {
      * @return The script result.
      * @throws InterruptedException If this thread is interrupted before a result is ready.
      */
-    Object waitForResult() throws InterruptedException {
+    Object waitForResult(long timeoutMillis) throws InterruptedException {
       long startTimeNanos = System.nanoTime();
+      System.out.println("waiting... " + timeoutMillis);
       latch.await();
+      System.out.println("after waiting... " + isTimeout);
       if (isTimeout) {
         long elapsedTimeNanos = System.nanoTime() - startTimeNanos;
         long elapsedTimeMillis = TimeUnit.NANOSECONDS.toMillis(elapsedTimeNanos);
@@ -192,6 +205,16 @@ class AsyncScriptExecutor {
     public void timeout() {
       if (latch.getCount() > 0) {
         isTimeout = true;
+        latch.countDown();
+      }
+    }
+
+    /**
+     * Function to signal an alert.
+     */
+    private void alert() {
+      if (latch.getCount() > 0) {
+        isAlert = true;
         latch.countDown();
       }
     }

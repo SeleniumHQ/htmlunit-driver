@@ -33,8 +33,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.local.HtmlUnitWebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -225,14 +225,13 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented
   public void elementToStringShouldLookNice() {
     driver.get(appServer.whereIs("link.html"));
     WebElement a = driver.findElement(By.id("link"));
     assertThat(a.toString(), is("<a id=\"link\" href=\"/index.html\">"));
   }
 
-  @Test(expected = WebDriverException.class)
+  @Test(expected = UnsupportedOperationException.class)
   public void elementScreenshotIsNotSupported() {
     driver.findElement(By.tagName("body")).getScreenshotAs(OutputType.BASE64);
   }

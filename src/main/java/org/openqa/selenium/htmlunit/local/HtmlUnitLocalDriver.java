@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 
@@ -33,6 +33,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -43,7 +46,7 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
@@ -59,7 +62,6 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
@@ -148,10 +150,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   private HtmlUnitKeyboard keyboard;
   private HtmlUnitMouse mouse;
   private boolean gotPage;
+  private TargetLocator targetLocator = new HtmlUnitTargetLocator();
+  private AsyncScriptExecutor asyncScriptExecutor;
 
   private int elementsCounter;
   private Map<DomElement, HtmlUnitWebElement> elementsMap = new HashMap<>();
-  private HtmlUnitWebElement lastElement;
 
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
   public static final String INVALIDSELECTIONERROR =
@@ -159,6 +162,10 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
   public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+
+  private Lock lock = new ReentrantLock();
+  private Condition mainCondition = lock.newCondition();
+  private RuntimeException exception;
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -328,6 +335,63 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     client.setRefreshHandler(new WaitingRefreshHandler());
 
     return modifyWebClient(client);
+  }
+
+  boolean isAlert;
+
+  /**
+   * @return to process or not to proceed
+   */
+  boolean alert() {
+    if (asyncScriptExecutor != null) {
+      asyncScriptExecutor.alertTriggered();
+      return false;
+    }
+    isAlert = true;
+    lock.lock();
+    mainCondition.signal();
+    lock.unlock();
+    return true;
+  }
+
+  void runAsync(Runnable r) {
+    lock.lock();
+    exception = null;
+    isAlert = false;
+    new Thread(() -> {
+      try {
+        r.run();
+        Thread.sleep(200);
+      }
+      catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+      catch (RuntimeException e) {
+        exception = e;
+      }
+      finally {
+        lock.lock();
+        mainCondition.signal();
+        lock.unlock();
+      }
+    }).start();
+    mainCondition.awaitUninterruptibly();
+    lock.unlock();
+    if (exception != null) {
+      throw exception;
+    }
+  }
+
+  void click(DomElement element) {
+    runAsync(() -> mouse.click(element));
+  }
+
+  void submit(HtmlUnitWebElement element) {
+    runAsync(() -> element.submitImpl());
+  }
+
+  void sendKeys(HtmlUnitWebElement element, CharSequence... value) {
+    runAsync(() -> keyboard.sendKeys(element, true, value));
   }
 
   /**
@@ -509,7 +573,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public void get(String url) {
-    // Prevent the malformed url exception.
+    // Prevent the malformed URL exception.
     if (WebClient.URL_ABOUT_BLANK.toString().equals(url)) {
       get(WebClient.URL_ABOUT_BLANK);
       return;
@@ -522,7 +586,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       throw new WebDriverException(e);
     }
 
-    get(fullUrl);
+    runAsync(() -> get(fullUrl));
   }
 
   /**
@@ -532,6 +596,8 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
    * @param fullUrl The URL to visit
    */
   protected void get(URL fullUrl) {
+    alert.close();
+    alert.setAutoAccept(false);
     try {
       getWebClient().getPage(getCurrentWindow().getTopWindow(),
           new WebRequest(fullUrl, getBrowserVersion().getHtmlAcceptHeader()));
@@ -699,10 +765,20 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     HtmlPage page = getPageToInjectScriptInto();
     args = convertScriptArgs(page, args);
 
-    Object result = new AsyncScriptExecutor(page, scriptTimeout)
-        .execute(script, args);
+    asyncScriptExecutor = new AsyncScriptExecutor(page, scriptTimeout);
+    try {
+      Object result = asyncScriptExecutor.execute(script, args);
 
-    return parseNativeJavascriptResult(result);
+      if (alert.isLocked()) {
+        String text = alert.getText();
+        alert.dismiss();
+        throw new UnhandledAlertException("Alert found", text);
+      }
+      return parseNativeJavascriptResult(result);
+    }
+    finally {
+      asyncScriptExecutor = null;
+    }
   }
 
   private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
@@ -944,7 +1020,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public TargetLocator switchTo() {
-    return new HtmlUnitTargetLocator();
+    return targetLocator;
   }
 
   private void switchToDefaultContentOfWindow(WebWindow window) {
@@ -990,75 +1066,13 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     return e;
   }
 
-  protected HtmlUnitWebElement getElementById(int id) {
+  public HtmlUnitWebElement getElementById(int id) {
     for (HtmlUnitWebElement e : elementsMap.values()) {
       if (e.id == id) {
         return e;
       }
     }
     return null;
-  }
-
-  protected void moveTo(int elementId) {
-    lastElement = getElementById(elementId);
-    new Actions(this).moveToElement(lastElement).perform();
-  }
-
-  protected void click(int button) {
-    if (button == 2) {
-      new Actions(this).contextClick(lastElement).perform();
-    }
-    else {
-      new Actions(this).click(lastElement).perform();
-    }
-  }
-
-  protected void doubleclick() {
-    new Actions(this).doubleClick(lastElement).perform();
-  }
-
-  protected void click(HtmlUnitWebElement element) {
-    this.lastElement = element;
-    click(0);
-  }
-
-  protected void buttondown() {
-    new Actions(this).clickAndHold(lastElement).perform();
-  }
-
-  protected void buttonup() {
-    new Actions(this).release(lastElement).perform();
-  }
-
-  protected void keys(String string) {
-    for (int i = 0; i < string.length(); i++) {
-      char ch = string.charAt(i);
-      if (ch == Keys.NULL.charAt(0)) {
-        if (keyboard.isPressed(Keys.CONTROL)) {
-          new Actions(this).keyUp(Keys.CONTROL).perform();
-        }
-        if (keyboard.isPressed(Keys.ALT)) {
-          new Actions(this).keyUp(Keys.ALT).perform();
-        }
-        if (keyboard.isPressed(Keys.SHIFT)) {
-          new Actions(this).keyUp(Keys.SHIFT).perform();
-        }
-      }
-      else {
-        if (ch == Keys.SHIFT.charAt(0) || ch == Keys.CONTROL.charAt(0) || ch == Keys.ALT.charAt(0)) {
-          Keys keys = Keys.getKeyFromUnicode(ch);
-          if (keyboard.isPressed(ch)) {
-            new Actions(this).keyUp(keys).perform();
-          }
-          else {
-            new Actions(this).keyDown(keys).perform();
-          }
-        }
-        else {
-          new Actions(this).sendKeys(lastElement, String.valueOf(ch)).perform();
-        }
-      }
-    }
   }
 
   @Override
@@ -1402,6 +1416,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       getWebClient().setCurrentWindow(window);
       currentWindow = window;
       pickWindow();
+      alert.setAutoAccept(false);
       return HtmlUnitLocalDriver.this;
     }
 
@@ -1433,6 +1448,16 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     @Override
     public Alert alert() {
       getCurrentWindow();
+      if (!alert.isLocked()) {
+        try {
+          Thread.sleep(200);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+        if (!alert.isLocked()) {
+          throw new NoAlertPresentException();
+        }
+      }
       return alert;
     }
   }
@@ -1696,7 +1721,6 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     public Window window() {
       return new HtmlUnitWindow();
     }
-
   }
 
   class HtmlUnitTimeouts implements Timeouts {

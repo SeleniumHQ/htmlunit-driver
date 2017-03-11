@@ -15,14 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.htmlunit.server.HtmlUnitLocalDriver;
+import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.assertEquals;

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -132,32 +132,34 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public void click() {
     verifyCanInteractWithElement(true);
-    parent.getMouse().click(getCoordinates());
+//    parent.getMouse().click(getCoordinates());
+    parent.click(element);
   }
 
   @Override
   public void submit() {
+    parent.submit(this);
+  }
+
+  void submitImpl() {
     try {
       if (element instanceof HtmlForm) {
         submitForm((HtmlForm) element);
-        return;
       } else if ((element instanceof HtmlSubmitInput) || (element instanceof HtmlImageInput)) {
         element.click();
-        return;
       } else if (element instanceof HtmlInput) {
         HtmlForm form = ((HtmlElement) element).getEnclosingForm();
         if (form == null) {
           throw new NoSuchElementException("Unable to find the containing form");
         }
         submitForm(form);
-        return;
+      } else {
+        WebElement form = findParentForm();
+        if (form == null) {
+          throw new NoSuchElementException("Unable to find the containing form");
+        }
+        form.submit();
       }
-
-      WebElement form = findParentForm();
-      if (form == null) {
-        throw new NoSuchElementException("Unable to find the containing form");
-      }
-      form.submit();
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
@@ -283,7 +285,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void sendKeys(CharSequence... value) {
-    ((HtmlUnitKeyboard) parent.getKeyboard()).sendKeys(this, true, value);
+    //((HtmlUnitKeyboard) parent.getKeyboard()).sendKeys(this, true, value);
+    parent.sendKeys(this, value);
   }
 
   @Override
@@ -862,5 +865,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     throw new UnsupportedOperationException(
       "Screenshots are not enabled for HtmlUnitDriver");
+  }
+
+  public int getId() {
+    return id;
   }
 }

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import java.io.IOException;
 
@@ -58,6 +58,10 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
+    click(element);
+  }
+
+  void click(DomElement element) {
 
     if (!element.isDisplayed()) {
       throw new ElementNotVisibleException("You may only interact with visible elements");

@@ -15,28 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.remote;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverCommandExecutor;
 
-public class JavascriptEnabledHtmlUnitDriverTests {
+public class HtmlUnitRemoteDriver extends RemoteWebDriver {
 
-  // Used by the reflection-based supplier
-  public static class HtmlUnitDriverForTest extends HtmlUnitLocalDriver {
-    public HtmlUnitDriverForTest(Capabilities capabilities) {
-      super(tweak(capabilities));
-    }
+  public HtmlUnitRemoteDriver() {
+    this(new DesiredCapabilities());
+  }
 
-    public HtmlUnitDriverForTest(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-      super(tweak(desiredCapabilities), tweak(requiredCapabilities));
-    }
-
-    private static Capabilities tweak(Capabilities capabilities) {
-      DesiredCapabilities caps = new DesiredCapabilities(capabilities);
-      caps.setJavascriptEnabled(true);
-      return caps;
-    }
+  public HtmlUnitRemoteDriver(Capabilities capabilities) {
+    super(new DriverCommandExecutor(HtmlUnitDriverService.createDefaultService()),
+        capabilities);
   }
 }

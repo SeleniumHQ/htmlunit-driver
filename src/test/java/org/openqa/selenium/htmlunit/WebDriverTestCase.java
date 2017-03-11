@@ -70,6 +70,7 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
+import org.openqa.selenium.htmlunit.remote.HtmlUnitRemoteDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -749,7 +750,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
       startWebServer(mockWebConnection);
 
       WebDriver driver = getWebDriver();
-      if (!(driver instanceof HtmlUnitDriver)) {
+      if (!(driver instanceof HtmlUnitRemoteDriver)) {
           try {
               driver.manage().window().setSize(new Dimension(1272, 768));
           }
@@ -1043,7 +1044,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * Returns the HtmlElement of the specified WebElement.
    * @param webElement the webElement
    * @return the HtmlElement
-   * @see #getWebWindowOf(HtmlUnitDriver)
+   * @see #getWebWindowOf(HtmlUnitRemoteDriver)
    */
   protected HtmlElement toHtmlElement(final WebElement webElement) {
       return null;
@@ -1144,8 +1145,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if an error occurs
    * @see #toHtmlElement(WebElement)
    */
-  protected WebWindow getWebWindowOf(final HtmlUnitDriver driver) throws Exception {
-      final Field field = HtmlUnitDriver.class.getDeclaredField("currentWindow");
+  protected WebWindow getWebWindowOf(final HtmlUnitRemoteDriver driver) throws Exception {
+      final Field field = HtmlUnitRemoteDriver.class.getDeclaredField("currentWindow");
       field.setAccessible(true);
       return (WebWindow) field.get(driver);
   }

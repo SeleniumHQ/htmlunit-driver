@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.server;
+package org.openqa.selenium.htmlunit.local;
 
 import java.io.IOException;
 
@@ -161,11 +161,11 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     return modifiersState.isAltPressed();
   }
 
-  boolean isPressed(char ch) {
+  public boolean isPressed(char ch) {
     return modifiersState.isPressed(ch);
   }
 
-  boolean isPressed(Keys keys) {
+  public boolean isPressed(Keys keys) {
     return modifiersState.isPressed(keys);
   }
 }

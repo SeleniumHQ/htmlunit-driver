@@ -418,7 +418,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {CHROME, IE, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment(reason = "Relies on timing")
   public void includesAlertTextInUnhandledAlertException() {
     driver.manage().timeouts().setScriptTimeout(5000, TimeUnit.MILLISECONDS);
