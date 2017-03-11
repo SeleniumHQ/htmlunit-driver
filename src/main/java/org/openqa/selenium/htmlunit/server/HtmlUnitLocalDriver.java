@@ -159,6 +159,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
   public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+  public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -254,7 +255,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   public HtmlUnitLocalDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
-    setJavascriptEnabled(capabilities.isJavascriptEnabled());
+    setJavascriptEnabled(capabilities.is(JAVASCRIPT_ENABLED));
 
     setProxySettings(Proxy.extractFrom(capabilities));
 
