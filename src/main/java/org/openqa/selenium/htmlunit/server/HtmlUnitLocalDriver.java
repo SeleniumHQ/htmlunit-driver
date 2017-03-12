@@ -246,7 +246,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
    *       and browserVersion denotes the desired version.</li>
    *   <li>The second one is where the browserName is "htmlunit" and the browserVersion
    *       denotes the required browser AND its version. In this mode the browserVersion could be
-   *       "chrome" for Chrome, "firefox-38" for Firefox 38 or "internet explorer-11" for IE 11.</li>
+   *       "chrome" for Chrome, "firefox-45" for Firefox 45 or "internet explorer" for IE.</li>
    * </ol>
    * <p>The Remote WebDriver uses the second mode - the first mode is deprecated and should not be used.
    *
@@ -255,7 +255,8 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   public HtmlUnitLocalDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
-    setJavascriptEnabled(capabilities.is(JAVASCRIPT_ENABLED));
+    setJavascriptEnabled(capabilities.getCapability(JAVASCRIPT_ENABLED) == null
+        || capabilities.is(JAVASCRIPT_ENABLED));
 
     setProxySettings(Proxy.extractFrom(capabilities));
 

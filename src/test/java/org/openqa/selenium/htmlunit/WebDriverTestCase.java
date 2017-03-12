@@ -140,7 +140,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
   private static Set<String> BROWSERS_PROPERTIES_;
   private static String CHROME_BIN_;
-  private static String EDGE_BIN_;
   private static String IE_BIN_;
   private static String FF45_BIN_;
 
@@ -192,7 +191,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
                   BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList(browsersValue.replaceAll(" ", "")
                           .toLowerCase(Locale.ROOT).split(",")));
                   CHROME_BIN_ = properties.getProperty("chrome.bin");
-                  EDGE_BIN_ = properties.getProperty("edge.bin");
                   IE_BIN_ = properties.getProperty("ie.bin");
                   FF45_BIN_ = properties.getProperty("ff45.bin");
 
