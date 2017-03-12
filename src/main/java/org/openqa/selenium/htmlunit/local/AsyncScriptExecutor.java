@@ -24,6 +24,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
 
 import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
@@ -161,14 +162,15 @@ class AsyncScriptExecutor {
      */
     Object waitForResult(long timeoutMillis) throws InterruptedException {
       long startTimeNanos = System.nanoTime();
-      System.out.println("waiting... " + timeoutMillis);
       latch.await();
-      System.out.println("after waiting... " + isTimeout);
       if (isTimeout) {
         long elapsedTimeNanos = System.nanoTime() - startTimeNanos;
         long elapsedTimeMillis = TimeUnit.NANOSECONDS.toMillis(elapsedTimeNanos);
         throw new ScriptTimeoutException(
             "Timed out waiting for async script result after " + elapsedTimeMillis + "ms");
+      }
+      if (isAlert) {
+        throw new UnhandledAlertException("");
       }
 
       if (unloadDetected) {
