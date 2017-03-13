@@ -53,8 +53,8 @@ class AsyncScriptExecutor {
     this.timeoutMillis = timeoutMillis;
   }
 
-  void alertTriggered() {
-    asyncResult.alert();
+  void alertTriggered(String message) {
+    asyncResult.alert(message);
   }
 
   /**
@@ -151,7 +151,7 @@ class AsyncScriptExecutor {
 
     private volatile Object value;
     private volatile boolean isTimeout;
-    private volatile boolean isAlert;
+    private volatile String alertMessage;
     private volatile boolean unloadDetected;
 
     /**
@@ -169,8 +169,8 @@ class AsyncScriptExecutor {
         throw new ScriptTimeoutException(
             "Timed out waiting for async script result after " + elapsedTimeMillis + "ms");
       }
-      if (isAlert) {
-        throw new UnhandledAlertException("");
+      if (alertMessage != null) {
+        throw new UnhandledAlertException("Alert found", alertMessage);
       }
 
       if (unloadDetected) {
@@ -214,9 +214,9 @@ class AsyncScriptExecutor {
     /**
      * Function to signal an alert.
      */
-    private void alert() {
+    private void alert(String message) {
       if (latch.getCount() > 0) {
-        isAlert = true;
+        this.alertMessage = message;
         latch.countDown();
       }
     }

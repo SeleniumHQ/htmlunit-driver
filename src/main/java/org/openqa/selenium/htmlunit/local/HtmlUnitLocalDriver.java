@@ -162,6 +162,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
   public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+  public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
   private Lock lock = new ReentrantLock();
   private Condition mainCondition = lock.newCondition();
@@ -261,7 +262,8 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   public HtmlUnitLocalDriver(Capabilities capabilities) {
     this(determineBrowserVersion(capabilities));
 
-    setJavascriptEnabled(capabilities.isJavascriptEnabled());
+    setJavascriptEnabled(capabilities.getCapability(JAVASCRIPT_ENABLED) == null
+        || capabilities.is(JAVASCRIPT_ENABLED));
 
     setProxySettings(Proxy.extractFrom(capabilities));
 
@@ -344,7 +346,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
    */
   boolean alert() {
     if (asyncScriptExecutor != null) {
-      asyncScriptExecutor.alertTriggered();
+      asyncScriptExecutor.alertTriggered(alert.getText());
       return false;
     }
     isAlert = true;
@@ -361,11 +363,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     new Thread(() -> {
       try {
         r.run();
-        Thread.sleep(200);
+//        Thread.sleep(200);
       }
-      catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
+//      catch (InterruptedException e) {
+//        throw new RuntimeException(e);
+//      }
       catch (RuntimeException e) {
         exception = e;
       }
@@ -1450,7 +1452,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       getCurrentWindow();
       if (!alert.isLocked()) {
         try {
-          Thread.sleep(200);
+          Thread.sleep(10);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
