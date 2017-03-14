@@ -1452,7 +1452,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
       getCurrentWindow();
       if (!alert.isLocked()) {
         try {
-          Thread.sleep(10);
+          Thread.sleep(50);
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
