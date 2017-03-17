@@ -65,6 +65,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
 
@@ -322,7 +323,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
     }
     if ("disabled".equals(lowerName)) {
-      return trueOrNull(! isEnabled());
+      return trueOrNull(!isEnabled());
     }
 
     if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
@@ -370,6 +371,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return element.asXml();
     }
 
+    if ("outerHTML".equals(name) && element instanceof HtmlElement) {
+      return ((HTMLElement) element.getScriptableObject()).getOuterHTML();
+    }
+
     if ("value".equals(lowerName)) {
       if (element instanceof HtmlFileInput) {
         return ((HTMLInputElement) element.getScriptableObject()).getValue();
@@ -389,7 +394,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return value == null ? "" : value;
     }
 
-    if (!"".equals(value)) {
+    if (!value.isEmpty()) {
       return value;
     }
 
