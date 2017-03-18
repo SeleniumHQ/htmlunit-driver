@@ -1068,7 +1068,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     throw new NoSuchElementException("No link found with text: " + expectedText);
   }
 
-  protected WebElement toWebElement(DomElement element) {
+  protected HtmlUnitWebElement toWebElement(DomElement element) {
     HtmlUnitWebElement e = elementsMap.get(element);
     if (e == null) {
       e = new HtmlUnitWebElement(this, ++elementsCounter, element);

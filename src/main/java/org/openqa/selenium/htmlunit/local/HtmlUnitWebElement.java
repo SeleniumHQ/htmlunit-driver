@@ -155,11 +155,11 @@ public class HtmlUnitWebElement implements WrapsDriver,
         }
         submitForm(form);
       } else {
-        WebElement form = findParentForm();
+        HtmlUnitWebElement form = findParentForm();
         if (form == null) {
           throw new NoSuchElementException("Unable to find the containing form");
         }
-        form.submit();
+        form.submitImpl();
       }
     } catch (IOException e) {
       throw new WebDriverException(e);
@@ -704,7 +704,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return toReturn;
   }
 
-  private WebElement findParentForm() {
+  private HtmlUnitWebElement findParentForm() {
     DomNode current = element;
     while (!(current == null || current instanceof HtmlForm)) {
       current = current.getParentNode();
