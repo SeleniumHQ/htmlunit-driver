@@ -54,11 +54,11 @@ public class HtmlUnitAlert implements Alert {
     if (quitting_) {
       return;
     }
+    l.lock();
     try {
       holder_ = new AlertHolder(page.getEnclosingWindow(), message);
 //    this.message = message;
 //    accepted = false;
-    l.lock();
     boolean proceed = driver.alert();
     if (proceed) {
       c.awaitUninterruptibly();

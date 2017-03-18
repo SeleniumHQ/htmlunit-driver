@@ -58,7 +58,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     sendKeys(element, keysContainer, releaseAllAtEnd);
 
     if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
-      htmlElem.submit();
+      htmlElem.submitImpl();
     }
   }
 

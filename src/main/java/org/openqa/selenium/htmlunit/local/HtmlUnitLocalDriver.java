@@ -164,8 +164,11 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
   public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
-  private Lock lock = new ReentrantLock();
-  private Condition mainCondition = lock.newCondition();
+  /** The Lock for the {@link #mainCondition}, which waits at the end of {@link #runAsync(Runnable)}
+   * till either and alert is triggered, or {@link Runnable} finishes. */
+  private Lock conditionLock = new ReentrantLock();
+  private Condition mainCondition = conditionLock.newCondition();
+  private boolean runAsyncRunning;
   private RuntimeException exception;
 
   /**
@@ -339,46 +342,50 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     return modifyWebClient(client);
   }
 
-  boolean isAlert;
-
   /**
    * @return to process or not to proceed
    */
   boolean alert() {
     if (asyncScriptExecutor != null) {
-      asyncScriptExecutor.alertTriggered(alert.getText());
+      String text = alert.getText();
+      alert.dismiss();
+      asyncScriptExecutor.alertTriggered(text);
       return false;
     }
-    isAlert = true;
-    lock.lock();
+    conditionLock.lock();
     mainCondition.signal();
-    lock.unlock();
+    conditionLock.unlock();
     return true;
   }
 
   void runAsync(Runnable r) {
-    lock.lock();
+    while (runAsyncRunning) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
+    conditionLock.lock();
+    runAsyncRunning = true;
+    
     exception = null;
-    isAlert = false;
     new Thread(() -> {
       try {
         r.run();
-//        Thread.sleep(200);
       }
-//      catch (InterruptedException e) {
-//        throw new RuntimeException(e);
-//      }
       catch (RuntimeException e) {
         exception = e;
       }
       finally {
-        lock.lock();
+        conditionLock.lock();
         mainCondition.signal();
-        lock.unlock();
+        runAsyncRunning = false;
+        conditionLock.unlock();
       }
     }).start();
     mainCondition.awaitUninterruptibly();
-    lock.unlock();
+    conditionLock.unlock();
     if (exception != null) {
       throw exception;
     }
@@ -654,7 +661,9 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   @Override
   public String getTitle() {
     if (alert.isLocked()) {
-      throw new UnhandledAlertException("Alert found", alert.getText());
+      String text = alert.getText();
+      alert.dismiss();
+      throw new UnhandledAlertException("Alert found", text);
     }
     Page page = lastPage();
     if (page == null || !(page instanceof HtmlPage)) {
@@ -1449,14 +1458,18 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public Alert alert() {
-      getCurrentWindow();
       if (!alert.isLocked()) {
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
+        for (int i = 0; i < 5; i++) {
+          if (!alert.isLocked()) {
+            try {
+              Thread.sleep(50);
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
+          }
         }
         if (!alert.isLocked()) {
+          getCurrentWindow();
           throw new NoAlertPresentException();
         }
       }
