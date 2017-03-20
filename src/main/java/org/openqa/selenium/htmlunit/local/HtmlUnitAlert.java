@@ -87,6 +87,7 @@ public class HtmlUnitAlert implements Alert {
     }
     holder_ = new AlertHolder(returnValue);
     AlertHolder localHolder = holder_;
+    awaitCondition();
     return localHolder.isAccepted();
   }
 
