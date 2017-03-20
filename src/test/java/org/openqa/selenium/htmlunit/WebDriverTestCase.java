@@ -1095,9 +1095,11 @@ public abstract class WebDriverTestCase extends WebTestCase {
 //              webClient_.getCookieManager().clearCookies();
 //          }
 //          webClient_ = null;
-          List<Thread> jsThreads = getJavaScriptThreads();
-          assertEquals("There are still " + jsThreads.size()
-                  + " JS threads running after the test", 0, jsThreads.size());
+
+          // WebDriver tests don't close the driver
+//          List<Thread> jsThreads = getJavaScriptThreads();
+//          assertEquals("There are still " + jsThreads.size()
+//                  + " JS threads running after the test", 0, jsThreads.size());
       }
 
       if (useRealBrowser()) {
