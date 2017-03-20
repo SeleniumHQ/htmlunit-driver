@@ -55,6 +55,7 @@ public class HtmlUnitAlert implements Alert {
     if (proceed) {
       c.awaitUninterruptibly();
     }
+    l.unlock();
   }
 
   private String promptHandler(Page page, String message, String defaultMessage) {
