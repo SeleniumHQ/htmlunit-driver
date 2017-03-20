@@ -24,7 +24,6 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -66,9 +65,8 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
-import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
 import org.openqa.selenium.htmlunit.remote.HtmlUnitRemoteDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -435,7 +433,9 @@ public abstract class WebDriverTestCase extends WebTestCase {
               System.setProperty("webdriver.firefox.marionette", "false");
 
               if (FF45_BIN_ != null) {
-                  return new FirefoxDriver(new FirefoxBinary(new File(FF45_BIN_)), new FirefoxProfile());
+                final FirefoxOptions options = new FirefoxOptions();
+                options.setBinary(FF45_BIN_);
+                return new FirefoxDriver(options);
               }
               return new FirefoxDriver();
           }
@@ -1096,17 +1096,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
 //          }
 //          webClient_ = null;
           List<Thread> jsThreads = getJavaScriptThreads();
-          int waitCount = 0;
-          while (jsThreads.size() > 0 && waitCount < 10) {
-              try {
-                  waitCount++;
-                  Thread.sleep(100);
-              }
-              catch (final InterruptedException e) {
-                  // ignore
-              }
-              jsThreads = getJavaScriptThreads();
-          }
           assertEquals("There are still " + jsThreads.size()
                   + " JS threads running after the test", 0, jsThreads.size());
       }
