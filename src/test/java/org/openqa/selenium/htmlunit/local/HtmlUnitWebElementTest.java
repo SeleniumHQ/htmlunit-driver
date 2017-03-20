@@ -40,4 +40,40 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
       assertEquals("<head></head>", head.getAttribute("outerHTML"));
   }
 
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void outerhtml() throws Exception {
+      final String html = "<html><head></head>\n"
+          + "</html>";
+      final WebDriver webDriver = loadPage2(html);
+      final WebElement head = webDriver.findElement(By.xpath("//head"));
+      assertNull(head.getAttribute("outerhtml"));
+  }
+
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void innterHTML() throws Exception {
+      final String html = "<html><head><title>abc</title></head>\n"
+          + "</html>";
+      final WebDriver webDriver = loadPage2(html);
+      final WebElement head = webDriver.findElement(By.xpath("//head"));
+      assertEquals("<title>abc</title>", head.getAttribute("innerHTML"));
+  }
+
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void innterhtml() throws Exception {
+      final String html = "<html><head><title>abc</title></head>\n"
+          + "</html>";
+      final WebDriver webDriver = loadPage2(html);
+      final WebElement head = webDriver.findElement(By.xpath("//head"));
+      assertNull(head.getAttribute("innerhtml"));
+  }
+
 }
