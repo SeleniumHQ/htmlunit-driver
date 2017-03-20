@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.htmlunit.local;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,8 +35,8 @@ public class HtmlUnitAlert implements Alert {
   HtmlUnitLocalDriver driver;
   private AlertHolder holder_;
   private boolean quitting_;
-  private Lock l = new ReentrantLock();
-  private Condition c = l.newCondition();
+  private Lock lock = new ReentrantLock();
+  private Condition condition = lock.newCondition();
 
   HtmlUnitAlert(HtmlUnitLocalDriver driver) {
     this.driver = driver;
@@ -49,13 +50,25 @@ public class HtmlUnitAlert implements Alert {
     if (quitting_) {
       return;
     }
-    l.lock();
     holder_ = new AlertHolder(message);
-    boolean proceed = driver.alert();
-    if (proceed) {
-      c.awaitUninterruptibly();
+    awaitCondition();
+  }
+
+  private void awaitCondition() {
+    lock.lock();
+    try {
+      if (driver.isProcessAlert()) {
+        try {
+          condition.await(10, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
+      }
     }
-    l.unlock();
+    finally {
+      lock.unlock();
+    }
   }
 
   private String promptHandler(Page page, String message, String defaultMessage) {
@@ -64,10 +77,7 @@ public class HtmlUnitAlert implements Alert {
     }
     holder_ = new PromptHolder(message, defaultMessage);
     PromptHolder localHolder = (PromptHolder) holder_;
-    l.lock();
-    driver.alert();
-    c.awaitUninterruptibly();
-    l.unlock();
+    awaitCondition();
     return localHolder.value;
   }
 
@@ -77,10 +87,6 @@ public class HtmlUnitAlert implements Alert {
     }
     holder_ = new AlertHolder(returnValue);
     AlertHolder localHolder = holder_;
-    l.lock();
-    driver.alert();
-    c.awaitUninterruptibly();
-    l.unlock();
     return localHolder.isAccepted();
   }
 
@@ -90,19 +96,19 @@ public class HtmlUnitAlert implements Alert {
 
   @Override
   public void dismiss() {
-    l.lock();
-    c.signal();
+    lock.lock();
+    condition.signal();
     holder_ = null;
-    l.unlock();
+    lock.unlock();
   }
 
   @Override
   public void accept() {
-    l.lock();
+    lock.lock();
     holder_.accept();
-    c.signal();
+    condition.signal();
     holder_ = null;
-    l.unlock();
+    lock.unlock();
   }
 
   @Override
@@ -130,10 +136,10 @@ public class HtmlUnitAlert implements Alert {
    * Closes the current window.
    */
   void close() {
-    l.lock();
-    c.signal();
+    lock.lock();
+    condition.signal();
     setAutoAccept(true);
-    l.unlock();
+    lock.unlock();
     holder_ = null;
   }
 
@@ -151,7 +157,7 @@ public class HtmlUnitAlert implements Alert {
 
     void sendKeys(String keysToSend) {
       if (keysToSend != null) {
-          throw new ElementNotVisibleException("alert is not visible");
+        throw new ElementNotVisibleException("alert is not visible");
       }
     }
 
@@ -173,7 +179,7 @@ public class HtmlUnitAlert implements Alert {
       super(message);
       this.defaultMessage = defaultMessage;
     }
-  
+
     @Override
     void sendKeys(String keysToSend) {
       if (keysToSend == null) {

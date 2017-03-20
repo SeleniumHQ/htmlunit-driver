@@ -345,7 +345,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
   /**
    * @return to process or not to proceed
    */
-  boolean alert() {
+  boolean isProcessAlert() {
     if (asyncScriptExecutor != null) {
       String text = alert.getText();
       alert.dismiss();
