@@ -188,9 +188,6 @@ public class HtmlUnitAlert implements Alert {
     if (holder_ == null) {
       throw new NoAlertPresentException();
     }
-    if (holder_.webWindow != driver.getCurrentWindow()) {
-      throw new AssertionError();
-    }
     return holder_.message;
 //    if (message == null)
 //    if (lock_ == null) {
