@@ -1538,20 +1538,24 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
     @Override
     public void back() {
-      try {
-        getCurrentWindow().getHistory().back();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      runAsync(() -> {
+        try {
+          getCurrentWindow().getHistory().back();
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
+      });
     }
 
     @Override
     public void forward() {
-      try {
-        getCurrentWindow().getHistory().forward();
-      } catch (IOException e) {
-        throw new WebDriverException(e);
-      }
+      runAsync(() -> {
+        try {
+          getCurrentWindow().getHistory().forward();
+        } catch (IOException e) {
+          throw new WebDriverException(e);
+        }
+      });
     }
 
     @Override
@@ -1567,13 +1571,15 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     @Override
     public void refresh() {
       if (lastPage() instanceof HtmlPage) {
-        try {
-          ((HtmlPage) lastPage()).refresh();
-        } catch (SocketTimeoutException e) {
-          throw new TimeoutException(e);
-        } catch (IOException e) {
-          throw new WebDriverException(e);
-        }
+        runAsync(() -> {
+          try {
+            ((HtmlPage) lastPage()).refresh();
+          } catch (SocketTimeoutException e) {
+            throw new TimeoutException(e);
+          } catch (IOException e) {
+            throw new WebDriverException(e);
+          }
+        });
       }
     }
   }
