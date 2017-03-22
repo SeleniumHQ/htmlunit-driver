@@ -1064,19 +1064,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
   }
 
   /**
-   * Reads the number of JS threads remaining from unit tests run before.
-   * This should be always 0, if {@link #isWebClientCached()} is {@code false}.
-   */
-  @Before
-  public void before() {
-    if (!isWebClientCached()) {
-      final List<Thread> jsThreads = getJavaScriptThreads();
-      assertEquals("There are still " + jsThreads.size()
-      + " JS threads running before starting the test", 0, jsThreads.size());
-    }
-  }
-
-  /**
    * Release resources but DON'T close the browser if we are running with a real browser.
    * Note that HtmlUnitDriver is not cached by default, but that can be configured by {@link #isWebClientCached()}.
    */
@@ -1094,9 +1081,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
       //                webClient_.getCookieManager().clearCookies();
       //            }
       //            webClient_ = null;
-      List<Thread> jsThreads = getJavaScriptThreads();
-      assertEquals("There are still " + jsThreads.size()
-      + " JS threads running after the test", 0, jsThreads.size());
     }
 
     if (useRealBrowser()) {

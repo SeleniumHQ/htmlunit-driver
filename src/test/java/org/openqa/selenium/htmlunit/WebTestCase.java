@@ -747,23 +747,6 @@ public abstract class WebTestCase {
   }
 
   /**
-   * Gets the active JavaScript threads.
-   * @return the threads
-   */
-  protected List<Thread> getJavaScriptThreads() {
-      final Thread[] threads = new Thread[Thread.activeCount() + 10];
-      Thread.enumerate(threads);
-      final List<Thread> jsThreads = new ArrayList<>();
-      for (final Thread t : threads) {
-          if (t != null && t.getName().startsWith("JS executor for")) {
-              jsThreads.add(t);
-          }
-      }
-
-      return jsThreads;
-  }
-
-  /**
    * Read the content of the given file using our classloader.
    * @param fileName the file name
    * @return the content as string
