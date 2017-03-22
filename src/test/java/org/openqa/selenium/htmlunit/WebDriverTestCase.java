@@ -24,6 +24,7 @@ import static org.junit.Assume.assumeTrue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
@@ -68,6 +70,8 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
+import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
+import org.openqa.selenium.htmlunit.local.HtmlUnitWebElement;
 import org.openqa.selenium.htmlunit.remote.HtmlUnitRemoteDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.BrowserType;
@@ -170,46 +174,46 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return true if two servers are needed.
    */
   protected boolean needThreeConnections() {
-      return false;
+    return false;
   }
 
   static Set<String> getBrowsersProperties() {
-      if (BROWSERS_PROPERTIES_ == null) {
-          try {
-              final Properties properties = new Properties();
-              final File file = new File("test.properties");
-              if (file.exists()) {
-                  try (FileInputStream in = new FileInputStream(file)) {
-                      properties.load(in);
-                  }
+    if (BROWSERS_PROPERTIES_ == null) {
+      try {
+        final Properties properties = new Properties();
+        final File file = new File("test.properties");
+        if (file.exists()) {
+          try (FileInputStream in = new FileInputStream(file)) {
+            properties.load(in);
+          }
 
-                  String browsersValue = properties.getProperty("browsers");
-                  if (browsersValue == null || browsersValue.isEmpty()) {
-                      browsersValue = "hu";
-                  }
-                  BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList(browsersValue.replaceAll(" ", "")
-                          .toLowerCase(Locale.ROOT).split(",")));
-                  CHROME_BIN_ = properties.getProperty("chrome.bin");
-                  IE_BIN_ = properties.getProperty("ie.bin");
-                  FF45_BIN_ = properties.getProperty("ff45.bin");
+          String browsersValue = properties.getProperty("browsers");
+          if (browsersValue == null || browsersValue.isEmpty()) {
+            browsersValue = "hu";
+          }
+          BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList(browsersValue.replaceAll(" ", "")
+              .toLowerCase(Locale.ROOT).split(",")));
+          CHROME_BIN_ = properties.getProperty("chrome.bin");
+          IE_BIN_ = properties.getProperty("ie.bin");
+          FF45_BIN_ = properties.getProperty("ff45.bin");
 
-                  final boolean autofix = Boolean.parseBoolean(properties.getProperty("autofix"));
-                  System.setProperty(AUTOFIX_, Boolean.toString(autofix));
-              }
-          }
-          catch (final Exception e) {
-              LOG.error("Error reading htmlunit.properties. Ignoring!", e);
-          }
-          if (BROWSERS_PROPERTIES_ == null) {
-              BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList("hu"));
-          }
-          if (BROWSERS_PROPERTIES_.contains("hu")) {
-              for (final BrowserVersion browserVersion : DEFAULT_RUNNING_BROWSERS_) {
-                  BROWSERS_PROPERTIES_.add("hu-" + browserVersion.getNickname().toLowerCase());
-              }
-          }
+          final boolean autofix = Boolean.parseBoolean(properties.getProperty("autofix"));
+          System.setProperty(AUTOFIX_, Boolean.toString(autofix));
+        }
       }
-      return BROWSERS_PROPERTIES_;
+      catch (final Exception e) {
+        LOG.error("Error reading htmlunit.properties. Ignoring!", e);
+      }
+      if (BROWSERS_PROPERTIES_ == null) {
+        BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList("hu"));
+      }
+      if (BROWSERS_PROPERTIES_.contains("hu")) {
+        for (final BrowserVersion browserVersion : DEFAULT_RUNNING_BROWSERS_) {
+          BROWSERS_PROPERTIES_.add("hu-" + browserVersion.getNickname().toLowerCase());
+        }
+      }
+    }
+    return BROWSERS_PROPERTIES_;
   }
 
   /**
@@ -217,57 +221,57 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return the driver
    */
   protected WebDriver getWebDriver() {
-      final BrowserVersion browserVersion = getBrowserVersion();
-      WebDriver driver;
-      if (useRealBrowser()) {
-          synchronized (WEB_DRIVERS_REAL_BROWSERS) {
-              driver = WEB_DRIVERS_REAL_BROWSERS.get(browserVersion);
-              if (driver != null) {
-                  // there seems to be a memory leak at least with FF;
-                  // we have to restart sometimes
-                  Integer count = WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.get(browserVersion);
-                  if (null == count) {
-                      count = -1;
-                  }
-                  count += 1;
-                  if (count >= 1000) {
-                      shutDownReal(browserVersion);
-                      driver = null;
-                  }
-                  else {
-                      WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.put(browserVersion, count);
-                  }
-              }
-
-              if (driver == null) {
-                  try {
-                      driver = buildWebDriver();
-                  }
-                  catch (final IOException e) {
-                      throw new RuntimeException(e);
-                  }
-
-                  WEB_DRIVERS_REAL_BROWSERS.put(browserVersion, driver);
-                  WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.put(browserVersion, 0);
-              }
+    final BrowserVersion browserVersion = getBrowserVersion();
+    WebDriver driver;
+    if (useRealBrowser()) {
+      synchronized (WEB_DRIVERS_REAL_BROWSERS) {
+        driver = WEB_DRIVERS_REAL_BROWSERS.get(browserVersion);
+        if (driver != null) {
+          // there seems to be a memory leak at least with FF;
+          // we have to restart sometimes
+          Integer count = WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.get(browserVersion);
+          if (null == count) {
+            count = -1;
           }
-      }
-      else {
-          driver = WEB_DRIVERS_.get(browserVersion);
-          if (driver == null) {
-              try {
-                  driver = buildWebDriver();
-              }
-              catch (final IOException e) {
-                  throw new RuntimeException(e);
-              }
-
-              if (isWebClientCached()) {
-                  WEB_DRIVERS_.put(browserVersion, driver);
-              }
+          count += 1;
+          if (count >= 1000) {
+            shutDownReal(browserVersion);
+            driver = null;
           }
+          else {
+            WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.put(browserVersion, count);
+          }
+        }
+
+        if (driver == null) {
+          try {
+            driver = buildWebDriver();
+          }
+          catch (final IOException e) {
+            throw new RuntimeException(e);
+          }
+
+          WEB_DRIVERS_REAL_BROWSERS.put(browserVersion, driver);
+          WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.put(browserVersion, 0);
+        }
       }
-      return driver;
+    }
+    else {
+      driver = WEB_DRIVERS_.get(browserVersion);
+      if (driver == null) {
+        try {
+          driver = buildWebDriver();
+        }
+        catch (final IOException e) {
+          throw new RuntimeException(e);
+        }
+
+        if (isWebClientCached()) {
+          WEB_DRIVERS_.put(browserVersion, driver);
+        }
+      }
+    }
+    return driver;
   }
 
   /**
@@ -276,32 +280,28 @@ public abstract class WebDriverTestCase extends WebTestCase {
    */
   @AfterClass
   public static void shutDownAll() throws Exception {
-      for (WebDriver driver : WEB_DRIVERS_.values()) {
-          driver.quit();
-      }
-      WEB_DRIVERS_.clear();
+    for (WebDriver driver : WEB_DRIVERS_.values()) {
+      driver.quit();
+    }
+    WEB_DRIVERS_.clear();
 
-//      final List<Thread> jsThreads = getJavaScriptThreads();
-//      assertEquals("There are still " + jsThreads.size()
-//              + " JS threads running after shutDownAll", 0, jsThreads.size());
+    shutDownRealBrowsers();
 
-      shutDownRealBrowsers();
-
-      stopWebServers();
-      LAST_TEST_MockWebConnection_ = null;
+    stopWebServers();
+    LAST_TEST_MockWebConnection_ = null;
   }
 
   /**
    * Closes the real browser drivers.
    */
   private static void shutDownRealBrowsers() {
-      synchronized (WEB_DRIVERS_REAL_BROWSERS) {
-          for (WebDriver driver : WEB_DRIVERS_REAL_BROWSERS.values()) {
-              quit(driver);
-          }
-          WEB_DRIVERS_REAL_BROWSERS.clear();
-          WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.clear();
+    synchronized (WEB_DRIVERS_REAL_BROWSERS) {
+      for (WebDriver driver : WEB_DRIVERS_REAL_BROWSERS.values()) {
+        quit(driver);
       }
+      WEB_DRIVERS_REAL_BROWSERS.clear();
+      WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.clear();
+    }
   }
 
   /**
@@ -309,41 +309,41 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @param browser the real browser to close
    */
   private static void shutDownReal(final BrowserVersion browser) {
-      synchronized (WEB_DRIVERS_REAL_BROWSERS) {
-          final WebDriver driver = WEB_DRIVERS_REAL_BROWSERS.get(browser);
-          if (driver != null) {
-              quit(driver);
-              WEB_DRIVERS_REAL_BROWSERS.remove(browser);
-              WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.remove(browser);
-          }
+    synchronized (WEB_DRIVERS_REAL_BROWSERS) {
+      final WebDriver driver = WEB_DRIVERS_REAL_BROWSERS.get(browser);
+      if (driver != null) {
+        quit(driver);
+        WEB_DRIVERS_REAL_BROWSERS.remove(browser);
+        WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.remove(browser);
       }
+    }
   }
 
   private static void quit(final WebDriver driver) {
-      if (driver != null) {
-          try {
-              driver.quit();
-          }
-          catch (final UnreachableBrowserException e) {
-              LOG.error("Can't quit browser", e);
-              // ignore, the browser is gone
-          }
-          catch (final NoClassDefFoundError e) {
-              LOG.error("Can't quit browser", e);
-              // ignore, the browser is gone
-          }
-          catch (final UnsatisfiedLinkError e) {
-              LOG.error("Can't quit browser", e);
-              // ignore, the browser is gone
-          }
+    if (driver != null) {
+      try {
+        driver.quit();
       }
+      catch (final UnreachableBrowserException e) {
+        LOG.error("Can't quit browser", e);
+        // ignore, the browser is gone
+      }
+      catch (final NoClassDefFoundError e) {
+        LOG.error("Can't quit browser", e);
+        // ignore, the browser is gone
+      }
+      catch (final UnsatisfiedLinkError e) {
+        LOG.error("Can't quit browser", e);
+        // ignore, the browser is gone
+      }
+    }
   }
 
   /**
    * Closes the real IE browser drivers.
    */
   protected static void shutDownRealIE() {
-      shutDownReal(INTERNET_EXPLORER);
+    shutDownReal(INTERNET_EXPLORER);
   }
 
   /**
@@ -351,25 +351,25 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if it fails
    */
   protected static void stopWebServers() throws Exception {
-      if (STATIC_SERVER_ != null) {
-          STATIC_SERVER_.stop();
-      }
-      if (STATIC_SERVER2_ != null) {
-          STATIC_SERVER2_.stop();
-      }
-      if (STATIC_SERVER3_ != null) {
-          STATIC_SERVER3_.stop();
-      }
-      STATIC_SERVER_ = null;
-      STATIC_SERVER2_ = null;
-      STATIC_SERVER3_ = null;
+    if (STATIC_SERVER_ != null) {
+      STATIC_SERVER_.stop();
+    }
+    if (STATIC_SERVER2_ != null) {
+      STATIC_SERVER2_.stop();
+    }
+    if (STATIC_SERVER3_ != null) {
+      STATIC_SERVER3_.stop();
+    }
+    STATIC_SERVER_ = null;
+    STATIC_SERVER2_ = null;
+    STATIC_SERVER3_ = null;
   }
 
   /**
    * @return whether to use real browser or not.
    */
   protected boolean useRealBrowser() {
-      return useRealBrowser_;
+    return useRealBrowser_;
   }
 
   /**
@@ -377,7 +377,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @param useRealBrowser whether to use real browser or not
    */
   public void setUseRealBrowser(final boolean useRealBrowser) {
-      useRealBrowser_ = useRealBrowser;
+    useRealBrowser_ = useRealBrowser;
   }
 
   /**
@@ -385,7 +385,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @param useStandards whether to use {@code Standards Mode} or not
    */
   public void setUseStandards(final boolean useStandards) {
-      useStandards_ = useStandards;
+    useStandards_ = useStandards;
   }
 
   /**
@@ -395,7 +395,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return whether to run with driver, or ignore it for now.
    */
   protected boolean supportsWebDriver() {
-      return true;
+    return true;
   }
 
   /**
@@ -404,63 +404,63 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws IOException in case of exception
    */
   protected WebDriver buildWebDriver() throws IOException {
-      assumeTrue(supportsWebDriver());
-      if (useRealBrowser()) {
-          if (getBrowserVersion().isIE()) {
-              if (IE_BIN_ != null) {
-                  System.setProperty("webdriver.ie.driver", IE_BIN_);
-              }
-              return new InternetExplorerDriver();
-          }
-
-          if (BrowserVersion.CHROME == getBrowserVersion()) {
-              if (CHROME_SERVICE_ == null) {
-                  final ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
-                  if (CHROME_BIN_ != null) {
-                      builder.usingDriverExecutable(new File(CHROME_BIN_));
-                  }
-                  CHROME_SERVICE_ = builder
-                          .usingAnyFreePort()
-                          .build();
-
-                  CHROME_SERVICE_.start();
-              }
-              return new ChromeDriver(CHROME_SERVICE_);
-          }
-
-          if (BrowserVersion.FIREFOX_45 == getBrowserVersion()) {
-              // disable the new marionette interface because it requires ff47 or more
-              System.setProperty("webdriver.firefox.marionette", "false");
-
-              if (FF45_BIN_ != null) {
-                final FirefoxOptions options = new FirefoxOptions();
-                options.setBinary(FF45_BIN_);
-                return new FirefoxDriver(options);
-              }
-              return new FirefoxDriver();
-          }
-
-          throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
+    assumeTrue(supportsWebDriver());
+    if (useRealBrowser()) {
+      if (getBrowserVersion().isIE()) {
+        if (IE_BIN_ != null) {
+          System.setProperty("webdriver.ie.driver", IE_BIN_);
+        }
+        return new InternetExplorerDriver();
       }
-      if (webDriver_ == null) {
-          final DesiredCapabilities capabilities = new DesiredCapabilities();
-          capabilities.setBrowserName(getBrowserName(getBrowserVersion()));
-          webDriver_ = new HtmlUnitDriver(capabilities);
+
+      if (BrowserVersion.CHROME == getBrowserVersion()) {
+        if (CHROME_SERVICE_ == null) {
+          final ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
+          if (CHROME_BIN_ != null) {
+            builder.usingDriverExecutable(new File(CHROME_BIN_));
+          }
+          CHROME_SERVICE_ = builder
+              .usingAnyFreePort()
+              .build();
+
+          CHROME_SERVICE_.start();
+        }
+        return new ChromeDriver(CHROME_SERVICE_);
       }
-      return webDriver_;
+
+      if (BrowserVersion.FIREFOX_45 == getBrowserVersion()) {
+        // disable the new marionette interface because it requires ff47 or more
+        System.setProperty("webdriver.firefox.marionette", "false");
+
+        if (FF45_BIN_ != null) {
+          final FirefoxOptions options = new FirefoxOptions();
+          options.setBinary(FF45_BIN_);
+          return new FirefoxDriver(options);
+        }
+        return new FirefoxDriver();
+      }
+
+      throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
+    }
+    if (webDriver_ == null) {
+      final DesiredCapabilities capabilities = new DesiredCapabilities();
+      capabilities.setBrowserName(getBrowserName(getBrowserVersion()));
+      webDriver_ = new HtmlUnitDriver(capabilities);
+    }
+    return webDriver_;
   }
 
   private static String getBrowserName(final BrowserVersion browserVersion) {
-      if (browserVersion == BrowserVersion.FIREFOX_45) {
-          return BrowserType.FIREFOX;
-      }
-      if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {
-          return BrowserType.IE;
-      }
-      if (browserVersion == BrowserVersion.EDGE) {
-          return BrowserType.EDGE;
-      }
-      return BrowserType.CHROME;
+    if (browserVersion == BrowserVersion.FIREFOX_45) {
+      return BrowserType.FIREFOX;
+    }
+    if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {
+      return BrowserType.IE;
+    }
+    if (browserVersion == BrowserVersion.EDGE) {
+      return BrowserType.EDGE;
+    }
+    return BrowserType.CHROME;
   }
 
   /**
@@ -469,59 +469,59 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if a problem occurs
    */
   protected void startWebServer(final MockWebConnection mockConnection) throws Exception {
-      if (Boolean.FALSE.equals(LAST_TEST_MockWebConnection_)) {
-          stopWebServers();
+    if (Boolean.FALSE.equals(LAST_TEST_MockWebConnection_)) {
+      stopWebServers();
+    }
+    LAST_TEST_MockWebConnection_ = Boolean.TRUE;
+    if (STATIC_SERVER_ == null) {
+      STATIC_SERVER_ = new Server(PORT);
+
+      final WebAppContext context = new WebAppContext();
+      context.setContextPath("/");
+      context.setResourceBase("./");
+
+      if (isBasicAuthentication()) {
+        final Constraint constraint = new Constraint();
+        constraint.setName(Constraint.__BASIC_AUTH);
+        constraint.setRoles(new String[]{"user"});
+        constraint.setAuthenticate(true);
+
+        final ConstraintMapping constraintMapping = new ConstraintMapping();
+        constraintMapping.setConstraint(constraint);
+        constraintMapping.setPathSpec("/*");
+
+        final ConstraintSecurityHandler handler = (ConstraintSecurityHandler) context.getSecurityHandler();
+        handler.setLoginService(new HashLoginService("MyRealm", "./src/test/resources/realm.properties"));
+        handler.setConstraintMappings(new ConstraintMapping[]{constraintMapping});
       }
-      LAST_TEST_MockWebConnection_ = Boolean.TRUE;
-      if (STATIC_SERVER_ == null) {
-          STATIC_SERVER_ = new Server(PORT);
 
-          final WebAppContext context = new WebAppContext();
-          context.setContextPath("/");
-          context.setResourceBase("./");
+      context.addServlet(MockWebConnectionServlet.class, "/*");
+      STATIC_SERVER_.setHandler(context);
+      STATIC_SERVER_.start();
+    }
+    MockWebConnectionServlet.MockConnection_ = mockConnection;
 
-          if (isBasicAuthentication()) {
-              final Constraint constraint = new Constraint();
-              constraint.setName(Constraint.__BASIC_AUTH);
-              constraint.setRoles(new String[]{"user"});
-              constraint.setAuthenticate(true);
+    if (STATIC_SERVER2_ == null && needThreeConnections()) {
+      STATIC_SERVER2_ = new Server(PORT2);
+      final WebAppContext context2 = new WebAppContext();
+      context2.setContextPath("/");
+      context2.setResourceBase("./");
+      context2.addServlet(MockWebConnectionServlet.class, "/*");
+      STATIC_SERVER2_.setHandler(context2);
+      STATIC_SERVER2_.start();
 
-              final ConstraintMapping constraintMapping = new ConstraintMapping();
-              constraintMapping.setConstraint(constraint);
-              constraintMapping.setPathSpec("/*");
-
-              final ConstraintSecurityHandler handler = (ConstraintSecurityHandler) context.getSecurityHandler();
-              handler.setLoginService(new HashLoginService("MyRealm", "./src/test/resources/realm.properties"));
-              handler.setConstraintMappings(new ConstraintMapping[]{constraintMapping});
-          }
-
-          context.addServlet(MockWebConnectionServlet.class, "/*");
-          STATIC_SERVER_.setHandler(context);
-          STATIC_SERVER_.start();
-      }
-      MockWebConnectionServlet.MockConnection_ = mockConnection;
-
-      if (STATIC_SERVER2_ == null && needThreeConnections()) {
-          STATIC_SERVER2_ = new Server(PORT2);
-          final WebAppContext context2 = new WebAppContext();
-          context2.setContextPath("/");
-          context2.setResourceBase("./");
-          context2.addServlet(MockWebConnectionServlet.class, "/*");
-          STATIC_SERVER2_.setHandler(context2);
-          STATIC_SERVER2_.start();
-
-          STATIC_SERVER3_ = new Server(PORT3);
-          final WebAppContext context3 = new WebAppContext();
-          context3.setContextPath("/");
-          context3.setResourceBase("./");
-          context3.addServlet(MockWebConnectionServlet.class, "/*");
-          STATIC_SERVER3_.setHandler(context3);
-          STATIC_SERVER3_.start();
-          /*
-           * The mock connection servlet call sit under both servers, so long as tests
-           * keep the URLs distinct.
-           */
-      }
+      STATIC_SERVER3_ = new Server(PORT3);
+      final WebAppContext context3 = new WebAppContext();
+      context3.setContextPath("/");
+      context3.setResourceBase("./");
+      context3.addServlet(MockWebConnectionServlet.class, "/*");
+      STATIC_SERVER3_.setHandler(context3);
+      STATIC_SERVER3_.start();
+      /*
+       * The mock connection servlet call sit under both servers, so long as tests
+       * keep the URLs distinct.
+       */
+    }
   }
 
   /**
@@ -530,7 +530,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return whether to use basic authentication or not
    */
   protected boolean isBasicAuthentication() {
-      return false;
+    return false;
   }
 
   /**
@@ -544,8 +544,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if the test fails
    */
   protected void startWebServer(final String resourceBase, final String[] classpath,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
-      startWebServer(resourceBase, classpath, servlets, null);
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+    startWebServer(resourceBase, classpath, servlets, null);
   }
 
   /**
@@ -559,12 +559,12 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if the test fails
    */
   protected void startWebServer2(final String resourceBase, final String[] classpath,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
 
-      if (STATIC_SERVER2_ != null) {
-          STATIC_SERVER2_.stop();
-      }
-      STATIC_SERVER2_ = WebServerTestCase.createWebServer(PORT2, resourceBase, classpath, servlets, null);
+    if (STATIC_SERVER2_ != null) {
+      STATIC_SERVER2_.stop();
+    }
+    STATIC_SERVER2_ = WebServerTestCase.createWebServer(PORT2, resourceBase, classpath, servlets, null);
   }
 
   /**
@@ -579,133 +579,133 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if the test fails
    */
   protected void startWebServer(final String resourceBase, final String[] classpath,
-          final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
-      stopWebServers();
-      LAST_TEST_MockWebConnection_ = Boolean.FALSE;
+      final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
+    stopWebServers();
+    LAST_TEST_MockWebConnection_ = Boolean.FALSE;
 
-      STATIC_SERVER_ = WebServerTestCase.createWebServer(PORT, resourceBase, classpath, servlets, handler);
+    STATIC_SERVER_ = WebServerTestCase.createWebServer(PORT, resourceBase, classpath, servlets, handler);
   }
 
   /**
    * Servlet delivering content from a MockWebConnection.
    */
   public static class MockWebConnectionServlet extends HttpServlet {
-      private static MockWebConnection MockConnection_;
+    private static MockWebConnection MockConnection_;
 
-      static void setMockconnection(final MockWebConnection connection) {
-          MockConnection_ = connection;
+    static void setMockconnection(final MockWebConnection connection) {
+      MockConnection_ = connection;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void service(final HttpServletRequest request, final HttpServletResponse response)
+        throws ServletException, IOException {
+
+      try {
+        doService(request, response);
+      }
+      catch (final ServletException e) {
+        throw e;
+      }
+      catch (final IOException e) {
+        throw e;
+      }
+      catch (final Exception e) {
+        throw new ServletException(e);
+      }
+    }
+
+    private static void doService(final HttpServletRequest request, final HttpServletResponse response)
+        throws Exception {
+      String url = request.getRequestURL().toString();
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(request.getMethod() + " " + url);
       }
 
-      /**
-       * {@inheritDoc}
-       */
-      @Override
-      protected void service(final HttpServletRequest request, final HttpServletResponse response)
-              throws ServletException, IOException {
-
-          try {
-              doService(request, response);
-          }
-          catch (final ServletException e) {
-              throw e;
-          }
-          catch (final IOException e) {
-              throw e;
-          }
-          catch (final Exception e) {
-              throw new ServletException(e);
-          }
+      if (url.endsWith("/favicon.ico")) {
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return;
       }
 
-      private static void doService(final HttpServletRequest request, final HttpServletResponse response)
-              throws Exception {
-          String url = request.getRequestURL().toString();
-          if (LOG.isDebugEnabled()) {
-              LOG.debug(request.getMethod() + " " + url);
-          }
-
-          if (url.endsWith("/favicon.ico")) {
-              response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-              return;
-          }
-
-          if (url.contains("/delay")) {
-              final String delay = StringUtils.substringBetween(url, "/delay", "/");
-              final int ms = Integer.parseInt(delay);
-              if (LOG.isDebugEnabled()) {
-                  LOG.debug("Sleeping for " + ms + " before to deliver " + url);
-              }
-              Thread.sleep(ms);
-          }
-
-          // copy parameters
-          final List<NameValuePair> requestParameters = new ArrayList<>();
-          try {
-              for (final Enumeration<String> paramNames = request.getParameterNames();
-                      paramNames.hasMoreElements();) {
-                  final String name = paramNames.nextElement();
-                  final String[] values = request.getParameterValues(name);
-                  for (final String value : values) {
-                      requestParameters.add(new NameValuePair(name, value));
-                  }
-              }
-          }
-          catch (final IllegalArgumentException e) {
-              // Jetty 8.1.7 throws it in getParameterNames for a query like "cb=%%RANDOM_NUMBER%%"
-              // => we should use a more low level test server
-              requestParameters.clear();
-              final String query = request.getQueryString();
-              if (query != null) {
-                  url += "?" + query;
-              }
-          }
-
-          final URL requestedUrl = new URL(url);
-          final WebRequest webRequest = new WebRequest(requestedUrl);
-          webRequest.setHttpMethod(HttpMethod.valueOf(request.getMethod()));
-
-          // copy headers
-          for (final Enumeration<String> en = request.getHeaderNames(); en.hasMoreElements();) {
-              final String headerName = en.nextElement();
-              final String headerValue = request.getHeader(headerName);
-              webRequest.setAdditionalHeader(headerName, headerValue);
-          }
-
-          if (requestParameters.isEmpty() && request.getContentLength() > 0) {
-              final byte[] buffer = new byte[request.getContentLength()];
-              request.getInputStream().read(buffer, 0, buffer.length);
-              webRequest.setRequestBody(new String(buffer, webRequest.getCharset()));
-          }
-          else {
-              webRequest.setRequestParameters(requestParameters);
-          }
-
-          final RawResponseData resp = MockConnection_.getRawResponse(webRequest);
-
-          // write WebResponse to HttpServletResponse
-          response.setStatus(resp.getStatusCode());
-
-          boolean charsetInContentType = false;
-          for (final NameValuePair responseHeader : resp.getHeaders()) {
-              final String headerName = responseHeader.getName();
-              if ("Content-Type".equals(headerName) && responseHeader.getValue().contains("charset=")) {
-                  charsetInContentType = true;
-              }
-              response.addHeader(headerName, responseHeader.getValue());
-          }
-
-          if (resp.getByteContent() != null) {
-              response.getOutputStream().write(resp.getByteContent());
-          }
-          else {
-              final String newContent = getModifiedContent(resp.getStringContent());
-              if (!charsetInContentType) {
-                  response.setCharacterEncoding(resp.getCharset().name());
-              }
-              response.getWriter().print(newContent);
-          }
-          response.flushBuffer();
+      if (url.contains("/delay")) {
+        final String delay = StringUtils.substringBetween(url, "/delay", "/");
+        final int ms = Integer.parseInt(delay);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Sleeping for " + ms + " before to deliver " + url);
+        }
+        Thread.sleep(ms);
       }
+
+      // copy parameters
+      final List<NameValuePair> requestParameters = new ArrayList<>();
+      try {
+        for (final Enumeration<String> paramNames = request.getParameterNames();
+            paramNames.hasMoreElements();) {
+          final String name = paramNames.nextElement();
+          final String[] values = request.getParameterValues(name);
+          for (final String value : values) {
+            requestParameters.add(new NameValuePair(name, value));
+          }
+        }
+      }
+      catch (final IllegalArgumentException e) {
+        // Jetty 8.1.7 throws it in getParameterNames for a query like "cb=%%RANDOM_NUMBER%%"
+        // => we should use a more low level test server
+        requestParameters.clear();
+        final String query = request.getQueryString();
+        if (query != null) {
+          url += "?" + query;
+        }
+      }
+
+      final URL requestedUrl = new URL(url);
+      final WebRequest webRequest = new WebRequest(requestedUrl);
+      webRequest.setHttpMethod(HttpMethod.valueOf(request.getMethod()));
+
+      // copy headers
+      for (final Enumeration<String> en = request.getHeaderNames(); en.hasMoreElements();) {
+        final String headerName = en.nextElement();
+        final String headerValue = request.getHeader(headerName);
+        webRequest.setAdditionalHeader(headerName, headerValue);
+      }
+
+      if (requestParameters.isEmpty() && request.getContentLength() > 0) {
+        final byte[] buffer = new byte[request.getContentLength()];
+        request.getInputStream().read(buffer, 0, buffer.length);
+        webRequest.setRequestBody(new String(buffer, webRequest.getCharset()));
+      }
+      else {
+        webRequest.setRequestParameters(requestParameters);
+      }
+
+      final RawResponseData resp = MockConnection_.getRawResponse(webRequest);
+
+      // write WebResponse to HttpServletResponse
+      response.setStatus(resp.getStatusCode());
+
+      boolean charsetInContentType = false;
+      for (final NameValuePair responseHeader : resp.getHeaders()) {
+        final String headerName = responseHeader.getName();
+        if ("Content-Type".equals(headerName) && responseHeader.getValue().contains("charset=")) {
+          charsetInContentType = true;
+        }
+        response.addHeader(headerName, responseHeader.getValue());
+      }
+
+      if (resp.getByteContent() != null) {
+        response.getOutputStream().write(resp.getByteContent());
+      }
+      else {
+        final String newContent = getModifiedContent(resp.getStringContent());
+        if (!charsetInContentType) {
+          response.setCharacterEncoding(resp.getCharset().name());
+        }
+        response.getWriter().print(newContent);
+      }
+      response.flushBuffer();
+    }
   }
 
   /**
@@ -715,7 +715,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPage2(final String html) throws Exception {
-      return loadPage2(html, URL_FIRST);
+    return loadPage2(html, URL_FIRST);
   }
 
   /**
@@ -726,7 +726,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPage2(final String html, final URL url) throws Exception {
-      return loadPage2(html, url, "text/html;charset=ISO-8859-1", TextUtil.DEFAULT_CHARSET);
+    return loadPage2(html, url, "text/html;charset=ISO-8859-1", TextUtil.DEFAULT_CHARSET);
   }
 
   /**
@@ -739,35 +739,35 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPage2(String html, final URL url,
-          final String contentType, final Charset charset) throws Exception {
-      if (useStandards_ != null) {
-          if (html.startsWith(HtmlPageTest.STANDARDS_MODE_PREFIX_)) {
-              fail("HTML must not be prefixed with Standards Mode.");
-          }
-          if (useStandards_) {
-              html = HtmlPageTest.STANDARDS_MODE_PREFIX_ + html;
-          }
+      final String contentType, final Charset charset) throws Exception {
+    if (useStandards_ != null) {
+      if (html.startsWith(HtmlPageTest.STANDARDS_MODE_PREFIX_)) {
+        fail("HTML must not be prefixed with Standards Mode.");
       }
-      final MockWebConnection mockWebConnection = getMockWebConnection();
-      mockWebConnection.setResponse(url, html, contentType, charset);
-      startWebServer(mockWebConnection);
-
-      WebDriver driver = getWebDriver();
-      if (!(driver instanceof HtmlUnitRemoteDriver)) {
-          try {
-              driver.manage().window().setSize(new Dimension(1272, 768));
-          }
-          catch (final NoSuchSessionException e) {
-              // maybe the driver was killed by the test before; setup a new one
-              shutDownRealBrowsers();
-
-              driver = getWebDriver();
-              driver.manage().window().setSize(new Dimension(1272, 768));
-          }
+      if (useStandards_) {
+        html = HtmlPageTest.STANDARDS_MODE_PREFIX_ + html;
       }
-      driver.get(url.toExternalForm());
+    }
+    final MockWebConnection mockWebConnection = getMockWebConnection();
+    mockWebConnection.setResponse(url, html, contentType, charset);
+    startWebServer(mockWebConnection);
 
-      return driver;
+    WebDriver driver = getWebDriver();
+    if (!(driver instanceof HtmlUnitDriver)) {
+      try {
+        driver.manage().window().setSize(new Dimension(1272, 768));
+      }
+      catch (final NoSuchSessionException e) {
+        // maybe the driver was killed by the test before; setup a new one
+        shutDownRealBrowsers();
+
+        driver = getWebDriver();
+        driver.manage().window().setSize(new Dimension(1272, 768));
+      }
+    }
+    driver.get(url.toExternalForm());
+
+    return driver;
   }
 
   /**
@@ -778,8 +778,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPage2(final String html,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
-      return loadPage2(html, getDefaultUrl(), servlets);
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+    return loadPage2(html, getDefaultUrl(), servlets);
   }
 
   /**
@@ -791,18 +791,18 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPage2(final String html, final URL url,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
 
-      servlets.put("/*", MockWebConnectionServlet.class);
-      getMockWebConnection().setResponse(url, html);
-      MockWebConnectionServlet.MockConnection_ = getMockWebConnection();
+    servlets.put("/*", MockWebConnectionServlet.class);
+    getMockWebConnection().setResponse(url, html);
+    MockWebConnectionServlet.MockConnection_ = getMockWebConnection();
 
-      startWebServer("./", null, servlets);
+    startWebServer("./", null, servlets);
 
-      final WebDriver driver = getWebDriver();
-      driver.get(url.toExternalForm());
+    final WebDriver driver = getWebDriver();
+    driver.get(url.toExternalForm());
 
-      return driver;
+    return driver;
   }
 
   /**
@@ -814,7 +814,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html) throws Exception {
-      return loadPageWithAlerts2(html, URL_FIRST, DEFAULT_WAIT_TIME);
+    return loadPageWithAlerts2(html, URL_FIRST, DEFAULT_WAIT_TIME);
   }
 
   /**
@@ -827,7 +827,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html, final long maxWaitTime) throws Exception {
-      return loadPageWithAlerts2(html, URL_FIRST, maxWaitTime);
+    return loadPageWithAlerts2(html, URL_FIRST, maxWaitTime);
   }
 
   /**
@@ -838,7 +838,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html, final URL url) throws Exception {
-      return loadPageWithAlerts2(html, url, DEFAULT_WAIT_TIME);
+    return loadPageWithAlerts2(html, url, DEFAULT_WAIT_TIME);
   }
 
   /**
@@ -850,14 +850,14 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html, final URL url, final long maxWaitTime)
-          throws Exception {
-      expandExpectedAlertsVariables(URL_FIRST);
-      final String[] expectedAlerts = getExpectedAlerts();
+      throws Exception {
+    expandExpectedAlertsVariables(URL_FIRST);
+    final String[] expectedAlerts = getExpectedAlerts();
 
-      final WebDriver driver = loadPage2(html, url);
+    final WebDriver driver = loadPage2(html, url);
 
-      verifyAlerts(maxWaitTime, driver, expectedAlerts);
-      return driver;
+    verifyAlerts(maxWaitTime, driver, expectedAlerts);
+    return driver;
   }
 
   /**
@@ -867,7 +867,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception in case of failure
    */
   protected void verifyAlerts(final WebDriver driver, final String... expectedAlerts) throws Exception {
-      verifyAlerts(DEFAULT_WAIT_TIME, driver, expectedAlerts);
+    verifyAlerts(DEFAULT_WAIT_TIME, driver, expectedAlerts);
   }
 
   /**
@@ -879,31 +879,18 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception in case of failure
    */
   protected void verifyAlerts(final long maxWaitTime, final WebDriver driver, final String... expectedAlerts)
-          throws Exception {
-      List<String> actualAlerts = null;
+      throws Exception {
+    List<String> actualAlerts = null;
 
-      try {
-          // gets the collected alerts, waiting a bit if necessary
-          actualAlerts = getCollectedAlerts(driver, expectedAlerts.length);
+    actualAlerts = getCollectedAlerts(maxWaitTime, driver, expectedAlerts.length);
 
-          final long maxWait = System.currentTimeMillis() + maxWaitTime;
-          while (actualAlerts.size() < expectedAlerts.length && System.currentTimeMillis() < maxWait) {
-              Thread.sleep(30);
-              actualAlerts = getCollectedAlerts(driver);
-          }
+    assertEquals(expectedAlerts, actualAlerts);
+    if (!ignoreExpectationsLength()) {
+      assertEquals(expectedAlerts.length, actualAlerts.size());
+      for (int i = expectedAlerts.length - 1; i >= 0; i--) {
+        assertEquals(expectedAlerts[i], actualAlerts.get(i));
       }
-      catch (final WebDriverException e) {
-          shutDownRealBrowsers();
-          throw e;
-      }
-
-      assertEquals(expectedAlerts, actualAlerts);
-      if (!ignoreExpectationsLength()) {
-          assertEquals(expectedAlerts.length, actualAlerts.size());
-          for (int i = expectedAlerts.length - 1; i >= 0; i--) {
-              assertEquals(expectedAlerts[i], actualAlerts.get(i));
-          }
-      }
+    }
   }
 
   /**
@@ -911,7 +898,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return whether to ignore checking the expectations length against the actual one
    */
   protected boolean ignoreExpectationsLength() {
-      return false;
+    return false;
   }
 
   /**
@@ -922,8 +909,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
-      return loadPageWithAlerts2(html, getDefaultUrl(), DEFAULT_WAIT_TIME, servlets);
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+    return loadPageWithAlerts2(html, getDefaultUrl(), DEFAULT_WAIT_TIME, servlets);
   }
 
   /**
@@ -936,15 +923,15 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final String html, final URL url, final long maxWaitTime,
-          final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
 
-      expandExpectedAlertsVariables(getDefaultUrl());
-      final String[] expectedAlerts = getExpectedAlerts();
+    expandExpectedAlertsVariables(getDefaultUrl());
+    final String[] expectedAlerts = getExpectedAlerts();
 
-      final WebDriver driver = loadPage2(html, url, servlets);
-      verifyAlerts(maxWaitTime, driver, expectedAlerts);
+    final WebDriver driver = loadPage2(html, url, servlets);
+    verifyAlerts(maxWaitTime, driver, expectedAlerts);
 
-      return driver;
+    return driver;
   }
 
   /**
@@ -955,7 +942,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final URL url) throws Exception {
-      return loadPageWithAlerts2(url, 0);
+    return loadPageWithAlerts2(url, DEFAULT_WAIT_TIME);
   }
 
   /**
@@ -966,16 +953,16 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if something goes wrong
    */
   protected final WebDriver loadPageWithAlerts2(final URL url, final long maxWaitTime) throws Exception {
-      expandExpectedAlertsVariables(url);
-      final String[] expectedAlerts = getExpectedAlerts();
+    expandExpectedAlertsVariables(url);
+    final String[] expectedAlerts = getExpectedAlerts();
 
-      startWebServer(getMockWebConnection());
+    startWebServer(getMockWebConnection());
 
-      final WebDriver driver = getWebDriver();
-      driver.get(url.toExternalForm());
+    final WebDriver driver = getWebDriver();
+    driver.get(url.toExternalForm());
 
-      verifyAlerts(maxWaitTime, driver, expectedAlerts);
-      return driver;
+    verifyAlerts(maxWaitTime, driver, expectedAlerts);
+    return driver;
   }
 
   /**
@@ -986,7 +973,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception in case of problem
    */
   protected List<String> getCollectedAlerts(final WebDriver driver) throws Exception {
-      return getCollectedAlerts(driver, getExpectedAlerts().length);
+    return getCollectedAlerts(driver, getExpectedAlerts().length);
   }
 
   /**
@@ -998,70 +985,82 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception in case of problem
    */
   protected List<String> getCollectedAlerts(final WebDriver driver, final int alertsLength) throws Exception {
-      final List<String> collectedAlerts = new ArrayList<>();
-      for (int i = 0; i < alertsLength; i++) {
+    return getCollectedAlerts(DEFAULT_WAIT_TIME, driver, alertsLength);
+  }
+
+  /**
+   * Gets the alerts collected by the driver.
+   * Note: it currently works only if no new page has been loaded in the window
+   * @param maxWaitTime the maximum time to wait to get the alerts (in millis)
+   * @param driver the driver
+   * @param alertsLength the expected length of Alerts
+   * @return the collected alerts
+   * @throws Exception in case of problem
+   */
+  protected List<String> getCollectedAlerts(final long maxWaitTime, final WebDriver driver, final int alertsLength) throws Exception {
+    final List<String> collectedAlerts = new ArrayList<>();
+    final long maxWait = System.currentTimeMillis() + maxWaitTime;
+
+    for (int i = 0; i < alertsLength; i++) {
+      while (collectedAlerts.size() < alertsLength && System.currentTimeMillis() < maxWait) {
+        try {
           final Alert alert = driver.switchTo().alert();
           collectedAlerts.add(alert.getText());
           alert.accept();
+        }
+        catch (final NoAlertPresentException e) {
+          Thread.sleep(10);
+        }
       }
+    }
 
-//      // do not throw an exception if we ask for collected alerts for non html pages
-//      // see com.gargoylesoftware.htmlunit.WebClient3Test.javascriptContentDetectorContentTypeTextPlain()
-//      if (driver instanceof HtmlUnitDriver) {
-//          final Page page = getWebWindowOf((HtmlUnitDriver) driver).getEnclosedPage();
-//          if (!(page instanceof HtmlPage)) {
-//              return collectedAlerts;
-//          }
-//      }
-//
-//      final JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-//
-//      final Object result = jsExecutor.executeScript("return top.__huCatchedAlerts");
-//
-//      if (result != null) {
-//          if (driver instanceof HtmlUnitDriver) {
-//              return (List<String>) result;
-//          }
-//          if (result instanceof List) {
-//              for (final Object alert : (List<Object>) result) {
-//                  collectedAlerts.add(Context.toString(alert));
-//              }
-//          }
-//          else if (result instanceof String) {
-//              collectedAlerts.add(result.toString());
-//          }
-//          else {
-//              final Map<?, ?> map  = (Map<?, ?>) result;
-//              for (final Object key : map.keySet()) {
-//                  final int index = Integer.parseInt(key.toString());
-//                  collectedAlerts.add(index, map.get(key).toString());
-//              }
-//          }
-//      }
-      return collectedAlerts;
+    //        // do not throw an exception if we ask for collected alerts for non html pages
+    //        // see com.gargoylesoftware.htmlunit.WebClient3Test.javascriptContentDetectorContentTypeTextPlain()
+    //        if (driver instanceof HtmlUnitDriver) {
+    //            final Page page = getWebWindowOf((HtmlUnitDriver) driver).getEnclosedPage();
+    //            if (!(page instanceof HtmlPage)) {
+    //                return collectedAlerts;
+    //            }
+    //        }
+    //
+    //        final JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
+    //
+    //        final Object result = jsExecutor.executeScript("return top.__huCatchedAlerts");
+    //
+    //        if (result != null) {
+    //            if (driver instanceof HtmlUnitDriver) {
+    //                return (List<String>) result;
+    //            }
+    //            if (result instanceof List) {
+    //                for (final Object alert : (List<Object>) result) {
+    //                    collectedAlerts.add(Context.toString(alert));
+    //                }
+    //            }
+    //            else if (result instanceof String) {
+    //                collectedAlerts.add(result.toString());
+    //            }
+    //            else {
+    //                final Map<?, ?> map  = (Map<?, ?>) result;
+    //                for (final Object key : map.keySet()) {
+    //                    final int index = Integer.parseInt(key.toString());
+    //                    collectedAlerts.add(index, map.get(key).toString());
+    //                }
+    //            }
+    //        }
+    return collectedAlerts;
   }
 
   /**
    * Returns the HtmlElement of the specified WebElement.
    * @param webElement the webElement
    * @return the HtmlElement
+   * @throws Exception if an error occurs
    * @see #getWebWindowOf(HtmlUnitRemoteDriver)
    */
-  protected HtmlElement toHtmlElement(final WebElement webElement) {
-    return null;
-//      if (webElement instanceof RemoteWebElement) {
-//          throw new RuntimeException(
-//                      "WebDriverTestCase.toHtmlElement(WebElement) does not work for RemoteWebElement's");
-//      }
-//
-//      try {
-//          final Field field = HtmlUnitWebElement.class.getDeclaredField("element");
-//          field.setAccessible(true);
-//          return (HtmlElement) field.get(webElement);
-//      }
-//      catch (final Exception e) {
-//          throw new RuntimeException(e);
-//      }
+  protected HtmlElement toHtmlElement(final WebElement webElement) throws Exception {
+    final Field field = HtmlUnitWebElement.class.getDeclaredField("element");
+    field.setAccessible(true);
+    return (HtmlElement) field.get(webElement);
   }
 
   /**
@@ -1070,11 +1069,11 @@ public abstract class WebDriverTestCase extends WebTestCase {
    */
   @Before
   public void before() {
-      if (!isWebClientCached()) {
-//          final List<Thread> jsThreads = getJavaScriptThreads();
-//          assertEquals("There are still " + jsThreads.size()
-//                          + " JS threads running before starting the test", 0, jsThreads.size());
-      }
+    if (!isWebClientCached()) {
+      final List<Thread> jsThreads = getJavaScriptThreads();
+      assertEquals("There are still " + jsThreads.size()
+      + " JS threads running before starting the test", 0, jsThreads.size());
+    }
   }
 
   /**
@@ -1084,67 +1083,65 @@ public abstract class WebDriverTestCase extends WebTestCase {
   @After
   @Override
   public void releaseResources() {
-      super.releaseResources();
+    super.releaseResources();
 
-      if (!isWebClientCached()) {
-          if (webDriver_ != null) {
-              webDriver_.quit();
-          }
-//          if (webClient_ != null) {
-//              webClient_.close();
-//              webClient_.getCookieManager().clearCookies();
-//          }
-//          webClient_ = null;
-
-          // WebDriver tests don't close the driver
-//          List<Thread> jsThreads = getJavaScriptThreads();
-//          assertEquals("There are still " + jsThreads.size()
-//                  + " JS threads running after the test", 0, jsThreads.size());
+    if (!isWebClientCached()) {
+      if (webDriver_ != null) {
+        webDriver_.quit();
       }
+      //            if (webClient_ != null) {
+      //                webClient_.close();
+      //                webClient_.getCookieManager().clearCookies();
+      //            }
+      //            webClient_ = null;
+      List<Thread> jsThreads = getJavaScriptThreads();
+      assertEquals("There are still " + jsThreads.size()
+      + " JS threads running after the test", 0, jsThreads.size());
+    }
 
-      if (useRealBrowser()) {
-          synchronized (WEB_DRIVERS_REAL_BROWSERS) {
-              final WebDriver driver = WEB_DRIVERS_REAL_BROWSERS.get(getBrowserVersion());
-              if (driver != null) {
-                  try {
-                      final String currentWindow = driver.getWindowHandle();
+    if (useRealBrowser()) {
+      synchronized (WEB_DRIVERS_REAL_BROWSERS) {
+        final WebDriver driver = WEB_DRIVERS_REAL_BROWSERS.get(getBrowserVersion());
+        if (driver != null) {
+          try {
+            final String currentWindow = driver.getWindowHandle();
 
-                      final Set<String> handles = driver.getWindowHandles();
-                      // close all windows except the current one
-                      handles.remove(currentWindow);
+            final Set<String> handles = driver.getWindowHandles();
+            // close all windows except the current one
+            handles.remove(currentWindow);
 
-                      if (handles.size() > 0) {
-                          for (final String handle : handles) {
-                              try {
-                                  driver.switchTo().window(handle);
-                                  driver.close();
-                              }
-                              catch (final NoSuchWindowException e) {
-                                  LOG.error("Error switching to browser window; quit browser.", e);
-                                  WEB_DRIVERS_REAL_BROWSERS.remove(getBrowserVersion());
-                                  WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.remove(getBrowserVersion());
-                                  driver.quit();
-                                  return;
-                              }
-                          }
-
-                          // we have to force WebDriver to treat the remaining window
-                          // as the one we like to work with from now on
-                          // looks like a web driver issue to me (version 2.47.2)
-                          driver.switchTo().window(currentWindow);
-                      }
-
-                      driver.manage().deleteAllCookies();
-
-                      // in the remaining window, load a blank page
-                      driver.get("about:blank");
-                  }
-                  catch (final WebDriverException e) {
-                      shutDownRealBrowsers();
-                  }
+            if (handles.size() > 0) {
+              for (final String handle : handles) {
+                try {
+                  driver.switchTo().window(handle);
+                  driver.close();
+                }
+                catch (final NoSuchWindowException e) {
+                  LOG.error("Error switching to browser window; quit browser.", e);
+                  WEB_DRIVERS_REAL_BROWSERS.remove(getBrowserVersion());
+                  WEB_DRIVERS_REAL_BROWSERS_USAGE_COUNT.remove(getBrowserVersion());
+                  driver.quit();
+                  return;
+                }
               }
+
+              // we have to force WebDriver to treat the remaining window
+              // as the one we like to work with from now on
+              // looks like a web driver issue to me (version 2.47.2)
+              driver.switchTo().window(currentWindow);
+            }
+
+            driver.manage().deleteAllCookies();
+
+            // in the remaining window, load a blank page
+            driver.get("about:blank");
           }
+          catch (final WebDriverException e) {
+            shutDownRealBrowsers();
+          }
+        }
       }
+    }
   }
 
   /**
@@ -1157,15 +1154,13 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @throws Exception if an error occurs
    * @see #toHtmlElement(WebElement)
    */
-  protected WebWindow getWebWindowOf(final HtmlUnitRemoteDriver driver) throws Exception {
-    return null;
-//      final String sessionId = driver.getSessionId().toString();
-//      final Method getDriver = Session.class.getDeclaredMethod("getDriver", String.class);
-//      getDriver.setAccessible(true);
-//      final HtmlUnitLocalDriver localDriver = (HtmlUnitLocalDriver) getDriver.invoke(null, sessionId);
-//      final Field field = localDriver.getClass().getDeclaredField("currentWindow");
-//      field.setAccessible(true);
-//      return (WebWindow) field.get(localDriver);
+  protected WebWindow getWebWindowOf(final HtmlUnitDriver driver) throws Exception {
+    final Field driverField = HtmlUnitDriver.class.getDeclaredField("driver");
+    driverField.setAccessible(true);
+    final HtmlUnitLocalDriver localDriver = (HtmlUnitLocalDriver) driverField.get(driver);
+    final Field field = localDriver.getClass().getDeclaredField("currentWindow");
+    field.setAccessible(true);
+    return (WebWindow) field.get(localDriver);
   }
 
   /**
@@ -1176,6 +1171,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * @return whether {@link WebClient} is cached or not
    */
   protected boolean isWebClientCached() {
-      return false;
+    return false;
   }
 }
