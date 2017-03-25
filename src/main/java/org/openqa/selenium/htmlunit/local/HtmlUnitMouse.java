@@ -35,10 +35,12 @@ import com.google.common.base.Preconditions;
  *
  */
 public class HtmlUnitMouse implements Mouse {
+  private final HtmlUnitLocalDriver parent;
   private final HtmlUnitKeyboard keyboard;
   private DomElement currentActiveElement;
 
-  public HtmlUnitMouse(HtmlUnitKeyboard keyboard) {
+  public HtmlUnitMouse(HtmlUnitLocalDriver parent, HtmlUnitKeyboard keyboard) {
+    this.parent = parent;
     this.keyboard = keyboard;
   }
 
@@ -58,7 +60,7 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
-    click(element);
+    parent.click(element);
   }
 
   void click(DomElement element) {
@@ -113,13 +115,13 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  public void click(Coordinates where, long xOffset, long yOffset) {
-    click(where);
-  }
-
   @Override
   public void doubleClick(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
+    parent.doubleClick(element);
+  }
+
+  void doubleClick(DomElement element) {
 
     moveOutIfNeeded(element);
 

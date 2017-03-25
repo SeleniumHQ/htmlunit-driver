@@ -395,6 +395,10 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     runAsync(() -> mouse.click(element));
   }
 
+  void doubleClick(DomElement element) {
+    runAsync(() -> mouse.doubleClick(element));
+  }
+
   void submit(HtmlUnitWebElement element) {
     runAsync(() -> element.submitImpl());
   }
@@ -634,7 +638,7 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
 
   private void resetKeyboardAndMouseState() {
     keyboard = new HtmlUnitKeyboard(this);
-    mouse = new HtmlUnitMouse(keyboard);
+    mouse = new HtmlUnitMouse(this, keyboard);
   }
 
   protected void pickWindow() {

@@ -133,7 +133,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public void click() {
     verifyCanInteractWithElement(true);
-//    parent.getMouse().click(getCoordinates());
     parent.click(element);
   }
 
