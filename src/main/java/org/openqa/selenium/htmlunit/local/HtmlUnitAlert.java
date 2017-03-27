@@ -30,6 +30,9 @@ import org.openqa.selenium.security.Credentials;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 
+/**
+ * Implementation of {@link Alert}.
+ */
 public class HtmlUnitAlert implements Alert {
 
   HtmlUnitLocalDriver driver;

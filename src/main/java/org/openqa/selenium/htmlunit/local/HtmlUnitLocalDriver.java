@@ -399,6 +399,18 @@ public class HtmlUnitLocalDriver implements WebDriver, JavascriptExecutor,
     runAsync(() -> mouse.doubleClick(element));
   }
 
+  void mouseUp(DomElement element) {
+    runAsync(() -> mouse.mouseUp(element));
+  }
+
+  void mouseMove(DomElement element) {
+    runAsync(() -> mouse.mouseMove(element));
+  }
+
+  void mouseDown(DomElement element) {
+    runAsync(() -> mouse.mouseDown(element));
+  }
+
   void submit(HtmlUnitWebElement element) {
     runAsync(() -> element.submitImpl());
   }

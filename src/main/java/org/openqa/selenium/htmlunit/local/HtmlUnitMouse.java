@@ -28,11 +28,9 @@ import org.openqa.selenium.interactions.internal.Coordinates;
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
-import com.google.common.base.Preconditions;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
- *
  */
 public class HtmlUnitMouse implements Mouse {
   private final HtmlUnitLocalDriver parent;
@@ -64,7 +62,6 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   void click(DomElement element) {
-
     if (!element.isDisplayed()) {
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
@@ -101,7 +98,12 @@ public class HtmlUnitMouse implements Mouse {
         }
 
         if (element != null) {
-          mouseMove(element);
+          element.mouseMove(keyboard.isShiftPressed(),
+              keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+              MouseEvent.BUTTON_LEFT);
+          element.mouseOver(keyboard.isShiftPressed(),
+              keyboard.isCtrlPressed(), keyboard.isAltPressed(),
+              MouseEvent.BUTTON_LEFT);
         }
       }
     } catch (ScriptException ignored) {
@@ -151,7 +153,10 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void mouseDown(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
+    parent.mouseDown(element);
+  }
 
+  void mouseDown(DomElement element) {
     moveOutIfNeeded(element);
 
     element.mouseDown(keyboard.isShiftPressed(),
@@ -164,7 +169,10 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void mouseUp(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
+    parent.mouseUp(element);
+  }
 
+  void mouseUp(DomElement element) {
     moveOutIfNeeded(element);
 
     element.mouseUp(keyboard.isShiftPressed(),
@@ -176,21 +184,14 @@ public class HtmlUnitMouse implements Mouse {
 
   @Override
   public void mouseMove(Coordinates elementCoordinates) {
-    Preconditions.checkNotNull(elementCoordinates);
     DomElement element = (DomElement) elementCoordinates.getAuxiliary();
+    parent.mouseMove(element);
+  }
 
+  void mouseMove(DomElement element) {
     moveOutIfNeeded(element);
 
     updateActiveElement(element);
-  }
-
-  private void mouseMove(DomElement element) {
-    element.mouseMove(keyboard.isShiftPressed(),
-        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-        MouseEvent.BUTTON_LEFT);
-    element.mouseOver(keyboard.isShiftPressed(),
-        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-        MouseEvent.BUTTON_LEFT);
   }
 
   @Override

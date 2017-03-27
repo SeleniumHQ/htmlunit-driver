@@ -22,7 +22,6 @@ import static org.openqa.selenium.Keys.RETURN;
 
 /**
  * Converts a group of character sequences to a string to be sent by sendKeys.
- *
  */
 public class InputKeysContainer {
   private final StringBuilder builder = new StringBuilder();

@@ -29,7 +29,6 @@ import com.gargoylesoftware.htmlunit.html.Keyboard;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
- *
  */
 public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
