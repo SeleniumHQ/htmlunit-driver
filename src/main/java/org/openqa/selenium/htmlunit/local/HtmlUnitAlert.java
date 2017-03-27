@@ -59,7 +59,7 @@ public class HtmlUnitAlert implements Alert {
     try {
       if (driver.isProcessAlert()) {
         try {
-          condition.await(10, TimeUnit.SECONDS);
+          condition.await(5, TimeUnit.SECONDS);
         }
         catch (InterruptedException e) {
           throw new RuntimeException(e);
