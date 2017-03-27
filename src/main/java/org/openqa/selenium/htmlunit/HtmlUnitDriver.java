@@ -280,13 +280,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   // Package visibility for testing
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
     String browserName;
+    String browserVersion;
 
     String rawVersion = capabilities.getVersion();
     String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split("-");
     if (splitVersion.length > 1) {
       browserName = splitVersion[0];
+      browserVersion = splitVersion[1];
     } else {
       browserName = capabilities.getVersion();
+      browserVersion = browserName;
     }
 
     // This is for backwards compatibility - in case there are users who are trying to
@@ -306,7 +309,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         break;
 
       case BrowserType.FIREFOX:
-        browserVersionObject = BrowserVersion.FIREFOX_45;
+        try {
+          int version = Integer.parseInt(browserVersion);
+          switch (version) {
+            case 45:
+              browserVersionObject = BrowserVersion.FIREFOX_45;
+              break;
+
+            default:
+              browserVersionObject = BrowserVersion.FIREFOX_52;
+          }
+        } catch (NumberFormatException e) {
+            browserVersionObject = BrowserVersion.FIREFOX_52;
+        }
         break;
 
       default:

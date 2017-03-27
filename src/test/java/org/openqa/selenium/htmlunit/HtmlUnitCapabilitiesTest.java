@@ -17,7 +17,15 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_45;
+import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_52;
+import static com.gargoylesoftware.htmlunit.BrowserVersion.INTERNET_EXPLORER;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY;
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.determineBrowserVersion;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -25,36 +33,44 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Test the determineBrowserVersion method.
  */
 public class HtmlUnitCapabilitiesTest {
+
   @Test
   public void configurationViaDirectCapabilities() {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
-        BrowserVersion.INTERNET_EXPLORER);
+    assertEquals(INTERNET_EXPLORER,
+        determineBrowserVersion(ieCapabilities));
 
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_45);
+    assertEquals(FIREFOX_52,
+        determineBrowserVersion(firefoxCapabilities));
   }
 
   @Test
-  public void configurationOfFirefoxViaRemote() {
+  public void configurationOfFirefoxDefaultViaRemote() {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(firefoxCapabilities),
-        BrowserVersion.FIREFOX_45);
+    assertEquals(FIREFOX_52,
+        determineBrowserVersion(firefoxCapabilities));
+  }
+
+  @Test
+  public void configurationOfFirefox45ViaRemote() {
+    DesiredCapabilities firefoxCapabilities =
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox-45", Platform.ANY);
+
+    assertEquals(FIREFOX_45,
+        determineBrowserVersion(firefoxCapabilities));
   }
 
   @Test
@@ -62,16 +78,14 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(ieCapabilities),
-        BrowserVersion.INTERNET_EXPLORER);
+    assertEquals(INTERNET_EXPLORER, determineBrowserVersion(ieCapabilities));
   }
 
   @Test
   public void tetsDefautlBrowserVersion() {
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(capabilities),
-        BrowserVersion.getDefault());
+    assertEquals(BrowserVersion.getDefault(), determineBrowserVersion(capabilities));
   }
 
   @Test
@@ -82,9 +96,8 @@ public class HtmlUnitCapabilitiesTest {
 
     driver = new HtmlUnitDriver(false);
     Capabilities jsDisabled = driver.getCapabilities();
-
-    assertTrue(jsEnabled.isJavascriptEnabled());
-    assertFalse(jsDisabled.isJavascriptEnabled());
+    assertTrue(jsEnabled.is(JAVASCRIPT_ENABLED));
+    assertFalse(jsDisabled.is(JAVASCRIPT_ENABLED));
   }
 
   @Test
@@ -92,10 +105,10 @@ public class HtmlUnitCapabilitiesTest {
     String browserLanguage = "es-ES";
 
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
+    capabilities.setCapability(BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
 
-    assertEquals(HtmlUnitDriver.determineBrowserVersion(capabilities).getBrowserLanguage(),
-            browserLanguage);
+    assertEquals(browserLanguage,
+        determineBrowserVersion(capabilities).getBrowserLanguage());
   }
 
 }
