@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -75,7 +75,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
     FindsByCssSelector, Locatable, WebElement {
 
-  protected final HtmlUnitLocalDriver parent;
+  protected final HtmlUnitDriver parent;
   protected final int id;
   protected final DomElement element;
   private static final String[] booleanAttributes = {
@@ -124,7 +124,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   private String toString;
 
-  public HtmlUnitWebElement(HtmlUnitLocalDriver parent, int id, DomElement element) {
+  public HtmlUnitWebElement(HtmlUnitDriver parent, int id, DomElement element) {
     this.parent = parent;
     this.id = id;
     this.element = element;
@@ -487,7 +487,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return HtmlSerializer.getText(element);
   }
 
-  protected HtmlUnitLocalDriver getParent() {
+  protected HtmlUnitDriver getParent() {
     return parent;
   }
 
@@ -581,7 +581,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
-          String.format(HtmlUnitLocalDriver.INVALIDXPATHERROR, xpathExpr), ex);
+          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
     if (node == null) {
@@ -593,7 +593,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     // The xpath selector selected something different than a WebElement. The selector is therefore
     // invalid
     throw new InvalidSelectorException(
-        String.format(HtmlUnitLocalDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
+        String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, xpathExpr, node.getClass().toString()));
   }
 
   @Override
@@ -608,7 +608,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
-          String.format(HtmlUnitLocalDriver.INVALIDXPATHERROR, xpathExpr), ex);
+          String.format(HtmlUnitDriver.INVALIDXPATHERROR, xpathExpr), ex);
     }
 
     for (Object e : domElements) {
@@ -619,7 +619,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
         // The xpath selector selected something different than a WebElement. The selector is
         // therefore invalid
         throw new InvalidSelectorException(
-            String.format(HtmlUnitLocalDriver.INVALIDSELECTIONERROR,
+            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR,
                 xpathExpr, e.getClass().toString()));
       }
     }

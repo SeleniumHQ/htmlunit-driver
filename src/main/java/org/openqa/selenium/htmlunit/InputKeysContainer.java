@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import static org.openqa.selenium.Keys.ENTER;
 import static org.openqa.selenium.Keys.RETURN;

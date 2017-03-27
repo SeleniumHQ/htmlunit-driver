@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
 
@@ -33,11 +33,11 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
  * Implements mouse operations using the HtmlUnit WebDriver.
  */
 public class HtmlUnitMouse implements Mouse {
-  private final HtmlUnitLocalDriver parent;
+  private final HtmlUnitDriver parent;
   private final HtmlUnitKeyboard keyboard;
   private DomElement currentActiveElement;
 
-  public HtmlUnitMouse(HtmlUnitLocalDriver parent, HtmlUnitKeyboard keyboard) {
+  public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
     this.parent = parent;
     this.keyboard = keyboard;
   }

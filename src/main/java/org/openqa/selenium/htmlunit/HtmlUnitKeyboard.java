@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
 
@@ -32,10 +32,10 @@ import com.gargoylesoftware.htmlunit.html.Keyboard;
  */
 public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
   private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
-  private final HtmlUnitLocalDriver parent;
+  private final HtmlUnitDriver parent;
   private HtmlElement lastElement;
 
-  HtmlUnitKeyboard(HtmlUnitLocalDriver parent) {
+  HtmlUnitKeyboard(HtmlUnitDriver parent) {
     this.parent = parent;
   }
 

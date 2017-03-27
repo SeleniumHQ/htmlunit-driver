@@ -18,13 +18,13 @@
 package org.openqa.selenium.htmlunit.server;
 
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class JavascriptEnabledHtmlUnitDriverTests {
 
   // Used by the reflection-based supplier
-  public static class HtmlUnitDriverForTest extends HtmlUnitLocalDriver {
+  public static class HtmlUnitDriverForTest extends HtmlUnitDriver {
     public HtmlUnitDriverForTest(Capabilities capabilities) {
       super(tweak(capabilities));
     }

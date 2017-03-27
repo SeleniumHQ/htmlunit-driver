@@ -46,7 +46,7 @@ import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.local.HtmlUnitLocalDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 //we migrated to 'remote' WebDriver
@@ -323,11 +323,11 @@ public class HtmlUnitDriverTest extends JUnit4TestBase {
     driver.manage().ime();
   }
 
-  private HtmlUnitLocalDriver getWebDriver() {
-    return ((HtmlUnitLocalDriver) driver);
+  private HtmlUnitDriver getWebDriver() {
+    return ((HtmlUnitDriver) driver);
   }
   private void openNewWindow(WebDriver driver) {
-    ((HtmlUnitLocalDriver) driver).executeScript("window.open('new')");
+    ((HtmlUnitDriver) driver).executeScript("window.open('new')");
   }
 
 }

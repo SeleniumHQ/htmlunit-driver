@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -35,13 +35,13 @@ import com.gargoylesoftware.htmlunit.WebClient;
  */
 public class HtmlUnitAlert implements Alert {
 
-  HtmlUnitLocalDriver driver;
+  HtmlUnitDriver driver;
   private AlertHolder holder_;
   private boolean quitting_;
   private Lock lock = new ReentrantLock();
   private Condition condition = lock.newCondition();
 
-  HtmlUnitAlert(HtmlUnitLocalDriver driver) {
+  HtmlUnitAlert(HtmlUnitDriver driver) {
     this.driver = driver;
     WebClient webClient = driver.getWebClient();
     webClient.setAlertHandler(this::alertHandler);
