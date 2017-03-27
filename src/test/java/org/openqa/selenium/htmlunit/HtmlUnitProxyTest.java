@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +41,7 @@ public class HtmlUnitProxyTest {
 
   @Test
   public void testProxyAsCapability() {
-    DesiredCapabilities capabilities = new DesiredCapabilities("foo", "1", Platform.LINUX);
+    DesiredCapabilities capabilities = new DesiredCapabilities(BrowserType.HTMLUNIT, "", Platform.LINUX);
     Proxy proxy = new Proxy().setHttpProxy("http.proxy");
     capabilities.setCapability(PROXY, proxy);
 

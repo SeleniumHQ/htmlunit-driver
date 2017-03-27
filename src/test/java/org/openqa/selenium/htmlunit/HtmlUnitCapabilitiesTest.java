@@ -40,19 +40,12 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  */
 public class HtmlUnitCapabilitiesTest {
 
-  @Test
+  @Test(expected = IllegalArgumentException.class)
   public void configurationViaDirectCapabilities() {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
-    assertEquals(INTERNET_EXPLORER,
-        determineBrowserVersion(ieCapabilities));
-
-    DesiredCapabilities firefoxCapabilities =
-        new DesiredCapabilities(BrowserType.FIREFOX, "", Platform.ANY);
-
-    assertEquals(FIREFOX_52,
-        determineBrowserVersion(firefoxCapabilities));
+    determineBrowserVersion(ieCapabilities);
   }
 
   @Test

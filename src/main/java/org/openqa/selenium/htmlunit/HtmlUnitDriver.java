@@ -250,15 +250,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Note: There are two configuration modes for the HtmlUnitDriver using this constructor.
-   * <ol>
-   *   <li>The first is where the browserName is "chrome", "firefox" or "internet explorer"
-   *       and browserVersion denotes the desired version.</li>
-   *   <li>The second one is where the browserName is "htmlunit" and the browserVersion
-   *       denotes the required browser AND its version. In this mode the browserVersion could be
-   *       "chrome" for Chrome, "firefox-38" for Firefox 38 or "internet explorer-11" for IE 11.</li>
-   * </ol>
-   * <p>The Remote WebDriver uses the second mode - the first mode is deprecated and should not be used.
+   * The browserName is {@link BrowserType#HTMLUNIT} "htmlunit" and the browserVersion
+   * denotes the required browser AND its version.
+   * For example "chrome" for Chrome, "firefox-45" for Firefox 45
+   * or "internet explorer" for IE.
    *
    * @param capabilities desired capabilities requested for the htmlunit driver session
    */
@@ -277,8 +272,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
   }
 
-  // Package visibility for testing
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
+    if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
+      throw new IllegalArgumentException("Browser name must be " + BrowserType.HTMLUNIT);
+    }
     String browserName;
     String browserVersion;
 
@@ -289,13 +286,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       browserVersion = splitVersion[1];
     } else {
       browserName = capabilities.getVersion();
-      browserVersion = browserName;
-    }
-
-    // This is for backwards compatibility - in case there are users who are trying to
-    // configure the HtmlUnitDriver by using the c'tor with capabilities.
-    if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
-      browserName = capabilities.getBrowserName();
+      browserVersion = null;
     }
 
     BrowserVersion browserVersionObject;
