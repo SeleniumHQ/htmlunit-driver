@@ -73,7 +73,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   }
 
   @Ignore(value = CHROME, reason = "Unstable")
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canIgnoreUnhandledAlert() {
     try {
