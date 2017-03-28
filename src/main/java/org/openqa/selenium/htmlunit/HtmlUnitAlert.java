@@ -29,6 +29,7 @@ import org.openqa.selenium.security.Credentials;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebWindow;
 
 /**
  * Implementation of {@link Alert}.
@@ -40,6 +41,7 @@ public class HtmlUnitAlert implements Alert {
   private boolean quitting_;
   private Lock lock = new ReentrantLock();
   private Condition condition = lock.newCondition();
+  private WebWindow webWindow_;
 
   HtmlUnitAlert(HtmlUnitDriver driver) {
     this.driver = driver;
@@ -53,6 +55,7 @@ public class HtmlUnitAlert implements Alert {
     if (quitting_) {
       return;
     }
+    webWindow_ = page.getEnclosingWindow();
     holder_ = new AlertHolder(message);
     awaitCondition();
   }
@@ -78,6 +81,7 @@ public class HtmlUnitAlert implements Alert {
     if (quitting_) {
       return null;
     }
+    webWindow_ = page.getEnclosingWindow();
     holder_ = new PromptHolder(message, defaultMessage);
     PromptHolder localHolder = (PromptHolder) holder_;
     awaitCondition();
@@ -88,10 +92,15 @@ public class HtmlUnitAlert implements Alert {
     if (quitting_) {
       return true;
     }
+    webWindow_ = page.getEnclosingWindow();
     holder_ = new AlertHolder(returnValue);
     AlertHolder localHolder = holder_;
     awaitCondition();
     return localHolder.isAccepted();
+  }
+
+  WebWindow getWebWindow() {
+    return webWindow_;
   }
 
   public void setAutoAccept(boolean autoAccept) {

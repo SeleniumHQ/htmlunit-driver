@@ -28,13 +28,15 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElemen
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
-import static org.openqa.selenium.testing.TestUtilities.*;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
+import static org.openqa.selenium.testing.TestUtilities.isFirefox;
+
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -46,8 +48,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.Set;
 
 @Ignore(value = {CHROME, PHANTOMJS, SAFARI},
     reason = "chrome: https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
@@ -351,8 +351,8 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE, HTMLUNIT},
-    reason = "IE: fails in versions 6 and 7, HTMLUNIT: how to throw AssertionError?")
+  @Ignore(value = {CHROME, FIREFOX, IE, MARIONETTE},
+    reason = "IE: fails in versions 6 and 7")
   @Test
   public void testShouldNotHandleAlertInAnotherWindow() {
     String mainWindow = driver.getWindowHandle();

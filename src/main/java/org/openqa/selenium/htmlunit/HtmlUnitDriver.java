@@ -1513,6 +1513,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
           throw new NoAlertPresentException();
         }
       }
+      if (alert.getWebWindow() != currentWindow) {
+        throw new AssertionError();
+      }
       return alert;
     }
   }
