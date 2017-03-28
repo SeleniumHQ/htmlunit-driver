@@ -741,7 +741,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
   public String getCssValue(String propertyName) {
     assertElementNotStale();
 
-    String style = getEffectiveStyle((HtmlElement) element, propertyName);
+    final HTMLElement elem = (HTMLElement) ((HtmlElement) element).getScriptableObject();
+
+    String style = elem.getWindow().getComputedStyle(elem, null).getPropertyValue(propertyName);
+
     return getColor(style);
   }
 
@@ -768,44 +771,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
       }
     }
     return null;
-  }
-
-  private String getEffectiveStyle(HtmlElement htmlElement, String propertyName) {
-    HtmlElement current = htmlElement;
-    String value = "inherit";
-    while ("inherit".equals(value)) {
-      // Hat-tip to the Selenium team
-      Object result =
-        parent
-          .executeScript(
-            "if (window.getComputedStyle) { "
-              +
-              "    return window.getComputedStyle(arguments[0], null).getPropertyValue(arguments[1]); "
-              +
-              "} "
-              +
-              "if (arguments[0].currentStyle) { "
-              +
-              "    return arguments[0].currentStyle[arguments[1]]; "
-              +
-              "} "
-              +
-              "if (window.document.defaultView && window.document.defaultView.getComputedStyle) { "
-              +
-              "    return window.document.defaultView.getComputedStyle(arguments[0], null)[arguments[1]]; "
-              +
-              "} ",
-            current, propertyName
-          );
-
-      if (!(result instanceof Undefined)) {
-        value = String.valueOf(result);
-      }
-
-      current = (HtmlElement) current.getParentNode();
-    }
-
-    return value;
   }
 
   @Override
