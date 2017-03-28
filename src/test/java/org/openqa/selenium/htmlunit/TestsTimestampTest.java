@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -46,6 +47,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Checks the timestamp of the Selenium test files, to ensure it is always updated. 
  */
+@Ignore
 @RunWith(Parameterized.class)
 public class TestsTimestampTest {
 
