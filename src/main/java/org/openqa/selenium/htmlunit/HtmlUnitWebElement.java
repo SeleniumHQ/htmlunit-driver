@@ -69,8 +69,6 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
 
-import net.sourceforge.htmlunit.corejs.javascript.Undefined;
-
 public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
     FindsByCssSelector, Locatable, WebElement, Coordinates {
@@ -285,7 +283,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void sendKeys(CharSequence... value) {
-    //((HtmlUnitKeyboard) parent.getKeyboard()).sendKeys(this, true, value);
     parent.sendKeys(this, value);
   }
 
