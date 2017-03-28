@@ -21,10 +21,12 @@ import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -123,6 +125,7 @@ import com.google.common.collect.Sets;
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
+import net.sourceforge.htmlunit.corejs.javascript.IdScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
 import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
@@ -1040,11 +1043,28 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return parseJavascriptResultsList(collection);
     }
 
+    if (value instanceof IdScriptableObject
+        && value.getClass().getSimpleName().equals("NativeDate")) {
+      long l = ((Number) getPrivateField(value, "date")).longValue();
+      return Instant.ofEpochMilli(l).toString();
+    }
+
     if (value instanceof Undefined) {
       return null;
     }
 
     return value;
+  }
+
+  private Object getPrivateField(Object o, String fieldName) {
+    try {
+      final Field field = o.getClass().getDeclaredField(fieldName);
+      field.setAccessible(true);
+      return field.get(o);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static Map<String, Object> convertLocationToMap(Location location) {

@@ -573,7 +573,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @JavascriptEnabled
   @Test
   @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToReturnADateObject() {
     driver.get(pages.simpleTestPage);
 
