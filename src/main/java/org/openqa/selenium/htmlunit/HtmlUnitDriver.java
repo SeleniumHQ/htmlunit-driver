@@ -18,6 +18,7 @@
 package org.openqa.selenium.htmlunit;
 
 import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -58,6 +59,7 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -152,6 +154,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private boolean gotPage;
   private TargetLocator targetLocator = new HtmlUnitTargetLocator();
   private AsyncScriptExecutor asyncScriptExecutor;
+  private UnexpectedAlertBehaviour unexpectedAlertBehaviour;
 
   private int elementsCounter;
   private Map<DomElement, HtmlUnitWebElement> elementsMap = new HashMap<>();
@@ -266,6 +269,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setProxySettings(Proxy.extractFrom(capabilities));
 
     setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
+    
+    unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
+    if (unexpectedAlertBehaviour == null) {
+      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS;
+    }
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -682,11 +690,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public String getTitle() {
-    if (alert.isLocked()) {
-      String text = alert.getText();
-      alert.dismiss();
-      throw new UnhandledAlertException("Alert found", text);
-    }
+    ensureAlertUnlocked();
     Page page = lastPage();
     if (page == null || !(page instanceof HtmlPage)) {
       return null; // no page so there is no title
@@ -696,6 +700,24 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     return ((HtmlPage) page).getTitleText();
+  }
+
+  private void ensureAlertUnlocked() {
+    if (alert.isLocked()) {
+      String text = alert.getText();
+      switch (unexpectedAlertBehaviour) {
+        case ACCEPT:
+          alert.accept();
+          break;
+
+        case DISMISS:
+          alert.dismiss();
+          break;
+
+        case IGNORE:
+      }
+      throw new UnhandledAlertException("Alert found", text);
+    }
   }
 
   @Override
@@ -802,11 +824,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     try {
       Object result = asyncScriptExecutor.execute(script, args);
 
-      if (alert.isLocked()) {
-        String text = alert.getText();
-        alert.dismiss();
-        throw new UnhandledAlertException("Alert found", text);
-      }
+      ensureAlertUnlocked();
       return parseNativeJavascriptResult(result);
     }
     finally {
@@ -1865,9 +1883,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   WebElement findElement(final By locator, final SearchContext context) {
-    if (alert.isLocked()) {
-      throw new UnhandledAlertException(alert.getText());
-    }
+    ensureAlertUnlocked();
     return implicitlyWaitFor(new Callable<WebElement>() {
 
       @Override

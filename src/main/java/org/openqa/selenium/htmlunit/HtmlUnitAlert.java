@@ -147,7 +147,7 @@ public class HtmlUnitAlert implements Alert {
     holder_ = null;
   }
 
-  public boolean isLocked() {
+  boolean isLocked() {
     return holder_ != null;
   }
 

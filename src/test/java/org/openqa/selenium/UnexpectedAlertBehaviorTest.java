@@ -22,7 +22,6 @@ import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -35,7 +34,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -54,19 +52,18 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     }
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value");
   }
 
-  @Ignore(value = {HTMLUNIT, CHROME}, reason = "Unstable Chrome behavior")
+  @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   @Test
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null");
   }
 
-  @Ignore(value = {CHROME, HTMLUNIT}, reason = "Chrome uses IGNORE mode by default")
+  @Ignore(value = CHROME, reason = "Chrome uses IGNORE mode by default")
   @Test
   public void dismissUnhandledAlertsByDefault() {
     runScenarioWithUnhandledAlert(null, "null");
@@ -84,7 +81,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
     driver2.switchTo().alert().dismiss();
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void canSpecifyUnhandledAlertBehaviourUsingCapabilities() {
     desiredCaps.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
@@ -95,7 +91,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = {IE, CHROME}, reason = "IE, Chrome: required capabilities not implemented")
-  @NotYetImplemented(HTMLUNIT)
   public void requiredUnhandledAlertCapabilityHasPriorityOverDesired() {
     // TODO: Resolve why this test doesn't work on the remote server
     assumeTrue(TestUtilities.isLocal());
