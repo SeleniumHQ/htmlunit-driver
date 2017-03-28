@@ -73,7 +73,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
 
 public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
-    FindsByCssSelector, Locatable, WebElement {
+    FindsByCssSelector, Locatable, WebElement, Coordinates {
 
   protected final HtmlUnitDriver parent;
   protected final int id;
@@ -806,7 +806,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     return value;
-
   }
 
   @Override
@@ -841,28 +840,27 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public Coordinates getCoordinates() {
-    return new Coordinates() {
+    return this;
+  }
 
-      @Override
-      public Point onScreen() {
-        throw new UnsupportedOperationException("Not displayed, no screen location.");
-      }
+  @Override
+  public Point onScreen() {
+    throw new UnsupportedOperationException("Not displayed, no screen location.");
+  }
 
-      @Override
-      public Point inViewPort() {
-        return getLocation();
-      }
+  @Override
+  public Point inViewPort() {
+    return getLocation();
+  }
 
-      @Override
-      public Point onPage() {
-        return getLocation();
-      }
+  @Override
+  public Point onPage() {
+    return getLocation();
+  }
 
-      @Override
-      public Object getAuxiliary() {
-        return getElement();
-      }
-    };
+  @Override
+  public Object getAuxiliary() {
+    return element;
   }
 
   @Override
