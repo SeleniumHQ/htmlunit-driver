@@ -408,8 +408,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  void click(DomElement element) {
-    runAsync(() -> mouse.click(element));
+  void click(DomElement element, boolean directClick) {
+    runAsync(() -> mouse.click(element, directClick));
   }
 
   void doubleClick(DomElement element) {

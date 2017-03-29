@@ -21,12 +21,15 @@ import java.io.IOException;
 
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.Mouse;
 import org.openqa.selenium.interactions.internal.Coordinates;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
 import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 
 /**
@@ -58,10 +61,14 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
-    parent.click(element);
+    parent.click(element, false);
   }
 
-  void click(DomElement element) {
+  /**
+   * @param directClick {@code true} for {@link WebElement#click()}
+   * or {@code false} for {@link Actions#click()}
+   */
+  void click(DomElement element, boolean directClick) {
     if (!element.isDisplayed()) {
       throw new ElementNotVisibleException("You may only interact with visible elements");
     }
@@ -73,7 +80,8 @@ public class HtmlUnitMouse implements Mouse {
       element.mouseMove();
 
       element.click(keyboard.isShiftPressed(),
-          keyboard.isCtrlPressed(), keyboard.isAltPressed());
+          keyboard.isCtrlPressed() || (directClick && element instanceof HtmlOption),
+          keyboard.isAltPressed());
       updateActiveElement(element);
     } catch (IOException e) {
       throw new WebDriverException(e);

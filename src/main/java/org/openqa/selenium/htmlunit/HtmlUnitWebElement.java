@@ -131,7 +131,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public void click() {
     verifyCanInteractWithElement(true);
-    parent.click(element);
+    parent.click(element, true);
   }
 
   @Override
