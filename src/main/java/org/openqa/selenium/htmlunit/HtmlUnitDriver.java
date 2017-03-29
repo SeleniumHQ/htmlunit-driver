@@ -1533,11 +1533,23 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
           throw new NoAlertPresentException();
         }
       }
-      if (alert.getWebWindow() != currentWindow) {
+      if (!isChild(currentWindow, alert.getWebWindow())) {
         throw new AssertionError();
       }
       return alert;
     }
+  }
+
+  private boolean isChild(WebWindow parent, WebWindow potentialChild) {
+    for (WebWindow child = potentialChild; child != null ; child = child.getParentWindow()) {
+      if (child == parent) {
+        return true;
+      }
+      if (child == child.getTopWindow()) {
+        break;
+      }
+    }
+    return false;
   }
 
   protected <X> X implicitlyWaitFor(Callable<X> condition) {
