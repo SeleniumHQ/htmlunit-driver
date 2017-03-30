@@ -20,7 +20,6 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import java.util.List;
@@ -28,13 +27,11 @@ import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 
   @Ignore({MARIONETTE})
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBePossibleToDeselectASingleOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
@@ -70,7 +67,6 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
 
   @Ignore({MARIONETTE})
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToSelectMoreThanOneOptionFromASelectWhichAllowsMultipleChoices() {
     driver.get(pages.formPage);
 
