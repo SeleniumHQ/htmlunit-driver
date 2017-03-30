@@ -344,7 +344,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Ignore({CHROME, IE, PHANTOMJS, SAFARI, MARIONETTE})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void shouldBeAbleToDisableAcceptOfInsecureSslCertsWithRequiredCapability() {
     // TODO: Resolve why this test doesn't work on the remote server

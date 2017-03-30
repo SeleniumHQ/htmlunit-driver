@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
+import static org.openqa.selenium.remote.CapabilityType.*;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import java.io.IOException;
@@ -39,6 +39,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.net.ssl.SSLHandshakeException;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -277,6 +279,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (unexpectedAlertBehaviour == null) {
       unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS;
     }
+    
+    Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
+    if (acceptSslCerts == null) {
+      acceptSslCerts = true;
+    }
+    setAcceptSslCertificates(acceptSslCerts);
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -656,6 +664,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new TimeoutException(e);
     } catch (NoSuchSessionException e) {
       throw e;
+    } catch (SSLHandshakeException e) {
+      return;
     } catch (Exception e) {
       throw new WebDriverException(e);
     }
@@ -1393,6 +1403,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   public void setDownloadImages(boolean downloadImages) {
     getWebClient().getOptions().setDownloadImages(downloadImages);
+  }
+
+  public void setAcceptSslCertificates(boolean accept) {
+    getWebClient().getOptions().setUseInsecureSSL(accept);
+  }
+
+  public boolean isAcceptSslCertificates() {
+    return getWebClient().getOptions().isUseInsecureSSL();
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
