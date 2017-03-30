@@ -424,7 +424,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = {SAFARI, MARIONETTE},
           reason = "Not implemented; Safari: see issue 687, comment 41",
           issues = {687})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @NoDriverAfterTest // Subsequent tests sometimes fail on Firefox.
   @Test

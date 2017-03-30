@@ -18,8 +18,10 @@
 package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -89,6 +91,12 @@ public class HtmlUnitMouse implements Mouse {
       // TODO(simon): This isn't good enough.
       System.out.println(e.getMessage());
       // Press on regardless
+    } catch (RuntimeException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof SocketTimeoutException) {
+        throw new TimeoutException(cause);
+      }
+      throw e;
     }
   }
 
