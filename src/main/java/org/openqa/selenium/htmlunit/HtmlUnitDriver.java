@@ -17,7 +17,9 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.remote.CapabilityType.*;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
+import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_FINDING_BY_CSS;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 
 import java.io.IOException;
@@ -160,7 +162,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private TargetLocator targetLocator = new HtmlUnitTargetLocator();
   private AsyncScriptExecutor asyncScriptExecutor;
   private UnexpectedAlertBehaviour unexpectedAlertBehaviour;
-
+  private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.NORMAL;
   private int elementsCounter;
   private Map<DomElement, HtmlUnitWebElement> elementsMap = new HashMap<>();
 
@@ -285,6 +287,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       acceptSslCerts = true;
     }
     setAcceptSslCertificates(acceptSslCerts);
+
+    String pageLoadStrategyString = (String) capabilities.getCapability(PAGE_LOAD_STRATEGY);
+    if ("none".equals(pageLoadStrategyString)) {
+      pageLoadStrategy = PageLoadStrategy.NONE;
+    }
+    else if ("eager".equals(pageLoadStrategyString)) {
+      pageLoadStrategy = PageLoadStrategy.EAGER;
+    }
   }
 
   public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
@@ -409,7 +419,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         conditionLock.unlock();
       }
     }).start();
-    mainCondition.awaitUninterruptibly();
+
+    if (pageLoadStrategy != PageLoadStrategy.NONE) {
+      mainCondition.awaitUninterruptibly();
+    }
+
     conditionLock.unlock();
     if (exception != null) {
       throw exception;
@@ -1968,5 +1982,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       Thread.sleep(ms);
     } catch (InterruptedException ignored) {
     }
+  }
+
+  private static enum PageLoadStrategy {
+    NORMAL, EAGER, NONE;
   }
 }

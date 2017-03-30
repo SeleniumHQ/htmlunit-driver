@@ -82,7 +82,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {CHROME, SAFARI, MARIONETTE, PHANTOMJS})
-  @NotYetImplemented(HTMLUNIT)
   @NeedsLocalEnvironment
   @Test
   public void testNoneStrategyShouldNotWaitForPageToLoad() {
