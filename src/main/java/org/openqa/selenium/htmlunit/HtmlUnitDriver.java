@@ -394,15 +394,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   void runAsync(Runnable r) {
-    while (runAsyncRunning) {
-      try {
-        Thread.sleep(10);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
+    boolean loadStrategyWait = pageLoadStrategy != PageLoadStrategy.NONE;
+
+    if (loadStrategyWait) {
+      while (runAsyncRunning) {
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
       }
+      conditionLock.lock();
+      runAsyncRunning = true;
     }
-    conditionLock.lock();
-    runAsyncRunning = true;
     
     exception = null;
     new Thread(() -> {
@@ -420,11 +424,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
     }).start();
 
-    if (pageLoadStrategy != PageLoadStrategy.NONE) {
+    if (loadStrategyWait) {
       mainCondition.awaitUninterruptibly();
+      conditionLock.unlock();
     }
 
-    conditionLock.unlock();
     if (exception != null) {
       throw exception;
     }
