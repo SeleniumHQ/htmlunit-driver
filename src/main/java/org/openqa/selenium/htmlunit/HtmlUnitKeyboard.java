@@ -49,14 +49,15 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     htmlElem.verifyCanInteractWithElement(false);
 
     final HtmlElement element = (HtmlElement) htmlElem.element;
-    final boolean inputElement = element instanceof HtmlInput;
-    InputKeysContainer keysContainer = new InputKeysContainer(inputElement, value);
+    final boolean inputElementInsideForm = element instanceof HtmlInput
+        && ((HtmlInput) element).getEnclosingForm() != null;
+    InputKeysContainer keysContainer = new InputKeysContainer(inputElementInsideForm, value);
 
     htmlElem.switchFocusToThisIfNeeded();
 
     sendKeys(element, keysContainer, releaseAllAtEnd);
 
-    if (inputElement && keysContainer.wasSubmitKeyFound() && ((HtmlInput) element).getEnclosingForm() != null) {
+    if (inputElementInsideForm && keysContainer.wasSubmitKeyFound()) {
       htmlElem.submitImpl();
     }
   }
