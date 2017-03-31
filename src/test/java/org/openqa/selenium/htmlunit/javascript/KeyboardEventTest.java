@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.htmlunit.javascript;
 
+import static org.openqa.selenium.htmlunit.BrowserRunner.Browser.FF;
+
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -26,6 +28,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.BrowserRunner;
 import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.BrowserRunner.NotYetImplemented;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 
 @RunWith(BrowserRunner.class)
@@ -61,6 +64,7 @@ public class KeyboardEventTest extends WebDriverTestCase {
                   "keydown:13,0,13",
                   "keypress:13,0,13",
                   "keyup:13,0,13"})
+  @NotYetImplemented(FF)
   public void which() throws Exception {
       final String html
           = "<html><head></head><body>\n"
