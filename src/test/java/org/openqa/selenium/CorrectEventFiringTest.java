@@ -39,16 +39,17 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
@@ -335,8 +336,9 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, HTMLUNIT}, reason="Fixed in HtmlUnit 2.25")
+  @Ignore(value = SAFARI)
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
     driver.get(pages.javascriptPage);
