@@ -127,7 +127,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.ContextAction;
 import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.IdScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
@@ -867,16 +866,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     final Scriptable scope = page.getEnclosingWindow().getScriptableObject();
 
     final Object[] parameters = new Object[args.length];
-    final ContextAction action = new ContextAction() {
-      @Override
-      public Object run(final Context context) {
-        for (int i = 0; i < args.length; i++) {
-          parameters[i] = parseArgumentIntoJavascriptParameter(context, scope, args[i]);
-        }
-        return null;
+    Context.enter();
+    try {
+      for (int i = 0; i < args.length; i++) {
+        parameters[i] = parseArgumentIntoJavascriptParameter(scope, args[i]);
       }
-    };
-    getWebClient().getJavaScriptEngine().getContextFactory().call(action);
+    }
+    finally {
+      Context.exit();
+    }
     return parameters;
   }
 
@@ -898,8 +896,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return (HtmlPage) lastPage;
   }
 
-  private Object parseArgumentIntoJavascriptParameter(
-      Context context, Scriptable scope, Object arg) {
+  private Object parseArgumentIntoJavascriptParameter(Scriptable scope, Object arg) {
     while (arg instanceof WrapsElement) {
       arg = ((WrapsElement) arg).getWrappedElement();
     }
@@ -930,22 +927,22 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     } else if (arg instanceof Collection<?>) {
       List<Object> list = new ArrayList<>();
       for (Object o : (Collection<?>) arg) {
-        list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
+        list.add(parseArgumentIntoJavascriptParameter(scope, o));
       }
-      return context.newArray(scope, list.toArray());
+      return Context.getCurrentContext().newArray(scope, list.toArray());
 
     } else if (arg.getClass().isArray()) {
       List<Object> list = new ArrayList<>();
       for (Object o : (Object[]) arg) {
-        list.add(parseArgumentIntoJavascriptParameter(context, scope, o));
+        list.add(parseArgumentIntoJavascriptParameter(scope, o));
       }
-      return context.newArray(scope, list.toArray());
+      return Context.getCurrentContext().newArray(scope, list.toArray());
 
     } else if (arg instanceof Map<?,?>) {
       Map<?,?> argmap = (Map<?,?>) arg;
-      Scriptable map = context.newObject(scope);
+      Scriptable map = Context.getCurrentContext().newObject(scope);
       for (Object key: argmap.keySet()) {
-        map.put((String) key, map, parseArgumentIntoJavascriptParameter(context, scope,
+        map.put((String) key, map, parseArgumentIntoJavascriptParameter(scope,
             argmap.get(key)));
       }
       return map;
