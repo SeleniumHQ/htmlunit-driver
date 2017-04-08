@@ -69,6 +69,8 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import com.google.common.base.Strings;
 
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+
 public class HtmlUnitWebElement implements WrapsDriver,
     FindsById, FindsByLinkText, FindsByXPath, FindsByTagName,
     FindsByCssSelector, Locatable, WebElement, Coordinates {
@@ -398,11 +400,14 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return "";
     }
 
-    final Object slotVal = element.getScriptableObject().get(name);
-    if (slotVal instanceof String) {
-      String strVal = (String) slotVal;
-      if (!Strings.isNullOrEmpty(strVal)) {
-        return strVal;
+    final Object scriptable = element.getScriptableObject();
+    if (scriptable instanceof ScriptableObject) {
+      final Object slotVal = ((ScriptableObject) scriptable).get(name);
+      if (slotVal instanceof String) {
+        String strVal = (String) slotVal;
+        if (!Strings.isNullOrEmpty(strVal)) {
+          return strVal;
+        }
       }
     }
 
