@@ -127,7 +127,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
-import net.sourceforge.htmlunit.corejs.javascript.Function;
 import net.sourceforge.htmlunit.corejs.javascript.IdScriptableObject;
 import net.sourceforge.htmlunit.corejs.javascript.NativeArray;
 import net.sourceforge.htmlunit.corejs.javascript.NativeObject;
@@ -826,23 +825,21 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public Object executeScript(String script, final Object... args) {
     HtmlPage page = getPageToInjectScriptInto();
 
-    script = "function() {" + script + "\n};";
-    ScriptResult result = page.executeJavaScript(script);
-    Function func = (Function) result.getJavaScriptResult();
+    Object function = webClient.getJavaScriptEngine().compile(page, script, "", 0);
 
     Object[] parameters = convertScriptArgs(page, args);
 
     try {
-      result = page.executeJavaScriptFunctionIfPossible(
-          func,
+      ScriptResult result = page.executeJavaScriptFunctionIfPossible(
+          function,
           getCurrentWindow().getScriptableObject(),
           parameters,
           page.getDocumentElement());
+
+      return parseNativeJavascriptResult(result);
     } catch (Throwable ex) {
       throw new WebDriverException(ex);
     }
-
-    return parseNativeJavascriptResult(result);
   }
 
   @Override
