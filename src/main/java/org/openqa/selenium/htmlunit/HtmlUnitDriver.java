@@ -825,12 +825,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public Object executeScript(String script, final Object... args) {
     HtmlPage page = getPageToInjectScriptInto();
 
-    Object function = webClient.getJavaScriptEngine().compile(page, script, "", 0);
+    script = "function() {" + script + "\n};";
+    ScriptResult result = page.executeJavaScript(script);
+    Object function = result.getJavaScriptResult();
 
     Object[] parameters = convertScriptArgs(page, args);
 
     try {
-      ScriptResult result = page.executeJavaScriptFunctionIfPossible(
+      result = page.executeJavaScriptFunctionIfPossible(
           function,
           getCurrentWindow().getScriptableObject(),
           parameters,
