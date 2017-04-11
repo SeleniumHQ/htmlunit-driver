@@ -1204,7 +1204,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsById(String id) {
-    return findElementsByXPath("//*[@id='" + id + "']");
+    if (!(lastPage() instanceof HtmlPage)) {
+      return new ArrayList<>();
+    }
+
+    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsById(id);
+    return convertRawDomElementsToWebElements(allElements);
   }
 
   @Override
