@@ -24,27 +24,29 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import java.io.File;
-import java.io.IOException;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
  */
-@Ignore(value = {SAFARI}, issues = {4220})
+@Ignore(value = SAFARI, reason = "issue 4220")
 public class UploadTest extends JUnit4TestBase {
 
   private static final String LOREM_IPSUM_TEXT = "lorem ipsum dolor sit amet";
@@ -60,6 +62,7 @@ public class UploadTest extends JUnit4TestBase {
   @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testFileUploading() throws Exception {
     assumeFalse(
         "This test as written assumes a file on local disk is accessible to the browser. "
@@ -80,7 +83,10 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));

@@ -25,12 +25,12 @@ import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
+import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
@@ -54,9 +54,7 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-@Ignore(value = {SAFARI, MARIONETTE},
-    reason = "Safari: not implemented (issue 4136)",
-    issues = {4136})
+@Ignore(value = SAFARI, reason = "Safari: not implemented (issue 4136)")
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   private Actions getBuilder(WebDriver driver) {
@@ -104,10 +102,10 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NotYetImplemented(HTMLUNIT)
   // This test is very similar to testDraggingElementWithMouse. The only
   // difference is that this test also verifies the correct events were fired.
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testDraggingElementWithMouseFiresEvents() {
     performDragAndDropWithMouse();
     WebElement dragReporter = driver.findElement(By.id("dragging_reports"));
@@ -115,7 +113,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     String text = dragReporter.getText();
     assertTrue(text, text.matches("Nothing happened. (?:DragOut *)+DropIn RightItem 3"));
   }
-
 
   private boolean isElementAvailable(WebDriver driver, By locator) {
     try {
@@ -178,6 +175,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testDoubleClick() {
     driver.get(pages.javascriptPage);
 
@@ -193,6 +191,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
+  @Ignore(MARIONETTE)
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -223,8 +222,9 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
 
@@ -239,9 +239,12 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore({CHROME, IE, FIREFOX})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
     WebElement toMoveTo = driver.findElement(By.id("clickField"));
@@ -258,9 +261,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     }
   }
 
-  @Ignore(value = {FIREFOX, IE, REMOTE, CHROME, HTMLUNIT},
-          reason = "Behaviour not finalized yet regarding linked images.")
   @Test
+  @Ignore(value = ALL, reason = "Behaviour not finalized yet regarding linked images.")
   public void testMovingIntoAnImageEnclosedInALink() {
     driver.get(pages.linkedImage);
 
@@ -279,9 +281,12 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX}, reason = "Not implemented yet.")
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseBackAndForthPastViewPort() {
     driver.get(pages.veryLargeCanvas);
 
@@ -321,9 +326,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(
-      value = {SAFARI, MARIONETTE},
-      issues = {4136})
   @Test
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
@@ -341,9 +343,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(
-      value = {SAFARI, MARIONETTE},
-      issues = {4136})
   @Test
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
@@ -368,15 +367,13 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT},
-          reason = "Advanced mouse actions only implemented in rendered browsers",
-          issues = {4136})
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv).build().perform();
+    new Actions(driver).moveToElement(trackerDiv).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -388,17 +385,14 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Advanced mouse actions only implemented in rendered browsers",
-          issues = {4136})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 95, 195).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 95, 195).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -406,17 +400,14 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Advanced mouse actions only implemented in rendered browsers",
-          issues = {4136})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
 
     WebElement trackerDiv = driver.findElement(By.id("mousetracker"));
-    new Actions(driver).moveToElement(trackerDiv, 0, 0).build()
-        .perform();
+    new Actions(driver).moveToElement(trackerDiv, 0, 0).perform();
 
     WebElement reporter = driver.findElement(By.id("status"));
 
@@ -425,34 +416,33 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @NeedsFreshDriver({IE, CHROME})
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Advanced mouse actions only implemented in rendered browsers",
-          issues = {4136})
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testMoveRelativeToBody() {
     try {
       driver.get(pages.mouseTrackerPage);
 
-      new Actions(driver).moveByOffset(50, 100).build().perform();
+      new Actions(driver).moveByOffset(50, 100).perform();
 
       WebElement reporter = driver.findElement(By.id("status"));
 
       wait.until(fuzzyMatchingOfCoordinates(reporter, 40, 20));
     } finally {
-      new Actions(driver).moveByOffset(-50, -100).build().perform();
+      new Actions(driver).moveByOffset(-50, -100).perform();
     }
   }
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
     WebElement greenbox = driver.findElement(By.id("greenbox"));
     WebElement redbox = driver.findElement(By.id("redbox"));
+    Dimension size = redbox.getSize();
     Point greenboxPosition = greenbox.getLocation();
     Point redboxPosition = redbox.getLocation();
     int shiftX = redboxPosition.getX() - greenboxPosition.getX();
@@ -475,9 +465,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE},
-          reason = "Advanced mouse actions only implemented in rendered browsers",
-          issues = {4136})
+  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);

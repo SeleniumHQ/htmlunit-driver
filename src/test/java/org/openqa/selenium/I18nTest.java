@@ -28,9 +28,6 @@ import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
@@ -38,6 +35,9 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 public class I18nTest extends JUnit4TestBase {
@@ -66,6 +66,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -76,6 +77,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -86,10 +88,8 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(
-      value = {MARIONETTE, CHROME},
-      reason = "CHROME: ChromeDriver only supports characters in the BMP" +
-               "MARIONETTE: Doesn't handle first codepoint correctly.")
+  @Ignore(value = MARIONETTE, reason = "Doesn't handle first codepoint correctly.")
+  @Ignore(value = CHROME, reason = "ChromeDriver only supports characters in the BMP")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -123,10 +123,12 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE},
-          reason = "Not implemented on anything other than Firefox/Linux at the moment.")
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(IE)
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(MARIONETTE)
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldBeAbleToActivateIMEEngine() throws InterruptedException {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));
@@ -171,8 +173,12 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX})
   @Test
+  @Ignore(IE)
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(HTMLUNIT)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));

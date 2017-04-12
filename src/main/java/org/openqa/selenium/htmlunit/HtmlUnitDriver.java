@@ -1574,7 +1574,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       if (alertWindow != currentWindow
           && !isChild(currentWindow, alertWindow)
           && !isChild(alertWindow, currentWindow)) {
-          throw new AssertionError();
+          throw new TimeoutException();
       }
       return alert;
     }

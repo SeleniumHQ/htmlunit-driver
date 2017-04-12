@@ -29,18 +29,22 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
+import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.IE;
-
-import java.util.regex.Pattern;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
+import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
+
+import java.util.regex.Pattern;
 
 public class TextHandlingTest extends JUnit4TestBase {
 
@@ -185,8 +189,9 @@ public class TextHandlingTest extends JUnit4TestBase {
         "after pre"));
   }
 
-  @Ignore(value = IE, reason = "IE: inserts \r\n instead of \n")
   @Test
+  @Ignore(value = IE, reason = "IE: inserts \r\n instead of \n")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToSetMoreThanOneLineOfTextInATextArea() {
     driver.get(pages.formPage);
     WebElement textarea = driver.findElement(By.id("withText"));
@@ -203,6 +208,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToEnterDatesAfterFillingInOtherValuesFirst() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("working"));
@@ -346,7 +352,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = IE)
+  @Ignore(IE)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterTyping() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -355,9 +362,9 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertEquals(oldText, area.getText());
   }
 
-  @Test
   @JavascriptEnabled
-  @Ignore(value = IE)
+  @Test
+  @Ignore(IE)
   public void testTextOfATextAreaShouldBeEqualToItsDefaultTextEvenAfterChangingTheValue() {
     driver.get(pages.formPage);
     WebElement area = driver.findElement(By.id("withText"));
@@ -382,8 +389,8 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't.",
-    issues = {4473})
+  @Ignore(value = ALL,
+      reason = "Hidden LTR Unicode marks are currently returned by WebDriver but shouldn't, issue 4473")
   public void testShouldNotReturnLtrMarks() {
     driver.get(pages.unicodeLtrPage);
     WebElement element = driver.findElement(By.id("EH")).findElement(By.tagName("nobr"));
@@ -397,12 +404,24 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(reason = "Not all unicode whitespace characters are trimmed", issues = {6072})
+  @Ignore(value = ALL, reason = "Not all unicode whitespace characters are trimmed, issue 6072")
   public void testShouldTrimTextWithMultiByteWhitespaces() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("trimmedSpace")).getText();
 
     assertEquals("test", text);
+  }
+
+  @Test
+  public void canHandleTextThatLooksLikeANumber() {
+    driver.get(appServer.create(new Page()
+        .withBody("<div id='point'>12.345</div>",
+                  "<div id='comma'>12,345</div>",
+                  "<div id='space'>12 345</div>")));
+
+    assertThat(driver.findElement(By.id("point")).getText(), is("12.345"));
+    assertThat(driver.findElement(By.id("comma")).getText(), is("12,345"));
+    assertThat(driver.findElement(By.id("space")).getText(), is("12 345"));
   }
 
 }

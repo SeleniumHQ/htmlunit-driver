@@ -21,10 +21,15 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
-import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.Driver;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreList;
 
+import java.io.IOException;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class IgnoreComparator {
   private Set<Driver> ignored = Sets.newHashSet();
@@ -39,25 +44,42 @@ public class IgnoreComparator {
     currentPlatform = platform;
   }
 
-  public boolean shouldIgnore(Ignore ignoreAnnotation) {
-    if (ignoreAnnotation == null) {
-      return false;
-    }
+  public boolean shouldIgnore(IgnoreList ignoreList) {
+    return ignoreList != null && ignoreList.value().length > 0 &&
+           shouldIgnore(Stream.of(ignoreList.value()));
+  }
 
-    if (ignoreAnnotation.value().length == 0) {
-      return true;
-    }
+  public boolean shouldIgnore(Ignore ignore) {
+    return ignore != null && shouldIgnore(Stream.of(ignore));
+  }
 
-    for (Driver value : ignoreAnnotation.value()) {
-      if (ignored.contains(value) || value == Driver.ALL) {
-        for (Platform platform : ignoreAnnotation.platforms()) {
-          if (currentPlatform.is(platform)) {
-            return true;
-          }
-        }
-      }
-    }
+  private boolean shouldIgnore(Stream<Ignore> ignoreList) {
+    return ignoreList.anyMatch(driver ->
+        (ignored.contains(driver.value()) || driver.value() == Driver.ALL)
+        && (!driver.travis() || isOnTravis())
+        && isOpen(driver.issue()));
+  }
 
-    return false;
+  private boolean isOnTravis() {
+    return Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false"));
+  }
+
+  private boolean isOpen(String issue) {
+    if ("".equals(issue)) {
+      return true; // unknown issue, suppose it's open
+    }
+    Matcher m = Pattern.compile("#?(\\d+)").matcher(issue);
+    if (m.matches()) {
+      return isOpenGitHubIssue("SeleniumHQ", "selenium", m.group(1));
+    }
+    m = Pattern.compile("https?://github.com/(\\w+)/(\\w+)/issues/(\\d+)").matcher(issue);
+    if (m.matches()) {
+      return isOpenGitHubIssue(m.group(1), m.group(2), m.group(3));
+    }
+    return true; // unknown issue, suppose it's open
+  }
+
+  private boolean isOpenGitHubIssue(String owner, String repo, String issueId) {
+    return true;
   }
 }

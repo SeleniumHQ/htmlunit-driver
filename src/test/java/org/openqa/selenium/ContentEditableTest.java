@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ContentEditableTest extends JUnit4TestBase {
 
@@ -43,8 +44,9 @@ public class ContentEditableTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @Ignore(value = {SAFARI, MARIONETTE}, reason = "Safari: cannot type on contentEditable with synthetic events")
   @Test
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testTypingIntoAnIFrameWithContentEditableOrDesignModeSet() {
     driver.get(pages.richTextPage);
 
@@ -66,8 +68,8 @@ public class ContentEditableTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(MARIONETTE)
-  public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() throws Exception {
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
+  public void testNonPrintableCharactersShouldWorkWithContentEditableOrDesignModeSet() {
     assumeFalse("FIXME: Fails in Firefox on Linux with synthesized events",
                 isFirefox(driver) &&
                 (getEffectivePlatform().is(Platform.LINUX) || getEffectivePlatform().is(Platform.MAC)));
@@ -82,9 +84,9 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertEquals("Fishee!", element.getText());
   }
 
-  @Ignore(value = SAFARI, reason = "Safari: cannot type on contentEditable with synthetic events",
-      issues = {3127})
   @Test
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoEmptyContentEditableElement() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable-blank"));
@@ -94,8 +96,11 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE})
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(SAFARI)
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoContentEditableElementWithExistingValue() {
     driver.get(pages.readOnlyPage);
     WebElement editable = driver.findElement(By.id("content-editable"));
@@ -106,11 +111,11 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo(initialText + ", edited"));
   }
 
-  @Ignore(value = {IE, SAFARI, MARIONETTE},
-          reason = "Untested browsers;" +
-                   " Safari: cannot type on contentEditable with synthetic events",
-          issues = {3127})
+  @JavascriptEnabled
   @Test
+  @Ignore(IE)
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeIntoTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");
@@ -123,11 +128,12 @@ public class ContentEditableTest extends JUnit4TestBase {
     assertThat(editable.getText(), equalTo("cheese"));
   }
 
-  @Ignore(value = {CHROME, IE, SAFARI, MARIONETTE},
-    reason = "Untested browsers;" +
-             " Safari: cannot type on contentEditable with synthetic events",
-    issues = {3127})
+  @JavascriptEnabled
   @Test
+  @Ignore(CHROME)
+  @Ignore(IE)
+  @Ignore(value = SAFARI, reason = "cannot type on contentEditable with synthetic events, issue 3127")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldAppendToTinyMCE() {
     driver.get(appServer.whereIs("tinymce.html"));
     driver.switchTo().frame("mce_0_ifr");

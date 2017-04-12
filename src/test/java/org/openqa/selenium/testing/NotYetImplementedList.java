@@ -15,26 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.environment.webserver;
+package org.openqa.selenium.testing;
 
-public interface AppServer {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  String getHostName();
-
-  String getAlternateHostName();
-
-  String whereIs(String relativeUrl);
-
-  String whereElseIs(String relativeUrl);
-
-  String whereIsSecure(String relativeUrl);
-
-  String whereIsWithCredentials(String relativeUrl, String user, String password);
-
-  String create(Page page);
-
-  void start();
-
-  void stop();
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface NotYetImplementedList {
+  NotYetImplemented[] value();
 }

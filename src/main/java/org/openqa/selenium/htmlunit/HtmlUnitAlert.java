@@ -23,6 +23,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.security.Credentials;
@@ -170,7 +171,7 @@ public class HtmlUnitAlert implements Alert {
 
     void sendKeys(String keysToSend) {
       if (keysToSend != null) {
-        throw new ElementNotVisibleException("alert is not visible");
+        throw new ElementNotInteractableException("alert is not interactable");
       }
     }
 

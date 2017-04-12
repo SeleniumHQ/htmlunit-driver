@@ -20,6 +20,7 @@ package org.openqa.selenium.htmlunit;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
@@ -72,7 +73,7 @@ public class HtmlUnitMouse implements Mouse {
    */
   void click(DomElement element, boolean directClick) {
     if (!element.isDisplayed()) {
-      throw new ElementNotVisibleException("You may only interact with visible elements");
+      throw new ElementNotInteractableException("You may only interact with visible elements");
     }
 
     moveOutIfNeeded(element);

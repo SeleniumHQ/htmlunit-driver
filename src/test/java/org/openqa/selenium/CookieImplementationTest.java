@@ -1,3 +1,20 @@
+// Licensed to the Software Freedom Conservancy (SFC) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The SFC licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package org.openqa.selenium;
 
 import static org.hamcrest.Matchers.containsString;
@@ -16,13 +33,7 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-
-import java.net.URI;
-import java.util.Date;
-import java.util.Random;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +42,11 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.net.URI;
+import java.util.Date;
+import java.util.Random;
+import java.util.Set;
 
 public class CookieImplementationTest extends JUnit4TestBase {
 
@@ -191,9 +207,11 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookie1.getName());
   }
 
-  @Ignore(value = {CHROME, PHANTOMJS, SAFARI})
   @SwitchToTopAfterTest
   @Test
+  @Ignore(CHROME)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testGetCookiesInAFrame() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod").path("/common/animals").build();
@@ -206,8 +224,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookie1.getName());
   }
 
-  @Ignore({CHROME})
   @Test
+  @Ignore(CHROME)
   public void testCannotGetCookiesWithPathDifferingOnlyInCase() {
     String cookieName = "fish";
     Cookie cookie = new Cookie.Builder(cookieName, "cod").path("/Common/animals").build();
@@ -230,8 +248,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore(value = {CHROME})
   @Test
+  @Ignore(CHROME)
   public void testShouldBeAbleToAddToADomainWhichIsRelatedToTheCurrentDomain() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -243,8 +261,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsPresentWithName(cookieName);
   }
 
-  @Ignore(value = {ALL})
   @Test
+  @Ignore(ALL)
   public void testsShouldNotGetCookiesRelatedToCurrentDomainWithoutLeadingPeriod() {
     String cookieName = "name";
     assertCookieIsNotPresentWithName(cookieName);
@@ -255,7 +273,6 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertCookieIsNotPresentWithName(cookieName);
   }
 
-  @Ignore({REMOTE})
   @Test
   public void testShouldBeAbleToIncludeLeadingPeriodInDomainName() throws Exception {
     String cookieName = "name";
@@ -351,8 +368,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie, retrievedCookie);
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/463")
   @Test
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/463")
   public void testRetainsCookieExpiry() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -366,8 +383,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertEquals(addedCookie.getExpiry(), retrieved.getExpiry());
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void canHandleSecureCookie() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
@@ -384,8 +403,10 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testRetainsCookieSecure() {
     driver.get(domainHelper.getSecureUrlForFirstValidHostname("animals"));
 
@@ -403,8 +424,8 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertTrue(retrieved.isSecure());
   }
 
-  @Ignore(SAFARI)
   @Test
+  @Ignore(SAFARI)
   public void canHandleHttpOnlyCookie() {
     Cookie addedCookie =
       new Cookie.Builder("fish", "cod")
@@ -419,8 +440,9 @@ public class CookieImplementationTest extends JUnit4TestBase {
     assertNotNull(retrieved);
   }
 
-  @Ignore({CHROME, SAFARI})
   @Test
+  @Ignore(CHROME)
+  @Ignore(SAFARI)
   public void testRetainsHttpOnlyFlag() {
     Cookie addedCookie =
         new Cookie.Builder("fish", "cod")
@@ -467,8 +489,12 @@ public class CookieImplementationTest extends JUnit4TestBase {
     driver.manage().deleteCookieNamed(key);
   }
 
-  @Ignore(value = {CHROME, FIREFOX, IE, PHANTOMJS, SAFARI})
   @Test
+  @Ignore(CHROME)
+  @Ignore(FIREFOX)
+  @Ignore(IE)
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
   public void testShouldDeleteOneOfTheCookiesWithTheSameName() {
     driver.get(domainHelper.getUrlForFirstValidHostname("/common/animals"));
     Cookie cookie1 = new Cookie.Builder("fish", "cod")

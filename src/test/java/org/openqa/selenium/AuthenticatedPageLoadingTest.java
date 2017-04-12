@@ -34,7 +34,13 @@ import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-@Ignore({CHROME, FIREFOX, HTMLUNIT, IE, MARIONETTE, PHANTOMJS, SAFARI})
+@Ignore(CHROME)
+@Ignore(FIREFOX)
+@Ignore(HTMLUNIT)
+@Ignore(IE)
+@Ignore(MARIONETTE)
+@Ignore(PHANTOMJS)
+@Ignore(SAFARI)
 public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
   @Test
@@ -48,7 +54,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     alert.authenticateUsing(user);
 
-  WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
+	WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
     assertEquals("authorized", element.getText());
   }
 

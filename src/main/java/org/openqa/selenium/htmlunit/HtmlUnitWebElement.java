@@ -26,6 +26,7 @@ import java.util.concurrent.Callable;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
@@ -256,7 +257,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     });
 
     if (displayed == null || !displayed) {
-      throw new ElementNotVisibleException("You may only interact with visible elements");
+      throw new ElementNotInteractableException("You may only interact with visible elements");
     }
 
     if (!ignoreDisabled && !isEnabled()) {

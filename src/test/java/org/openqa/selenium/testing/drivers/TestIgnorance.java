@@ -42,6 +42,7 @@ import com.google.common.collect.Sets;
 import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.IgnoreList;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
@@ -89,7 +90,9 @@ public class TestIgnorance {
   }
 
   public boolean isIgnored(Description method) {
-    boolean ignored = ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(Ignore.class)) ||
+    boolean ignored = ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(IgnoreList.class)) ||
+                      ignoreComparator.shouldIgnore(method.getTestClass().getAnnotation(Ignore.class)) ||
+                      ignoreComparator.shouldIgnore(method.getAnnotation(IgnoreList.class)) ||
                       ignoreComparator.shouldIgnore(method.getAnnotation(Ignore.class));
 
     ignored |= isIgnoredBecauseOfJUnit4Ignore(method.getTestClass().getAnnotation(org.junit.Ignore.class));
@@ -150,9 +153,8 @@ public class TestIgnorance {
                       || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
     if (SauceDriver.shouldUseSauce()) {
       return isLocal;
-    } else {
-      return Boolean.getBoolean("local_only") && !isLocal;
     }
+    return Boolean.getBoolean("local_only") && !isLocal;
   }
 
   private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
@@ -167,7 +169,9 @@ public class TestIgnorance {
   }
 
   public void setBrowser(Browser browser) {
-    this.browser = checkNotNull(browser, "Browser to use must be set");
+    this.browser = checkNotNull(
+        browser,
+        "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
     addIgnoresForBrowser(browser, ignoreComparator);
   }
 
