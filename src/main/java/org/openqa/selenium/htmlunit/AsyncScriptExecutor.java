@@ -71,7 +71,7 @@ class AsyncScriptExecutor {
       Function function = createInjectedScriptFunction(scriptBody, asyncResult);
 
       try {
-        page.executeJavaScriptFunctionIfPossible(function, function, parameters,
+        page.executeJavaScriptFunction(function, function, parameters,
             page.getDocumentElement());
       } catch (ScriptException e) {
         throw new WebDriverException(e);

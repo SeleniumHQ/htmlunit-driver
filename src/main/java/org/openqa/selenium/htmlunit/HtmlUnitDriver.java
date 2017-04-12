@@ -832,7 +832,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     Object[] parameters = convertScriptArgs(page, args);
 
     try {
-      result = page.executeJavaScriptFunctionIfPossible(
+      result = page.executeJavaScriptFunction(
           function,
           getCurrentWindow().getScriptableObject(),
           parameters,
