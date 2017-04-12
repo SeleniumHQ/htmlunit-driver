@@ -65,7 +65,7 @@ public class IgnoreComparator {
   }
 
   private boolean isOpen(String issue) {
-    if ("".equals(issue)) {
+    if ("".equals(issue) || issue == null) {
       return true; // unknown issue, suppose it's open
     }
     Matcher m = Pattern.compile("#?(\\d+)").matcher(issue);

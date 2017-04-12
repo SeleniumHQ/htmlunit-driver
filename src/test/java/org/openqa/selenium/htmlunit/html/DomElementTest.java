@@ -20,7 +20,7 @@ package org.openqa.selenium.htmlunit.html;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.ElementNotVisibleException;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.BrowserRunner;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -31,7 +31,7 @@ public class DomElementTest extends WebDriverTestCase {
   /**
    * @throws Exception on test failure
    */
-  @Test(expected = ElementNotVisibleException.class)
+  @Test(expected = ElementNotInteractableException.class)
   public void clickInvisible() throws Exception {
     final String html = "<html>\n"
         + "<body>\n"
