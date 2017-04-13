@@ -27,6 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
@@ -118,7 +119,7 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
     assertThat(enabled.getAttribute("enabled"), is(nullValue()));
   }
 
-  @Test(expected = ElementNotVisibleException.class)
+  @Test(expected = ElementNotInteractableException.class)
   public void throwsOnClickingInvisible() {
     driver.get(appServer.whereIs("invisible.html"));
     driver.findElement(By.id("link")).click();
