@@ -76,4 +76,17 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
       assertNull(head.getAttribute("innerhtml"));
   }
 
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void title() throws Exception {
+      final String html = "<html><head><title>abc</title></head>\n"
+          + "<body></body>\n"
+          + "</html>";
+      final WebDriver webDriver = loadPage2(html);
+      final WebElement body = webDriver.findElement(By.tagName("body"));
+      assertEquals("", body.getAttribute("title"));
+  }
+
 }

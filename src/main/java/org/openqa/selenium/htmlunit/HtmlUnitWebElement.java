@@ -27,7 +27,6 @@ import java.util.concurrent.Callable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
@@ -68,8 +67,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
-import com.google.common.base.Strings;
 
+import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 public class HtmlUnitWebElement implements WrapsDriver,
@@ -402,13 +401,10 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     final Object scriptable = element.getScriptableObject();
-    if (scriptable instanceof ScriptableObject) {
-      final Object slotVal = ((ScriptableObject) scriptable).get(name);
+    if (scriptable instanceof Scriptable) {
+      final Object slotVal = ScriptableObject.getProperty((Scriptable) scriptable, name);
       if (slotVal instanceof String) {
-        String strVal = (String) slotVal;
-        if (!Strings.isNullOrEmpty(strVal)) {
-          return strVal;
-        }
+        return (String) slotVal;
       }
     }
 
