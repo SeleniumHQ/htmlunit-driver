@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;

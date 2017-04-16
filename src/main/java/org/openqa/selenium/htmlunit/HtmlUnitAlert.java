@@ -24,7 +24,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotInteractableException;
-import org.openqa.selenium.ElementNotVisibleException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.security.Credentials;
 
