@@ -365,14 +365,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
       return element.getTextContent();
     }
 
-    if ("innerHTML".equals(name) && element instanceof HtmlElement) {
-      return ((HTMLElement) element.getScriptableObject()).getInnerHTML();
-    }
-
-    if ("outerHTML".equals(name) && element instanceof HtmlElement) {
-      return ((HTMLElement) element.getScriptableObject()).getOuterHTML();
-    }
-
     if ("value".equals(lowerName)) {
       if (element instanceof HtmlFileInput) {
         return ((HTMLInputElement) element.getScriptableObject()).getValue();

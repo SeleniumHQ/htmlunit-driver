@@ -15,15 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.local;
+package org.openqa.selenium.htmlunit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.htmlunit.BrowserRunner;
-import org.openqa.selenium.htmlunit.WebDriverTestCase;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementTest extends WebDriverTestCase {
