@@ -20,6 +20,11 @@ package org.openqa.selenium.testing.drivers;
 
 import com.google.common.collect.Sets;
 
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.IssueService;
+import org.eclipse.egit.github.core.service.RepositoryService;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
@@ -65,7 +70,7 @@ public class IgnoreComparator {
   }
 
   private boolean isOpen(String issue) {
-    if ("".equals(issue) || issue == null) {
+    if ("".equals(issue)) {
       return true; // unknown issue, suppose it's open
     }
     Matcher m = Pattern.compile("#?(\\d+)").matcher(issue);
@@ -80,6 +85,18 @@ public class IgnoreComparator {
   }
 
   private boolean isOpenGitHubIssue(String owner, String repo, String issueId) {
+    String gitHubToken = System.getenv("GITHUB_TOKEN");
+    if (gitHubToken == null) {
+      return true;
+    }
+    IssueService service = new IssueService();
+    service.getClient().setOAuth2Token(gitHubToken);
+    try {
+      Issue issue = service.getIssue(owner, repo, issueId);
+      return "open".equals(issue.getState());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return true;
   }
 }

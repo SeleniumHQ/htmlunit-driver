@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
 
 import java.util.logging.Logger;
@@ -23,6 +22,7 @@ import java.util.logging.Logger;
 public enum Browser {
 
   chrome,
+  edge,
   ff,
   htmlunit,
   ie,
@@ -37,7 +37,8 @@ public enum Browser {
   public static Browser detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-      browserName = "htmlunit";
+      log.info("No browser detected, returning null");
+      return null;
     }
 
     try {
@@ -46,10 +47,6 @@ public enum Browser {
       log.severe("Cannot locate matching browser for: " + browserName);
       return null;
     }
-  }
-
-  public boolean isJavascriptEnabled() {
-    return true;
   }
 
 }
