@@ -17,6 +17,8 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,7 +51,6 @@ import org.junit.Test;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.MockWebConnection;
-import com.gargoylesoftware.htmlunit.TextUtil;
 
 public abstract class WebTestCase {
 
@@ -636,7 +637,7 @@ public abstract class WebTestCase {
           final File outFile = new File(targetDir, generateTest_testName_);
 
           final String newContent = getModifiedContent(generateTest_content_);
-          FileUtils.writeStringToFile(outFile, newContent, TextUtil.DEFAULT_CHARSET);
+          FileUtils.writeStringToFile(outFile, newContent, ISO_8859_1);
 
           // write the expected alerts
           final String suffix;
@@ -754,7 +755,7 @@ public abstract class WebTestCase {
   protected String getFileContent(final String fileName) throws IOException {
       final InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
       assertNotNull(fileName, stream);
-      return IOUtils.toString(stream, TextUtil.DEFAULT_CHARSET);
+      return IOUtils.toString(stream, ISO_8859_1);
   }
 
 }

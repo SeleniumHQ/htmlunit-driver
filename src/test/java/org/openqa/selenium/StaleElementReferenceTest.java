@@ -23,7 +23,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.stalenessOf;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 
 public class StaleElementReferenceTest extends JUnit4TestBase {
 
@@ -40,7 +39,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotCrashWhenCallingGetSizeOnAnObsoleteElement() {
     driver.get(pages.simpleTestPage);
@@ -54,7 +52,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldNotCrashWhenQueryingTheAttributeOfAStaleElement() {
     driver.get(pages.xhtmlTestPage);
@@ -68,7 +65,6 @@ public class StaleElementReferenceTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testRemovingAnElementDynamicallyFromTheDomShouldCauseAStaleRefException() {
     driver.get(pages.javascriptPage);

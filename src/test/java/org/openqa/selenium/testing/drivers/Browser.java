@@ -24,13 +24,7 @@ public enum Browser {
 
   chrome,
   ff,
-  htmlunit {
-    @Override
-    public boolean isJavascriptEnabled() {
-      return false;
-    }
-  },
-  htmlunit_js,
+  htmlunit,
   ie,
   none, // For those cases where you don't actually want a browser
   opera,

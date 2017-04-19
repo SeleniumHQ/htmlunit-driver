@@ -31,7 +31,6 @@ import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.drivers.Browser.chrome;
 import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit_js;
 import static org.openqa.selenium.testing.drivers.Browser.ie;
 import static org.openqa.selenium.testing.drivers.Browser.opera;
 import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
@@ -43,7 +42,6 @@ import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
@@ -56,8 +54,7 @@ import java.util.Set;
 public class TestIgnorance {
 
   private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
-  private Set<Browser> neverNativeEvents = ImmutableSet.of(
-      htmlunit, htmlunit_js, phantomjs);
+  private Set<Browser> neverNativeEvents = ImmutableSet.of(htmlunit, phantomjs);
   private IgnoreComparator ignoreComparator = new IgnoreComparator();
   private Set<String> methods = Sets.newHashSet();
   private Set<String> only = Sets.newHashSet();
@@ -100,9 +97,6 @@ public class TestIgnorance {
     if (Boolean.getBoolean("ignored_only")) {
       ignored = !ignored;
     }
-
-    ignored |= isIgnoredDueToJavascript(method.getTestClass().getAnnotation(JavascriptEnabled.class));
-    ignored |= isIgnoredDueToJavascript(method.getAnnotation(JavascriptEnabled.class));
 
     ignored |= isIgnoredBecauseOfNativeEvents(method.getTestClass().getAnnotation(NativeEventsRequired.class));
     ignored |= isIgnoredBecauseOfNativeEvents(method.getAnnotation(NativeEventsRequired.class));
@@ -157,10 +151,6 @@ public class TestIgnorance {
     return Boolean.getBoolean("local_only") && !isLocal;
   }
 
-  private boolean isIgnoredDueToJavascript(JavascriptEnabled enabled) {
-    return enabled != null && !browser.isJavascriptEnabled();
-  }
-
   private boolean isIgnoredDueToEnvironmentVariables(Description method) {
     return (!only.isEmpty() && !only.contains(method.getTestClass().getSimpleName())) ||
            (!methods.isEmpty() && !methods.contains(method.getMethodName())) ||
@@ -194,7 +184,6 @@ public class TestIgnorance {
         break;
 
       case htmlunit:
-      case htmlunit_js:
         comparator.addDriver(HTMLUNIT);
         break;
 

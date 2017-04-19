@@ -43,7 +43,6 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -78,7 +77,6 @@ public class AlertsTest extends JUnit4TestBase {
             "<div id='text'>acceptor</div>"));
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   @Test
   public void testShouldBeAbleToOverrideTheWindowAlertMethod() {
@@ -92,7 +90,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertManually() {
     driver.get(alertPage("cheese"));
@@ -105,7 +102,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToAcceptAnAlertWithNoTextManually() {
     driver.get(alertPage(""));
@@ -118,7 +114,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @NeedsLocalEnvironment(reason = "Carefully timing based")
   @Test
   @Ignore(CHROME)
@@ -144,7 +139,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowUsersToDismissAnAlertManually() {
     driver.get(alertPage("cheese"));
@@ -157,7 +151,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowAUserToAcceptAPrompt() {
     driver.get(promptPage(null));
@@ -170,7 +163,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Prompt", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowAUserToDismissAPrompt() {
     driver.get(promptPage(null));
@@ -183,7 +175,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Prompt", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
@@ -197,7 +188,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/274")
@@ -215,7 +205,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldAllowTheUserToGetTheTextOfAnAlert() {
     driver.get(alertPage("cheese"));
@@ -240,7 +229,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Enter something", value);
   }
 
-  @JavascriptEnabled
   @Test
   public void testAlertShouldNotAllowAdditionalCommandsIfDismissed() {
     driver.get(alertPage("cheese"));
@@ -253,7 +241,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoAlertPresentException.class));
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   @Ignore(MARIONETTE)
@@ -273,7 +260,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @SwitchToTopAfterTest
   @Test
   @Ignore(MARIONETTE)
@@ -296,7 +282,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertThrows() throws Exception {
     driver.get(alertPage("cheese"));
@@ -305,7 +290,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoAlertPresentException.class));
   }
 
-  @JavascriptEnabled
   @Test
   public void testSwitchingToMissingAlertInAClosedWindowThrows() throws Exception {
     String blank = appServer.create(new Page());
@@ -327,7 +311,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   public void testPromptShouldUseDefaultValueIfNoKeysSent() {
     driver.get(promptPage("This is a default value"));
@@ -339,7 +322,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "This is a default value"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testPromptShouldHaveNullValueIfDismissed() {
     driver.get(promptPage("This is a default value"));
@@ -351,7 +333,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text"), "null"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testHandlesTwoAlertsFromOneInteraction() {
@@ -382,7 +363,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("text2"), "cheddar"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoad() {
@@ -401,7 +381,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.tagName("p"), "Page with onload event handler"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   public void testShouldHandleAlertOnPageLoadUsingGet() {
@@ -417,7 +396,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.tagName("p"), "Page with onload event handler"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @Ignore(FIREFOX)
@@ -449,7 +427,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @Ignore(value = HTMLUNIT, reason = "Chrome does not trigger alerts on unload")
@@ -474,7 +451,6 @@ public class AlertsTest extends JUnit4TestBase {
     wait.until(textInElementLocated(By.id("link"), "open new page"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testShouldHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
@@ -516,7 +492,6 @@ public class AlertsTest extends JUnit4TestBase {
     driver.quit();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @Ignore(value = HTMLUNIT, reason = "Chrome does not trigger alerts on unload")
@@ -549,7 +524,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(CHROME)
   @NotYetImplemented(value = MARIONETTE,
@@ -566,7 +540,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(t.getMessage(), containsString("cheese"));
   }
 
-  @JavascriptEnabled
   @NoDriverAfterTest
   @Test
   public void testCanQuitWhenAnAlertIsPresent() {
@@ -578,7 +551,6 @@ public class AlertsTest extends JUnit4TestBase {
     driver.quit();
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
   public void shouldHandleAlertOnFormSubmit() {

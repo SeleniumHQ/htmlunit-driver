@@ -38,7 +38,6 @@ import java.awt.GraphicsEnvironment;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
 
@@ -46,7 +45,6 @@ import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyPressEvents() {
@@ -59,7 +57,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), containsString("press:"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyDownEvents() {
@@ -72,7 +69,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), containsString("down:"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireKeyUpEvents() {
@@ -146,7 +142,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("me@eXample.com"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testArrowKeysShouldNotBePrintable() {
@@ -169,7 +164,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("test"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
@@ -182,7 +176,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
@@ -197,7 +190,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like chees"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
@@ -212,7 +204,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like chees"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
@@ -225,7 +216,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
@@ -240,7 +230,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like chees"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
@@ -255,7 +244,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText(), equalTo("I like chees"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -275,7 +263,6 @@ public class TypingTest extends JUnit4TestBase {
                      is(String.format("down: %1$d up: %1$d", expectedKeyCode))));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(PHANTOMJS)
@@ -305,7 +292,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
@@ -337,7 +323,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumericNonShiftKeys() {
@@ -351,7 +336,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(numericLineCharsNonShifted));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumericShiftKeys() {
@@ -367,7 +351,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testLowerCaseAlphaKeys() {
@@ -381,7 +364,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(lowerAlphas));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testUppercaseAlphaKeys() {
@@ -397,7 +379,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), containsString(" up: 16"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testAllPrintableKeys() {
@@ -427,7 +408,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("ba1"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testHomeAndEndAndPageUpAndPageDownKeys() {
@@ -444,7 +424,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("0000abc1111"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testDeleteAndBackspaceKeys() {
@@ -462,7 +441,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("abcdfgi"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testSpecialSpaceKeys() {
@@ -474,7 +452,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("abcd fgh ij"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testNumberpadKeys() {
@@ -489,7 +466,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("abcd*-+.,09+;=/3abcd"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = IE, reason = "F4 triggers address bar")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -503,7 +479,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("FUNCTION-KEYS-TOO"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(value = SAFARI, reason = "issue 4221")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -520,7 +495,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("abcd e"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -543,7 +517,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChordReveseShiftHomeSelectionDeletes() {
@@ -576,7 +549,6 @@ public class TypingTest extends JUnit4TestBase {
   // control-x control-v here for cut & paste tests, these work on windows
   // and linux, but not on the MAC.
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChordControlCutAndPaste() {
@@ -625,7 +597,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldTypeIntoInputElementsThatHaveNoTypeAttribute() {
@@ -637,7 +608,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(element.getAttribute("value"), is("should say cheese"));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldNotTypeIntoElementsThatPreventKeyDownEvents() {
@@ -649,7 +619,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(silent.getAttribute("value"), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(PHANTOMJS)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
@@ -664,7 +633,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(result.getText().trim(), is(""));
   }
 
-  @JavascriptEnabled
   @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToTypeOnAnEmailInputField() {
@@ -683,7 +651,6 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(SAFARI)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")

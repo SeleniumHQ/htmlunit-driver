@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -37,7 +36,6 @@ import org.openqa.selenium.support.Colors;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.TestUtilities;
 
 /**
@@ -50,7 +48,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     return new Actions(driver);
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void testBasicKeyboardInput() {
@@ -65,7 +62,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
@@ -88,7 +84,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
                logText.endsWith("keydown"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
@@ -114,7 +109,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
         eventsText.endsWith("keyup"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
@@ -143,7 +137,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keysEventInput.getAttribute("value"), is("AB"));
   }
 
-  @JavascriptEnabled
   @Test
   public void testSendingKeysToActiveElement() {
     driver.get(pages.bodyTypingPage);
@@ -170,7 +163,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     shortWait.until(ExpectedConditions.attributeToBe(keyReporter, "value", "abc def"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(MARIONETTE)
   public void canGenerateKeyboardShortcuts() {
@@ -215,7 +207,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
     assertThat(keyReporter.getAttribute("value"), is("abc d"));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
@@ -245,7 +236,6 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
       ExpectedConditions.attributeToBe(keyReporter, "value", "abc "));
   }
 
-  @JavascriptEnabled
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
