@@ -865,13 +865,17 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
-    final Scriptable scope = page.getEnclosingWindow().getScriptableObject();
+    final Object scope = page.getEnclosingWindow().getScriptableObject();
+
+    if (!(scope instanceof Scriptable)) {
+      return args;
+    }
 
     final Object[] parameters = new Object[args.length];
     Context.enter();
     try {
       for (int i = 0; i < args.length; i++) {
-        parameters[i] = parseArgumentIntoJavascriptParameter(scope, args[i]);
+        parameters[i] = parseArgumentIntoJavascriptParameter((Scriptable) scope, args[i]);
       }
     }
     finally {
