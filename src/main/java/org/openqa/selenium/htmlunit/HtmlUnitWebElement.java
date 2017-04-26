@@ -349,21 +349,6 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
       return null;
     }
-    if ("readonly".equalsIgnoreCase(lowerName)) {
-      if (element instanceof HtmlInput) {
-        return trueOrNull(((HtmlInput) element).isReadOnly());
-      }
-
-      if (element instanceof HtmlTextArea) {
-        return trueOrNull("".equals(((HtmlTextArea) element).getReadOnlyAttribute()));
-      }
-
-      return null;
-    }
-
-    if ("textContent".equalsIgnoreCase(lowerName)) {
-      return element.getTextContent();
-    }
 
     if ("value".equals(lowerName)) {
       if (element instanceof HtmlFileInput) {
