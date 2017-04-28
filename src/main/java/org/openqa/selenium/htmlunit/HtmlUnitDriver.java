@@ -122,6 +122,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.DocumentProxy;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.js.nashorn.internal.objects.annotations.Browser;
+import com.gargoylesoftware.js.nashorn.internal.objects.annotations.WebBrowser;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -408,7 +409,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
     
     exception = null;
-    Browser browser = Browser.getCurrent();
+    WebBrowser browser = Browser.getCurrent();
     new Thread(() -> {
       try {
         Browser.setCurrent(browser);
