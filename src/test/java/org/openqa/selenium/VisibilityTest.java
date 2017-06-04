@@ -35,13 +35,13 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.List;
 
 public class VisibilityTest extends JUnit4TestBase {
 
@@ -266,7 +266,6 @@ public class VisibilityTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldShowElementNotVisibleWhenParentElementHasHiddenAttribute() {
     String url = appServer.whereIs("hidden.html");
     driver.get(url);
