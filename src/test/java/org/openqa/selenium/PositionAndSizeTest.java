@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -95,7 +94,6 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
   @Test
   @Ignore(SAFARI)
-  @NotYetImplemented(value = MARIONETTE, reason = "/window/rect")
   public void testShouldScrollPageAndGetCoordinatesOfAnElementThatIsOutOfViewPort() {
     assumeFalse(
         "window().getSize() is not implemented for Chrome for Android. "

@@ -27,13 +27,19 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 import java.util.List;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ChildrenFindingTest extends JUnit4TestBase {
+
+  @Rule
+  public final ExpectedException expectedException = ExpectedException.none();
 
   @Test
   public void testFindElementByXPath() {
@@ -122,7 +128,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME,
       reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
-  @Ignore(IE)
   public void testFindElementByIdWhenIdContainsNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -151,7 +156,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME,
       reason = "Need to recompile drivers with atoms from 6c55320d3f0eb23de56270a55c74602fc8d63c8a")
-  @Ignore(IE)
   public void testFindElementsByIdWithNonAlphanumericCharacters() {
     driver.get(pages.nestedPage);
     WebElement element = driver.findElement(By.id("test_special_chars"));
@@ -180,6 +184,26 @@ public class ChildrenFindingTest extends JUnit4TestBase {
     assertEquals(2, elements.size());
     assertThat(elements.get(0).getAttribute("name"), is("link1"));
     assertThat(elements.get(1).getAttribute("name"), is("link2"));
+  }
+
+  @Test
+  public void testShouldFindChildElementsById() {
+    driver.get(pages.nestedPage);
+    WebElement parent = driver.findElement(By.id("test_id_div"));
+    WebElement element = parent.findElement(By.id("test_id"));
+    assertEquals("inside", element.getText());
+  }
+
+  @Test
+  @NotYetImplemented(value = CHROME, reason = "Need to release atoms fix from #4351")
+  @NotYetImplemented(value = IE, reason = "Need to release atoms fix from #4351")
+  public void testShouldNotReturnRootElementWhenFindingChildrenById() {
+    driver.get(pages.nestedPage);
+    WebElement parent = driver.findElement(By.id("test_id"));
+
+    assertEquals(0, parent.findElements(By.id("test_id")).size());
+    expectedException.expect(NoSuchElementException.class);
+    parent.findElement(By.id("test_id"));
   }
 
   @Test

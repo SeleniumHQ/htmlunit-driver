@@ -168,6 +168,7 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(MARIONETTE)
   public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() {
     driver.get(pages.ajaxyPage);
     executor.executeAsyncScript(
@@ -241,7 +242,6 @@ public class ExecutingAsyncJavascriptTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void shouldBeAbleToExecuteAsynchronousScripts() {
     driver.get(pages.ajaxyPage);
 

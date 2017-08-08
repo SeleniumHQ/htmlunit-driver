@@ -39,11 +39,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
-import org.openqa.selenium.testing.NotYetImplemented;
 
-/**
- * Test case for browsers that support using Javascript
- */
 public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @Test
@@ -93,7 +89,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldFireOnChangeEventWhenSettingAnElementsValue() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("change")).sendKeys("foo");
@@ -162,7 +157,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4061")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testChangeEventIsFiredAppropriatelyWhenFocusIsLost() {
     driver.get(pages.javascriptPage);
 
@@ -229,6 +223,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = SAFARI, reason = "issue 3693")
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/611")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 

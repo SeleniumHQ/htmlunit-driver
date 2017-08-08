@@ -39,7 +39,6 @@ import org.openqa.selenium.testing.TestUtilities;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class I18nTest extends JUnit4TestBase {
 
   /**
@@ -66,7 +65,6 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -77,7 +75,6 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -177,7 +174,6 @@ public class I18nTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(CHROME)
   @Ignore(FIREFOX)
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/594")
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",
                TestUtilities.getEffectivePlatform().is(Platform.LINUX));

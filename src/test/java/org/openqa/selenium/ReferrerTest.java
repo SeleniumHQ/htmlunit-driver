@@ -29,17 +29,14 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.net.HostAndPort;
+import com.google.common.net.HttpHeaders;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
@@ -59,14 +56,17 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.net.HostAndPort;
-import com.google.common.net.HttpHeaders;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions.
@@ -108,9 +108,9 @@ public class ReferrerTest extends JUnit4TestBase {
 
   @BeforeClass
   public static void readPages() throws IOException {
-    page1 = new String(Files.readAllBytes(locate("web/proxy/page1.html")), UTF_8);
-    page2 = new String(Files.readAllBytes(locate("web/proxy/page2.html")), UTF_8);
-    page3 = new String(Files.readAllBytes(locate("web/proxy/page3.html")), UTF_8);
+    page1 = new String(Files.readAllBytes(locate("common/src/web/proxy/page1.html")), UTF_8);
+    page2 = new String(Files.readAllBytes(locate("common/src/web/proxy/page2.html")), UTF_8);
+    page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")), UTF_8);
   }
 
   /**

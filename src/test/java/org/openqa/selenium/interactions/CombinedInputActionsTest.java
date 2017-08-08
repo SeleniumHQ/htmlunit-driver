@@ -37,9 +37,6 @@ import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
 import static org.openqa.selenium.testing.TestUtilities.isNativeEventsEnabled;
 
-import java.awt.GraphicsEnvironment;
-import java.util.List;
-
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -52,6 +49,8 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
+
+import java.util.List;
 
 /**
  * Tests combined input actions.
@@ -206,13 +205,11 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
@@ -270,7 +267,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    * up at the wrong coordinates.
    */
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
@@ -291,7 +287,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
                 isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
                 isInternetExplorer(driver));
-    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 
@@ -361,7 +356,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
@@ -387,7 +381,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     driver.get(pages.javascriptPage);
 

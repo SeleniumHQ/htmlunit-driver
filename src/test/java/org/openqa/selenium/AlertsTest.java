@@ -38,6 +38,7 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
+import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -54,6 +55,14 @@ import java.util.Set;
 @Ignore(PHANTOMJS)
 @Ignore(SAFARI)
 public class AlertsTest extends JUnit4TestBase {
+
+  @After
+  public void closeAlertIfPresent() {
+    try {
+      driver.switchTo().alert().dismiss();
+    } catch (WebDriverException ignore) {
+    }
+  }
 
   private String alertPage(String alertText) {
     return appServer.create(new Page()
@@ -100,6 +109,15 @@ public class AlertsTest extends JUnit4TestBase {
 
     // If we can perform any action, we're good to go
     assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
+    driver.get(alertPage("cheese"));
+
+    driver.findElement(By.id("alert")).click();
+    Alert alert = wait.until(alertIsPresent());
+    alert.sendKeys(null);
   }
 
   @Test
@@ -175,7 +193,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Prompt", driver.getTitle());
   }
 
-  @Test
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
@@ -334,7 +351,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
   public void testHandlesTwoAlertsFromOneInteraction() {
     driver.get(appServer.create(new Page()
         .withScripts(
@@ -429,7 +445,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = HTMLUNIT, reason = "Chrome does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -494,7 +510,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
-  @Ignore(value = HTMLUNIT, reason = "Chrome does not trigger alerts on unload")
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);

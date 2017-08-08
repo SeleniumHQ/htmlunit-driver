@@ -142,7 +142,6 @@ public class ImplicitWaitTest extends JUnit4TestBase {
     revealed.sendKeys("hello world");
   }
 
-
   @Test
   @Ignore(IE)
   @Ignore(PHANTOMJS)

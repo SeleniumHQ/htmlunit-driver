@@ -439,7 +439,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   public void testShouldBeAbleToExecuteABigChunkOfJavascriptCode() throws IOException {
     driver.get(pages.javascriptPage);
 
-    Path jqueryFile = InProject.locate("web/jquery-1.3.2.js");
+    Path jqueryFile = InProject.locate("common/src/web/jquery-1.3.2.js");
     String jquery = new String(Files.readAllBytes(jqueryFile), US_ASCII);
     assertTrue("The javascript code should be at least 50 KB.", jquery.length() > 50000);
     // This should not throw an exception ...
