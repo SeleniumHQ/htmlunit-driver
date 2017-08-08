@@ -41,7 +41,7 @@ import org.openqa.selenium.testing.TestUtilities;
 /**
  * Tests interaction through the advanced gestures API of keyboard handling.
  */
-@Ignore(value = SAFARI, reason = "not implemented (issue 4136)")
+//@Ignore(value = SAFARI, reason = "not implemented (issue 4136)")
 public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
 
   private Actions getBuilder(WebDriver driver) {
@@ -151,7 +151,7 @@ public class BasicKeyboardInterfaceTest extends JUnit4TestBase {
   @Test(expected = IllegalArgumentException.class)
   public void testThrowsIllegalArgumentExceptionWithNullKeys() {
     driver.get(pages.javascriptPage);
-    driver.findElement(By.id("keyReporter")).sendKeys(null);
+    driver.findElement(By.id("keyReporter")).sendKeys((CharSequence[]) null);
   }
 
   @Test

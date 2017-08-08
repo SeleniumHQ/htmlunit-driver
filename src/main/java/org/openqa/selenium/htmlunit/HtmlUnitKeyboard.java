@@ -41,9 +41,6 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
 
   @Override
   public void sendKeys(CharSequence... keysToSend) {
-    if(keysToSend==null) {
-      throw new IllegalArgumentException("Keys to send should be a not null CharSequence");
-    }
     HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) parent.switchTo().activeElement();
     sendKeys(htmlElem, false, keysToSend);
   }

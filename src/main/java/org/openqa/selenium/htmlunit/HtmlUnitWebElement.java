@@ -285,6 +285,9 @@ public class HtmlUnitWebElement implements WrapsDriver,
 
   @Override
   public void sendKeys(CharSequence... value) {
+    if (value == null) {
+      throw new IllegalArgumentException("Keys to send should nor be null");
+    }
     parent.sendKeys(this, value);
   }
 
