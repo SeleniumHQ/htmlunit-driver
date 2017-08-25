@@ -18,6 +18,7 @@
 package org.openqa.selenium.htmlunit;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -32,6 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
@@ -52,6 +54,9 @@ import org.junit.Test;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.MockWebConnection;
 
+/**
+ * Common superclass for HtmlUnit tests.
+ */
 public abstract class WebTestCase {
 
   /** Logging support. */
@@ -61,24 +66,27 @@ public abstract class WebTestCase {
   private static final Locale SAVE_LOCALE = Locale.getDefault();
 
   /** The listener port for the web server. */
-  public static final int PORT = Integer.parseInt(System.getProperty("htmlunit.test.port", "12348"));
+  public static final int PORT = Integer.parseInt(System.getProperty("htmlunit.test.port", "12345"));
 
   /** The second listener port for the web server, used for cross-origin tests. */
-  public static final int PORT2 = Integer.parseInt(System.getProperty("htmlunit.test.port2", "12349"));
+  public static final int PORT2 = Integer.parseInt(System.getProperty("htmlunit.test.port2", "12346"));
 
   /** The second listener port for the web server, used for cross-origin tests. */
-  public static final int PORT3 = Integer.parseInt(System.getProperty("htmlunit.test.port3", "12359"));
+  public static final int PORT3 = Integer.parseInt(System.getProperty("htmlunit.test.port3", "12347"));
 
   /** The SOCKS proxy host to use for SOCKS proxy tests. */
   public static final String SOCKS_PROXY_HOST = System.getProperty("htmlunit.test.socksproxy.host", "localhost");
 
   /** The SOCKS proxy port to use for SOCKS proxy tests. */
   public static final int SOCKS_PROXY_PORT = Integer.parseInt(
-          System.getProperty("htmlunit.test.socksproxy.port", "55555"));
+      System.getProperty("htmlunit.test.socksproxy.port", "55555"));
 
   /** Succeeds the SOCKS proxy tests (for windows) . */
   public static final boolean GEOLOCATION_IGNORE = Boolean.valueOf(
-          System.getProperty("htmlunit.test.geolocation.ignore", "false"));
+      System.getProperty("htmlunit.test.geolocation.ignore", "false"));
+
+  /** Property to use nashorn. */
+  protected static final String NASHRON = "htmlunit.nashorn";
 
   /** The default time used to wait for the expected alerts. */
   protected static final long DEFAULT_WAIT_TIME = 1000;
@@ -121,10 +129,7 @@ public abstract class WebTestCase {
    * or not in {@link #createTestPageForRealBrowserIfNeeded(String,List)}.
    */
   public static final String PROPERTY_GENERATE_TESTPAGES
-      = "com.gargoylesoftware.htmlunit.WebTestCase.GenerateTestpages";
-
-  /** System-specific line separator. */
-  protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  = "com.gargoylesoftware.htmlunit.WebTestCase.GenerateTestpages";
 
   private BrowserVersion browserVersion_;
 
@@ -132,7 +137,11 @@ public abstract class WebTestCase {
   private MockWebConnection mockWebConnection_;
 
   /** To be documented. */
-  protected static final BrowserVersion FLAG_ALL_BROWSERS = new BrowserVersion("", "", "", 0);
+  protected static final BrowserVersion FLAG_ALL_BROWSERS
+  = new BrowserVersion.BrowserVersionBuilder(BrowserVersion.BEST_SUPPORTED)
+  .setApplicationName("FLAG_ALL_BROWSERS")
+  .build();
+
   /** To be documented. */
   protected static final ThreadLocal<BrowserVersion> generateTest_browserVersion_ = new ThreadLocal<>();
   private String generateTest_content_;
@@ -141,25 +150,25 @@ public abstract class WebTestCase {
   private String generateTest_testName_;
 
   static {
-      try {
-          URL_FIRST = new URL("http://localhost:" + PORT + "/");
-          URL_SECOND = new URL("http://localhost:" + PORT + "/second/");
-          URL_THIRD = new URL("http://127.0.0.1:" + PORT + "/third/");
-          URL_CROSS_ORIGIN = new URL("http://127.0.0.1:" + PORT2 + "/corsAllowAll");
-          URL_CROSS_ORIGIN2 = new URL("http://localhost:" + PORT3 + "/");
-          URL_CROSS_ORIGIN_BASE = new URL("http://localhost:" + PORT2 + "/");
-      }
-      catch (final MalformedURLException e) {
-          // This is theoretically impossible.
-          throw new IllegalStateException("Unable to create URL constants");
-      }
+    try {
+      URL_FIRST = new URL("http://localhost:" + PORT + "/");
+      URL_SECOND = new URL("http://localhost:" + PORT + "/second/");
+      URL_THIRD = new URL("http://127.0.0.1:" + PORT + "/third/");
+      URL_CROSS_ORIGIN = new URL("http://127.0.0.1:" + PORT2 + "/corsAllowAll");
+      URL_CROSS_ORIGIN2 = new URL("http://localhost:" + PORT3 + "/");
+      URL_CROSS_ORIGIN_BASE = new URL("http://localhost:" + PORT2 + "/");
+    }
+    catch (final MalformedURLException e) {
+      // This is theoretically impossible.
+      throw new IllegalStateException("Unable to create URL constants");
+    }
   }
 
   /**
    * Constructor.
    */
   protected WebTestCase() {
-      generateTest_browserVersion_.remove();
+    generateTest_browserVersion_.remove();
   }
 
   /**
@@ -167,7 +176,7 @@ public abstract class WebTestCase {
    * @param object the object to check
    */
   public static void assertNull(final Object object) {
-      Assert.assertNull("Expected null but found [" + object + "]", object);
+    Assert.assertNull("Expected null but found [" + object + "]", object);
   }
 
   /**
@@ -176,7 +185,7 @@ public abstract class WebTestCase {
    * @param object the object to check
    */
   public static void assertNull(final String message, final Object object) {
-      Assert.assertNull(message, object);
+    Assert.assertNull(message, object);
   }
 
   /**
@@ -184,7 +193,7 @@ public abstract class WebTestCase {
    * @param object the object to check
    */
   public static void assertNotNull(final Object object) {
-      Assert.assertNotNull(object);
+    Assert.assertNotNull(object);
   }
 
   /**
@@ -193,7 +202,7 @@ public abstract class WebTestCase {
    * @param object the object to check
    */
   public static void assertNotNull(final String message, final Object object) {
-      Assert.assertNotNull(message, object);
+    Assert.assertNotNull(message, object);
   }
 
   /**
@@ -202,7 +211,7 @@ public abstract class WebTestCase {
    * @param actual the actual object
    */
   public static void assertSame(final Object expected, final Object actual) {
-      Assert.assertSame(expected, actual);
+    Assert.assertSame(expected, actual);
   }
 
   /**
@@ -212,7 +221,7 @@ public abstract class WebTestCase {
    * @param actual the actual object
    */
   public static void assertSame(final String message, final Object expected, final Object actual) {
-      Assert.assertSame(message, expected, actual);
+    Assert.assertSame(message, expected, actual);
   }
 
   /**
@@ -221,7 +230,7 @@ public abstract class WebTestCase {
    * @param actual the actual object
    */
   public static void assertNotSame(final Object expected, final Object actual) {
-      Assert.assertNotSame(expected, actual);
+    Assert.assertNotSame(expected, actual);
   }
 
   /**
@@ -231,7 +240,7 @@ public abstract class WebTestCase {
    * @param actual the actual object
    */
   public static void assertNotSame(final String message, final Object expected, final Object actual) {
-      Assert.assertNotSame(message, expected, actual);
+    Assert.assertNotSame(message, expected, actual);
   }
 
   /**
@@ -241,7 +250,7 @@ public abstract class WebTestCase {
    * @param actualUrl the URL to test
    */
   protected static void assertEquals(final URL expectedUrl, final URL actualUrl) {
-      Assert.assertEquals(expectedUrl.toExternalForm(), actualUrl.toExternalForm());
+    Assert.assertEquals(expectedUrl.toExternalForm(), actualUrl.toExternalForm());
   }
 
   /**
@@ -250,7 +259,7 @@ public abstract class WebTestCase {
    * @param actual the object to test
    */
   protected static void assertEquals(final Object expected, final Object actual) {
-      Assert.assertEquals(expected, actual);
+    Assert.assertEquals(expected, actual);
   }
 
   /**
@@ -260,7 +269,7 @@ public abstract class WebTestCase {
    * @param actual the object to test
    */
   protected static void assertEquals(final String message, final Object expected, final Object actual) {
-      Assert.assertEquals(message, expected, actual);
+    Assert.assertEquals(message, expected, actual);
   }
 
   /**
@@ -269,7 +278,7 @@ public abstract class WebTestCase {
    * @param actual the int to test
    */
   protected static void assertEquals(final int expected, final int actual) {
-      Assert.assertEquals(expected, actual);
+    Assert.assertEquals(expected, actual);
   }
 
   /**
@@ -278,7 +287,7 @@ public abstract class WebTestCase {
    * @param actual the boolean to test
    */
   protected void assertEquals(final boolean expected, final boolean actual) {
-      Assert.assertEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
+    Assert.assertEquals(Boolean.valueOf(expected), Boolean.valueOf(actual));
   }
 
   /**
@@ -289,16 +298,16 @@ public abstract class WebTestCase {
    * @param actualUrl the URL to test
    */
   protected void assertEquals(final String message, final URL expectedUrl, final URL actualUrl) {
-      Assert.assertEquals(message, expectedUrl.toExternalForm(), actualUrl.toExternalForm());
+    Assert.assertEquals(message, expectedUrl.toExternalForm(), actualUrl.toExternalForm());
   }
 
   /**
-   * Facility to test external form of an URL.
+   * Facility to test external form of a URL.
    * @param expectedUrl the string representation of the expected URL
    * @param actualUrl the URL to test
    */
   protected void assertEquals(final String expectedUrl, final URL actualUrl) {
-      Assert.assertEquals(expectedUrl, actualUrl.toExternalForm());
+    Assert.assertEquals(expectedUrl, actualUrl.toExternalForm());
   }
 
   /**
@@ -310,7 +319,7 @@ public abstract class WebTestCase {
    * @param actual the collection of strings to test
    */
   protected void assertEquals(final String[] expected, final List<String> actual) {
-      assertEquals(null, expected, actual);
+    assertEquals(null, expected, actual);
   }
 
   /**
@@ -323,17 +332,17 @@ public abstract class WebTestCase {
    * @param actual the collection of strings to test
    */
   protected void assertEquals(final String message, final String[] expected, final List<String> actual) {
-      Assert.assertEquals(message, Arrays.asList(expected).toString(), actual.toString());
+    Assert.assertEquals(message, Arrays.asList(expected).toString(), actual.toString());
   }
 
   /**
-   * Facility to test external form of an URL.
+   * Facility to test external form of a URL.
    * @param message the message to display if assertion fails
    * @param expectedUrl the string representation of the expected URL
    * @param actualUrl the URL to test
    */
   protected void assertEquals(final String message, final String expectedUrl, final URL actualUrl) {
-      Assert.assertEquals(message, expectedUrl, actualUrl.toExternalForm());
+    Assert.assertEquals(message, expectedUrl, actualUrl.toExternalForm());
   }
 
   /**
@@ -341,7 +350,7 @@ public abstract class WebTestCase {
    * @param condition condition to test
    */
   protected void assertTrue(final boolean condition) {
-      Assert.assertTrue(condition);
+    Assert.assertTrue(condition);
   }
 
   /**
@@ -350,7 +359,7 @@ public abstract class WebTestCase {
    * @param condition condition to test
    */
   protected void assertTrue(final String message, final boolean condition) {
-      Assert.assertTrue(message, condition);
+    Assert.assertTrue(message, condition);
   }
 
   /**
@@ -358,7 +367,7 @@ public abstract class WebTestCase {
    * @param condition condition to test
    */
   protected void assertFalse(final boolean condition) {
-      Assert.assertFalse(condition);
+    Assert.assertFalse(condition);
   }
 
   /**
@@ -367,7 +376,7 @@ public abstract class WebTestCase {
    * @param condition condition to test
    */
   protected void assertFalse(final String message, final boolean condition) {
-      Assert.assertFalse(message, condition);
+    Assert.assertFalse(message, condition);
   }
 
   /**
@@ -378,7 +387,7 @@ public abstract class WebTestCase {
    * @throws FileNotFoundException if the file cannot be found
    */
   public static InputStream getFileAsStream(final String fileName) throws FileNotFoundException {
-      return new BufferedInputStream(new FileInputStream(getFileObject(fileName)));
+    return new BufferedInputStream(new FileInputStream(getFileObject(fileName)));
   }
 
   /**
@@ -391,23 +400,23 @@ public abstract class WebTestCase {
    * @throws FileNotFoundException if the file doesn't exist
    */
   public static File getFileObject(final String fileName) throws FileNotFoundException {
-      final String localizedName = fileName.replace('/', File.separatorChar);
+    final String localizedName = fileName.replace('/', File.separatorChar);
 
-      File file = new File(localizedName);
-      if (!file.exists()) {
-          file = new File("../../" + localizedName);
-      }
+    File file = new File(localizedName);
+    if (!file.exists()) {
+      file = new File("../../" + localizedName);
+    }
 
-      if (!file.exists()) {
-          try {
-              System.out.println("currentDir=" + new File(".").getCanonicalPath());
-          }
-          catch (final IOException e) {
-              e.printStackTrace();
-          }
-          throw new FileNotFoundException(localizedName);
+    if (!file.exists()) {
+      try {
+        System.out.println("currentDir=" + new File(".").getCanonicalPath());
       }
-      return file;
+      catch (final IOException e) {
+        e.printStackTrace();
+      }
+      throw new FileNotFoundException(localizedName);
+    }
+    return file;
   }
 
   /**
@@ -419,7 +428,7 @@ public abstract class WebTestCase {
    */
   protected void createTestPageForRealBrowserIfNeeded(final String content, final String[] expectedAlerts)
       throws IOException {
-      createTestPageForRealBrowserIfNeeded(content, Arrays.asList(expectedAlerts));
+    createTestPageForRealBrowserIfNeeded(content, Arrays.asList(expectedAlerts));
   }
 
   /**
@@ -432,46 +441,46 @@ public abstract class WebTestCase {
   protected void createTestPageForRealBrowserIfNeeded(final String content, final List<String> expectedAlerts)
       throws IOException {
 
-      // save the information to create a test for WebDriver
-      generateTest_content_ = content;
-      generateTest_expectedAlerts_ = expectedAlerts;
-      final Method testMethod = findRunningJUnitTestMethod();
-      generateTest_testName_ = testMethod.getDeclaringClass().getSimpleName() + "_" + testMethod.getName() + ".html";
+    // save the information to create a test for WebDriver
+    generateTest_content_ = content;
+    generateTest_expectedAlerts_ = expectedAlerts;
+    final Method testMethod = findRunningJUnitTestMethod();
+    generateTest_testName_ = testMethod.getDeclaringClass().getSimpleName() + "_" + testMethod.getName() + ".html";
 
-      if (System.getProperty(PROPERTY_GENERATE_TESTPAGES) != null) {
-          // should be optimized....
+    if (System.getProperty(PROPERTY_GENERATE_TESTPAGES) != null) {
+      // should be optimized....
 
-          // calls to alert() should be replaced by call to custom function
-          String newContent = StringUtils.replace(content, "alert(", "htmlunitReserved_caughtAlert(");
+      // calls to alert() should be replaced by call to custom function
+      String newContent = StringUtils.replace(content, "alert(", "htmlunitReserved_caughtAlert(");
 
-          final String instrumentationJS = createInstrumentationScript(expectedAlerts);
+      final String instrumentationJS = createInstrumentationScript(expectedAlerts);
 
-          // first version, we assume that there is a <head> and a </body> or a </frameset>
-          if (newContent.indexOf("<head>") > -1) {
-              newContent = StringUtils.replaceOnce(newContent, "<head>", "<head>" + instrumentationJS);
-          }
-          else {
-              newContent = StringUtils.replaceOnce(newContent, "<html>",
-                      "<html>\n<head>\n" + instrumentationJS + "\n</head>\n");
-          }
-          final String endScript = "\n<script>htmlunitReserved_addSummaryAfterOnload();</script>\n";
-          if (newContent.contains("</body>")) {
-              newContent = StringUtils.replaceOnce(newContent, "</body>", endScript + "</body>");
-          }
-          else {
-              LOG.info("No test generated: currently only content with a <head> and a </body> is supported");
-          }
-
-          final File f = File.createTempFile("TEST" + '_', ".html");
-          FileUtils.writeStringToFile(f, newContent, "ISO-8859-1");
-          LOG.info("Test file written: " + f.getAbsolutePath());
+      // first version, we assume that there is a <head> and a </body> or a </frameset>
+      if (newContent.indexOf("<head>") > -1) {
+        newContent = StringUtils.replaceOnce(newContent, "<head>", "<head>" + instrumentationJS);
       }
       else {
-          if (LOG.isDebugEnabled()) {
-              LOG.debug("System property \"" + PROPERTY_GENERATE_TESTPAGES
-                  + "\" not set, don't generate test HTML page for real browser");
-          }
+        newContent = StringUtils.replaceOnce(newContent, "<html>",
+            "<html>\n<head>\n" + instrumentationJS + "\n</head>\n");
       }
+      final String endScript = "\n<script>htmlunitReserved_addSummaryAfterOnload();</script>\n";
+      if (newContent.contains("</body>")) {
+        newContent = StringUtils.replaceOnce(newContent, "</body>", endScript + "</body>");
+      }
+      else {
+        LOG.info("No test generated: currently only content with a <head> and a </body> is supported");
+      }
+
+      final File f = File.createTempFile("TEST" + '_', ".html");
+      FileUtils.writeStringToFile(f, newContent, "ISO-8859-1");
+      LOG.info("Test file written: " + f.getAbsolutePath());
+    }
+    else {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("System property \"" + PROPERTY_GENERATE_TESTPAGES
+            + "\" not set, don't generate test HTML page for real browser");
+      }
+    }
   }
 
   /**
@@ -480,25 +489,25 @@ public abstract class WebTestCase {
    * @throws IOException in case of problem
    */
   private String createInstrumentationScript(final List<String> expectedAlerts) throws IOException {
-      // generate the js code
-      final String baseJS = getFileContent("alertVerifier.js");
+    // generate the js code
+    final String baseJS = getFileContent("alertVerifier.js");
 
-      final StringBuilder sb = new StringBuilder();
-      sb.append("\n<script type='text/javascript'>\n");
-      sb.append("var htmlunitReserved_tab = [");
-      for (final ListIterator<String> iter = expectedAlerts.listIterator(); iter.hasNext();) {
-          if (iter.hasPrevious()) {
-              sb.append(", ");
-          }
-          String message = iter.next();
-          message = StringUtils.replace(message, "\\", "\\\\");
-          message = message.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
-          sb.append("{expected: \"").append(message).append("\"}");
+    final StringBuilder sb = new StringBuilder();
+    sb.append("\n<script type='text/javascript'>\n");
+    sb.append("var htmlunitReserved_tab = [");
+    for (final ListIterator<String> iter = expectedAlerts.listIterator(); iter.hasNext();) {
+      if (iter.hasPrevious()) {
+        sb.append(", ");
       }
-      sb.append("];\n\n");
-      sb.append(baseJS);
-      sb.append("</script>\n");
-      return sb.toString();
+      String message = iter.next();
+      message = StringUtils.replace(message, "\\", "\\\\");
+      message = message.replaceAll("\n", "\\\\n").replaceAll("\r", "\\\\r");
+      sb.append("{expected: \"").append(message).append("\"}");
+    }
+    sb.append("];\n\n");
+    sb.append(baseJS);
+    sb.append("</script>\n");
+    return sb.toString();
   }
 
   /**
@@ -507,26 +516,26 @@ public abstract class WebTestCase {
    * @throws RuntimeException if no method could be found
    */
   private Method findRunningJUnitTestMethod() {
-      final Class<?> cl = getClass();
-      final Class<?>[] args = new Class[] {};
+    final Class<?> cl = getClass();
+    final Class<?>[] args = new Class[] {};
 
-      // search the initial junit test
-      final Throwable t = new Exception();
-      for (int i = t.getStackTrace().length - 1; i >= 0; i--) {
-          final StackTraceElement element = t.getStackTrace()[i];
-          if (element.getClassName().equals(cl.getName())) {
-              try {
-                  final Method m = cl.getMethod(element.getMethodName(), args);
-                  if (isPublicTestMethod(m)) {
-                      return m;
-                  }
-              }
-              catch (final Exception e) {
-                  // can't access, ignore it
-              }
+    // search the initial junit test
+    final Throwable t = new Exception();
+    for (int i = t.getStackTrace().length - 1; i >= 0; i--) {
+      final StackTraceElement element = t.getStackTrace()[i];
+      if (element.getClassName().equals(cl.getName())) {
+        try {
+          final Method m = cl.getMethod(element.getMethodName(), args);
+          if (isPublicTestMethod(m)) {
+            return m;
           }
+        }
+        catch (final Exception e) {
+          // can't access, ignore it
+        }
       }
-      throw new RuntimeException("No JUnit test case method found in call stack");
+    }
+    throw new RuntimeException("No JUnit test case method found in call stack");
   }
 
   /**
@@ -535,10 +544,10 @@ public abstract class WebTestCase {
    * @return {@code true} if this is a junit test
    */
   private static boolean isPublicTestMethod(final Method method) {
-      return method.getParameterTypes().length == 0
-          && (method.getName().startsWith("test") || method.getAnnotation(Test.class) != null)
-          && method.getReturnType() == Void.TYPE
-          && Modifier.isPublic(method.getModifiers());
+    return method.getParameterTypes().length == 0
+        && (method.getName().startsWith("test") || method.getAnnotation(Test.class) != null)
+        && method.getReturnType() == Void.TYPE
+        && Modifier.isPublic(method.getModifiers());
   }
 
   /**
@@ -546,7 +555,7 @@ public abstract class WebTestCase {
    * @param browserVersion the browser version
    */
   public void setBrowserVersion(final BrowserVersion browserVersion) {
-      browserVersion_ = browserVersion;
+    browserVersion_ = browserVersion;
   }
 
   /**
@@ -554,10 +563,10 @@ public abstract class WebTestCase {
    * @return current {@link BrowserVersion}
    */
   protected final BrowserVersion getBrowserVersion() {
-      if (browserVersion_ == null) {
-          throw new IllegalStateException("You must annotate the test class with '@RunWith(BrowserRunner.class)'");
-      }
-      return browserVersion_;
+    if (browserVersion_ == null) {
+      throw new IllegalStateException("You must annotate the test class with '@RunWith(BrowserRunner.class)'");
+    }
+    return browserVersion_;
   }
 
   /**
@@ -565,7 +574,7 @@ public abstract class WebTestCase {
    * @param expectedAlerts the expected alerts
    */
   public void setExpectedAlerts(final String... expectedAlerts) {
-      expectedAlerts_ = expectedAlerts;
+    expectedAlerts_ = expectedAlerts;
   }
 
   /**
@@ -573,7 +582,7 @@ public abstract class WebTestCase {
    * @return the expected alerts
    */
   protected String[] getExpectedAlerts() {
-      return expectedAlerts_;
+    return expectedAlerts_;
   }
 
   /**
@@ -581,12 +590,12 @@ public abstract class WebTestCase {
    * @param url the URL to expand
    */
   protected void expandExpectedAlertsVariables(final URL url) {
-      if (expectedAlerts_ == null) {
-          throw new IllegalStateException("You must annotate the test class with '@RunWith(BrowserRunner.class)'");
-      }
-      for (int i = 0; i < expectedAlerts_.length; i++) {
-          expectedAlerts_[i] = expectedAlerts_[i].replaceAll("§§URL§§", url.toExternalForm());
-      }
+    if (expectedAlerts_ == null) {
+      throw new IllegalStateException("You must annotate the test class with '@RunWith(BrowserRunner.class)'");
+    }
+    for (int i = 0; i < expectedAlerts_.length; i++) {
+      expectedAlerts_[i] = expectedAlerts_[i].replaceAll("§§URL§§", url.toExternalForm());
+    }
   }
 
   /**
@@ -596,15 +605,7 @@ public abstract class WebTestCase {
    * @return a clone of the specified object
    */
   protected <T extends Serializable> T clone(final T object) {
-      return SerializationUtils.clone(object);
-  }
-
-  /**
-   * Gets the default URL used for the tests.
-   * @return the url
-   */
-  protected static URL getDefaultUrl() {
-      return URL_FIRST;
+    return SerializationUtils.clone(object);
   }
 
   /**
@@ -613,7 +614,7 @@ public abstract class WebTestCase {
    */
   @BeforeClass
   public static void beforeClass() {
-      Locale.setDefault(Locale.US);
+    Locale.setDefault(Locale.US);
   }
 
   /**
@@ -621,7 +622,7 @@ public abstract class WebTestCase {
    */
   @AfterClass
   public static void afterClass() {
-      Locale.setDefault(SAVE_LOCALE);
+    Locale.setDefault(SAVE_LOCALE);
   }
 
   /**
@@ -630,45 +631,35 @@ public abstract class WebTestCase {
    */
   @After
   public void generateTestForWebDriver() throws IOException {
-      if (generateTest_content_ != null && !generateTest_notYetImplemented_) {
-          final File targetDir = new File("target/generated_tests");
-          targetDir.mkdirs();
+    if (generateTest_content_ != null && !generateTest_notYetImplemented_) {
+      final File targetDir = new File("target/generated_tests");
+      targetDir.mkdirs();
 
-          final File outFile = new File(targetDir, generateTest_testName_);
+      final File outFile = new File(targetDir, generateTest_testName_);
 
-          final String newContent = getModifiedContent(generateTest_content_);
-          FileUtils.writeStringToFile(outFile, newContent, ISO_8859_1);
+      FileUtils.writeStringToFile(outFile, generateTest_content_, ISO_8859_1);
 
-          // write the expected alerts
-          final String suffix;
-          BrowserVersion browser = generateTest_browserVersion_.get();
-          if (browser == null) {
-              browser = getBrowserVersion();
-          }
-          if (browser == FLAG_ALL_BROWSERS) {
-              suffix = ".expected";
-          }
-          else {
-              suffix = "." + browser.getNickname() + ".expected";
-          }
-
-          final File expectedLog = new File(outFile.getParentFile(), outFile.getName() + suffix);
-
-          try (FileOutputStream fos = new FileOutputStream(expectedLog)) {
-              try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-                  oos.writeObject(generateTest_expectedAlerts_);
-              }
-          }
+      // write the expected alerts
+      final String suffix;
+      BrowserVersion browser = generateTest_browserVersion_.get();
+      if (browser == null) {
+        browser = getBrowserVersion();
       }
-  }
+      if (browser == FLAG_ALL_BROWSERS) {
+        suffix = ".expected";
+      }
+      else {
+        suffix = "." + browser.getNickname() + ".expected";
+      }
 
-  /**
-   * Returns the modified JavaScript after changing how 'alerts' are called.
-   * @param html the html
-   * @return the modified html
-   */
-  protected static String getModifiedContent(final String html) {
-      return html;
+      final File expectedLog = new File(outFile.getParentFile(), outFile.getName() + suffix);
+
+      try (FileOutputStream fos = new FileOutputStream(expectedLog)) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+          oos.writeObject(generateTest_expectedAlerts_);
+        }
+      }
+    }
   }
 
   /**
@@ -676,7 +667,7 @@ public abstract class WebTestCase {
    * @param status the status
    */
   protected void setGenerateTest_notYetImplemented(final boolean status) {
-      generateTest_notYetImplemented_ = status;
+    generateTest_notYetImplemented_ = status;
   }
 
   /**
@@ -684,10 +675,10 @@ public abstract class WebTestCase {
    * @return the mock WebConnection instance for the current test
    */
   protected MockWebConnection getMockWebConnection() {
-      if (mockWebConnection_ == null) {
-          mockWebConnection_ = new MockWebConnection();
-      }
-      return mockWebConnection_;
+    if (mockWebConnection_ == null) {
+      mockWebConnection_ = new MockWebConnection();
+    }
+    return mockWebConnection_;
   }
 
   /**
@@ -695,7 +686,7 @@ public abstract class WebTestCase {
    * @param connection the connection to use
    */
   protected void setMockWebConnection(final MockWebConnection connection) {
-      mockWebConnection_ = connection;
+    mockWebConnection_ = connection;
   }
 
   /**
@@ -703,7 +694,7 @@ public abstract class WebTestCase {
    */
   @After
   public void releaseResources() {
-      mockWebConnection_ = null;
+    mockWebConnection_ = null;
   }
 
   /**
@@ -715,35 +706,52 @@ public abstract class WebTestCase {
    * @throws Exception in case of error
    */
   protected String loadExpectation(final String resourcePrefix, final String resourceSuffix) throws Exception {
-      final URL url = getExpectationsResource(getClass(), getBrowserVersion(), resourcePrefix, resourceSuffix);
-      assertNotNull(url);
-      final File file = new File(url.toURI());
+    final URL url = getExpectationsResource(getClass(), getBrowserVersion(), resourcePrefix, resourceSuffix);
+    assertNotNull(url);
+    final File file = new File(url.toURI());
 
-      String content = FileUtils.readFileToString(file, "UTF-8");
-      content = StringUtils.replace(content, "\r\n", "\n");
-      return content;
+    String content = FileUtils.readFileToString(file, UTF_8);
+    content = StringUtils.replace(content, "\r\n", "\n");
+    return content;
   }
 
   private static URL getExpectationsResource(final Class<?> referenceClass, final BrowserVersion browserVersion,
-          final String resourcePrefix, final String resourceSuffix) {
-      final String browserSpecificResource = resourcePrefix + "." + browserVersion.getNickname() + resourceSuffix;
+      final String resourcePrefix, final String resourceSuffix) {
+    final String browserSpecificResource = resourcePrefix + "." + browserVersion.getNickname() + resourceSuffix;
 
-      URL url = referenceClass.getResource(browserSpecificResource);
-      if (url != null) {
-          return url;
+    URL url = referenceClass.getResource(browserSpecificResource);
+    if (url != null) {
+      return url;
+    }
+
+    final String browserFamily = browserVersion.getNickname().replaceAll("[\\d\\.]", "");
+    final String browserFamilyResource = resourcePrefix + "." + browserFamily + resourceSuffix;
+
+    url = referenceClass.getResource(browserFamilyResource);
+    if (url != null) {
+      return url;
+    }
+
+    // fall back: expectations for all browsers
+    final String resource = resourcePrefix + resourceSuffix;
+    return referenceClass.getResource(resource);
+  }
+
+  /**
+   * Gets the active JavaScript threads.
+   * @return the threads
+   */
+  protected List<Thread> getJavaScriptThreads() {
+    final Thread[] threads = new Thread[Thread.activeCount() + 10];
+    Thread.enumerate(threads);
+    final List<Thread> jsThreads = new ArrayList<>();
+    for (final Thread t : threads) {
+      if (t != null && t.getName().startsWith("JS executor for")) {
+        jsThreads.add(t);
       }
+    }
 
-      final String browserFamily = browserVersion.getNickname().replaceAll("[\\d\\.]", "");
-      final String browserFamilyResource = resourcePrefix + "." + browserFamily + resourceSuffix;
-
-      url = referenceClass.getResource(browserFamilyResource);
-      if (url != null) {
-          return url;
-      }
-
-      // fall back: expectations for all browsers
-      final String resource = resourcePrefix + resourceSuffix;
-      return referenceClass.getResource(resource);
+    return jsThreads;
   }
 
   /**
@@ -753,10 +761,9 @@ public abstract class WebTestCase {
    * @throws IOException in case of error
    */
   protected String getFileContent(final String fileName) throws IOException {
-      final InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
-      assertNotNull(fileName, stream);
-      return IOUtils.toString(stream, ISO_8859_1);
+    final InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
+    assertNotNull(fileName, stream);
+    return IOUtils.toString(stream, ISO_8859_1);
   }
 
 }
-

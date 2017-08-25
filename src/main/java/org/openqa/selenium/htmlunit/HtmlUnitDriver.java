@@ -89,6 +89,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.BrowserVersion.BrowserVersionBuilder;
 import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
@@ -351,7 +352,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     Object rawLanguage = capabilities.getCapability(BROWSER_LANGUAGE_CAPABILITY);
     if (rawLanguage instanceof String) {
-      browserVersionObject.setBrowserLanguage((String) rawLanguage);
+      browserVersionObject = new BrowserVersionBuilder(browserVersionObject)
+          .setBrowserLanguage((String) rawLanguage).build();
     }
 
     return browserVersionObject;
