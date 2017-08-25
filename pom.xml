@@ -50,24 +50,48 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-codec</groupId>
+      		<artifactId>commons-codec</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>
       <version>${selenium.version}</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-codec</groupId>
+      		<artifactId>commons-codec</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
       <version>${selenium.version}</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-codec</groupId>
+      		<artifactId>commons-codec</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-ie-driver</artifactId>
       <version>${selenium.version}</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-codec</groupId>
+      		<artifactId>commons-codec</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>
@@ -90,6 +114,14 @@
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
         </exclusion>
+        <exclusion>
+        	<groupId>commons-io</groupId>
+        	<artifactId>commons-io</artifactId>
+        </exclusion>
+        <exclusion>
+        	<groupId>commons-codec</groupId>
+        	<artifactId>commons-codec</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -103,6 +135,28 @@
       <artifactId>jetty-maven-plugin</artifactId>
       <version>9.4.6.v20170531</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>org.apache.maven</groupId>
+      		<artifactId>maven-plugin-api</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>org.apache.maven</groupId>
+      		<artifactId>maven-repository-metadata</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>org.apache.maven</groupId>
+      		<artifactId>maven-settings</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>org.apache.maven</groupId>
+      		<artifactId>maven-artifact</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>org.codehaus.plexus</groupId>
+      		<artifactId>plexus-interpolation</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -115,6 +169,12 @@
       <artifactId>org.eclipse.egit.github.core</artifactId>
       <version>2.1.5</version>
       <scope>test</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>com.google.code.gson</groupId>
+      		<artifactId>gson</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
