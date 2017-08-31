@@ -172,6 +172,7 @@ public class HtmlUnitAlert implements Alert {
       if (keysToSend != null) {
         throw new ElementNotInteractableException("alert is not interactable");
       }
+      throw new IllegalArgumentException();
     }
 
     void accept() {
