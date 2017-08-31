@@ -33,13 +33,15 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import com.google.common.base.Joiner;
+import java.awt.GraphicsEnvironment;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
+
+import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -526,6 +528,7 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
+    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 

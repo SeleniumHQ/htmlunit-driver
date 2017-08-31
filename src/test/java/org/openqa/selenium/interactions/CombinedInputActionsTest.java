@@ -50,6 +50,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
+import java.awt.GraphicsEnvironment;
 import java.util.List;
 
 /**
@@ -287,6 +288,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
                 isNativeEventsEnabled(driver) && getEffectivePlatform().is(Platform.WINDOWS) &&
                 isInternetExplorer(driver));
+    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 

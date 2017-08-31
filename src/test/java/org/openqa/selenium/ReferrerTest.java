@@ -108,9 +108,9 @@ public class ReferrerTest extends JUnit4TestBase {
 
   @BeforeClass
   public static void readPages() throws IOException {
-    page1 = new String(Files.readAllBytes(locate("common/src/web/proxy/page1.html")), UTF_8);
-    page2 = new String(Files.readAllBytes(locate("common/src/web/proxy/page2.html")), UTF_8);
-    page3 = new String(Files.readAllBytes(locate("common/src/web/proxy/page3.html")), UTF_8);
+    page1 = new String(Files.readAllBytes(locate("web/proxy/page1.html")), UTF_8);
+    page2 = new String(Files.readAllBytes(locate("web/proxy/page2.html")), UTF_8);
+    page3 = new String(Files.readAllBytes(locate("web/proxy/page3.html")), UTF_8);
   }
 
   /**
