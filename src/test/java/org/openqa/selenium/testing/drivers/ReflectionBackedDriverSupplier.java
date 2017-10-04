@@ -17,16 +17,15 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.remote.CapabilityType.SUPPORTS_JAVASCRIPT;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.BrowserType;
 
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
@@ -69,11 +68,7 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
         className = "org.openqa.selenium.firefox.FirefoxDriver";
       }
     } else if (BrowserType.HTMLUNIT.equals(name)) {
-      if (caps.is(SUPPORTS_JAVASCRIPT)) {
-        className = "org.openqa.selenium.htmlunit.JavascriptEnabledHtmlUnitDriverTests$HtmlUnitDriverForTest";
-      } else {
         className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
-      }
     } else if (BrowserType.IE.equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
     } else if (BrowserType.SAFARI.equals(name)) {
