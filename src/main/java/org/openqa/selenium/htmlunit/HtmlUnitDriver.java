@@ -750,8 +750,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
           break;
 
         case IGNORE:
-      }
-      throw new UnhandledAlertException("Alert found", text);
+          break;
+                   
+        default:
+          throw new UnhandledAlertException("Alert found", text);
+       }
     }
   }
 
