@@ -17,7 +17,6 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -38,6 +37,8 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
@@ -48,8 +49,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.Set;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 @Ignore(PHANTOMJS)
@@ -545,21 +544,6 @@ public class AlertsTest extends JUnit4TestBase {
     }
   }
 
-  @Test
-  @Ignore(CHROME)
-  @NotYetImplemented(value = MARIONETTE,
-      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
-  public void testIncludesAlertTextInUnhandledAlertException() {
-    driver.get(alertPage("cheese"));
-
-    driver.findElement(By.id("alert")).click();
-    wait.until(alertIsPresent());
-
-    Throwable t = catchThrowable(driver::getTitle);
-    assertThat(t, instanceOf(UnhandledAlertException.class));
-    assertThat(((UnhandledAlertException) t).getAlertText(), is("cheese"));
-    assertThat(t.getMessage(), containsString("cheese"));
-  }
 
   @NoDriverAfterTest
   @Test
