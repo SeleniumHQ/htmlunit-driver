@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -542,6 +543,24 @@ public class AlertsTest extends JUnit4TestBase {
       driver.switchTo().window(mainWindow);
       wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
     }
+  }
+  
+  
+  @Test
+  @Ignore(CHROME)
+  @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
+  @NotYetImplemented(value = MARIONETTE,
+      reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  public void testIncludesAlertTextInUnhandledAlertException() {
+    driver.get(alertPage("cheese"));
+
+    driver.findElement(By.id("alert")).click();
+    wait.until(alertIsPresent());
+
+    Throwable t = catchThrowable(driver::getTitle);
+    assertThat(t, instanceOf(UnhandledAlertException.class));
+    assertThat(((UnhandledAlertException) t).getAlertText(), is("cheese"));
+    assertThat(t.getMessage(), containsString("cheese"));
   }
 
 

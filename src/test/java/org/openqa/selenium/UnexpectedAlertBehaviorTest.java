@@ -17,15 +17,12 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
-import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.After;
 import org.junit.Test;
@@ -70,10 +67,7 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
   public void canIgnoreUnhandledAlert() {
-    Throwable t = catchThrowable(
-        () -> runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "Text ignored"));
-    assertThat(t, instanceOf(UnhandledAlertException.class));
-    driver2.switchTo().alert().dismiss();
+    runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.IGNORE, "null");
   }
 
   @Test
