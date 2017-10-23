@@ -48,6 +48,7 @@ public class HtmlUnitAlert implements Alert {
     WebClient webClient = driver.getWebClient();
     webClient.setAlertHandler(this::alertHandler);
     webClient.setPromptHandler(this::promptHandler);
+    webClient.setConfirmHandler(this::confirmHandler);
     webClient.setOnbeforeunloadHandler(this::onbeforeunloadHandler);
   }
 
@@ -58,6 +59,16 @@ public class HtmlUnitAlert implements Alert {
     webWindow_ = page.getEnclosingWindow();
     holder_ = new AlertHolder(message);
     awaitCondition();
+  }
+
+  private boolean confirmHandler(Page page, String message) {
+    if (quitting_) {
+      return false;
+    }
+    webWindow_ = page.getEnclosingWindow();
+    holder_ = new AlertHolder(message);
+    awaitCondition();
+    return holder_.accepted;
   }
 
   private void awaitCondition() {
