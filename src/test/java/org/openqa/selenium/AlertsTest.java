@@ -38,6 +38,8 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
@@ -48,8 +50,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import java.util.Set;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 @Ignore(PHANTOMJS)
@@ -544,9 +544,11 @@ public class AlertsTest extends JUnit4TestBase {
       wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
     }
   }
-
+  
+  
   @Test
   @Ignore(CHROME)
+  @Ignore(value = HTMLUNIT, reason = "https://github.com/SeleniumHQ/htmlunit-driver/issues/57")
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
   public void testIncludesAlertTextInUnhandledAlertException() {
@@ -560,6 +562,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertThat(((UnhandledAlertException) t).getAlertText(), is("cheese"));
     assertThat(t.getMessage(), containsString("cheese"));
   }
+
 
   @NoDriverAfterTest
   @Test
