@@ -26,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
-import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
@@ -36,13 +35,15 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import com.google.common.base.Joiner;
+import java.awt.GraphicsEnvironment;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
+
+import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -528,6 +529,7 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
+    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 
@@ -620,7 +622,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowIllegalArgumentException() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));

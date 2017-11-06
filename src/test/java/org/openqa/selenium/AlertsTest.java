@@ -112,7 +112,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
     driver.get(alertPage("cheese"));
 

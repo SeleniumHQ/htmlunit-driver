@@ -17,14 +17,14 @@
 
 package org.openqa.selenium.testing;
 
+import com.google.common.base.Preconditions;
+
+import org.openqa.selenium.WebDriverException;
+
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.openqa.selenium.WebDriverException;
-
-import com.google.common.base.Preconditions;
 
 public class InProject {
   /**
