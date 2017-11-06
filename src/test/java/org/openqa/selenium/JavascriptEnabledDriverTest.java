@@ -34,7 +34,7 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -223,7 +223,6 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @Test
   @Ignore(value = SAFARI, reason = "issue 3693")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/611")
   public void testShouldBeAbleToClickALinkThatClosesAWindow() throws Exception {
     driver.get(pages.javascriptPage);
 

@@ -29,14 +29,17 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.InProject.locate;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.net.HostAndPort;
-import com.google.common.net.HttpHeaders;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
@@ -49,24 +52,20 @@ import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.openqa.selenium.net.PortProber;
 import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.net.HostAndPort;
+import com.google.common.net.HttpHeaders;
 
 /**
  * Tests that "Referer" headers are generated as expected under various conditions.
@@ -232,7 +231,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * redirects the second domain to another host.
    */
   @Test
-  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWithAProxiedHost() {
     testServer1.start();
@@ -272,7 +270,6 @@ public class ReferrerTest extends JUnit4TestBase {
    * to connect directly to the target server.
    */
   @Test
-  @Ignore(MARIONETTE)
   @NeedsLocalEnvironment
   public void crossDomainHistoryNavigationWhenProxyInterceptsHostRequests() {
     testServer1.start();
@@ -409,8 +406,7 @@ public class ReferrerTest extends JUnit4TestBase {
       Proxy proxy = new Proxy();
       proxy.setProxyAutoconfigUrl(pacUrl);
 
-      DesiredCapabilities caps = new DesiredCapabilities();
-      caps.setCapability(PROXY, proxy);
+      Capabilities caps = new ImmutableCapabilities(PROXY, proxy);
 
       return driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     }

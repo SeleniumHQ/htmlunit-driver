@@ -31,8 +31,8 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
@@ -460,11 +460,11 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
-  @Ignore(value = ALL, reason = "Failure indicates hang condition, which would break the" +
-                                " test suite. Really needs a timeout set.")
-  public void testShouldThrowExceptionIfExecutingOnNoPage() {
-    Throwable t = catchThrowable(() -> executeScript("return 1;"));
-    assertThat(t, instanceOf(WebDriverException.class));
+  @NotYetImplemented(value = HTMLUNIT,
+      reason = "HtmlUnit: can't execute JavaScript before a page is loaded")
+  public void testShouldBeAbleToExecuteScriptOnNoPage() {
+    String text = (String) executeScript("return 'test';");
+    assertEquals(text, "test");
   }
 
   @Test
@@ -544,7 +544,7 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
     driver.get(pages.simpleTestPage);
 
@@ -552,5 +552,34 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
     assertTrue(value instanceof WebElement);
     assertTrue(((WebElement) value).getText().contains("A single line of text"));
+  }
+
+  @Test(timeout = 10000)
+  @Ignore(value = IE, reason = "returns WebElement")
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(HTMLUNIT)
+  public void shouldHandleObjectThatThatHaveToJSONMethod() {
+    driver.get(pages.simpleTestPage);
+
+    Object value = executeScript("return window.performance.timing");
+
+    assertTrue(value instanceof Map);
+  }
+
+  @Test(timeout = 10000)
+  @Ignore(CHROME)
+  @Ignore(value = IE, issue = "540")
+  @Ignore(PHANTOMJS)
+  @Ignore(SAFARI)
+  @Ignore(value = FIREFOX, issue = "540")
+  @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/914")
+  public void shouldHandleRecursiveStructures() {
+    driver.get(pages.simpleTestPage);
+
+    Object value = executeScript("var obj1 = {}; var obj2 = {}; obj1['obj2'] = obj2; obj2['obj1'] = obj1; return obj1");
+
+    assertTrue(value instanceof Map);
   }
 }

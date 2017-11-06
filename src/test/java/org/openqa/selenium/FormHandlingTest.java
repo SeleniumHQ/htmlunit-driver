@@ -159,7 +159,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testShouldBeAbleToAlterTheContentsOfAFileUploadInputElement() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -176,7 +175,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testShouldBeAbleToSendKeysToAFileUploadInputElementInAnXhtmlDocument()
       throws IOException {
     assumeFalse("IE before 9 doesn't handle pages served with an XHTML content type,"
@@ -198,7 +196,6 @@ public class FormHandlingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = SAFARI, reason = "issue 4220")
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/644")
   public void testShouldBeAbleToUploadTheSameFileTwice() throws IOException {
     File file = File.createTempFile("test", "txt");
     file.deleteOnExit();
@@ -264,7 +261,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   @Test
   @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
   public void handleFormWithJavascriptAction() {
     String url = appServer.whereIs("form_handling_js_submit.html");
     driver.get(url);
@@ -311,7 +307,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "3398")
   public void canSubmitFormWithSubmitButtonIdEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(
@@ -324,7 +319,6 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "3398")
   public void canSubmitFormWithSubmitButtonNameEqualToSubmit() {
     String blank = appServer.create(new Page().withTitle("Submitted Successfully!"));
     driver.get(appServer.create(new Page().withBody(

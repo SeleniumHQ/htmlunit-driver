@@ -20,28 +20,29 @@ package org.openqa.selenium;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import java.awt.GraphicsEnvironment;
+import com.google.common.base.Joiner;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -470,7 +471,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/646")
   public void testChordControlHomeShiftEndDelete() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
@@ -505,7 +505,7 @@ public class TypingTest extends JUnit4TestBase {
     element.sendKeys("done" + Keys.HOME);
     assertThat(element.getAttribute("value"), is("done"));
 
-    element.sendKeys("" + Keys.SHIFT + "ALL " + Keys.HOME);
+    element.sendKeys(Keys.SHIFT + "ALL " + Keys.HOME);
     assertThat(element.getAttribute("value"), is("ALL done"));
 
     element.sendKeys(Keys.DELETE);
@@ -516,7 +516,7 @@ public class TypingTest extends JUnit4TestBase {
     assertThat( // Note: trailing SHIFT up here
                 result.getText().trim(), containsString(" up: 16"));
 
-    element.sendKeys("" + Keys.DELETE);
+    element.sendKeys(Keys.DELETE);
     assertThat(element.getAttribute("value"), is(""));
   }
 
@@ -528,7 +528,6 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
-    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 
@@ -620,11 +619,13 @@ public class TypingTest extends JUnit4TestBase {
     assertThat(email.getAttribute("value"), equalTo("33"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowIllegalArgumentException() {
     driver.get(pages.formPage);
     WebElement email = driver.findElement(By.id("age"));
-    email.sendKeys((CharSequence[]) null);
+    Throwable t = catchThrowable(() -> email.sendKeys((CharSequence[]) null));
+    assertThat(t, instanceOf(IllegalArgumentException.class));
   }
 
   @Test
@@ -658,7 +659,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE)
   public void canClearNumberInputAfterTypingInvalidInput() {
     driver.get(pages.formPage);
     WebElement input = driver.findElement(By.id("age"));

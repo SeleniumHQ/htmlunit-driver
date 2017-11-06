@@ -112,6 +112,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(HTMLUNIT)
   public void testShouldThrowIllegalArgumentExceptionWhenKeysNull() {
     driver.get(alertPage("cheese"));
 
@@ -198,7 +199,7 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Prompt", driver.getTitle());
   }
 
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/607")
+  @Test
   public void testShouldAllowAUserToSetTheValueOfAPrompt() {
     driver.get(promptPage(null));
 
@@ -212,7 +213,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/274")
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
@@ -265,7 +265,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInAFrame() {
     String iframe = appServer.create(new Page()
         .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
@@ -284,7 +283,6 @@ public class AlertsTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldAllowUsersToAcceptAnAlertInANestedFrame() {
     String iframe = appServer.create(new Page()
         .withBody("<a href='#' id='alertInFrame' onclick='alert(\"framed cheese\");'>click me</a>"));
@@ -421,7 +419,6 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
-  @Ignore(MARIONETTE)
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -573,7 +570,6 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/620")
   public void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",
