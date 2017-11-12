@@ -67,8 +67,9 @@ public class HtmlUnitAlert implements Alert {
     }
     webWindow_ = page.getEnclosingWindow();
     holder_ = new AlertHolder(message);
+    AlertHolder localHolder = holder_;
     awaitCondition();
-    return holder_.accepted;
+    return localHolder.isAccepted();
   }
 
   private void awaitCondition() {
