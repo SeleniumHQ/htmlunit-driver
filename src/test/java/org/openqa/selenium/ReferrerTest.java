@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +59,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -389,7 +389,7 @@ public class ReferrerTest extends JUnit4TestBase {
 
   private static String encode(String url) {
     try {
-      return URLEncoder.encode(url, Charsets.UTF_8.name());
+      return URLEncoder.encode(url, StandardCharsets.UTF_8.name());
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException("UTF-8 should always be supported!", e);
     }

@@ -33,9 +33,7 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -45,6 +43,7 @@ import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Demonstrates how to use WebDriver with a file input element.
@@ -112,7 +111,7 @@ public class UploadTest extends JUnit4TestBase {
   private File createTmpFile(String content) throws IOException {
     File f = File.createTempFile("webdriver", "tmp");
     f.deleteOnExit();
-    Files.write(content, f, Charsets.UTF_8);
+    FileUtils.write(f, content, StandardCharsets.UTF_8);
     return f;
   }
 
