@@ -87,4 +87,22 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
       assertEquals("", body.getAttribute("title"));
   }
 
+  // @Test
+  public void memoryLeak() throws Exception {
+    final int elements = 1000;
+    String html = "<html><head><title>abc</title></head>\n"
+            + "<body>\n";
+    for (int i = 0; i < elements; i++) {
+        html += "<div id='id" + i + "'>abcd</div>\n";
+    }
+    html += "</body>\n"
+            + "</html>";
+
+    for (int i = 0; i < 10000; i++) {
+      final WebDriver webDriver = loadPage2(html);
+      for (int j = 0; j < elements; j++) {
+          webDriver.findElement(By.id("id" + j));
+      }
+    }
+  }
 }

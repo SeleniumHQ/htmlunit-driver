@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -163,7 +164,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private UnexpectedAlertBehaviour unexpectedAlertBehaviour;
   private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.NORMAL;
   private int elementsCounter;
-  private Map<DomElement, HtmlUnitWebElement> elementsMap = new HashMap<>();
+  private Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> elementsMap = new WeakHashMap<>();
 
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
   public static final String INVALIDSELECTIONERROR =
@@ -229,6 +230,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
       @Override
       public void webWindowContentChanged(WebWindowEvent event) {
+        elementsMap.remove(event.getOldPage());
         if (event.getWebWindow() != currentWindow) {
           return;
         }
@@ -239,6 +241,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
       @Override
       public void webWindowClosed(WebWindowEvent event) {
+        elementsMap.remove(event.getOldPage());
         // Check if the event window refers to us or one of our parent windows
         // setup the currentWindow appropriately if necessary
         WebWindow curr = currentWindow;
@@ -1159,18 +1162,26 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected HtmlUnitWebElement toWebElement(DomElement element) {
-    HtmlUnitWebElement e = elementsMap.get(element);
+    Map<DomElement, HtmlUnitWebElement> pageMap = elementsMap.get(element.getPage());
+    if (pageMap == null) {
+        pageMap = new HashMap<DomElement, HtmlUnitWebElement>();
+        elementsMap.put(element.getPage(), pageMap);
+    }
+
+    HtmlUnitWebElement e = pageMap.get(element);
     if (e == null) {
       e = new HtmlUnitWebElement(this, ++elementsCounter, element);
-      elementsMap.put(element, e);
+      pageMap.put(element, e);
     }
     return e;
   }
 
   public HtmlUnitWebElement getElementById(int id) {
-    for (HtmlUnitWebElement e : elementsMap.values()) {
-      if (e.id == id) {
-        return e;
+    for (Map<DomElement, HtmlUnitWebElement> pageMap : elementsMap.values()) {
+      for (HtmlUnitWebElement e : pageMap.values()) {
+        if (e.id == id) {
+          return e;
+        }
       }
     }
     return null;
@@ -1203,7 +1214,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     DomElement element = ((HtmlPage) lastPage()).getElementById(id);
     if (element == null) {
-      throw new NoSuchElementException("Unable to locate element with ID: " + id);
+      throw new NoSuchElementException("Unable to locate element with ID: '" + id + "'");
     }
     return toWebElement(element);
   }

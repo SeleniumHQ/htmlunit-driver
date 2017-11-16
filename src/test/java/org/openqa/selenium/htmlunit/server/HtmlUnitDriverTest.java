@@ -326,8 +326,8 @@ public class HtmlUnitDriverTest extends JUnit4TestBase {
   private HtmlUnitDriver getWebDriver() {
     return ((HtmlUnitDriver) driver);
   }
+
   private void openNewWindow(WebDriver driver) {
     ((HtmlUnitDriver) driver).executeScript("window.open('new')");
   }
-
 }
