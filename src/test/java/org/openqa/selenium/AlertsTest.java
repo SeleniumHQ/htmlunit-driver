@@ -624,7 +624,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  // PASSES
   @Test(expected = UnhandledAlertException.class)
   public void capabilitiesConstructor() {
     HtmlUnitDriver driver = new HtmlUnitDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, null, Platform.ANY));
