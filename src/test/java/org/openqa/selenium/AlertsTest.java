@@ -604,7 +604,6 @@ public class AlertsTest extends JUnit4TestBase {
         returnText);
   }
 
-  // FAILS
   @Test(expected = UnhandledAlertException.class)
   public void booleanConstructor() {
     HtmlUnitDriver driver = new HtmlUnitDriver(true);
@@ -615,7 +614,6 @@ public class AlertsTest extends JUnit4TestBase {
     assertEquals("Testing Alerts", driver.getTitle());
   }
 
-  // FAILS
   @Test(expected = UnhandledAlertException.class)
   public void browserVersionAndBooleanConstructor() {
     HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.BEST_SUPPORTED, true);
