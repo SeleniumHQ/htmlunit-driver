@@ -21,11 +21,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.util.Set;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.Set;
 
 public class LocalStorageTest extends JUnit4TestBase {
   @Before

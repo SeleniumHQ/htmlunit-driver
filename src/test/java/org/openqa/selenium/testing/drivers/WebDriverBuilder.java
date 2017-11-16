@@ -17,17 +17,17 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import com.google.common.collect.Lists;
-
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.WebDriver;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.WebDriver;
+
+import com.google.common.collect.Lists;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
   private Capabilities desiredCapabilities;

@@ -20,16 +20,16 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.collect.Lists;
-
-import org.openqa.selenium.testing.InProject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.testing.InProject;
+
+import com.google.common.collect.Lists;
 
 public class Build {
   private static Logger log = Logger.getLogger(Build.class.getName());

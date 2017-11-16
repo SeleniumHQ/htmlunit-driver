@@ -32,6 +32,9 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -44,9 +47,6 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 

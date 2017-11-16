@@ -38,6 +38,8 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import java.util.Random;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
@@ -45,8 +47,6 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
-
-import java.util.Random;
 
 public class FrameSwitchingTest extends JUnit4TestBase {
 

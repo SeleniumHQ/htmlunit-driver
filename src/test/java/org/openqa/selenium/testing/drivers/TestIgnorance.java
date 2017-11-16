@@ -36,8 +36,8 @@ import static org.openqa.selenium.testing.drivers.Browser.ie;
 import static org.openqa.selenium.testing.drivers.Browser.opera;
 import static org.openqa.selenium.testing.drivers.Browser.phantomjs;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.Set;
 
 import org.junit.runner.Description;
 import org.openqa.selenium.Platform;
@@ -46,8 +46,8 @@ import org.openqa.selenium.testing.IgnoreList;
 import org.openqa.selenium.testing.NativeEventsRequired;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 
-import java.util.Arrays;
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * Class that decides whether a test class or method should be ignored.

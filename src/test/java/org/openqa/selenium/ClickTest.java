@@ -34,7 +34,7 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
-import com.google.common.base.Throwables;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +43,7 @@ import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import java.util.Set;
+import com.google.common.base.Throwables;
 
 public class ClickTest extends JUnit4TestBase {
 

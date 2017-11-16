@@ -17,11 +17,11 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.testing.InProject;
-
 import java.io.IOException;
 import java.nio.file.Path;
+
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.testing.InProject;
 
 public class Firebug {
 

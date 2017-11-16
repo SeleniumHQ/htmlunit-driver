@@ -21,10 +21,10 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.List;
 
 public class SelectElementHandlingTest extends JUnit4TestBase {
 

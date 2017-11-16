@@ -31,6 +31,9 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -45,9 +48,6 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Ignore(value = HTMLUNIT, reason = "Advanced mouse actions only implemented in rendered browsers")
 public class DragAndDropTest extends JUnit4TestBase {

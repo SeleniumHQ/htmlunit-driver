@@ -22,16 +22,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.openqa.selenium.Platform.WINDOWS;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
-
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.os.ExecutableFinder;
-import org.openqa.selenium.testing.InProject;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -39,6 +29,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.os.ExecutableFinder;
+import org.openqa.selenium.testing.InProject;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.hash.HashCode;
+import com.google.common.hash.Hashing;
 
 public class BuckBuild {
   private static Logger log = Logger.getLogger(BuckBuild.class.getName());

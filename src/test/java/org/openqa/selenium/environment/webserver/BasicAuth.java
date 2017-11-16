@@ -18,12 +18,12 @@
 package org.openqa.selenium.environment.webserver;
 
 import java.io.IOException;
+import java.util.Base64;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Base64;
 
 public class BasicAuth extends HttpServlet {
   private static final String CREDENTIALS = "test:test";

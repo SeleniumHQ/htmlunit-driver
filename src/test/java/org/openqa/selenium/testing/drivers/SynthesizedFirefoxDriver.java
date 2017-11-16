@@ -20,7 +20,14 @@ package org.openqa.selenium.testing.drivers;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import com.google.common.base.Throwables;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
 
 import org.openqa.selenium.BuckBuild;
 import org.openqa.selenium.Capabilities;
@@ -31,14 +38,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.testing.DevMode;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Objects;
+import com.google.common.base.Throwables;
 
 public class SynthesizedFirefoxDriver extends FirefoxDriver {
 

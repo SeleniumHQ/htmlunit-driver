@@ -19,7 +19,13 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import com.google.common.base.Suppliers;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.ImmutableCapabilities;
@@ -28,13 +34,7 @@ import org.openqa.selenium.net.UrlChecker;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.logging.Logger;
+import com.google.common.base.Suppliers;
 
 /**
  * Supports providing WebDriver instances from an external source using the following system

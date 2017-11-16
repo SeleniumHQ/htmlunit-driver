@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
-
 import com.google.common.io.ByteStreams;
 
 public class ManifestServlet extends HttpServlet {
@@ -39,14 +37,10 @@ public class ManifestServlet extends HttpServlet {
     String manifestPath = this.getServletContext().getRealPath(servletPath);
     String manifestContent = "";
 
-    InputStream is = null;
-    try {
-      is = new FileInputStream(manifestPath);
+    try (InputStream is = new FileInputStream(manifestPath)) {
       manifestContent = new String(ByteStreams.toByteArray(is));
     } catch (IOException e) {
       throw new ServletException("Failed to read cache-manifest file: " + manifestPath);
-    } finally {
-      IOUtils.closeQuietly(is);
     }
 
     response.setContentType("text/cache-manifest");

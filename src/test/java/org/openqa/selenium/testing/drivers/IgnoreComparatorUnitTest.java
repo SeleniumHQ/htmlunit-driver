@@ -25,7 +25,8 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
-import com.google.common.collect.Sets;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,8 +37,7 @@ import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
 
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.google.common.collect.Sets;
 
 @RunWith(JUnit4.class)
 public class IgnoreComparatorUnitTest {

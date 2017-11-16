@@ -32,6 +32,8 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
 import static org.openqa.selenium.testing.Driver.IE;
 
+import java.util.regex.Pattern;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -40,8 +42,6 @@ import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.util.regex.Pattern;
 
 public class TextHandlingTest extends JUnit4TestBase {
 

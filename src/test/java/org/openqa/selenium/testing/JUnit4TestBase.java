@@ -22,7 +22,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
-import com.google.common.base.Throwables;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import org.junit.AssumptionViolatedException;
 import org.junit.Before;
@@ -48,8 +49,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
-import java.util.logging.Logger;
-import java.util.stream.Stream;
+import com.google.common.base.Throwables;
 
 @RunWith(SeleniumTestRunner.class)
 public abstract class JUnit4TestBase implements WrapsDriver {

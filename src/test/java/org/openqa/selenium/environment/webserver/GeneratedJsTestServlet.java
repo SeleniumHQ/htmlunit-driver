@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import com.google.common.base.Strings;
-import com.google.common.net.MediaType;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -28,6 +25,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.base.Strings;
+import com.google.common.net.MediaType;
 
 public class GeneratedJsTestServlet extends HttpServlet {
 

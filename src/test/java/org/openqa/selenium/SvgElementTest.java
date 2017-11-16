@@ -24,11 +24,11 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.List;
 
 public class SvgElementTest extends JUnit4TestBase {
 

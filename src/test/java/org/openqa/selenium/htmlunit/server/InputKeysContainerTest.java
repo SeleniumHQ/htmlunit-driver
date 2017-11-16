@@ -18,12 +18,12 @@
 
 package org.openqa.selenium.htmlunit.server;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.htmlunit.InputKeysContainer;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class InputKeysContainerTest {
   @Test

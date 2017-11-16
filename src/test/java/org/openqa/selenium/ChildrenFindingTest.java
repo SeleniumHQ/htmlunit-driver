@@ -27,13 +27,13 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import java.util.List;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
-
-import java.util.List;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ChildrenFindingTest extends JUnit4TestBase {

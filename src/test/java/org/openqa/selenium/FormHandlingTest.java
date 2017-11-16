@@ -35,15 +35,15 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.isIe6;
 import static org.openqa.selenium.testing.TestUtilities.isIe7;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
-
-import java.io.File;
-import java.io.IOException;
 
 public class FormHandlingTest extends JUnit4TestBase {
 

@@ -47,6 +47,8 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.remote.CapabilityType;
@@ -60,8 +62,6 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import java.util.Set;
 
 public class PageLoadingTest extends JUnit4TestBase {
 

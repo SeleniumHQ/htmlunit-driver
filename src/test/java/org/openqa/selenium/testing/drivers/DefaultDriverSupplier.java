@@ -19,12 +19,12 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.testing.DevMode.isInDevMode;
 
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.WebDriver;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.WebDriver;
 
 public class DefaultDriverSupplier implements Supplier<WebDriver> {
 

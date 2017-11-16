@@ -1,11 +1,11 @@
 package org.openqa.selenium.htmlunit;
 
+import static org.junit.Assert.assertNotEquals;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-
-import static org.junit.Assert.assertNotEquals;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitAlertTest extends WebDriverTestCase {

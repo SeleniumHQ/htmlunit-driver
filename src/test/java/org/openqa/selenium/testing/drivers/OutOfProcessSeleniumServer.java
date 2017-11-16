@@ -19,13 +19,6 @@ package org.openqa.selenium.testing.drivers;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import org.openqa.selenium.BuckBuild;
-import org.openqa.selenium.net.NetworkUtils;
-import org.openqa.selenium.net.PortProber;
-import org.openqa.selenium.net.UrlChecker;
-import org.openqa.selenium.os.CommandLine;
-import org.openqa.selenium.testing.InProject;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -34,6 +27,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import org.openqa.selenium.BuckBuild;
+import org.openqa.selenium.net.NetworkUtils;
+import org.openqa.selenium.net.PortProber;
+import org.openqa.selenium.net.UrlChecker;
+import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.testing.InProject;
 
 public class OutOfProcessSeleniumServer {
 

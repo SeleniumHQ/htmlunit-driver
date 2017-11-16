@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.testing;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
@@ -25,9 +28,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TestUtilities {
 

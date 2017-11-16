@@ -18,12 +18,12 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import java.util.function.Supplier;
+
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-
-import java.util.function.Supplier;
 
 public class SauceBackedDriverSupplier implements Supplier<WebDriver> {
 

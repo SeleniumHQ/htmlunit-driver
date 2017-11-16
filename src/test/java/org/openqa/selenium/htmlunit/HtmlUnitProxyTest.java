@@ -17,22 +17,21 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.ProxyConfig;
-
-import org.junit.Test;
-import org.openqa.selenium.Platform;
-import org.openqa.selenium.Proxy;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.BrowserType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 
 /**
  * Test the proxy setting.

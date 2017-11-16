@@ -17,9 +17,9 @@
 
 package org.openqa.selenium;
 
-import org.openqa.selenium.support.ui.ExpectedCondition;
-
 import java.util.Set;
+
+import org.openqa.selenium.support.ui.ExpectedCondition;
 
 public class WaitingConditions {
 

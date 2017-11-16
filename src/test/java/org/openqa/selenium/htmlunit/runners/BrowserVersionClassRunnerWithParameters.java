@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.htmlunit.runners;
 
-import static org.openqa.selenium.htmlunit.BrowserParameterizedRunner.Default;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +34,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.parameterized.TestWithParameters;
+import org.openqa.selenium.htmlunit.BrowserParameterizedRunner.Default;
 import org.openqa.selenium.htmlunit.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
