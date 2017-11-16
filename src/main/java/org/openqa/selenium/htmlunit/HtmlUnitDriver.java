@@ -219,6 +219,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     alert = new HtmlUnitAlert(this);
     currentWindow = webClient.getCurrentWindow();
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
+    unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS;
 
     webClient.addWebWindowListener(new WebWindowListener() {
       @Override
@@ -504,7 +505,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     switch (proxy.getProxyType()) {
       case MANUAL:
-
         List<String> noProxyHosts = new ArrayList<>();
         String noProxy = proxy.getNoProxy();
         if (noProxy != null && !noProxy.isEmpty()) {

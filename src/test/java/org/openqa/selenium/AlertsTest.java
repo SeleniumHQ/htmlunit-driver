@@ -38,9 +38,14 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
+import java.util.Set;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -49,7 +54,7 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 @Ignore(PHANTOMJS)
@@ -599,4 +604,36 @@ public class AlertsTest extends JUnit4TestBase {
         returnText);
   }
 
+  // FAILS
+  @Test(expected = UnhandledAlertException.class)
+  public void booleanConstructor() {
+    HtmlUnitDriver driver = new HtmlUnitDriver(true);
+
+    driver.get(alertPage("cheese"));
+    driver.findElement(By.id("alert")).click();
+
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  // FAILS
+  @Test(expected = UnhandledAlertException.class)
+  public void browserVersionAndBooleanConstructor() {
+    HtmlUnitDriver driver = new HtmlUnitDriver(BrowserVersion.BEST_SUPPORTED, true);
+
+    driver.get(alertPage("cheese"));
+    driver.findElement(By.id("alert")).click();
+
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
+
+  // PASSES
+  @Test(expected = UnhandledAlertException.class)
+  public void capabilitiesConstructor() {
+    HtmlUnitDriver driver = new HtmlUnitDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, null, Platform.ANY));
+
+    driver.get(alertPage("cheese"));
+    driver.findElement(By.id("alert")).click();
+
+    assertEquals("Testing Alerts", driver.getTitle());
+  }
 }
