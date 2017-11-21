@@ -1262,7 +1262,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       return toWebElement((DomElement) node);
     }
 
-    throw new NoSuchElementException("Returned node was not a DOM element");
+    throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element");
   }
 
   @Override
