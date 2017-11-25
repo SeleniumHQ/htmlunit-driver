@@ -144,6 +144,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     FindsById, FindsByLinkText, FindsByXPath, FindsByName, FindsByCssSelector,
     FindsByTagName, FindsByClassName, HasCapabilities, HasInputDevices {
 
+  private static final int sleepTime = 200;
+
   private WebClient webClient;
   private WebWindow currentWindow;
   private HtmlUnitAlert alert;
@@ -1603,6 +1605,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected <X> X implicitlyWaitFor(Callable<X> condition) {
+    if (implicitWait < sleepTime) {
+      try {
+        return condition.call();
+      } catch (RuntimeException e) {
+          throw (RuntimeException) e;
+      } catch (Exception e) {
+        throw new WebDriverException(e);
+      }
+    }
+
     long end = System.currentTimeMillis() + implicitWait;
     Exception lastException = null;
 
@@ -1622,7 +1634,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         return toReturn;
       }
 
-      sleepQuietly(200);
+      sleepQuietly(sleepTime);
     } while (System.currentTimeMillis() < end);
 
     if (lastException != null) {
@@ -1979,6 +1991,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   List<WebElement> findElements(final By by, final SearchContext context) {
+    if (implicitWait < sleepTime) {
+        return by.findElements(context);
+    }
+
     long end = System.currentTimeMillis() + implicitWait;
     List<WebElement> found;
     do {
@@ -1986,7 +2002,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       if (!found.isEmpty()) {
         return found;
       }
-      sleepQuietly(200);
+      sleepQuietly(sleepTime);
     } while (System.currentTimeMillis() < end);
 
     return found;
