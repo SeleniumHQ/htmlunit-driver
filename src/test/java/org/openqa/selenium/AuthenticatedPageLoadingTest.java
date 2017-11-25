@@ -54,7 +54,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
 
     alert.authenticateUsing(user);
 
-	WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
+    WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
     assertEquals("authorized", element.getText());
   }
 

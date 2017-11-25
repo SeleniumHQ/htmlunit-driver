@@ -39,7 +39,7 @@ public class SleepingServlet extends HttpServlet {
 
 
     response.setContentType("text/html");
-	//Dont Cache Anything  at the browser
+    //don't cache anything  at the browser
     response.setHeader("Cache-Control","no-cache");
     response.setHeader("Pragma","no-cache");
     response.setDateHeader ("Expires", 0);

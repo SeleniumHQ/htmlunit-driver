@@ -94,7 +94,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     List<WebElement> forms = driver.findElements(By.xpath("//form"));
     assertThat(forms.size(), equalTo(1));
     List<WebElement> inputs = forms.get(0).findElements(By.xpath("./input"));
-	    assertThat(inputs.size(), equalTo(3));
+    assertThat(inputs.size(), equalTo(3));
   }
   
   @Test
