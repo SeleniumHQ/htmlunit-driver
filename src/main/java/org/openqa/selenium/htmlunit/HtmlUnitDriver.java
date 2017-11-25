@@ -1385,40 +1385,33 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     List<?> nodes;
-    List<WebElement> result;
     try {
       nodes = ((SgmlPage) lastPage()).getByXPath(selector);
-      result = convertRawDomElementsToWebElements(nodes);
     } catch (RuntimeException ex) {
-      // The xpath expression cannot be evaluated, so the expression is invalid
-      throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
+        // The xpath expression cannot be evaluated, so the expression is invalid
+        throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
     }
-    if (nodes.size() != result.size()) {
+
+    List<WebElement> elements = new ArrayList<>(nodes.size());
+    for (Object node : nodes) {
       // There exist elements in the nodes list which could not be converted to WebElements.
       // A valid xpath selector should only select WebElements.
-
-      // Find out the type of the element which is not a WebElement
-      for (Object node : nodes) {
-        if (!(node instanceof HtmlElement)) {
-          // We only want to know the type of one invalid element so that we can give this
-          // information in the exception. We can throw the exception immediately.
-          throw new InvalidSelectorException(
-              String.format(INVALIDSELECTIONERROR, selector, node.getClass()));
-
-        }
+      if (!(node instanceof DomElement)) {
+        // We only want to know the type of one invalid element so that we can give this
+        // information in the exception. We can throw the exception immediately.
+        throw new InvalidSelectorException(String.format(INVALIDSELECTIONERROR, selector, node.getClass()));
       }
+      elements.add(toWebElement((DomElement) node));
     }
 
-    return result;
+    return elements;
   }
 
-  private List<WebElement> convertRawDomElementsToWebElements(List<?> nodes) {
-    List<WebElement> elements = new ArrayList<>();
+  private List<WebElement> convertRawDomElementsToWebElements(List<DomElement> nodes) {
+    List<WebElement> elements = new ArrayList<>(nodes.size());
 
-    for (Object node : nodes) {
-      if (node instanceof DomElement) {
-        elements.add(toWebElement((DomElement) node));
-      }
+    for (DomElement node : nodes) {
+      elements.add(toWebElement(node));
     }
 
     return elements;
