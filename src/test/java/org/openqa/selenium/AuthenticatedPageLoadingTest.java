@@ -29,8 +29,6 @@ import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.security.Credentials;
-import org.openqa.selenium.security.UserAndPassword;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
@@ -49,10 +47,6 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
     driver.get(url);
 
     Alert alert = wait.until(alertIsPresent());
-
-    Credentials user = new UserAndPassword("test", "test");
-
-    alert.authenticateUsing(user);
 
     WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
     assertEquals("authorized", element.getText());

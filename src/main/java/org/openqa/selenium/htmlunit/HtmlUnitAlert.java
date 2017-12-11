@@ -25,7 +25,6 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.security.Credentials;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -147,14 +146,6 @@ public class HtmlUnitAlert implements Alert {
   @Override
   public void sendKeys(String keysToSend) {
     holder_.sendKeys(keysToSend);
-  }
-
-  @Override
-  public void authenticateUsing(Credentials credentials) {
-  }
-
-  @Override
-  public void setCredentials(Credentials credentials) {
   }
 
   /**
