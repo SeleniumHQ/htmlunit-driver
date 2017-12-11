@@ -1,7 +1,5 @@
 package org.openqa.selenium.htmlunit;
 
-import static org.junit.Assert.assertNotEquals;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -33,7 +31,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     String message = "Are you sure?";
 
     String html = "<html>\n"
-            + "<a id='confirm' href='http://google.com/' onclick='return confirm(\"" + message + "\");'>Confirm</a>\n"
+            + "<a id='confirm' href='http://htmlunit.sourceforge.net/' onclick='return confirm(\"" + message + "\");'>Confirm</a>\n"
             + "<div id='message'>Default</div>"
             + "</html>\n"
             ;
@@ -46,7 +44,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
 
     Thread.sleep(1000);
 
-    assertEquals("Google", driver.getTitle());
+    assertEquals("HtmlUnit – Welcome to HtmlUnit", driver.getTitle());
   }
 
   @Test
@@ -55,6 +53,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
 
     String html = "<html>\n"
             + "<head>\n"
+            + "<title>ConfirmWithoutRedirect</title>\n"
             + "<script>\n"
             + "function runConfirm() {\n"
             + "if (!confirm('" + message + "')) {"
@@ -64,7 +63,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
             + "}\n"
             + "</script>\n"
             + "</head>\n"
-            + "<a id='confirm' href='http://google.com/' onclick='return runConfirm();'>Confirm</a>\n"
+            + "<a id='confirm' href='http://htmlunit.sourceforge.net/' onclick='return runConfirm();'>Confirm</a>\n"
             + "<div id='message'>Default</div>"
             + "</html>\n"
             ;
@@ -78,7 +77,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     Thread.sleep(1000);
 
     assertEquals("False", driver.findElement(By.id("message")).getText());
-    assertNotEquals("Google", driver.getTitle());
+    assertEquals("ConfirmWithoutRedirect", driver.getTitle());
   }
 
 }
