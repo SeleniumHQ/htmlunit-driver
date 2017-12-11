@@ -44,7 +44,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
 
     Thread.sleep(1000);
 
-    assertEquals("HtmlUnit – Welcome to HtmlUnit", driver.getTitle());
+    assertTrue(driver.getTitle(), driver.getTitle().contains("Welcome to HtmlUnit"));
   }
 
   @Test
