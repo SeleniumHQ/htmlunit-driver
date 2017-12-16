@@ -1,0 +1,59 @@
+This document is intended for committers. It likely won't be of much use to anyone else.
+
+Release
+=======
+
+If this is the first time you're doing a release you'll need to perform some setup.
+Configure your SourceForge username in ~/.m2/settings.xml (see Security and Deployment Settings). As an example, my settings.xml looks like:
+
+    <settings>
+      ...
+      <servers>
+        <server>
+          <id>htmlunit-website</id>
+          <username>mguillem,htmlunit</username>
+          <!-- optional element:
+            <password>your-sourceforge-pwd</password>
+          -->
+        </server>
+        <server>
+          <id>sonatype-nexus-snapshots</id>
+          <username>your-jira-id</username>
+          <!-- optional element:
+            <password>your-jira-pwd</password>
+          -->
+        </server>
+        <server>
+          <id>ossrh</id>
+          <username>your-jira-id</username>
+          <!-- optional element:
+            <password>your-jira-pwd</password>
+          -->
+        </server>
+      </servers>
+      ...
+    </settings>
+
+For Snapshots:
+
+    mvn clean deploy
+
+For Releases:
+
+    Update the version number in pom.xml
+    Commit your change
+
+    Deploy the release to Sonatype OSS Maven repository.
+        mvn clean deploy
+
+    go to Sonatype OSS staging repository (https://oss.sonatype.org/index.html#stagingRepositories); close and release the artifacts.
+
+    create a new release on github (https://github.com/SeleniumHQ/htmlunit-driver/releases)
+    add the release notes
+
+    build the file htmlunit-driver-2.xx.x-jar-with-dependencies.jar
+        mvn assembly:single
+    upload the file to the github release
+    close the release on github
+
+    inform about the new release
