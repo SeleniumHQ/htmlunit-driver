@@ -143,6 +143,16 @@ public class FormHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  public void testShouldSubmitAFormUsingTheEnterKeyAndTriggerHiddenSubmit() {
+    driver.get(pages.formPage);
+    WebElement nestedForm = driver.findElement(By.id("nested_form_hidden_submit"));
+    WebElement input = nestedForm.findElement(By.name("x"));
+    input.sendKeys(Keys.ENTER);
+    wait.until(titleIs("We Arrive Here"));
+    assertTrue(driver.getCurrentUrl().endsWith("?x=name&y=clicked"));
+  }
+
+  @Test
   public void testShouldEnterDataIntoFormFields() {
     driver.get(pages.xhtmlTestPage);
     WebElement element = driver.findElement(By.xpath("//form[@name='someForm']/input[@id='username']"));

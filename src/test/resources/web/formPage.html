@@ -152,6 +152,15 @@ There should be a form here:
   <input type="submit" />
 </form>  
 
+<!-- form with hidden submit -->
+<form method="get" action="resultPage.html" id="nested_form_hidden_submit">
+  <div>
+    <input type="text" value="name" name="x"/>
+    <input type="hidden" value="name" name="y" id="hidden_y"/>
+  </div>
+  <input type="submit" style="display: none;" onclick="document.getElementById('hidden_y').value='clicked';"/>
+</form>  
+
 <!-- Form with disabled form elements -->
 <form method="get" action="xhtmlTest.html">
   <p>

@@ -194,7 +194,8 @@ public class HtmlUnitWebElement implements WrapsDriver,
       throw new WebDriverException("Cannot locate element used to submit form");
     }
     try {
-      submit.click();
+      // this has to ignore the visibility like browsers are doing
+      submit.click(false, false, false, true, true, false);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
