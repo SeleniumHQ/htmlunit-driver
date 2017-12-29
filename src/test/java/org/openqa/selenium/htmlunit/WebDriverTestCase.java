@@ -998,18 +998,25 @@ public abstract class WebDriverTestCase extends WebTestCase {
           throws Exception {
       final List<String> collectedAlerts = new ArrayList<>();
 
-      final long maxWait = System.currentTimeMillis() + maxWaitTime;
+      long maxWait = System.currentTimeMillis() + maxWaitTime;
 
-      for (int i = 0; i < alertsLength; i++) {
-          while (collectedAlerts.size() < alertsLength && System.currentTimeMillis() < maxWait) {
-              try {
-                  final Alert alert = driver.switchTo().alert();
-                  collectedAlerts.add(alert.getText());
-                  alert.accept();
-              }
-              catch (final NoAlertPresentException e) {
-                  Thread.sleep(10);
-              }
+      while (collectedAlerts.size() < alertsLength && System.currentTimeMillis() < maxWait) {
+          try {
+              final Alert alert = driver.switchTo().alert();
+              collectedAlerts.add(alert.getText());
+              alert.accept();
+
+            // handling of alerts requires some time
+            // at least for tests with many alerts we have to take this into account
+            maxWait += 100;
+
+            if (useRealBrowser() && getBrowserVersion().isIE()) {
+                // alerts for real IE are really slow
+                maxWait += 5000;
+            }
+          }
+          catch (final NoAlertPresentException e) {
+              Thread.sleep(10);
           }
       }
 
