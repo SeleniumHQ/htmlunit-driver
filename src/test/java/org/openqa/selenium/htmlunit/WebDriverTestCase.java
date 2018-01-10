@@ -57,6 +57,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchSessionException;
@@ -66,10 +67,12 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
@@ -216,9 +219,10 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
   /**
    * Configure the driver only once.
+   * @param capabilities the {@link Capabilities} or null
    * @return the driver
    */
-  protected WebDriver getWebDriver() {
+  protected WebDriver getWebDriver(final Capabilities capabilities) {
       final BrowserVersion browserVersion = getBrowserVersion();
       WebDriver driver;
       if (useRealBrowser()) {
@@ -243,7 +247,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
               if (driver == null) {
                   try {
-                      driver = buildWebDriver();
+                      driver = buildWebDriver(capabilities);
                   }
                   catch (final IOException e) {
                       throw new RuntimeException(e);
@@ -258,7 +262,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
           driver = WEB_DRIVERS_.get(browserVersion);
           if (driver == null) {
               try {
-                  driver = buildWebDriver();
+                  driver = buildWebDriver(capabilities);
               }
               catch (final IOException e) {
                   throw new RuntimeException(e);
@@ -388,16 +392,17 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
   /**
    * Builds a new WebDriver instance.
+   * @param capabilities the {@link Capabilities} or null
    * @return the instance
    * @throws IOException in case of exception
    */
-  protected WebDriver buildWebDriver() throws IOException {
+  protected WebDriver buildWebDriver(Capabilities capabilities) throws IOException {
       if (useRealBrowser()) {
           if (getBrowserVersion().isIE()) {
               if (IE_BIN_ != null) {
                   System.setProperty("webdriver.ie.driver", IE_BIN_);
               }
-              return new InternetExplorerDriver();
+              return new InternetExplorerDriver(new InternetExplorerOptions(capabilities));
           }
 
           if (BrowserVersion.CHROME == getBrowserVersion()) {
@@ -412,7 +417,9 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
                   CHROME_SERVICE_.start();
               }
-              return new ChromeDriver(CHROME_SERVICE_);
+              final ChromeOptions chromeOptions = new ChromeOptions();
+              chromeOptions.merge(capabilities);
+              return new ChromeDriver(CHROME_SERVICE_, chromeOptions);
           }
 
           if (BrowserVersion.FIREFOX_45 == getBrowserVersion()) {
@@ -420,7 +427,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
               System.setProperty("webdriver.firefox.marionette", "false");
 
               if (FF45_BIN_ != null) {
-                  final FirefoxOptions options = new FirefoxOptions();
+                  final FirefoxOptions options = new FirefoxOptions(capabilities);
                   options.setBinary(FF45_BIN_);
                   return new FirefoxDriver(options);
               }
@@ -429,7 +436,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
           if (BrowserVersion.FIREFOX_52 == getBrowserVersion()) {
               if (FF52_BIN_ != null) {
-                  final FirefoxOptions options = new FirefoxOptions();
+                  final FirefoxOptions options = new FirefoxOptions(capabilities);
                   options.setBinary(FF52_BIN_);
                   return new FirefoxDriver(options);
               }
@@ -439,10 +446,10 @@ public abstract class WebDriverTestCase extends WebTestCase {
           throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
       }
       if (webDriver_ == null) {
-          final DesiredCapabilities capabilities = new DesiredCapabilities();
-          capabilities.setBrowserName(BrowserType.HTMLUNIT);
-          capabilities.setVersion(getBrowserName(getBrowserVersion()));
-          webDriver_ = new HtmlUnitDriver(capabilities);
+          final DesiredCapabilities htmlUnitCapabilities = new DesiredCapabilities(capabilities);
+          htmlUnitCapabilities.setBrowserName(BrowserType.HTMLUNIT);
+          htmlUnitCapabilities.setVersion(getBrowserName(getBrowserVersion()));
+          webDriver_ = new HtmlUnitDriver(htmlUnitCapabilities);
       }
       return webDriver_;
   }
@@ -739,6 +746,21 @@ public abstract class WebDriverTestCase extends WebTestCase {
    */
   protected final WebDriver loadPage2(String html, final URL url,
           final String contentType, final Charset charset) throws Exception {
+      return loadPage2(html, url, contentType, charset, null);
+  }
+
+  /**
+   * Same as {@link #loadPageWithAlerts2(String)}... but doesn't verify the alerts.
+   * @param html the HTML to use
+   * @param url the url to use to load the page
+   * @param contentType the content type to return
+   * @param charset the charset
+   * @param capabilities the {@link Capabilities} or null
+   * @return the web driver
+   * @throws Exception if something goes wrong
+   */
+  protected final WebDriver loadPage2(String html, final URL url,
+          final String contentType, final Charset charset, final Capabilities capabilities) throws Exception {
       if (useStandards_ != null) {
           if (html.startsWith(HtmlPageTest.STANDARDS_MODE_PREFIX_)) {
               fail("HTML must not be prefixed with Standards Mode.");
@@ -751,7 +773,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
       mockWebConnection.setResponse(url, html, contentType, charset);
       startWebServer(mockWebConnection);
 
-      WebDriver driver = getWebDriver();
+      WebDriver driver = getWebDriver(capabilities);
       if (!(driver instanceof HtmlUnitDriver)) {
           try {
               driver.manage().window().setSize(new Dimension(1272, 768));
@@ -760,7 +782,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
               // maybe the driver was killed by the test before; setup a new one
               shutDownRealBrowsers();
 
-              driver = getWebDriver();
+              driver = getWebDriver(capabilities);
               driver.manage().window().setSize(new Dimension(1272, 768));
           }
       }
@@ -798,7 +820,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
       startWebServer("./", null, servlets);
 
-      final WebDriver driver = getWebDriver();
+      final WebDriver driver = getWebDriver(null);
       driver.get(url.toExternalForm());
 
       return driver;
@@ -955,7 +977,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
       startWebServer(getMockWebConnection());
 
-      final WebDriver driver = getWebDriver();
+      final WebDriver driver = getWebDriver(null);
       driver.get(url.toExternalForm());
 
       verifyAlerts(maxWaitTime, driver, expectedAlerts);

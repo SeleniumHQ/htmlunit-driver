@@ -222,7 +222,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     alert = new HtmlUnitAlert(this);
     currentWindow = webClient.getCurrentWindow();
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
-    unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS;
+    unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
 
     webClient.addWebWindowListener(new WebWindowListener() {
       @Override
@@ -284,7 +284,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     
     unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
     if (unexpectedAlertBehaviour == null) {
-      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS;
+      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
     }
     
     Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
@@ -744,13 +744,22 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       switch (unexpectedAlertBehaviour) {
         case ACCEPT:
           alert.accept();
-          break;
+          return;
+
+        case ACCEPT_AND_NOTIFY:
+            alert.accept();
+            break;
 
         case DISMISS:
           alert.dismiss();
-          break;
+          return;
+
+        case DISMISS_AND_NOTIFY:
+            alert.dismiss();
+            break;
 
         case IGNORE:
+            break;
       }
       throw new UnhandledAlertException("Alert found", text);
     }

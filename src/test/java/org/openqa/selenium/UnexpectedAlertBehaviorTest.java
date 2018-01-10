@@ -63,14 +63,12 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   public void canSilentlyAcceptUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.ACCEPT, "This is a default value", true);
   }
 
   @Test
   @Ignore(value = CHROME, reason = "Unstable Chrome behavior")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   public void canDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY, "null", false);
   }
@@ -78,7 +76,6 @@ public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
   @Test
   @Ignore(value = FIREFOX, reason = "Legacy behaviour, not W3C conformant")
   @Ignore(value = CHROME, reason = "Legacy behaviour, not W3C conformant")
-  @Ignore(value = HTMLUNIT, reason = "Legacy behaviour, not W3C conformant")
   public void canSilentlyDismissUnhandledAlert() {
     runScenarioWithUnhandledAlert(UnexpectedAlertBehaviour.DISMISS, "null", true);
   }

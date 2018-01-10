@@ -1,9 +1,17 @@
 package org.openqa.selenium.htmlunit;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static org.junit.Assert.fail;
+import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.UnexpectedAlertBehaviour;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitAlertTest extends WebDriverTestCase {
@@ -80,4 +88,163 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     assertEquals("ConfirmWithoutRedirect", driver.getTitle());
   }
 
+  @Test
+  public void handleUnexpectedAlertDismiss() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "<title>UnexpectedAlertDismiss</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<script>\n"
+            + "    alert('hi');\n"
+            + "</script>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS);
+    WebDriver driver = loadPage2(html, URL_FIRST, "text/html;charset=ISO-8859-1", ISO_8859_1, capabilities);
+
+
+    assertEquals("hi", driver.switchTo().alert().getText());
+
+    assertEquals("UnexpectedAlertDismiss", driver.getTitle());
+    try {
+        driver.switchTo().alert();
+        fail("NoAlertPresentException expected");
+    } catch (final NoAlertPresentException e) {
+        // expected
+    }
+  }
+
+  @Test
+  public void handleUnexpectedAlertDismissAndNotify() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "<title>UnexpectedAlertDismiss</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<script>\n"
+            + "    alert('hi');\n"
+            + "</script>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY);
+    WebDriver driver = loadPage2(html, URL_FIRST, "text/html;charset=ISO-8859-1", ISO_8859_1, capabilities);
+
+    assertEquals("hi", driver.switchTo().alert().getText());
+
+    try {
+        driver.getTitle();
+        fail("UnhandledAlertException expected");
+    } catch (final UnhandledAlertException e) {
+        // expected
+        assertTrue(e.getMessage(), e.getMessage().startsWith("Alert found: hi"));
+    }
+
+    try {
+        driver.switchTo().alert();
+        fail("NoAlertPresentException expected");
+    } catch (final NoAlertPresentException e) {
+        // expected
+    }
+  }
+
+  @Test
+  public void handleUnexpectedAlertAccept() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "<title>UnexpectedAlertAccept</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<script>\n"
+            + "    alert('hi');\n"
+            + "</script>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT);
+    WebDriver driver = loadPage2(html, URL_FIRST, "text/html;charset=ISO-8859-1", ISO_8859_1, capabilities);
+
+    assertEquals("hi", driver.switchTo().alert().getText());
+
+    assertEquals("UnexpectedAlertAccept", driver.getTitle());
+
+    try {
+        driver.switchTo().alert();
+        fail("NoAlertPresentException expected");
+    } catch (final NoAlertPresentException e) {
+        // expected
+    }
+  }
+
+  @Test
+  public void handleUnexpectedAlertAcceptAndNotify() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "<title>UnexpectedAlertDismiss</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<script>\n"
+            + "    alert('hi');\n"
+            + "</script>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.ACCEPT_AND_NOTIFY);
+    WebDriver driver = loadPage2(html, URL_FIRST, "text/html;charset=ISO-8859-1", ISO_8859_1, capabilities);
+
+    assertEquals("hi", driver.switchTo().alert().getText());
+
+    try {
+        driver.getTitle();
+        fail("UnhandledAlertException expected");
+    } catch (final UnhandledAlertException e) {
+        // expected
+        assertTrue(e.getMessage(), e.getMessage().startsWith("Alert found: hi"));
+    }
+
+    try {
+        driver.switchTo().alert();
+        fail("NoAlertPresentException expected");
+    } catch (final NoAlertPresentException e) {
+        // expected
+    }
+  }
+
+  @Test
+  public void handleUnexpectedAlertIgnore() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "<title>UnexpectedAlertIgnore</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "<script>\n"
+            + "    alert('hi');\n"
+            + "</script>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+    DesiredCapabilities capabilities = new DesiredCapabilities();
+    capabilities.setCapability(UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE);
+    WebDriver driver = loadPage2(html, URL_FIRST, "text/html;charset=ISO-8859-1", ISO_8859_1, capabilities);
+
+    assertEquals("hi", driver.switchTo().alert().getText());
+
+    try {
+        driver.getTitle();
+        fail("UnhandledAlertException expected");
+    } catch (final UnhandledAlertException e) {
+        // expected
+        assertTrue(e.getMessage(), e.getMessage().startsWith("Alert found: hi"));
+    }
+
+    // still present
+    assertEquals("hi", driver.switchTo().alert().getText());
+  }
 }
