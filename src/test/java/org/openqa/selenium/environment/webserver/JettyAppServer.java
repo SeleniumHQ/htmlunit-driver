@@ -220,15 +220,15 @@ public class JettyAppServer implements AppServer {
     httpConfig.setSecureScheme("https");
     httpConfig.setSecurePort(securePort);
 
-    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
-    http.setPort(port);
-    http.setIdleTimeout(500000);
-
     Path keystore = getKeyStore();
     if (!Files.exists(keystore)) {
       throw new RuntimeException(
         "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
+
+    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    http.setPort(port);
+    http.setIdleTimeout(500000);
 
     SslContextFactory sslContextFactory = new SslContextFactory();
     sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
