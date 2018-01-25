@@ -333,6 +333,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
         break;
 
+      case BrowserType.EDGE:
+          browserVersionObject = BrowserVersion.EDGE;
+          break;
+
       case BrowserType.FIREFOX:
         try {
           int version = Integer.parseInt(browserVersion);
@@ -553,12 +557,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         // ftpProxy is not supported/implemented
 
         break;
+
       case PAC:
         String pac = proxy.getProxyAutoconfigUrl();
         if (pac != null && !pac.isEmpty()) {
           setAutoProxy(pac);
         }
         break;
+
+      default:
+          break;
     }
   }
 
