@@ -616,9 +616,25 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToTypeOnANumberInputField() {
     driver.get(pages.formPage);
-    WebElement email = driver.findElement(By.id("age"));
-    email.sendKeys("33");
-    assertThat(email.getAttribute("value"), equalTo("33"));
+    WebElement number = driver.findElement(By.id("age"));
+    number.sendKeys("33");
+    assertThat(number.getAttribute("value"), equalTo("33"));
+  }
+
+  @Test
+  public void testShouldBeAbleToTypeOnAnUrlInputField() {
+    driver.get(pages.formPage);
+    WebElement url = driver.findElement(By.id("url"));
+    url.sendKeys("www.htmlunit.org");
+    assertThat(url.getAttribute("value"), equalTo("www.htmlunit.org"));
+  }
+
+  @Test
+  public void testShouldBeAbleToTypeOnATelInputField() {
+    driver.get(pages.formPage);
+    WebElement tel = driver.findElement(By.id("phone"));
+    tel.sendKeys("1234 666");
+    assertThat(tel.getAttribute("value"), equalTo("1234 666"));
   }
 
   @Test
