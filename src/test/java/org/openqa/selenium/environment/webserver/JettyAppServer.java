@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.environment.webserver;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.MediaType.JSON_UTF_8;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
@@ -51,13 +51,13 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.io.TemporaryFilesystem;
 import org.openqa.selenium.net.NetworkUtils;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.testing.InProject;
 
 import com.google.common.collect.ImmutableList;
@@ -111,14 +111,17 @@ public class JettyAppServer implements AppServer {
 
     handlers = new ContextHandlerCollection();
 
-    ServletContextHandler defaultContext = addResourceHandler(DEFAULT_CONTEXT_PATH, locate("web"));
-    ServletContextHandler jsContext = addResourceHandler(JS_SRC_CONTEXT_PATH, locate("javascript"));
+    ServletContextHandler defaultContext = addResourceHandler(
+        DEFAULT_CONTEXT_PATH, locate("web"));
+    ServletContextHandler jsContext = addResourceHandler(
+        JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
-    ServletContextHandler tempContext = addResourceHandler(TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
+    ServletContextHandler tempContext = addResourceHandler(
+        TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
     defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
@@ -161,8 +164,14 @@ public class JettyAppServer implements AppServer {
   @Override
   public String getAlternateHostName() {
     String alternativeHostnameFromProperty = System.getenv(ALTERNATIVE_HOSTNAME_FOR_TEST_ENV_NAME);
-    return alternativeHostnameFromProperty == null ?
-           networkUtils.getPrivateLocalAddress() : alternativeHostnameFromProperty;
+    if (alternativeHostnameFromProperty != null) {
+      return alternativeHostnameFromProperty;
+    }
+    try {
+      return networkUtils.getNonLoopbackAddressOfThisMachine();
+    } catch (WebDriverException e) {
+      return networkUtils.getPrivateLocalAddress();
+    }
   }
 
   @Override
@@ -196,11 +205,11 @@ public class JettyAppServer implements AppServer {
       converted.addProperty("content", page.toString());
       byte[] data = converted.toString().getBytes(UTF_8);
 
-      HttpClient client = new ApacheHttpClient.Factory().createClient(new URL(whereIs("/")));
+      HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
       request.setContent(data);
-      HttpResponse response = client.execute(request, true);
+      HttpResponse response = client.execute(request);
       return response.getContentString();
     } catch (IOException ex) {
       throw new RuntimeException(ex);
@@ -220,15 +229,15 @@ public class JettyAppServer implements AppServer {
     httpConfig.setSecureScheme("https");
     httpConfig.setSecurePort(securePort);
 
-    Path keystore = getKeyStore();
-    if (!Files.exists(keystore)) {
-      throw new RuntimeException(
-        "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
-    }
-
     ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
     http.setPort(port);
     http.setIdleTimeout(500000);
+
+    Path keystore = getKeyStore();
+    if (!Files.exists(keystore)) {
+      throw new RuntimeException(
+          "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
+    }
 
     SslContextFactory sslContextFactory = new SslContextFactory();
     sslContextFactory.setKeyStorePath(keystore.toAbsolutePath().toString());
@@ -239,9 +248,9 @@ public class JettyAppServer implements AppServer {
     httpsConfig.addCustomizer(new SecureRequestCustomizer());
 
     ServerConnector https = new ServerConnector(
-      server,
-      new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
-      new HttpConnectionFactory(httpsConfig));
+        server,
+        new SslConnectionFactory(sslContextFactory, HttpVersion.HTTP_1_1.asString()),
+        new HttpConnectionFactory(httpsConfig));
     https.setPort(securePort);
     https.setIdleTimeout(500000);
 

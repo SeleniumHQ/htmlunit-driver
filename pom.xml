@@ -42,8 +42,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <selenium.version>3.9.1</selenium.version>
-    <htmlunit.version>2.30-SNAPSHOT</htmlunit.version>
+    <selenium.version>3.11.0</selenium.version>
+    <htmlunit.version>2.29</htmlunit.version>
   </properties>
 
   <dependencies>

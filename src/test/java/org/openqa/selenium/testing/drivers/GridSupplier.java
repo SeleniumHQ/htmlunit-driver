@@ -19,21 +19,20 @@ package org.openqa.selenium.testing.drivers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.json.Json;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.JsonToBeanConverter;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
 import org.openqa.selenium.remote.http.HttpMethod;
 import org.openqa.selenium.remote.http.HttpRequest;
 import org.openqa.selenium.remote.http.HttpResponse;
-import org.openqa.selenium.remote.internal.ApacheHttpClient;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 
@@ -82,20 +81,20 @@ public class GridSupplier implements Supplier<WebDriver> {
     }
 
     // Keep polling the status page of the hub until it claims to be ready
-    HttpClient client = new ApacheHttpClient.Factory().createClient(hub.getWebDriverUrl());
-    JsonToBeanConverter toBean = new JsonToBeanConverter();
+    HttpClient client = HttpClient.Factory.createDefault().createClient(hub.getWebDriverUrl());
+    Json json = new Json();
     Wait<HttpClient> wait = new FluentWait<>(client)
         .ignoring(RuntimeException.class)
-        .withTimeout(30, TimeUnit.SECONDS);
+        .withTimeout(Duration.ofSeconds(30));
     wait.until(c -> {
       HttpRequest req = new HttpRequest(HttpMethod.GET, "/status");
       HttpResponse response = null;
       try {
-        response = c.execute(req, true);
+        response = c.execute(req);
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-      Map<?, ?> value = toBean.convert(Map.class, response.getContentString());
+      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
 
       return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
     });
