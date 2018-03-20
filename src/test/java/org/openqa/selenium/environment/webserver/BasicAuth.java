@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BasicAuth extends HttpServlet {
   private static final String CREDENTIALS = "test:test";
-  private final Base64.Decoder base64 = Base64.getDecoder();
+  private final Base64.Decoder decoder = Base64.getDecoder();
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException,
@@ -43,10 +43,10 @@ public class BasicAuth extends HttpServlet {
 
   private boolean isAuthorized(String auth) {
     if (auth != null) {
-      final int index = auth.indexOf(' ');
+      final int index = auth.indexOf(' ') + 1;
 
       if (index > 0) {
-        final String credentials = new String(base64.decode(auth.substring(index)));
+        final String credentials = new String(decoder.decode(auth.substring(index)));
         return CREDENTIALS.equals(credentials);
       }
     }
