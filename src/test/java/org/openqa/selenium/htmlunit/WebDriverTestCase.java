@@ -126,13 +126,13 @@ public abstract class WebDriverTestCase extends WebTestCase {
   /**
    * All browsers supported.
    */
-  public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_45,
-      BrowserVersion.FIREFOX_52, BrowserVersion.INTERNET_EXPLORER, BrowserVersion.EDGE};
+  public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_52,
+      BrowserVersion.FIREFOX_60, BrowserVersion.INTERNET_EXPLORER, BrowserVersion.EDGE};
 
   /**
    * Browsers which run by default.
    */
-  public static BrowserVersion[] DEFAULT_RUNNING_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_45,
+  public static BrowserVersion[] DEFAULT_RUNNING_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_60,
       BrowserVersion.INTERNET_EXPLORER};
 
   private static final Log LOG = LogFactory.getLog(WebDriverTestCase.class);
@@ -140,8 +140,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
   private static Set<String> BROWSERS_PROPERTIES_;
   private static String CHROME_BIN_;
   private static String IE_BIN_;
-  private static String FF45_BIN_;
   private static String FF52_BIN_;
+  private static String FF60_BIN_;
 
   /** The driver cache. */
   protected static final Map<BrowserVersion, WebDriver> WEB_DRIVERS_ = new HashMap<>();
@@ -192,7 +192,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                           .toLowerCase(Locale.ROOT).split(",")));
                   CHROME_BIN_ = properties.getProperty("chrome.bin");
                   IE_BIN_ = properties.getProperty("ie.bin");
-                  FF45_BIN_ = properties.getProperty("ff45.bin");
+                  FF60_BIN_ = properties.getProperty("ff60.bin");
                   FF52_BIN_ = properties.getProperty("ff52.bin");
 
                   final boolean autofix = Boolean.parseBoolean(properties.getProperty("autofix"));
@@ -415,20 +415,17 @@ public abstract class WebDriverTestCase extends WebTestCase {
               return new ChromeDriver(CHROME_SERVICE_);
           }
 
-          if (BrowserVersion.FIREFOX_45 == getBrowserVersion()) {
-              // disable the new marionette interface because it requires ff47 or more
-              System.setProperty("webdriver.firefox.marionette", "false");
-
-              if (FF45_BIN_ != null) {
+          if (BrowserVersion.FIREFOX_52 == getBrowserVersion()) {
+              if (FF52_BIN_ != null) {
                   final FirefoxOptions options = new FirefoxOptions();
-                  options.setBinary(FF45_BIN_);
+                  options.setBinary(FF52_BIN_);
                   return new FirefoxDriver(options);
               }
               return new FirefoxDriver();
           }
 
-          if (BrowserVersion.FIREFOX_52 == getBrowserVersion()) {
-              if (FF52_BIN_ != null) {
+          if (BrowserVersion.FIREFOX_60 == getBrowserVersion()) {
+              if (FF60_BIN_ != null) {
                   final FirefoxOptions options = new FirefoxOptions();
                   options.setBinary(FF52_BIN_);
                   return new FirefoxDriver(options);
@@ -448,10 +445,10 @@ public abstract class WebDriverTestCase extends WebTestCase {
   }
 
   private static String getBrowserName(final BrowserVersion browserVersion) {
-      if (browserVersion == BrowserVersion.FIREFOX_45) {
+      if (browserVersion == BrowserVersion.FIREFOX_52) {
           return BrowserType.FIREFOX + '-' + browserVersion.getBrowserVersionNumeric();
       }
-      else if (browserVersion == BrowserVersion.FIREFOX_52) {
+      else if (browserVersion == BrowserVersion.FIREFOX_60) {
           return BrowserType.FIREFOX;
       }
       if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {
