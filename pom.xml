@@ -42,7 +42,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <selenium.version>3.12.0</selenium.version>
+    <selenium.version>3.13.0</selenium.version>
     <htmlunit.version>2.32-SNAPSHOT</htmlunit.version>
   </properties>
 
@@ -159,7 +159,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-maven-plugin</artifactId>
-      <version>9.4.9.v20180320</version>
+      <version>9.4.11.v20180605</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
