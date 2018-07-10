@@ -38,6 +38,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -182,6 +184,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private Condition mainCondition = conditionLock.newCondition();
   private boolean runAsyncRunning;
   private RuntimeException exception;
+  private Executor executor = Executors.newCachedThreadPool();
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -419,7 +422,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
     
     exception = null;
-    new Thread(() -> {
+    Runnable wrapped = () -> {
       try {
         r.run();
       }
@@ -432,7 +435,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         runAsyncRunning = false;
         conditionLock.unlock();
       }
-    }).start();
+    };
+    executor.execute(wrapped);
 
     if (loadStrategyWait) {
       mainCondition.awaitUninterruptibly();
@@ -627,6 +631,17 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
     }
     getWebClient().getOptions().setProxyConfig(proxyConfig);
+  }
+
+  /**
+   * Sets the {@link Executor} to be used for submitting async tasks to
+   * @param executor the {@link Executor} to use
+   */
+  public void setExecutor(Executor executor) {
+    if (executor == null) {
+      throw new IllegalArgumentException("executor cannot be null");
+    }
+    this.executor = executor;
   }
 
   /**
