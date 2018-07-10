@@ -39,6 +39,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -183,7 +184,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private Condition mainCondition = conditionLock.newCondition();
   private boolean runAsyncRunning;
   private RuntimeException exception;
-  private Executor executor = task -> new Thread(task).run();
+  private Executor executor = Executors.newCachedThreadPool();
 
   /**
    * Constructs a new instance with JavaScript disabled,
