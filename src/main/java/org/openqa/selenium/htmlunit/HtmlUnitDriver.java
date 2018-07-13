@@ -105,7 +105,6 @@ import com.gargoylesoftware.htmlunit.Version;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
-import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
@@ -695,8 +694,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     alert.close();
     alert.setAutoAccept(false);
     try {
-      getWebClient().getPage(getCurrentWindow().getTopWindow(),
-          new WebRequest(fullUrl, getBrowserVersion().getHtmlAcceptHeader()));
+      getWebClient().getPage(fullUrl);
       // A "get" works over the entire page
       currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
