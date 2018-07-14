@@ -28,6 +28,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,6 +106,7 @@ import com.gargoylesoftware.htmlunit.Version;
 import com.gargoylesoftware.htmlunit.WaitingRefreshHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
@@ -694,7 +696,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     alert.close();
     alert.setAutoAccept(false);
     try {
-      getWebClient().getPage(fullUrl);
+      // we can't use webClient.getPage(url) here because selenium has a different idea
+      // of the current window and we like to load into to selenium current one
+      final WebRequest request = new WebRequest(fullUrl, getBrowserVersion().getHtmlAcceptHeader());
+      request.setCharset(StandardCharsets.UTF_8);
+      getWebClient().getPage(getCurrentWindow().getTopWindow(), request);
+
       // A "get" works over the entire page
       currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
@@ -817,7 +824,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     if (getWebClient().getWebWindows().size() == 1) {
       // closing the last window is equivalent to quit
       quit();
-
     } else {
       if (thisWindow != null) {
         alert.close();
