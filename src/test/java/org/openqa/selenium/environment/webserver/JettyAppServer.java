@@ -113,15 +113,13 @@ public class JettyAppServer implements AppServer {
 
     ServletContextHandler defaultContext = addResourceHandler(
         DEFAULT_CONTEXT_PATH, locate("web"));
-    ServletContextHandler jsContext = addResourceHandler(
-        JS_SRC_CONTEXT_PATH, locate("javascript"));
+    addResourceHandler(JS_SRC_CONTEXT_PATH, locate("javascript"));
     addResourceHandler(CLOSURE_CONTEXT_PATH, locate("third_party/closure/goog"));
     addResourceHandler(THIRD_PARTY_JS_CONTEXT_PATH, locate("third_party/js"));
 
     TemporaryFilesystem tempFs = TemporaryFilesystem.getDefaultTmpFS();
     tempPageDir = tempFs.createTempDir("pages", "test");
-    ServletContextHandler tempContext = addResourceHandler(
-        TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
+    addResourceHandler(TEMP_SRC_CONTEXT_PATH, tempPageDir.toPath());
     defaultContext.setInitParameter("tempPageDir", tempPageDir.getAbsolutePath());
     defaultContext.setInitParameter("hostname", hostName);
     defaultContext.setInitParameter("port", ""+port);
@@ -229,7 +227,9 @@ public class JettyAppServer implements AppServer {
     httpConfig.setSecureScheme("https");
     httpConfig.setSecurePort(securePort);
 
-    ServerConnector http = new ServerConnector(server, new HttpConnectionFactory(httpConfig));
+    ServerConnector http = new ServerConnector(
+        server,
+        new HttpConnectionFactory(httpConfig));
     http.setPort(port);
     http.setIdleTimeout(500000);
 

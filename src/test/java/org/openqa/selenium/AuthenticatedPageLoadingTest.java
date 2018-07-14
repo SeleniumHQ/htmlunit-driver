@@ -46,7 +46,7 @@ public class AuthenticatedPageLoadingTest extends JUnit4TestBase {
     String url = appServer.whereIs("basicAuth");
     driver.get(url);
 
-    Alert alert = wait.until(alertIsPresent());
+    wait.until(alertIsPresent());
 
     WebElement element = wait.until(presenceOfElementLocated(By.tagName("h1")));
     assertEquals("authorized", element.getText());
