@@ -53,7 +53,6 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 /**
  * Tests operations that involve mouse and keyboard.
  */
-@Ignore(value = SAFARI, reason = "Safari: not implemented (issue 4136)")
 public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   private Actions getBuilder(WebDriver driver) {
@@ -184,7 +183,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/660")
   public void testContextClick() {
     driver.get(pages.javascriptPage);
 
@@ -214,7 +212,6 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(CHROME)
   @Ignore(IE)
   public void testCannotMoveToANullLocator() {
     driver.get(pages.javascriptPage);
@@ -235,6 +232,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMousePositionIsNotPreservedInActionsChain() {
     driver.get(pages.javascriptPage);
     WebElement toMoveTo = driver.findElement(By.id("clickField"));
@@ -277,6 +275,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(MARIONETTE)
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @NotYetImplemented(SAFARI)
   public void testMovingMouseBackAndForthPastViewPort() {
     driver.get(pages.veryLargeCanvas);
 
@@ -305,6 +304,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldClickElementInIFrame() {
     driver.get(pages.clicksPage);
     driver.switchTo().frame("source");
@@ -316,6 +316,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldAllowUsersToHoverOverElements() {
     driver.get(pages.javascriptPage);
 
@@ -332,6 +333,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testHoverPersists() throws Exception {
     driver.get(pages.javascriptPage);
     // Move to a different element to make sure the mouse is not over the
@@ -356,6 +358,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMovingMouseByRelativeOffset() {
     driver.get(pages.mouseTrackerPage);
 
@@ -372,7 +375,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseToRelativeElementOffset() {
     driver.get(pages.mouseTrackerPage);
@@ -386,7 +389,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
   public void testMovingMouseToRelativeZeroElementOffset() {
     driver.get(pages.mouseTrackerPage);
@@ -399,9 +402,8 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     wait.until(fuzzyMatchingOfCoordinates(reporter, 0, 0));
   }
 
-  @NeedsFreshDriver({IE, CHROME})
+  @NeedsFreshDriver({IE, CHROME, MARIONETTE})
   @Test
-  @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
   public void testMoveRelativeToBody() {
     try {
@@ -418,8 +420,9 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testMoveMouseByOffsetOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
@@ -446,8 +449,9 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
+  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/789")
   @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testCanMoveOverAndOutOfAnElement() {
     driver.get(pages.mouseOverPage);
 
