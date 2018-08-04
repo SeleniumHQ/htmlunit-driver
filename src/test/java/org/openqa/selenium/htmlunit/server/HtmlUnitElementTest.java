@@ -32,11 +32,10 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitWebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.internal.Locatable;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -46,7 +45,7 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
   @Ignore
   public void canGetWrappedDriver() {
     HtmlUnitWebElement body = (HtmlUnitWebElement) driver.findElement(By.tagName("body"));
-    assertThat(body.getWrappedDriver(), sameInstance((WebDriver) driver));
+    assertThat(body.getWrappedDriver(), sameInstance(driver));
   }
 
   @Test

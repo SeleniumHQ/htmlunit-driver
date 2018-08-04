@@ -43,9 +43,9 @@ import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.internal.Locatable;
-import org.openqa.selenium.internal.WrapsDriver;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
@@ -776,7 +776,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   /*
    * (non-Javadoc)
    *
-   * @see org.openqa.selenium.internal.WrapsDriver#getContainingDriver()
+   * @see org.openqa.selenium.WrapsDriver#getContainingDriver()
    */
   @Override
   public WebDriver getWrappedDriver() {
