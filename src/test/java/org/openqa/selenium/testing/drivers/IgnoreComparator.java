@@ -15,10 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,10 +31,8 @@ import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
 
-import com.google.common.collect.Sets;
-
 public class IgnoreComparator {
-  private Set<Driver> ignored = Sets.newHashSet();
+  private Set<Driver> ignored = new HashSet<>();
   private Platform currentPlatform = Platform.getCurrent();
 
   // TODO(simon): reduce visibility

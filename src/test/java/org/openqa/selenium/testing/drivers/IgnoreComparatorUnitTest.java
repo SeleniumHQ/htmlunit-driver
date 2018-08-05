@@ -15,7 +15,6 @@
 // specific language governing permissions and limitations
 // under the License.
 
-
 package org.openqa.selenium.testing.drivers;
 
 import static org.junit.Assert.assertFalse;
@@ -25,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,12 +32,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.IgnoreList;
-
-import com.google.common.collect.Sets;
 
 @RunWith(JUnit4.class)
 public class IgnoreComparatorUnitTest {
@@ -45,8 +44,8 @@ public class IgnoreComparatorUnitTest {
   private static final Platform CURRENT_PLATFORM = Platform.MAC;
   private static final Platform OTHER_PLATFORM = Platform.WINDOWS;
 
-  private static final Set<Platform> CURRENT_PLATFORM_SET = Sets.newHashSet(CURRENT_PLATFORM);
-  private static final Set<Platform> OTHER_PLATFORM_SET = Sets.newHashSet(OTHER_PLATFORM);
+  private static final Set<Platform> CURRENT_PLATFORM_SET = Collections.singleton(CURRENT_PLATFORM);
+  private static final Set<Platform> OTHER_PLATFORM_SET = Collections.singleton(OTHER_PLATFORM);
 
   IgnoreComparator ignoreComparator = new IgnoreComparator();
 
@@ -65,15 +64,13 @@ public class IgnoreComparatorUnitTest {
   public void shouldIgnoreOnlyDriverBeingIgnored() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreDriverAll() {
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(Driver.ALL),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(Driver.ALL), CURRENT_PLATFORM_SET)));
   }
 
   @Test
@@ -81,57 +78,50 @@ public class IgnoreComparatorUnitTest {
   public void shouldNotIgnoreOtherPlatform() {
     ignoreComparator.addDriver(SAFARI);
     assertFalse(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      OTHER_PLATFORM_SET)));
+        Collections.singleton(SAFARI), OTHER_PLATFORM_SET)));
   }
 
   @Test
   public void shouldNotIgnoreOtherBrowser() {
     ignoreComparator.addDriver(SAFARI);
     assertFalse(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(IE),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(IE), CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreEnabledNativeEventsIfIgnoringEnabled() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreDisabledNativeEventsIfIgnoringDisabled() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreEnabledNativeEventsIfIgnoringAll() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   @Test
   public void shouldIgnoreDisabledNativeEventsIfIgnoringAll() {
     ignoreComparator.addDriver(SAFARI);
     assertTrue(ignoreComparator.shouldIgnore(ignoreForDriver(
-      Sets.newHashSet(SAFARI),
-      CURRENT_PLATFORM_SET)));
+        Collections.singleton(SAFARI), CURRENT_PLATFORM_SET)));
   }
 
   private IgnoreList ignoreForDriver(final Set<Driver> drivers,
                                     final Set<Platform> platforms) {
-    final IgnoreList ignore = mock(IgnoreList.class);
+    final IgnoreList ignore = mock(IgnoreList.class, Mockito.RETURNS_SMART_NULLS);
     final Ignore[] list = drivers.stream().map(driver -> {
-      Ignore ig = mock(Ignore.class);
+      Ignore ig = mock(Ignore.class, Mockito.RETURNS_SMART_NULLS);
       when(ig.value()).thenReturn(driver);
-      when(ig.issue()).thenReturn("");
       return ig;
     }).collect(Collectors.toList()).toArray(new Ignore[drivers.size()]);
 
