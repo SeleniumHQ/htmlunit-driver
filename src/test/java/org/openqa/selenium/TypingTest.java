@@ -34,15 +34,13 @@ import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getFirefoxVersion;
 import static org.openqa.selenium.testing.TestUtilities.isFirefox;
 
-import java.awt.GraphicsEnvironment;
+import com.google.common.base.Joiner;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.drivers.Browser;
-
-import com.google.common.base.Joiner;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -156,6 +154,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -167,6 +166,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -180,6 +180,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoInputElements() {
     driver.get(pages.javascriptPage);
 
@@ -193,6 +194,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyUpWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -204,6 +206,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyDownWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -217,6 +220,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testWillSimulateAKeyPressWhenEnteringTextIntoTextAreas() {
     driver.get(pages.javascriptPage);
 
@@ -230,7 +234,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(IE)
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldFireFocusKeyEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -430,6 +434,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = MARIONETTE)
+  @NotYetImplemented(value = SAFARI, reason = "Enters dot instead of comma")
   public void testNumberpadKeys() {
     driver.get(pages.javascriptPage);
 
@@ -455,7 +460,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "issue 4221")
+  @NotYetImplemented(SAFARI)
   public void testShiftSelectionDeletes() {
     driver.get(pages.javascriptPage);
 
@@ -527,7 +532,6 @@ public class TypingTest extends JUnit4TestBase {
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have HOME keys, would PGUP work?",
                 getEffectivePlatform().is(Platform.MAC));
-    assumeFalse(GraphicsEnvironment.isHeadless());
 
     driver.get(pages.javascriptPage);
 
@@ -591,6 +595,7 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testGenerateKeyPressEventEvenWhenElementPreventsDefault() {
     assumeFalse(isFirefox(driver) && getFirefoxVersion(driver) < 25);
     driver.get(pages.javascriptPage);
@@ -643,7 +648,6 @@ public class TypingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
   public void canSafelyTypeOnElementThatIsRemovedFromTheDomOnKeyPress() {
     driver.get(appServer.whereIs("key_tests/remove_on_keypress.html"));
 

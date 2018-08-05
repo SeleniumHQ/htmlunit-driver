@@ -36,14 +36,14 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
-@Ignore(value = SAFARI, reason = "issue 3862")
+@Ignore(value = SAFARI, reason = "Does not support alerts yet")
 @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/617")
 public class UnexpectedAlertBehaviorTest extends JUnit4TestBase {
 
   private WebDriver driver2;
 
   @After
-  public void quitDriver() throws Exception {
+  public void quitDriver() {
     if (driver2 != null) {
       driver2.quit();
     }

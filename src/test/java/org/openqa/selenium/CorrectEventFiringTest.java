@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -59,6 +60,7 @@ import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventWhenClicking() {
     driver.get(pages.javascriptPage);
 
@@ -70,6 +72,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
   @Ignore(FIREFOX)
+  @NotYetImplemented(SAFARI)
   public void testShouldFireFocusEventInNonTopmostWindow() {
     WebDriver driver2 = new WebDriverBuilder().get();
     try {
@@ -131,6 +134,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
    */
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldFireMouseMoveEventWhenClicking() {
     driver.get(pages.simpleTestPage);
     // Move the mouse cursor to somewhere pretty far down the page
@@ -154,6 +158,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldFireEventsInTheRightOrder() {
     driver.get(pages.javascriptPage);
 
@@ -172,6 +177,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testsShouldIssueMouseDownEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mousedown")).click();
@@ -182,6 +188,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldIssueClickEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseclick")).click();
@@ -192,6 +199,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldIssueMouseUpEvents() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("mouseup")).click();
@@ -202,6 +210,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testMouseEventsShouldBubbleUpToContainingElements() {
     driver.get(pages.javascriptPage);
     driver.findElement(By.id("child")).click();
@@ -213,6 +222,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnChangeEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
@@ -230,6 +240,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnClickEventsWhenSelectingElements() {
     driver.get(pages.javascriptPage);
     // Intentionally not looking up the select tag. See selenium r7937 for details.
@@ -246,6 +257,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "Only fires the onchange event when the checkbox loses the focus")
+  @NotYetImplemented(SAFARI)
   public void testShouldEmitOnChangeEventsWhenChangingTheStateOfACheckbox() {
     driver.get(pages.javascriptPage);
     WebElement checkbox = driver.findElement(By.id("checkbox"));
@@ -277,6 +289,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testClearingAnElementShouldCauseTheOnChangeHandlerToFire() {
     driver.get(pages.javascriptPage);
 
@@ -301,6 +314,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/906")
+  @Ignore(value = SAFARI, reason = "Allows only one instance")
   public void testSendingKeysToAnotherElementShouldCauseTheBlurEventToFireInNonTopmostWindow() {
     assumeFalse(browserNeedsFocusOnThisOs(driver));
 
@@ -376,7 +390,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
   @NotYetImplemented(HTMLUNIT)
   public void testClickingAnUnfocusableChildShouldNotBlurTheParent() {
     assumeFalse(isOldIe(driver));
@@ -396,6 +409,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSubmittingFormFromFormElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement formElement = driver.findElement(By.id("submitListeningForm"));
@@ -404,6 +418,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSubmittingFormFromFormInputSubmitElementShouldFireOnSubmitForThatForm() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -412,6 +427,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testSubmittingFormFromFormInputTextElementShouldFireOnSubmitForThatFormAndNotClickOnThatInput() {
     driver.get(pages.javascriptPage);
     WebElement submit = driver.findElement(By.id("submitListeningForm-submit"));
@@ -421,7 +437,6 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "Does not yet support file uploads, issue 4220")
   public void testUploadingFileShouldFireOnChangeEvent() throws IOException {
     driver.get(pages.formPage);
     WebElement uploadElement = driver.findElement(By.id("upload"));
@@ -469,8 +484,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(MARIONETTE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(HTMLUNIT)
   public void testClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
@@ -478,14 +492,15 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.id("under"));
     Throwable t = catchThrowable(element::click);
     assertThat(t, instanceOf(WebDriverException.class));
-    assertThat(t.getMessage(), containsString("Other element would receive the click"));
+    assertThat(t.getMessage(), anyOf(containsString("Other element would receive the click"),
+                                     containsString("is not clickable at point")));
   }
 
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(HTMLUNIT)
   public void testClickPartiallyOverlappingElements() {
     assumeFalse(isOldIe(driver));
@@ -510,6 +525,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   @Ignore(FIREFOX)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @Ignore(value = MARIONETTE, reason = "Checks overlapping by default")
+  @Ignore(value = IE, reason = "Checks overlapping by default")
   public void testNativelyClickOverlappingElements() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/overlapping_elements.html"));
@@ -525,8 +542,8 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
+  @NotYetImplemented(SAFARI)
   public void testClickAnElementThatDisappear() {
     assumeFalse(isOldIe(driver));
     driver.get(appServer.whereIs("click_tests/disappearing_element.html"));

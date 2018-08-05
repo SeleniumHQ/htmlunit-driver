@@ -56,7 +56,6 @@ import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
-@Ignore(SAFARI)
 public class AlertsTest extends JUnit4TestBase {
 
   @After
@@ -144,7 +143,8 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(MARIONETTE)
-  public void testShouldGetTextOfAlertOpenedInSetTimeout() throws Exception {
+  @Ignore(SAFARI)
+  public void testShouldGetTextOfAlertOpenedInSetTimeout() {
     driver.get(appServer.create(new Page()
         .withTitle("Testing Alerts")
         .withScripts(
@@ -215,6 +215,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
+  @NotYetImplemented(SAFARI)
   public void testSettingTheValueOfAnAlertThrows() {
     driver.get(alertPage("cheese"));
 
@@ -421,6 +422,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(FIREFOX)
   @Ignore(value = IE, reason = "Fails in versions 6 and 7")
+  @Ignore(SAFARI)
   public void testShouldNotHandleAlertInAnotherWindow() {
     String pageWithOnLoad = appServer.create(new Page()
         .withOnLoad("javascript:alert(\"onload\")")
@@ -450,6 +452,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnPageUnload() {
     assumeFalse("Firefox 27 does not trigger alerts on before unload",
                 isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -472,7 +475,10 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldHandleAlertOnPageBeforeUnload() {
+  @Ignore(SAFARI)
+  @Ignore(value = FIREFOX, reason = "Non W3C conformant")
+  @Ignore(value = CHROME, reason = "Non W3C conformant")
+  public void testShouldImplicitlyHandleAlertOnPageBeforeUnload() {
     String blank = appServer.create(new Page().withTitle("Success"));
     driver.get(appServer.create(new Page()
         .withTitle("Page with onbeforeunload handler")
@@ -515,6 +521,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Test
   @Ignore(value = CHROME, reason = "Chrome does not trigger alerts on unload")
   @NotYetImplemented(HTMLUNIT)
+  @Ignore(SAFARI)
   public void testShouldHandleAlertOnWindowClose() {
     assumeFalse("Firefox 27 does not trigger alerts on unload",
         isFirefox(driver) && getFirefoxVersion(driver) >= 27);
@@ -548,6 +555,7 @@ public class AlertsTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @NotYetImplemented(value = MARIONETTE,
       reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1279211")
+  @Ignore(SAFARI)
   public void testIncludesAlertTextInUnhandledAlertException() {
     driver.get(alertPage("cheese"));
 
@@ -572,6 +580,7 @@ public class AlertsTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void shouldHandleAlertOnFormSubmit() {
     driver.get(appServer.create(new Page().withTitle("Testing Alerts").withBody(
         "<form id='theForm' action='javascript:alert(\"Tasty cheese\");'>",

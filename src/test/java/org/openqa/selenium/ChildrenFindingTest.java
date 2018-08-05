@@ -24,16 +24,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.openqa.selenium.testing.Driver.CHROME;
-import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
-
-import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+
+import java.util.List;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 public class ChildrenFindingTest extends JUnit4TestBase {
@@ -196,7 +196,6 @@ public class ChildrenFindingTest extends JUnit4TestBase {
 
   @Test
   @NotYetImplemented(value = CHROME, reason = "Need to release atoms fix from #4351")
-  @NotYetImplemented(value = IE, reason = "Need to release atoms fix from #4351")
   public void testShouldNotReturnRootElementWhenFindingChildrenById() {
     driver.get(pages.nestedPage);
     WebElement parent = driver.findElement(By.id("test_id"));
@@ -338,6 +337,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testLinkWithLeadingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));
@@ -347,6 +347,7 @@ public class ChildrenFindingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testLinkWithTrailingSpace() {
     driver.get(pages.simpleTestPage);
     WebElement elem = driver.findElement(By.id("links"));

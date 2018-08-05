@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.Browser;
 
@@ -77,7 +78,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickOnAnElementHiddenByOverflow() {
     driver.get(appServer.whereIs("scroll.html"));
 
@@ -97,7 +97,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = SAFARI, reason = "failed")
   public void testShouldBeAbleToClickOnAnElementHiddenByYOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_y_overflow_auto.html"));
 
@@ -108,8 +107,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
   @Test
   @Ignore(value = IE, issue = "716")
   @Ignore(value = FIREFOX, issue = "716")
-  @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/915")
-  @Ignore(value = SAFARI, reason = "not tested")
   public void testShouldBeAbleToClickOnAnElementPartiallyHiddenByOverflow() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_partially_hidden_element.html"));
 
@@ -130,9 +127,6 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(CHROME)
-  @Ignore(value = SAFARI,
-      reason = "Safari: button1 is scrolled to the bottom edge of the view, " +
-               "so additonal scrolling is still required for button2")
   @Ignore(MARIONETTE)
   public void testShouldNotScrollIfAlreadyScrolledAndElementIsInView() {
     driver.get(appServer.whereIs("scroll3.html"));
@@ -151,7 +145,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = IE, reason = "IE has special overflow handling")
-  @Ignore(MARIONETTE)
+  @NotYetImplemented(SAFARI)
   public void testShouldScrollOverflowElementsIfClickPointIsOutOfViewButElementIsInView() {
     driver.get(appServer.whereIs("scroll5.html"));
     driver.findElement(By.id("inner")).click();
@@ -160,7 +154,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickElementInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_frame_out_of_view.html"));
@@ -172,7 +166,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -194,7 +188,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInAFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_scrolling_frame_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -205,7 +199,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -217,7 +211,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldBeAbleToClickElementThatIsOutOfViewInANestedFrameThatIsOutOfView() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_nested_scrolling_frames_out_of_view.html"));
     driver.switchTo().frame("scrolling_frame");
@@ -257,7 +251,7 @@ public class ClickScrollingTest extends JUnit4TestBase {
 
   @SwitchToTopAfterTest
   @Test
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToClickElementInATallFrame() {
     driver.get(appServer.whereIs("scrolling_tests/page_with_tall_frame.html"));

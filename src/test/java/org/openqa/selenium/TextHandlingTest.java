@@ -30,7 +30,11 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.testing.Driver.ALL;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import java.util.regex.Pattern;
 
@@ -41,6 +45,7 @@ import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
 public class TextHandlingTest extends JUnit4TestBase {
@@ -68,6 +73,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldIgnoreScriptElements() {
     driver.get(pages.javascriptEnhancedForm);
     WebElement labelForUsername = driver.findElement(By.id("labelforusername"));
@@ -79,6 +85,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldRepresentABlockLevelElementAsANewline() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
@@ -89,6 +96,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldCollapseMultipleWhitespaceCharactersIntoASingleSpace() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("lotsofspaces")).getText();
@@ -97,6 +105,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldTrimText() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("multiline")).getText();
@@ -106,6 +115,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldConvertANonBreakingSpaceIntoANormalSpaceCharacter() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("nbsp")).getText();
@@ -114,6 +124,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotCollapseANonBreakingSpaces() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("nbspandspaces"));
@@ -123,6 +134,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimNonBreakingSpacesAtTheEndOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("multilinenbsp"));
@@ -131,6 +143,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimNonBreakingSpacesAtTheStartOfALineInTheMiddleOfText() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("multilinenbsp"));
@@ -139,6 +152,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldNotTrimTrailingNonBreakingSpacesInMultilineText() {
     driver.get(pages.simpleTestPage);
     WebElement element = driver.findElement(By.id("multilinenbsp"));
@@ -147,6 +161,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testHavingInlineElementsShouldNotAffectHowTextIsReturned() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("inline")).getText();
@@ -164,7 +179,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
-  public void testShouldRetainTheFormatingOfTextWithinAPreElement() {
+  public void testShouldRetainTheFormattingOfTextWithinAPreElement() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("preformatted")).getText();
 
@@ -175,6 +190,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldRetainTheFormatingOfTextWithinAPreElementThatIsWithinARegularBlock() {
     driver.get(pages.simpleTestPage);
     String text = driver.findElement(By.id("div-with-pre")).getText();
@@ -215,6 +231,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldReturnEmptyStringWhenTextIsOnlySpaces() {
     driver.get(pages.xhtmlTestPage);
 
@@ -249,6 +266,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleSiblingBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 
@@ -258,6 +276,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleNestedBlockLevelElements() {
     driver.get(pages.simpleTestPage);
 
@@ -268,6 +287,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldHandleWhitespaceInInlineElements() {
     driver.get(pages.simpleTestPage);
 
@@ -285,6 +305,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testGetTextWithLineBreakForInlineElement() {
     driver.get(pages.simpleTestPage);
 
@@ -310,6 +331,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldOnlyIncludeVisibleText() {
     driver.get(pages.javascriptPage);
 
@@ -321,6 +343,7 @@ public class TextHandlingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
   public void testShouldGetTextFromTableCells() {
     driver.get(pages.tables);
 
@@ -414,6 +437,18 @@ public class TextHandlingTest extends JUnit4TestBase {
     assertThat(driver.findElement(By.id("point")).getText(), is("12.345"));
     assertThat(driver.findElement(By.id("comma")).getText(), is("12,345"));
     assertThat(driver.findElement(By.id("space")).getText(), is("12 345"));
+  }
+
+  @Test
+  @NotYetImplemented(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=2155")
+  @NotYetImplemented(HTMLUNIT)
+  @NotYetImplemented(value = SAFARI, reason = "getText does not normalize spaces")
+  public void canHandleTextTransformProperty() {
+    driver.get(pages.simpleTestPage);
+    assertThat(driver.findElement(By.id("capitalized")).getText(), is(
+        isChrome(driver) ? "Hello, World! Bla-Bla-BLA" : "Hello, World! Bla-bla-BLA"));
+    assertThat(driver.findElement(By.id("lowercased")).getText(), is("hello, world! bla-bla-bla"));
+    assertThat(driver.findElement(By.id("uppercased")).getText(), is("HELLO, WORLD! BLA-BLA-BLA"));
   }
 
 }

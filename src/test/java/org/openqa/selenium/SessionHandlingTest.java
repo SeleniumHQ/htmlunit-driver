@@ -53,7 +53,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
-  @Ignore(value = SAFARI, reason = "throws NullPointerException")
+  @NotYetImplemented(value = SAFARI, reason = "throws NoSuchWindowException")
   @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/689")
   public void callingAnyOperationAfterClosingTheLastWindowShouldThrowAnException() {
     driver.close();
@@ -64,12 +64,18 @@ public class SessionHandlingTest extends JUnit4TestBase {
 
   @NoDriverAfterTest
   @Test
-  @Ignore(value = SAFARI, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     driver.quit();
     sleepTight(3000);
     Throwable t = catchThrowable(driver::getCurrentUrl);
     assertThat(t, instanceOf(NoSuchSessionException.class));
+  }
+
+  @NoDriverAfterTest
+  @Test
+  public void shouldContinueAfterSleep() {
+    sleepTight(10000);
+    driver.getWindowHandle(); // should not throw
   }
 
   private void sleepTight(long duration) {

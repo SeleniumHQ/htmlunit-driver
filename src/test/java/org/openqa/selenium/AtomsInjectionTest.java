@@ -17,28 +17,17 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-/**
- * Tests for generic WebElement.
- */
-public class WebElementTest extends JUnit4TestBase {
+public class AtomsInjectionTest extends JUnit4TestBase {
 
   @Test
-  public void testElementImplementsWrapsDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(parent instanceof WrapsDriver);
+  public void testInjectingAtomShouldNotTrampleOnUnderscoreGlobal() {
+    driver.get(pages.underscorePage);
+    driver.findElement(By.tagName("body"));
+    assertEquals("123", ((JavascriptExecutor) driver).executeScript("return _.join('');"));
   }
-
-  @Test
-  public void testElementReturnsOriginDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(((WrapsDriver) parent).getWrappedDriver() == driver);
-  }
-
 }

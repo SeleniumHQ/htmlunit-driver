@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import java.util.List;
@@ -127,7 +127,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(value = MARIONETTE, reason = "https://github.com/mozilla/geckodriver/issues/668")
+  @NotYetImplemented(SAFARI)
   public void testShouldThrowExceptionIfSendingKeysToElementDisabledUsingRandomDisabledStrings() {
     driver.get(pages.formPage);
     WebElement disabledTextElement1 = driver.findElement(By.id("disabledTextElement1"));
@@ -291,6 +291,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
 
   // This is a test-case re-creating issue 900.
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldReturnValueOfOnClickAttribute() {
     driver.get(pages.javascriptPage);
 
@@ -353,6 +354,7 @@ public class ElementAttributeTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
   public void testShouldReturnTrueForPresentBooleanAttributes() {
     driver.get(pages.booleanAttributes);
     WebElement element1 = driver.findElement(By.id("emailRequired"));

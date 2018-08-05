@@ -22,6 +22,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import java.util.List;
@@ -29,11 +31,14 @@ import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SvgElementTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = HTMLUNIT, reason="test should enable JavaScript")
+  @NotYetImplemented(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1415068")
+  @NotYetImplemented(SAFARI)
   public void testShouldClickOnGraphVisualElements() {
     assumeFalse("IE version < 9 doesn't support SVG", isOldIe(driver));
 

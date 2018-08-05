@@ -39,6 +39,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
+import org.openqa.selenium.testing.NotYetImplemented;
 
 @NeedsLocalEnvironment(reason =
     "Executing these tests over the wire doesn't work, because they relies on 100ms-specific timing")
@@ -127,7 +128,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   @Ignore(MARIONETTE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldImplicitlyWaitForAnElementToBeVisibleBeforeInteracting() {
     driver.get(pages.dynamicPage);
 
@@ -142,7 +143,7 @@ public class ImplicitWaitTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
     driver.manage().timeouts().implicitlyWait(1, SECONDS);
     driver.get(pages.xhtmlTestPage);

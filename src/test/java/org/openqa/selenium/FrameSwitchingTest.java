@@ -237,7 +237,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrame() {
     driver.get(pages.framesetPage);
 
@@ -247,7 +246,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFrameFromASecondLevelFrame() {
     driver.get(pages.framesetPage);
 
@@ -258,7 +256,7 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
+  @NotYetImplemented(SAFARI)
   public void testSwitchingToParentFrameFromDefaultContextIsNoOp() {
     driver.get(pages.xhtmlTestPage);
     driver.switchTo().parentFrame();
@@ -267,7 +265,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testShouldBeAbleToSwitchToParentFromAnIframe() {
     driver.get(pages.iframePage);
     driver.switchTo().frame(0);
@@ -299,8 +296,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
-  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage()
-      throws Exception {
+  @NotYetImplemented(SAFARI)
+  public void testShouldFocusOnTheReplacementWhenAFrameFollowsALinkToA_TopTargetedPage() {
     driver.get(pages.framesetPage);
 
     driver.switchTo().frame(0);
@@ -388,7 +385,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrl() {
     driver.get(pages.framesetPage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.framesetPage));
@@ -399,7 +395,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(SAFARI)
   public void testGetCurrentUrlReturnsTopLevelBrowsingContextUrlForIframes() {
     driver.get(pages.iframePage);
     assertThat(driver.getCurrentUrl(), equalTo(pages.iframePage));
@@ -470,7 +465,6 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   @Ignore(CHROME)
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/614")
-  @Ignore(SAFARI)
   @NotYetImplemented(HTMLUNIT)
   public void testShouldNotBeAbleToDoAnythingTheFrameIsDeletedFromUnderUs() {
     driver.get(appServer.whereIs("frame_switching_tests/deletingFrame.html"));
@@ -500,6 +494,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
   }
 
   @Test
+  @NotYetImplemented(SAFARI)
+  @Ignore(value = CHROME, reason = "Unstable")
   public void testShouldNotSwitchMagicallyToTheTopWindow() {
     String baseUrl = appServer.whereIs("frame_switching_tests/");
     driver.get(baseUrl + "bug4876.html");

@@ -17,28 +17,39 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
-/**
- * Tests for generic WebElement.
- */
-public class WebElementTest extends JUnit4TestBase {
+public class RotatableTest extends JUnit4TestBase {
 
-  @Test
-  public void testElementImplementsWrapsDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(parent instanceof WrapsDriver);
+  private Rotatable rotatable;
+
+  @Before
+  public void setUp() {
+    assumeTrue(driver instanceof Rotatable);
+    rotatable = (Rotatable) driver;
   }
 
   @Test
-  public void testElementReturnsOriginDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(((WrapsDriver) parent).getWrappedDriver() == driver);
+  public void testRotateToLandscapeMode() {
+    rotatable.rotate(ScreenOrientation.LANDSCAPE);
+    assertEquals(ScreenOrientation.LANDSCAPE, rotatable.getOrientation());
+  }
+
+  @Test
+  public void testRotateToPortrait() {
+    rotatable.rotate(ScreenOrientation.PORTRAIT);
+    assertEquals(ScreenOrientation.PORTRAIT, rotatable.getOrientation());
+  }
+
+  @Test
+  public void testGetOrientationReturnsInitialValue() {
+    assertNotNull(rotatable.getOrientation());
   }
 
 }

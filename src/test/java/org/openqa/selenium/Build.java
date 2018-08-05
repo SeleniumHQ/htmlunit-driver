@@ -29,12 +29,10 @@ import java.util.logging.Logger;
 
 import org.openqa.selenium.testing.InProject;
 
-import com.google.common.collect.Lists;
-
 public class Build {
   private static Logger log = Logger.getLogger(Build.class.getName());
 
-  private List<String> targets = Lists.newArrayList();
+  private List<String> targets = new ArrayList<>();
 
   public Build of(String... targets) {
     this.targets.addAll(Arrays.asList(targets));

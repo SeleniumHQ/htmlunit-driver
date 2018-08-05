@@ -17,28 +17,45 @@
 
 package org.openqa.selenium;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 import org.junit.Test;
-import org.openqa.selenium.testing.JUnit4TestBase;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 /**
- * Tests for generic WebElement.
+ * Tests WebDriver's Point class.
  */
-public class WebElementTest extends JUnit4TestBase {
+@RunWith(JUnit4.class)
+public class PointTest {
 
   @Test
-  public void testElementImplementsWrapsDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(parent instanceof WrapsDriver);
+  public void testSimpleAssignment() {
+    Point p1 = new Point(30, 50);
+    assertEquals(30, p1.getX());
+    assertEquals(50, p1.getY());
   }
 
   @Test
-  public void testElementReturnsOriginDriver() {
-    driver.get(pages.simpleTestPage);
-    WebElement parent = driver.findElement(By.id("containsSomeDiv"));
-    assertTrue(((WrapsDriver) parent).getWrappedDriver() == driver);
+  public void testEquality() {
+    Point p1 = new Point(30, 60);
+    Point p2 = new Point(40, 60);
+
+    assertNotSame(p1, p2);
+    // Doesn't have to be different, but known to be different for this case.
+    assertNotSame(p1.hashCode(), p2.hashCode());
+
+    Point p1copy = new Point(30, 60);
+
+    assertEquals(p1, p1copy);
+    assertEquals(p1.hashCode(), p1copy.hashCode());
   }
 
+  @Test
+  public void testMoveBy() {
+    Point p1 = new Point(31, 42);
+
+    assertEquals(new Point(35, 47), p1.moveBy(4, 5));
+  }
 }

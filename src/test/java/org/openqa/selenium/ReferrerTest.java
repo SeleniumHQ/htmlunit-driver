@@ -32,9 +32,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
@@ -62,7 +62,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 import com.google.common.net.HttpHeaders;
 
@@ -387,7 +386,7 @@ public class ReferrerTest extends JUnit4TestBase {
 
   private static String encode(String url) {
     try {
-      return URLEncoder.encode(url, StandardCharsets.UTF_8.name());
+      return URLEncoder.encode(url, UTF_8.name());
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException("UTF-8 should always be supported!", e);
     }
@@ -476,7 +475,7 @@ public class ReferrerTest extends JUnit4TestBase {
       addHandler(new AbstractHandler() {
         @Override
         public void handle(String s, Request baseRequest, HttpServletRequest request,
-                           HttpServletResponse response) throws IOException, ServletException {
+                           HttpServletResponse response) throws IOException {
           response.setContentType("application/x-javascript-config; charset=us-ascii");
           response.setStatus(HttpServletResponse.SC_OK);
           response.getWriter().println(getPacFileContents());
@@ -499,7 +498,7 @@ public class ReferrerTest extends JUnit4TestBase {
     private final List<HttpRequest> requests;
 
     TestServer() {
-      requests = Lists.newCopyOnWriteArrayList();
+      requests = new CopyOnWriteArrayList<>();
       addHandler(new PageRequestHandler(requests));
     }
 
@@ -514,7 +513,7 @@ public class ReferrerTest extends JUnit4TestBase {
     private String pacFileContents;
 
     ProxyServer() {
-      requests = Lists.newCopyOnWriteArrayList();
+      requests = new CopyOnWriteArrayList<>();
       addHandler(new PageRequestHandler(requests) {
         @Override
         public void handle(String s, Request baseRequest, HttpServletRequest request,
