@@ -20,7 +20,7 @@ package org.openqa.selenium;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.openqa.selenium.internal.WrapsDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.testing.JUnit4TestBase;
 
 /**

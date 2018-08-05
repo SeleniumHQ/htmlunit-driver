@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import java.util.List;
 
 import org.junit.Test;
-import org.openqa.selenium.internal.WrapsElement;
 import org.openqa.selenium.remote.RemoteWebElement;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
