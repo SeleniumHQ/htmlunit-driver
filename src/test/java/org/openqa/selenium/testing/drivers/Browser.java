@@ -36,8 +36,7 @@ public enum Browser {
   public static Browser detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-      log.info("No browser detected, returning null");
-      return null;
+        return htmlunit;
     }
 
     try {

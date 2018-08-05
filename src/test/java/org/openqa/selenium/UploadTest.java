@@ -29,7 +29,6 @@ import static org.openqa.selenium.testing.Driver.CHROME;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -84,7 +83,6 @@ public class UploadTest extends JUnit4TestBase {
 
   @Test
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
@@ -98,7 +96,6 @@ public class UploadTest extends JUnit4TestBase {
   @Ignore(IE)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/1011")
   @Ignore(CHROME)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
   public void testClickFileInput() throws Exception {

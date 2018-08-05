@@ -36,7 +36,6 @@ import static org.openqa.selenium.testing.Driver.FIREFOX;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Driver.PHANTOMJS;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
@@ -275,7 +274,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
   @NotYetImplemented(HTMLUNIT)
@@ -524,7 +522,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(MARIONETTE)
   public void testShouldBeAbleToReturnADateObject() {
@@ -542,7 +539,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test(timeout = 10000)
   @Ignore(CHROME)
   @Ignore(IE)
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(value = MARIONETTE, issue = "https://github.com/mozilla/geckodriver/issues/904")
   public void shouldReturnDocumentElementIfDocumentIsReturned() {
@@ -556,7 +552,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
 
   @Test(timeout = 10000)
   @Ignore(value = IE, reason = "returns WebElement")
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(HTMLUNIT)
   public void shouldHandleObjectThatThatHaveToJSONMethod() {
@@ -570,7 +565,6 @@ public class ExecutingJavascriptTest extends JUnit4TestBase {
   @Test(timeout = 10000)
   @Ignore(CHROME)
   @Ignore(value = IE, issue = "540")
-  @Ignore(PHANTOMJS)
   @Ignore(SAFARI)
   @Ignore(value = FIREFOX, issue = "540")
   @Ignore(HTMLUNIT)
