@@ -43,7 +43,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -196,14 +195,12 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Test
-  @NotYetImplemented(SAFARI)
   public void testCanClickOnLinks() {
     navigateToClicksPageAndClickLink();
   }
 
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testCanClickOnLinksWithAnOffset() {
     driver.get(pages.clicksPage);
 
@@ -261,7 +258,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
    */
   @Test
   @NotYetImplemented(HTMLUNIT)
-  @NotYetImplemented(SAFARI)
   public void testMouseMovementWorksWhenNavigatingToAnotherPage() {
     navigateToClicksPageAndClickLink();
 
@@ -284,7 +280,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     driver.get(pages.javascriptPage);
 
-System.out.println(driver.getPageSource());
     WebElement element = driver.findElement(By.id("keyReporter"));
 
     new Actions(driver)
@@ -338,7 +333,6 @@ System.out.println(driver.getPageSource());
 
   @Test
   @Ignore(IE)
-  @NotYetImplemented(SAFARI)
   public void testHoldingDownShiftKeyWhileClicking() {
     driver.get(pages.clickEventPage);
 
