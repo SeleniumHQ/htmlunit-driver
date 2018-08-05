@@ -29,7 +29,6 @@ public enum Browser {
   none, // For those cases where you don't actually want a browser
   opera,
   operablink,
-  phantomjs,
   safari;
 
   private static final Logger log = Logger.getLogger(Browser.class.getName());
@@ -37,7 +36,8 @@ public enum Browser {
   public static Browser detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-      return htmlunit;
+      log.info("No browser detected, returning null");
+      return null;
     }
 
     try {
