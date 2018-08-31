@@ -432,14 +432,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       }
       finally {
         conditionLock.lock();
-        mainCondition.signal();
         runAsyncRunning = false;
+        mainCondition.signal();
         conditionLock.unlock();
       }
     };
     executor.execute(wrapped);
 
-    if (loadStrategyWait) {
+    if (loadStrategyWait && this.runAsyncRunning) {
       mainCondition.awaitUninterruptibly();
       conditionLock.unlock();
     }
