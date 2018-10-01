@@ -18,11 +18,7 @@
 package org.openqa.selenium;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -528,7 +524,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(e, is(instanceOf(TimeoutException.class)));
 
       long duration = end - start;
-      assertThat(duration, greaterThan(webDriverPageLoadTimeout * 1000));
+      assertThat(duration, greaterThanOrEqualTo(webDriverPageLoadTimeout * 1000));
       assertThat(duration, lessThan((webDriverPageLoadTimeout + pageLoadTimeBuffer) * 1000));
     }
   }
