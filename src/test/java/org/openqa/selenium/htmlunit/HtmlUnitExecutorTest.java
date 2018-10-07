@@ -21,13 +21,19 @@ import org.junit.Test;
 
 public class HtmlUnitExecutorTest {
 
+  /*
+   * There is a race condition within HtmlUnitDriver.runAsync such
+   * that the wrapped Runnable executes mainCondition.signal() before
+   * mainCondition.awaitUninterruptibly() is invoked. While this can be
+   * reproduced consistently when using an Executor that invokes Runnable.run
+   * on the main Thread, this issue has existed for some time as a race
+   * condition.
+   */
   @Test
   public void testExecutorImmediate() {
     HtmlUnitDriver driver = new HtmlUnitDriver();
     driver.setExecutor(r -> r.run());
 
     driver.runAsync(() -> {});
-
-    // no deadlock
   }
 }
