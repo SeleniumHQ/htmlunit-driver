@@ -6,4 +6,4 @@ jdk:
   - oraclejdk8
 
 script:
-  mvn test javadoc:javadoc
+  xvfb-run --server-args="-screen 0 1024x768x24" mvn test javadoc:javadoc
