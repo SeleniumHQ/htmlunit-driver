@@ -14,7 +14,7 @@ Add a dependency on the latest `htmlunit-driver` version available in the Maven 
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.33.0</version>
+    <version>2.33.1</version>
 </dependency>
 ```
 
