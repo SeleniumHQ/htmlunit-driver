@@ -1127,7 +1127,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return value;
   }
 
-  private Object getPrivateField(Object o, String fieldName) {
+  private static Object getPrivateField(Object o, String fieldName) {
     try {
       final Field field = o.getClass().getDeclaredField(fieldName);
       field.setAccessible(true);
@@ -1628,7 +1628,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
   }
 
-  private boolean isChild(WebWindow parent, WebWindow potentialChild) {
+  private static boolean isChild(WebWindow parent, WebWindow potentialChild) {
     for (WebWindow child = potentialChild; child != null ; child = child.getParentWindow()) {
       if (child == parent) {
         return true;
@@ -1645,7 +1645,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       try {
         return condition.call();
       } catch (RuntimeException e) {
-          throw (RuntimeException) e;
+          throw e;
       } catch (Exception e) {
         throw new WebDriverException(e);
       }
