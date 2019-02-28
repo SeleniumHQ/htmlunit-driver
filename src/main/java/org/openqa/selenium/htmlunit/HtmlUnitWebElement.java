@@ -37,15 +37,15 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsDriver;
+import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.internal.Coordinates;
+import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.internal.FindsByCssSelector;
 import org.openqa.selenium.internal.FindsById;
 import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.interactions.internal.Locatable;
-import org.openqa.selenium.WrapsDriver;
-import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
@@ -312,14 +312,13 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
 
     if ("href".equals(lowerName) || "src".equals(lowerName)) {
-      if (!element.hasAttribute(name)) {
-        return null;
+      String link = element.getAttribute(name);
+      if (DomElement.ATTRIBUTE_NOT_DEFINED == link) {
+          return null;
       }
-
-      String link = element.getAttribute(name).trim();
       HtmlPage page = (HtmlPage) element.getPage();
       try {
-        return page.getFullyQualifiedUrl(link).toString();
+        return page.getFullyQualifiedUrl(link.trim()).toString();
       } catch (MalformedURLException e) {
         return null;
       }
@@ -505,17 +504,17 @@ public class HtmlUnitWebElement implements WrapsDriver,
   }
 
   @Override
-  public WebElement findElementById(String id) {
+  public WebElement findElementById(String elemId) {
     assertElementNotStale();
 
-    return findElementByXPath(".//*[@id = '" + id + "']");
+    return findElementByXPath(".//*[@id = '" + elemId + "']");
   }
 
   @Override
-  public List<WebElement> findElementsById(String id) {
+  public List<WebElement> findElementsById(String elemId) {
     assertElementNotStale();
 
-    return findElementsByXPath(".//*[@id = '" + id + "']");
+    return findElementsByXPath(".//*[@id = '" + elemId + "']");
   }
 
   @Override
