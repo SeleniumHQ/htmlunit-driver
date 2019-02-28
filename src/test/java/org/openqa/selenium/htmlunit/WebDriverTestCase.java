@@ -127,7 +127,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * All browsers supported.
    */
   public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_52,
-      BrowserVersion.FIREFOX_60, BrowserVersion.INTERNET_EXPLORER, BrowserVersion.EDGE};
+      BrowserVersion.FIREFOX_60, BrowserVersion.INTERNET_EXPLORER};
 
   /**
    * Browsers which run by default.
@@ -453,9 +453,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
       }
       if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {
           return BrowserType.IE;
-      }
-      if (browserVersion == BrowserVersion.EDGE) {
-          return BrowserType.EDGE;
       }
       return BrowserType.CHROME;
   }
@@ -804,7 +801,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   /**
    * Defines the provided HTML as the response for {@link #getDefaultUrl()}
    * and loads the page with this URL using the current WebDriver version; finally, asserts that the
-   * alerts equal the expected alerts (in which "§§URL§§" has been expanded to the default URL).
+   * alerts equal the expected alerts (in which "ï¿½ï¿½URLï¿½ï¿½" has been expanded to the default URL).
    * @param html the HTML to use
    * @return the web driver
    * @throws Exception if something goes wrong
@@ -816,7 +813,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   /**
    * Defines the provided HTML as the response for {@link #getDefaultUrl()}
    * and loads the page with this URL using the current WebDriver version; finally, asserts that the
-   * alerts equal the expected alerts (in which "§§URL§§" has been expanded to the default URL).
+   * alerts equal the expected alerts (in which "ï¿½ï¿½URLï¿½ï¿½" has been expanded to the default URL).
    * @param html the HTML to use
    * @param maxWaitTime the maximum time to wait to get the alerts (in millis)
    * @return the web driver

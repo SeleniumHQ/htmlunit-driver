@@ -285,12 +285,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     setProxySettings(Proxy.extractFrom(capabilities));
 
     setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
-    
+
     unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
     if (unexpectedAlertBehaviour == null) {
       unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
     }
-    
+
     Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
     if (acceptSslCerts == null) {
       acceptSslCerts = true;
@@ -336,10 +336,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       case BrowserType.IE:
         browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
         break;
-
-      case BrowserType.EDGE:
-          browserVersionObject = BrowserVersion.EDGE;
-          break;
 
       case BrowserType.FIREFOX:
         try {
@@ -421,7 +417,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       conditionLock.lock();
       runAsyncRunning = true;
     }
-    
+
     exception = null;
     Runnable wrapped = () -> {
       try {

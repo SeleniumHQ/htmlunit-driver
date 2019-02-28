@@ -205,6 +205,7 @@ public class HtmlUnitAlert implements Alert {
       this.value = keysToSend;
     }
 
+    @Override
     void accept() {
       if (value == null) {
         value = defaultMessage;

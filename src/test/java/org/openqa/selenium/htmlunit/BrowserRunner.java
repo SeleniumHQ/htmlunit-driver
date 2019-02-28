@@ -83,9 +83,6 @@ public class BrowserRunner extends Suite {
                 if (browsers.contains("ie")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, true));
                 }
-                if (browsers.contains("edge")) {
-                    runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, true));
-                }
             }
 
             if (browsers.contains("hu-chrome")) {
@@ -99,9 +96,6 @@ public class BrowserRunner extends Suite {
             }
             if (browsers.contains("hu-ie")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, false));
-            }
-            if (browsers.contains("hu-edge")) {
-                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, false));
             }
         }
         else {
@@ -159,9 +153,6 @@ public class BrowserRunner extends Suite {
 
         /** Internet Explorer 11. */
         IE,
-
-        /** Edge. */
-        EDGE,
 
         /** All versions of Firefox. */
         FF,
@@ -248,12 +239,6 @@ public class BrowserRunner extends Suite {
         String[] IE() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Edge.
-         * @return the alerts
-         */
-        String[] EDGE() default { EMPTY_DEFAULT };
-
-        /**
          * Alerts for any Firefox, it can be overridden by specific FF version.
          * @return the alerts
          */
@@ -293,7 +278,7 @@ public class BrowserRunner extends Suite {
          * @return the browsers
          */
         Browser[] value() default {
-          Browser.IE, Browser.FF, Browser.CHROME, Browser.EDGE
+          Browser.IE, Browser.FF, Browser.CHROME
         };
 
         /**
@@ -315,7 +300,7 @@ public class BrowserRunner extends Suite {
          * @return the browsers
          */
         Browser[] value() default {
-          Browser.IE, Browser.FF, Browser.CHROME, Browser.EDGE
+          Browser.IE, Browser.FF, Browser.CHROME
         };
     }
 
