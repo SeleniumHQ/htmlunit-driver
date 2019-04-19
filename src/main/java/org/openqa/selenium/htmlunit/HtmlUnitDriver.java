@@ -85,6 +85,7 @@ import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
 import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -170,6 +171,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.NORMAL;
   private int elementsCounter;
   private Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> elementsMap = new WeakHashMap<>();
+  private Options options;
 
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
   public static final String INVALIDSELECTIONERROR =
@@ -266,6 +268,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     get(webClient.getOptions().getHomePage());
     gotPage = false;
     resetKeyboardAndMouseState();
+
+    options = new HtmlUnitOptions();
   }
 
   /**
@@ -368,23 +372,23 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private WebClient createWebClient(BrowserVersion version) {
-    WebClient client = newWebClient(version);
-    WebClientOptions options = client.getOptions();
-    options.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
-    options.setThrowExceptionOnFailingStatusCode(false);
-    options.setPrintContentOnFailingStatusCode(false);
-    options.setJavaScriptEnabled(enableJavascript);
-    options.setRedirectEnabled(true);
-    options.setUseInsecureSSL(true);
+    WebClient client = new WebClient(version);
+    final WebClientOptions clienOptions = client.getOptions();
+    clienOptions.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
+    clienOptions.setThrowExceptionOnFailingStatusCode(false);
+    clienOptions.setPrintContentOnFailingStatusCode(false);
+    clienOptions.setJavaScriptEnabled(enableJavascript);
+    clienOptions.setRedirectEnabled(true);
+    clienOptions.setUseInsecureSSL(true);
 
     // Ensure that we've set the proxy if necessary
     if (proxyConfig != null) {
-      options.setProxyConfig(proxyConfig);
+      clienOptions.setProxyConfig(proxyConfig);
     }
 
     client.setRefreshHandler(new WaitingRefreshHandler());
 
-    return modifyWebClient(client);
+    return client;
   }
 
   /**
@@ -479,28 +483,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    */
   public BrowserVersion getBrowserVersion() {
     return webClient.getBrowserVersion();
-  }
-
-  /**
-   * Create the underlying WebClient, but don't set any fields on it.
-   *
-   * @param version Which browser to emulate
-   * @return a new instance of WebClient.
-   */
-  protected WebClient newWebClient(BrowserVersion version) {
-    return new WebClient(version);
-  }
-
-  /**
-   * Child classes can override this method to customize the WebClient that the HtmlUnit driver
-   * uses.
-   *
-   * @param client The client to modify
-   * @return The modified client
-   */
-  protected WebClient modifyWebClient(WebClient client) {
-    // Does nothing here to be overridden.
-    return client;
   }
 
   /**
@@ -1755,14 +1737,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public Options manage() {
-    return new HtmlUnitOptions();
+    return options;
   }
 
   private class HtmlUnitOptions implements Options {
+    private final HtmlUnitLogs logs;
+
+    public HtmlUnitOptions() {
+      logs = new HtmlUnitLogs(getWebClient());
+    }
 
     @Override
     public Logs logs() {
-      throw new UnsupportedOperationException("Driver does not support this operation.");
+      return logs;
     }
 
     @Override
