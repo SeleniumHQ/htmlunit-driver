@@ -4,6 +4,12 @@
 
 HtmlUnitDriver is a WebDriver compatible driver for [HtmlUnit](http://htmlunit.sourceforge.net/) headless browser.
 
+## Source code
+[<img src="http://htmlunit.sourceforge.net/images/logos/github.png" alt="GitHub" height="73" width="60">](https://github.com/HtmlUnit/htmlunit)
+
+## News
+[<img src="http://htmlunit.sourceforge.net/images/logos/twitter.png" alt="Twitter" height="73" width="60">](https://twitter.com/HtmlUnit)
+
 ## Download and Installation
 
 ### Maven/Gradle/...
