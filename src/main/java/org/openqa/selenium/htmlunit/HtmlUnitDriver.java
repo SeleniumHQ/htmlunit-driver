@@ -372,7 +372,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private WebClient createWebClient(BrowserVersion version) {
-    WebClient client = new WebClient(version);
+    WebClient client = newWebClient(version);
+
     final WebClientOptions clienOptions = client.getOptions();
     clienOptions.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
     clienOptions.setThrowExceptionOnFailingStatusCode(false);
@@ -388,7 +389,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     client.setRefreshHandler(new WaitingRefreshHandler());
 
-    return client;
+    return modifyWebClient(client);
   }
 
   /**
@@ -483,6 +484,28 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    */
   public BrowserVersion getBrowserVersion() {
     return webClient.getBrowserVersion();
+  }
+
+  /**
+   * Create the underlying WebClient, but don't set any fields on it.
+   *
+   * @param version Which browser to emulate
+   * @return a new instance of WebClient.
+   */
+  protected WebClient newWebClient(BrowserVersion version) {
+    return new WebClient(version);
+  }
+
+  /**
+   * Child classes can override this method to customize the WebClient that the HtmlUnit driver
+   * uses.
+   *
+   * @param client The client to modify
+   * @return The modified client
+   */
+  protected WebClient modifyWebClient(WebClient client) {
+    // Does nothing here to be overridden.
+    return client;
   }
 
   /**
