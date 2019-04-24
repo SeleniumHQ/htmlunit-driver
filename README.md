@@ -2,7 +2,7 @@
 
 # HtmlUnitDriver
 
-HtmlUnitDriver is a WebDriver compatible driver for [HtmlUnit](http://htmlunit.sourceforge.net/) headless browser.
+HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlunit.sourceforge.net/) headless browser.
 
 ##### News
 [<img src="http://htmlunit.sourceforge.net/images/logos/twitter.png" alt="Twitter" height="44" width="60">](https://twitter.com/HtmlUnit)
