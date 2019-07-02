@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -842,6 +843,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       alert.close();
       webClient.close();
       webClient = null;
+    }
+    if (executor instanceof ExecutorService) {
+        ((ExecutorService)executor).shutdown();
     }
     currentWindow = null;
   }
