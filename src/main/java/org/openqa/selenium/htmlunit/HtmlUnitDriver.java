@@ -188,7 +188,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private Condition mainCondition = conditionLock.newCondition();
   private boolean runAsyncRunning;
   private RuntimeException exception;
-  private Executor executor = Executors.newCachedThreadPool();
+  private final ExecutorService defaultExecutor;
+  private Executor executor;
 
   /**
    * Constructs a new instance with JavaScript disabled,
@@ -230,6 +231,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     currentWindow = webClient.getCurrentWindow();
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
     unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+
+    defaultExecutor = Executors.newCachedThreadPool();
+    executor = defaultExecutor;
+
 
     webClient.addWebWindowListener(new WebWindowListener() {
       @Override
@@ -637,7 +642,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   /**
-   * Sets the {@link Executor} to be used for submitting async tasks to
+   * Sets the {@link Executor} to be used for submitting async tasks to.
+   * You have to close this manually on {@link #quit()}
    * @param executor the {@link Executor} to use
    */
   public void setExecutor(Executor executor) {
@@ -844,9 +850,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       webClient.close();
       webClient = null;
     }
-    if (executor instanceof ExecutorService) {
-        ((ExecutorService)executor).shutdown();
-    }
+    defaultExecutor.shutdown();
     currentWindow = null;
   }
 
