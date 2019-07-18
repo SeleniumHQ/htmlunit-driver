@@ -321,9 +321,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
-    if (!BrowserType.HTMLUNIT.equals(capabilities.getBrowserName())) {
-      throw new IllegalArgumentException("Browser name must be " + BrowserType.HTMLUNIT);
+    String capBrowserName = capabilities.getBrowserName();
+    if (!BrowserType.HTMLUNIT.equals(capBrowserName)) {
+      throw new IllegalArgumentException("When building an HtmlUntDriver, the capability browser name must be set to '"
+                          + BrowserType.HTMLUNIT + "' but was '" + capBrowserName + "'.");
     }
+
     String browserName;
     String browserVersion;
 

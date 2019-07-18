@@ -17,12 +17,13 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_60;
 import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_52;
+import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_60;
 import static com.gargoylesoftware.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.determineBrowserVersion;
@@ -40,12 +41,18 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  */
 public class HtmlUnitCapabilitiesTest {
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void configurationViaDirectCapabilities() {
-    DesiredCapabilities ieCapabilities =
-        new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
+    DesiredCapabilities ieCapabilities = new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
-    determineBrowserVersion(ieCapabilities);
+    try {
+        determineBrowserVersion(ieCapabilities);
+        fail("IllegalArgumentException expected");
+    }
+    catch (IllegalArgumentException e) {
+        assertEquals("When building an HtmlUntDriver, the capability browser name "
+                        + "must be set to 'htmlunit' but was 'internet explorer'.", e.getMessage());
+    }
   }
 
   @Test
