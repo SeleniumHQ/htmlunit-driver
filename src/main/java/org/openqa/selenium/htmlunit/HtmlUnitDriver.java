@@ -709,7 +709,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     try {
       // we can't use webClient.getPage(url) here because selenium has a different idea
       // of the current window and we like to load into to selenium current one
-      final WebRequest request = new WebRequest(fullUrl, getBrowserVersion().getHtmlAcceptHeader());
+      final BrowserVersion browser = getBrowserVersion();
+      final WebRequest request = new WebRequest(fullUrl, browser.getHtmlAcceptHeader(), browser.getAcceptEncodingHeader());
       request.setCharset(StandardCharsets.UTF_8);
       getWebClient().getPage(getCurrentWindow().getTopWindow(), request);
 
