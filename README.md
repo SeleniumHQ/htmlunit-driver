@@ -21,6 +21,55 @@ Add a dependency on the latest `htmlunit-driver` version available in the Maven 
 </dependency>
 ```
 
+## Usage
+
+### Simple
+
+You can simply use one of the constructors from the HtmlUnit driver class
+
+```java
+// simple case - no javascript support
+WebDriver webDriver = new HtmlUnitDriver();
+```
+
+```java
+// specify the browser - no javascript support
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60);
+```
+
+```java
+// simple case - javascript support enabled
+WebDriver webDriver = new HtmlUnitDriver(true);
+```
+
+```java
+// specify the browser - javascript support enabled
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true);
+```
+
+
+### More customization
+
+HtmlUnit offers a lot more customization options. To adjust these options you can use this pattern.
+
+```java
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true) {
+    @Override
+    protected WebClient modifyWebClient(WebClient client) {
+        final WebClient webClient = super.modifyWebClient(client);
+        // you might customize the client here
+        webClient.getOptions().setCssEnabled(false);
+
+       return webClient;
+    }
+};
+```
+
+And for some special cases you and also overwrite the method newWebClient(final BrowserVersion version) to
+adjust the adjust the webClient before the standard WebDriver setup takes place or for constructing your
+own webClient.
+
+
 ## License
 
 HtmlUnitDriver is distributed under Apache License 2.0.
