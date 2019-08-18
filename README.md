@@ -66,7 +66,7 @@ WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true) {
 ```
 
 And for some special cases you and also overwrite the method newWebClient(final BrowserVersion version) to
-adjust the adjust the webClient before the standard WebDriver setup takes place or for constructing your
+adjust the webClient before the standard WebDriver setup takes place or for constructing your
 own webClient.
 
 
