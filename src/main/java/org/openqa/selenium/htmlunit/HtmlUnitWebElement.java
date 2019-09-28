@@ -463,7 +463,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
   @Override
   public String getText() {
     assertElementNotStale();
-    return element.getText();
+    return element.getVisibleText();
   }
 
   protected HtmlUnitDriver getParent() {
