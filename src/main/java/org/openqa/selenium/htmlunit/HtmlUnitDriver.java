@@ -354,15 +354,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         try {
           int version = Integer.parseInt(browserVersion);
           switch (version) {
-            case 52:
-              browserVersionObject = BrowserVersion.FIREFOX_52;
+            case 60:
+              browserVersionObject = BrowserVersion.FIREFOX_60;
               break;
 
             default:
-              browserVersionObject = BrowserVersion.FIREFOX_60;
+              browserVersionObject = BrowserVersion.FIREFOX_68;
           }
         } catch (NumberFormatException e) {
-            browserVersionObject = BrowserVersion.FIREFOX_60;
+            browserVersionObject = BrowserVersion.FIREFOX_68;
         }
         break;
 
