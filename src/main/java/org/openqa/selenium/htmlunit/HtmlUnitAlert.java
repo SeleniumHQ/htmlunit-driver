@@ -140,7 +140,12 @@ public class HtmlUnitAlert implements Alert {
     if (holder_ == null) {
       throw new NoAlertPresentException();
     }
-    return holder_.message;
+    String msg = holder_.message;
+    msg = msg.replace("\r\n", "\n");
+    if (!driver.getBrowserVersion().isFirefox60() && !driver.getBrowserVersion().isIE()) {
+        msg = msg.replace('\r', '\n');
+    }
+    return msg;
   }
 
   @Override

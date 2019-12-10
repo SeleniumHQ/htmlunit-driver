@@ -129,12 +129,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
   public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_60,
       BrowserVersion.FIREFOX_68, BrowserVersion.INTERNET_EXPLORER};
 
-  /**
-   * Browsers which run by default.
-   */
-  public static BrowserVersion[] DEFAULT_RUNNING_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX_68,
-      BrowserVersion.INTERNET_EXPLORER};
-
   private static final Log LOG = LogFactory.getLog(WebDriverTestCase.class);
 
   private static Set<String> BROWSERS_PROPERTIES_;
@@ -206,7 +200,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
               BROWSERS_PROPERTIES_ = new HashSet<>(Arrays.asList("hu"));
           }
           if (BROWSERS_PROPERTIES_.contains("hu")) {
-              for (final BrowserVersion browserVersion : DEFAULT_RUNNING_BROWSERS_) {
+              for (final BrowserVersion browserVersion : ALL_BROWSERS_) {
                   BROWSERS_PROPERTIES_.add("hu-" + browserVersion.getNickname().toLowerCase());
               }
           }

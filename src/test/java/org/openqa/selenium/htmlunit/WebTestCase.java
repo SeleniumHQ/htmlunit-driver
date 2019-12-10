@@ -129,7 +129,7 @@ public abstract class WebTestCase {
    * or not in {@link #createTestPageForRealBrowserIfNeeded(String,List)}.
    */
   public static final String PROPERTY_GENERATE_TESTPAGES
-  = "com.gargoylesoftware.htmlunit.WebTestCase.GenerateTestpages";
+                                  = "com.gargoylesoftware.htmlunit.WebTestCase.GenerateTestpages";
 
   private BrowserVersion browserVersion_;
 
@@ -138,9 +138,9 @@ public abstract class WebTestCase {
 
   /** To be documented. */
   protected static final BrowserVersion FLAG_ALL_BROWSERS
-  = new BrowserVersion.BrowserVersionBuilder(BrowserVersion.BEST_SUPPORTED)
-  .setApplicationName("FLAG_ALL_BROWSERS")
-  .build();
+                                          = new BrowserVersion.BrowserVersionBuilder(BrowserVersion.BEST_SUPPORTED)
+                                              .setApplicationName("FLAG_ALL_BROWSERS")
+                                              .build();
 
   /** To be documented. */
   protected static final ThreadLocal<BrowserVersion> generateTest_browserVersion_ = new ThreadLocal<>();

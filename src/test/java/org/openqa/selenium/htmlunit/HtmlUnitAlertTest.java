@@ -18,6 +18,8 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         + "    confirm('" + message + "');\n"
         + "</script>\n"
         + "</head>\n"
+        + "<body>\n"
+        + "</body>\n"
         + "</html>\n"
         ;
 
@@ -64,8 +66,10 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
             + "}\n"
             + "</script>\n"
             + "</head>\n"
+            + "<body>\n"
             + "<a id='confirm' href='http://htmlunit.sourceforge.net/' onclick='return runConfirm();'>Confirm</a>\n"
             + "<div id='message'>Default</div>"
+            + "</body>\n"
             + "</html>\n"
             ;
 
@@ -81,4 +85,28 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     assertEquals("ConfirmWithoutRedirect", driver.getTitle());
   }
 
+
+  @Test
+  public void alertWithLineBreak() throws Exception {
+    String html = "<html>\n"
+            + "<head>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "  <button id='clickMe' onClick='alert(\"1\\n2\\r\\n3\\t4\\r5\\n\\r6\")'>do it</button>\n"
+            + "</body>\n"
+            + "</html>\n"
+            ;
+
+    WebDriver driver = loadPage2(html);
+    driver.findElement(By.id("clickMe")).click();
+
+    // selenium seems to normalize this
+    if (getBrowserVersion().isFirefox60() || getBrowserVersion().isIE()) {
+        assertEquals("1\n2\n3\t4\r5\n\r6", driver.switchTo().alert().getText());
+    }
+    else {
+        assertEquals("1\n2\n3\t4\n5\n\n6", driver.switchTo().alert().getText());
+    }
+    driver.switchTo().alert().dismiss();
+  }
 }
