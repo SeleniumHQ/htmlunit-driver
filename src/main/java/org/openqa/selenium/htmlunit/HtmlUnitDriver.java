@@ -60,7 +60,6 @@ import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.Platform;
@@ -72,9 +71,12 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.UnsupportedCommandException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.interactions.Mouse;
@@ -85,8 +87,6 @@ import org.openqa.selenium.internal.FindsByLinkText;
 import org.openqa.selenium.internal.FindsByName;
 import org.openqa.selenium.internal.FindsByTagName;
 import org.openqa.selenium.internal.FindsByXPath;
-import org.openqa.selenium.WrapsElement;
-import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -97,6 +97,7 @@ import com.gargoylesoftware.css.parser.CSSException;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.BrowserVersion.BrowserVersionBuilder;
 import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.DialogWindow;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 import com.gargoylesoftware.htmlunit.ScriptResult;
@@ -111,10 +112,7 @@ import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
 import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
-import com.gargoylesoftware.htmlunit.html.BaseFrameElement;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
@@ -152,7 +150,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private static final int sleepTime = 200;
 
   private WebClient webClient;
-  private WebWindow currentWindow;
   private HtmlUnitAlert alert;
 
   // Fictive position just to implement the API
@@ -228,47 +225,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public HtmlUnitDriver(BrowserVersion version) {
     webClient = createWebClient(version);
     alert = new HtmlUnitAlert(this);
-    currentWindow = webClient.getCurrentWindow();
-    initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
+    initialWindowDimension = new Dimension(webClient.getCurrentWindow().getOuterWidth(), webClient.getCurrentWindow().getOuterHeight());
     unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
 
     defaultExecutor = Executors.newCachedThreadPool();
     executor = defaultExecutor;
-
-
-    webClient.addWebWindowListener(new WebWindowListener() {
-      @Override
-      public void webWindowOpened(WebWindowEvent webWindowEvent) {
-        // Ignore
-      }
-
-      @Override
-      public void webWindowContentChanged(WebWindowEvent event) {
-        elementsMap.remove(event.getOldPage());
-        if (event.getWebWindow() != currentWindow) {
-          return;
-        }
-
-        // Do we need to pick some new default content?
-        switchToDefaultContentOfWindow(currentWindow);
-      }
-
-      @Override
-      public void webWindowClosed(WebWindowEvent event) {
-        elementsMap.remove(event.getOldPage());
-        // Check if the event window refers to us or one of our parent windows
-        // setup the currentWindow appropriately if necessary
-        WebWindow curr = currentWindow;
-        do {
-          // Instance equality is okay in this case
-          if (curr == event.getWebWindow()) {
-            currentWindow = currentWindow.getTopWindow();
-            return;
-          }
-          curr = curr.getParentWindow();
-        } while (curr != currentWindow.getTopWindow());
-      }
-    });
 
     // Now put us on the home page, like a real browser
     get(webClient.getOptions().getHomePage());
@@ -715,7 +676,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       getWebClient().getPage(getCurrentWindow().getTopWindow(), request);
 
       // A "get" works over the entire page
-      currentWindow = getCurrentWindow().getTopWindow();
     } catch (UnknownHostException e) {
       getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
           new StringWebResponse("Unknown host", fullUrl),
@@ -734,20 +694,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     gotPage = true;
-    pickWindow();
     resetKeyboardAndMouseState();
   }
 
   private void resetKeyboardAndMouseState() {
     keyboard = new HtmlUnitKeyboard(this);
     mouse = new HtmlUnitMouse(this, keyboard);
-  }
-
-  protected void pickWindow() {
-    // TODO(simon): HtmlUnit tries to track the current window as the frontmost. We don't
-    if (currentWindow == null) {
-      currentWindow = getWebClient().getCurrentWindow();
-    }
   }
 
   @Override
@@ -855,7 +807,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       webClient = null;
     }
     defaultExecutor.shutdown();
-    currentWindow = null;
   }
 
   @Override
@@ -1178,13 +1129,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return targetLocator;
   }
 
-  private void switchToDefaultContentOfWindow(WebWindow window) {
-    Page page = window.getEnclosedPage();
-    if (page instanceof HtmlPage) {
-      currentWindow = window;
-    }
-  }
-
   @Override
   public Navigation navigate() {
     return new HtmlUnitNavigation();
@@ -1494,104 +1438,62 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   private class HtmlUnitTargetLocator implements TargetLocator {
-
-    @Override
+	@Override
+	public WebDriver frame(WebElement frameElement) {
+		throw new UnsupportedCommandException("Not implemented");		// better to avoid assigning WebElement to WebWindow
+	}
+	@Override
+	public WebDriver parentFrame() {
+		getWebClient().setCurrentWindow(getCurrentWindow().getParentWindow());
+		alert.setAutoAccept(false);
+		return HtmlUnitDriver.this;
+	}
+	@Override
     public WebDriver frame(int index) {
-      Page page = lastPage();
-      if (page instanceof HtmlPage) {
-        try {
-          currentWindow = ((HtmlPage) page).getFrames().get(index);
-        } catch (IndexOutOfBoundsException ignored) {
-          throw new NoSuchFrameException("Cannot find frame: " + index);
+		HtmlPage page = (HtmlPage) getCurrentWindow().getEnclosedPage();
+    	List<FrameWindow> frames = page.getFrames();
+    	if (index >= frames.size())
+    		throw new IndexOutOfBoundsException("Attempt to select frame " + index + " of " + frames.size() + " frames");
+    	getWebClient().setCurrentWindow(frames.get(index));
+    	
+		alert.setAutoAccept(false);
+		return HtmlUnitDriver.this;
+    }
+	@Override
+	public WebDriver frame(String frameName) {
+		if (frameName == null) {
+			getWebClient().setCurrentWindow(getCurrentWindow().getTopWindow());
+		} else {
+			HtmlPage page = (HtmlPage) getCurrentWindow().getEnclosedPage();
+	    	FrameWindow frame = page.getFrameByName(frameName);
+	    	getWebClient().setCurrentWindow(frame);
+		}
+		
+		alert.setAutoAccept(false);
+		return HtmlUnitDriver.this;
+	}
+	public WebWindow getTopLevelOrDialog(final String name) throws WebWindowNotFoundException {
+        for (final WebWindow webWindow : getWebClient().getWebWindows()) {
+            if ((webWindow instanceof TopLevelWindow || webWindow instanceof DialogWindow ) && name.equals(webWindow.getName())) {
+                return webWindow;
+            }
         }
-      }
-      return HtmlUnitDriver.this;
+        throw new WebWindowNotFoundException(name);
     }
-
     @Override
-    public WebDriver frame(final String nameOrId) {
-      Page page = lastPage();
-      if (page instanceof HtmlPage) {
-        // First check for a frame with the matching name.
-        for (final FrameWindow frameWindow : ((HtmlPage) page).getFrames()) {
-          if (frameWindow.getName().equals(nameOrId)) {
-            currentWindow = frameWindow;
-            return HtmlUnitDriver.this;
-          }
-        }
-      }
+    public WebDriver window(String windowName) {
+    	if (windowName == null) {
+    		getWebClient().setCurrentWindow(getWebClient().getTopLevelWindows().get(0));
+    	} else {
+    		getWebClient().setCurrentWindow(getTopLevelOrDialog(windowName));
+    	}
 
-      // Next, check for a frame with a matching ID. For simplicity, assume the ID is unique.
-      // Users can still switch to frames with non-unique IDs using a WebElement switch:
-      // WebElement frameElement = driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
-      // driver.switchTo().frame(frameElement);
-      try {
-        HtmlUnitWebElement element =
-            (HtmlUnitWebElement) HtmlUnitDriver.this.findElementById(nameOrId);
-        DomElement domElement = element.getElement();
-        if (domElement instanceof BaseFrameElement) {
-          currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
-          return HtmlUnitDriver.this;
-        }
-      } catch (NoSuchElementException ignored) {
-      }
-
-      throw new NoSuchFrameException("Unable to locate frame with name or ID: " + nameOrId);
-    }
-
-    @Override
-    public WebDriver frame(WebElement frameElement) {
-      while (frameElement instanceof WrapsElement) {
-        frameElement = ((WrapsElement) frameElement).getWrappedElement();
-      }
-
-      HtmlUnitWebElement webElement = (HtmlUnitWebElement) frameElement;
-      webElement.assertElementNotStale();
-
-      DomElement domElement = webElement.getElement();
-      if (!(domElement instanceof BaseFrameElement)) {
-        throw new NoSuchFrameException(webElement.getTagName() + " is not a frame element.");
-      }
-
-      currentWindow = ((BaseFrameElement) domElement).getEnclosedWindow();
-      return HtmlUnitDriver.this;
-    }
-
-    @Override
-    public WebDriver parentFrame() {
-      currentWindow = currentWindow.getParentWindow();
-      return HtmlUnitDriver.this;
-    }
-
-    @Override
-    public WebDriver window(String windowId) {
-      try {
-        WebWindow window = getWebClient().getWebWindowByName(windowId);
-        return finishSelecting(window);
-      } catch (WebWindowNotFoundException e) {
-
-        List<WebWindow> allWindows = getWebClient().getWebWindows();
-        for (WebWindow current : allWindows) {
-          WebWindow top = current.getTopWindow();
-          if (String.valueOf(System.identityHashCode(top)).equals(windowId)) {
-            return finishSelecting(top);
-          }
-        }
-        throw new NoSuchWindowException("Cannot find window: " + windowId);
-      }
-    }
-
-    private WebDriver finishSelecting(WebWindow window) {
-      getWebClient().setCurrentWindow(window);
-      currentWindow = window;
-      pickWindow();
-      alert.setAutoAccept(false);
-      return HtmlUnitDriver.this;
+        alert.setAutoAccept(false);
+        return HtmlUnitDriver.this;
     }
 
     @Override
     public WebDriver defaultContent() {
-      switchToDefaultContentOfWindow(getCurrentWindow().getTopWindow());
       return HtmlUnitDriver.this;
     }
 
@@ -1632,9 +1534,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         }
       }
       WebWindow alertWindow = alert.getWebWindow();
-      if (alertWindow != currentWindow
-          && !isChild(currentWindow, alertWindow)
-          && !isChild(alertWindow, currentWindow)) {
+      if (alertWindow != webClient.getCurrentWindow()
+          && !isChild(webClient.getCurrentWindow(), alertWindow)
+          && !isChild(alertWindow, webClient.getCurrentWindow())) {
           throw new TimeoutException();
       }
       return alert;
@@ -1704,10 +1606,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   protected WebWindow getCurrentWindow() {
-    if (currentWindow == null || currentWindow.isClosed()) {
-      throw new NoSuchWindowException("Window is closed");
-    }
-    return currentWindow;
+	  return webClient.getCurrentWindow();
   }
 
   private URL getRawUrl() {
