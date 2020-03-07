@@ -87,6 +87,27 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
       assertEquals("", body.getAttribute("title"));
   }
 
+  /**
+   * See https://github.com/HtmlUnit/htmlunit/issues/142.
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void clearHasToFixTheSelectionAlso() throws Exception {
+      final String html = "<html>\n"
+          + "<head><title>abc</title></head>\n"
+          + "<body>\n"
+          + "<form id='form1'>\n"
+          + "  <input id='foo' type='text' value='0815'>\n"
+          + "</form>\n"
+          + "</body>\n"
+          + "</html>";
+      final WebDriver webDriver = loadPage2(html);
+
+      final WebElement input = webDriver.findElement(By.id("foo"));
+      input.clear();
+      input.sendKeys("4711");
+  }
+
   // @Test
   public void memoryLeak() throws Exception {
     final int elements = 1000;
