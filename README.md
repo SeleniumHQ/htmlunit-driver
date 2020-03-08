@@ -17,7 +17,7 @@ Add a dependency on the latest `htmlunit-driver` version available in the Maven 
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.36.0</version>
+    <version>2.38.0</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ WebDriver webDriver = new HtmlUnitDriver();
 
 ```java
 // specify the browser - no javascript support
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60);
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68);
 ```
 
 ```java
@@ -44,7 +44,7 @@ WebDriver webDriver = new HtmlUnitDriver(true);
 
 ```java
 // specify the browser - javascript support enabled
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true);
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68, true);
 ```
 
 
@@ -53,7 +53,7 @@ WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true);
 HtmlUnit offers a lot more customization options. To adjust these options you can use this pattern.
 
 ```java
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_60, true) {
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68, true) {
     @Override
     protected WebClient modifyWebClient(WebClient client) {
         final WebClient webClient = super.modifyWebClient(client);
