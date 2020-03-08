@@ -235,6 +235,7 @@ public class JettyAppServer implements AppServer {
 
     Path keystore = getKeyStore();
     if (!Files.exists(keystore)) {
+      http.close();
       throw new RuntimeException(
           "Cannot find keystore for SSL cert: " + keystore.toAbsolutePath());
     }
