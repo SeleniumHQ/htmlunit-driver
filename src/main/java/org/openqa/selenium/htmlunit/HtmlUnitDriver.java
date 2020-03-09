@@ -357,12 +357,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
             case 60:
               browserVersionObject = BrowserVersion.FIREFOX_60;
               break;
+            case 68:
+                browserVersionObject = BrowserVersion.FIREFOX_68;
+                break;
 
             default:
-              browserVersionObject = BrowserVersion.FIREFOX_68;
+              browserVersionObject = BrowserVersion.FIREFOX;
           }
         } catch (NumberFormatException e) {
-            browserVersionObject = BrowserVersion.FIREFOX_68;
+            browserVersionObject = BrowserVersion.FIREFOX;
         }
         break;
 
