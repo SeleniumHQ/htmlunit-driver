@@ -1,4 +1,4 @@
-[![Travis Build Status](https://travis-ci.com/SeleniumHQ/htmlunit-driver.svg?branch=master)](https://travis-ci.com/SeleniumHQ/htmlunit-driver/)
+[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver)](https://jenkins.wetator.org/job/HtmlUnitDriver/)
 
 # HtmlUnitDriver
 
@@ -17,7 +17,7 @@ Add a dependency on the latest `htmlunit-driver` version available in the Maven 
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.38.0</version>
+    <version>2.39.0</version>
 </dependency>
 ```
 
