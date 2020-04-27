@@ -75,7 +75,7 @@ public class HtmlUnitMouse implements Mouse {
       throw new ElementNotInteractableException("You may only interact with visible elements");
     }
 
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, true);
 
     try {
       element.mouseOver();
@@ -100,7 +100,7 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  private void moveOutIfNeeded(DomElement element) {
+  private void moveOutIfNeeded(DomElement element, boolean triggerBlur) {
     try {
       if ((currentActiveElement != element)) {
         if (currentActiveElement != null) {
@@ -110,7 +110,9 @@ public class HtmlUnitMouse implements Mouse {
           currentActiveElement.mouseOut(keyboard.isShiftPressed(),
               keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
 
-          currentActiveElement.blur();
+          if (triggerBlur) {
+              currentActiveElement.blur();
+          }
         }
 
         if (element != null) {
@@ -141,7 +143,7 @@ public class HtmlUnitMouse implements Mouse {
 
   void doubleClick(DomElement element) {
 
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, true);
 
     // Send the state of modifier keys to the dblClick method.
     try {
@@ -158,7 +160,7 @@ public class HtmlUnitMouse implements Mouse {
   public void contextClick(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
 
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, true);
 
     element.rightClick(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed());
@@ -173,7 +175,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   void mouseDown(DomElement element) {
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, true);
 
     element.mouseDown(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
@@ -189,7 +191,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   void mouseUp(DomElement element) {
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, true);
 
     element.mouseUp(keyboard.isShiftPressed(),
         keyboard.isCtrlPressed(), keyboard.isAltPressed(),
@@ -205,7 +207,7 @@ public class HtmlUnitMouse implements Mouse {
   }
 
   void mouseMove(DomElement element) {
-    moveOutIfNeeded(element);
+    moveOutIfNeeded(element, false);
 
     updateActiveElement(element);
   }
