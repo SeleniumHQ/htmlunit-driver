@@ -27,11 +27,13 @@ import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 
 public class SessionHandlingTest extends JUnit4TestBase {
 
+  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   public void callingQuitMoreThanOnceOnASessionIsANoOp() {
@@ -40,6 +42,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
     driver.quit();
   }
 
+  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
@@ -50,6 +53,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
     driver.quit();
   }
 
+  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   @Ignore(value = FIREFOX)
@@ -62,6 +66,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
+  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
@@ -71,6 +76,7 @@ public class SessionHandlingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchSessionException.class));
   }
 
+  @NeedsFreshDriver
   @NoDriverAfterTest
   @Test
   public void shouldContinueAfterSleep() {
