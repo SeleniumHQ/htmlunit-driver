@@ -836,11 +836,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public void close() {
     getWebClient(); // check that session is active
-    WebWindow thisWindow = getCurrentWindow(); // check that the current window is active
+    System.out.println("close called - open windows: " + getWebClient().getWebWindows().size());
     if (getWebClient().getWebWindows().size() == 1) {
       // closing the last window is equivalent to quit
       quit();
     } else {
+      WebWindow thisWindow = getCurrentWindow(); // check that the current window is active
       if (thisWindow != null) {
         alert.close();
         ((TopLevelWindow) thisWindow.getTopWindow()).close();
@@ -853,12 +854,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public void quit() {
+    System.out.println("quit()");
     if (webClient != null) {
       alert.close();
       webClient.close();
+      System.out.println("quit() webClient.close() done");
       webClient = null;
     }
     defaultExecutor.shutdown();
+    System.out.println("quit() defaultExecutor.shutdown() done");
     currentWindow = null;
   }
 
