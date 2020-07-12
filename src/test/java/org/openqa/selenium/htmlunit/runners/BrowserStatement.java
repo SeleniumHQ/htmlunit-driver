@@ -81,7 +81,7 @@ class BrowserStatement extends Statement {
                 assertNotEquals(alerts.FF(), alerts.CHROME());
                 assertNotEquals(alerts.IE(), alerts.CHROME());
                 assertNotEquals(alerts.IE(), alerts.FF());
-                assertNotEquals(alerts.FF60(), alerts.FF());
+                assertNotEquals(alerts.FF68(), alerts.FF());
             }
         }
         final AlertsStandards alerts2 = method_.getAnnotation(AlertsStandards.class);
@@ -93,7 +93,7 @@ class BrowserStatement extends Statement {
                 assertNotEquals(alerts2.FF(), alerts2.CHROME());
                 assertNotEquals(alerts2.IE(), alerts2.CHROME());
                 assertNotEquals(alerts2.IE(), alerts2.FF());
-                assertNotEquals(alerts2.FF60(), alerts2.FF());
+                assertNotEquals(alerts2.FF68(), alerts2.FF());
             }
         }
     }

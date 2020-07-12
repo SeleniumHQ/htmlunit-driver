@@ -85,8 +85,11 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                 if (browserVersion_ == BrowserVersion.INTERNET_EXPLORER) {
                     expectedAlerts = firstDefined(alerts.IE(), alerts.DEFAULT());
                 }
-                else if (browserVersion_ == BrowserVersion.FIREFOX_60) {
-                    expectedAlerts = firstDefined(alerts.FF60(), alerts.FF(), alerts.DEFAULT());
+                else if (browserVersion_ == BrowserVersion.FIREFOX_68) {
+                    expectedAlerts = firstDefined(alerts.FF68(), alerts.DEFAULT());
+                }
+                else if (browserVersion_ == BrowserVersion.FIREFOX) {
+                    expectedAlerts = firstDefined(alerts.FF(), alerts.DEFAULT());
                 }
                 else if (browserVersion_ == BrowserVersion.CHROME) {
                     expectedAlerts = firstDefined(alerts.CHROME(), alerts.DEFAULT());
@@ -107,8 +110,11 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                 if (browserVersion_ == BrowserVersion.INTERNET_EXPLORER) {
                     expectedAlerts = firstDefined(alerts.IE(), alerts.DEFAULT());
                 }
-                else if (browserVersion_ == BrowserVersion.FIREFOX_60) {
-                    expectedAlerts = firstDefined(alerts.FF60(), alerts.FF(), alerts.DEFAULT());
+                else if (browserVersion_ == BrowserVersion.FIREFOX_68) {
+                    expectedAlerts = firstDefined(alerts.FF68(), alerts.DEFAULT());
+                }
+                else if (browserVersion_ == BrowserVersion.FIREFOX) {
+                    expectedAlerts = firstDefined(alerts.FF(), alerts.DEFAULT());
                 }
                 else if (browserVersion_ == BrowserVersion.CHROME) {
                     expectedAlerts = firstDefined(alerts.CHROME(), alerts.DEFAULT());
@@ -251,8 +257,8 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                     }
                     break;
 
-                case FF60:
-                    if (browserVersion_ == BrowserVersion.FIREFOX_60) {
+                case FF68:
+                    if (browserVersion_ == BrowserVersion.FIREFOX_68) {
                         return true;
                     }
                     break;

@@ -137,14 +137,14 @@ public class BrowserParameterizedRunner extends Suite {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.CHROME, true, tests));
                 }
-                if (browsers.contains("ff60")) {
-                  runners_.add(new BrowserVersionClassRunnerWithParameters(
-                          klass, BrowserVersion.FIREFOX_60, true, tests));
-                }
                 if (browsers.contains("ff68")) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.FIREFOX_68, true, tests));
-              }
+                }
+                else if (browsers.contains("ff")) {
+                    runners_.add(new BrowserVersionClassRunnerWithParameters(
+                            klass, BrowserVersion.FIREFOX, true, tests));
+                }
                 if (browsers.contains("ie")) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.INTERNET_EXPLORER, true, tests));
@@ -155,14 +155,14 @@ public class BrowserParameterizedRunner extends Suite {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.CHROME, false, tests));
             }
-            if (browsers.contains("hu-ff60")) {
-              runners_.add(new BrowserVersionClassRunnerWithParameters(
-                      klass, BrowserVersion.FIREFOX_60, false, tests));
-            }
             if (browsers.contains("hu-ff68")) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.FIREFOX_68, false, tests));
-          }
+            }
+            else if (browsers.contains("hu-ff")) {
+                runners_.add(new BrowserVersionClassRunnerWithParameters(
+                        klass, BrowserVersion.FIREFOX, false, tests));
+            }
             if (browsers.contains("hu-ie")) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.INTERNET_EXPLORER, false, tests));

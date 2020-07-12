@@ -353,10 +353,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       case BrowserType.FIREFOX:
         try {
           int version = Integer.parseInt(browserVersion);
-          if (version == BrowserVersion.FIREFOX_60.getBrowserVersionNumeric()) {
-              browserVersionObject = BrowserVersion.FIREFOX_60;
-          }
-          else if (version == BrowserVersion.FIREFOX_68.getBrowserVersionNumeric()) {
+          if (version == BrowserVersion.FIREFOX_68.getBrowserVersionNumeric()) {
               browserVersionObject = BrowserVersion.FIREFOX_68;
           }
           else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {

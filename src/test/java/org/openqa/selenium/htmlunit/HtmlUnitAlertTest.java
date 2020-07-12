@@ -101,7 +101,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     driver.findElement(By.id("clickMe")).click();
 
     // selenium seems to normalize this
-    if (getBrowserVersion().isFirefox60() || getBrowserVersion().isIE()) {
+    if (getBrowserVersion().isIE()) {
         assertEquals("1\n2\n3\t4\r5\n\r6", driver.switchTo().alert().getText());
     }
     else {

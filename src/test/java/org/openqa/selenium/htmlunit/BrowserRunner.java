@@ -74,12 +74,12 @@ public class BrowserRunner extends Suite {
                 if (browsers.contains("chrome")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.CHROME, true));
                 }
-                if (browsers.contains("ff60")) {
-                  runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_60, true));
-                }
                 if (browsers.contains("ff68")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_68, true));
-                  }
+                }
+                else if (browsers.contains("ff")) {
+                    runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, true));
+                }
                 if (browsers.contains("ie")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, true));
                 }
@@ -88,12 +88,12 @@ public class BrowserRunner extends Suite {
             if (browsers.contains("hu-chrome")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.CHROME, false));
             }
-            if (browsers.contains("hu-ff60")) {
-              runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_60, false));
-            }
             if (browsers.contains("hu-ff68")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_68, false));
-              }
+            }
+            else if (browsers.contains("hu-ff")) {
+                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, false));
+            }
             if (browsers.contains("hu-ie")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, false));
             }
@@ -157,8 +157,8 @@ public class BrowserRunner extends Suite {
         /** All versions of Firefox. */
         FF,
 
-        /** Firefox 60. */
-        FF60
+        /** Firefox 68. */
+        FF68
     }
 
     /**
@@ -187,22 +187,16 @@ public class BrowserRunner extends Suite {
         String[] IE() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Edge.
-         * @return the alerts
-         */
-        String[] EDGE() default { EMPTY_DEFAULT };
-
-        /**
          * Alerts for any Firefox, it can be overridden by specific FF version.
          * @return the alerts
          */
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 60. If not defined, {@link #FF()} is used.
+         * Alerts for Firefox 68. If not defined, {@link #FF()} is used.
          * @return the alerts
          */
-        String[] FF60() default { EMPTY_DEFAULT };
+        String[] FF68() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.
@@ -245,10 +239,10 @@ public class BrowserRunner extends Suite {
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 60. If not defined, {@link #FF()} is used.
+         * Alerts for Firefox 68. If not defined, {@link #FF()} is used.
          * @return the alerts
          */
-        String[] FF60() default { EMPTY_DEFAULT };
+        String[] FF68() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.
