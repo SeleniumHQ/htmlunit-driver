@@ -346,6 +346,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         browserVersionObject = BrowserVersion.CHROME;
         break;
 
+      case BrowserType.EDGE:
+          browserVersionObject = BrowserVersion.EDGE;
+          break;
+
       case BrowserType.IE:
         browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
         break;
