@@ -17,7 +17,7 @@ Add a dependency on the latest `htmlunit-driver` version available in the Maven 
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.43.1</version>
+    <version>2.44.0</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ WebDriver webDriver = new HtmlUnitDriver();
 
 ```java
 // specify the browser - no javascript support
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68);
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX);
 ```
 
 ```java
@@ -44,7 +44,7 @@ WebDriver webDriver = new HtmlUnitDriver(true);
 
 ```java
 // specify the browser - javascript support enabled
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68, true);
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 ```
 
 
