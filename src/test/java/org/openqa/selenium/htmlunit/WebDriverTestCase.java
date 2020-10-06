@@ -91,9 +91,9 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
  * "{@code test.properties}" in the HtmlUnit root directory.
  * Sample:
  * <pre>
-   browsers=hu,ff68,ie
+   browsers=hu,ff78,ie
    chrome.bin=/path/to/chromedriver                     [Unix-like]
-   ff68.bin=/usr/bin/firefox_68                         [Unix-like]
+   ff78.bin=/usr/bin/firefox_78                         [Unix-like]
    ff.bin=/usr/bin/firefox                              [Unix-like]
    ie.bin=C:\\path\\to\\32bit\\IEDriverServer.exe       [Windows]
    autofix=true
@@ -101,12 +101,12 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
  * The file could contain some properties:
  * <ul>
  *   <li>browsers: is a comma separated list contains any combination of "hu" (for HtmlUnit with all browser versions),
- *   "hu-ie", "hu-ff68", "ff68", "ie", "chrome", which will be used to drive real browsers</li>
+ *   "hu-ie", "hu-ff78", "ff78", "ie", "chrome", which will be used to drive real browsers</li>
  *
  *   <li>chrome.bin (mandatory if it does not exist in the <i>path</i>): is the location of the ChromeDriver binary (see
  *   <a href="http://chromedriver.storage.googleapis.com/index.html">Chrome Driver downloads</a>)</li>
  *   <li>ff.bin (optional): is the location of the FF binary, in Windows use double back-slashes</li>
- *   <li>ff68.bin (optional): is the location of the FF 68 binary, in Windows use double back-slashes</li>
+ *   <li>ff78.bin (optional): is the location of the FF 78 binary, in Windows use double back-slashes</li>
  *   <li>ie.bin (mandatory if it does not exist in the <i>path</i>): is the location of the IEDriverServer binary (see
  *   <a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer downloads</a>)</li>
  *   <li>autofix (optional): if {@code true}, try to automatically fix the real browser expectations,
@@ -125,7 +125,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
    * All browsers supported.
    */
   public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX,
-      BrowserVersion.FIREFOX_68, BrowserVersion.INTERNET_EXPLORER};
+      BrowserVersion.FIREFOX_78, BrowserVersion.INTERNET_EXPLORER};
 
   private static final Log LOG = LogFactory.getLog(WebDriverTestCase.class);
 
@@ -133,7 +133,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   private static String CHROME_BIN_;
   private static String IE_BIN_;
   private static String FF_BIN_;
-  private static String FF68_BIN_;
+  private static String FF78_BIN_;
 
   /** The driver cache. */
   protected static final Map<BrowserVersion, WebDriver> WEB_DRIVERS_ = new HashMap<>();
@@ -185,7 +185,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                   CHROME_BIN_ = properties.getProperty("chrome.bin");
                   IE_BIN_ = properties.getProperty("ie.bin");
                   FF_BIN_ = properties.getProperty("ff.bin");
-                  FF68_BIN_ = properties.getProperty("ff68.bin");
+                  FF78_BIN_ = properties.getProperty("ff78.bin");
 
                   final boolean autofix = Boolean.parseBoolean(properties.getProperty("autofix"));
                   System.setProperty(AUTOFIX_, Boolean.toString(autofix));
@@ -416,10 +416,10 @@ public abstract class WebDriverTestCase extends WebTestCase {
               return new FirefoxDriver();
           }
 
-          if (BrowserVersion.FIREFOX_68 == getBrowserVersion()) {
-              if (FF68_BIN_ != null) {
+          if (BrowserVersion.FIREFOX_78 == getBrowserVersion()) {
+              if (FF78_BIN_ != null) {
                   final FirefoxOptions options = new FirefoxOptions();
-                  options.setBinary(FF68_BIN_);
+                  options.setBinary(FF78_BIN_);
                   return new FirefoxDriver(options);
               }
               return new FirefoxDriver();
@@ -440,7 +440,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
       if (browserVersion == BrowserVersion.FIREFOX) {
           return BrowserType.FIREFOX + '-' + browserVersion.getBrowserVersionNumeric();
       }
-      else if (browserVersion == BrowserVersion.FIREFOX_68) {
+      else if (browserVersion == BrowserVersion.FIREFOX_78) {
           return BrowserType.FIREFOX;
       }
       if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {

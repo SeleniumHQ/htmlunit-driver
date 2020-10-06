@@ -24,6 +24,7 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -98,7 +99,12 @@ public class ProxySettingTest extends JUnit4TestBase {
     WebDriver driver = new WebDriverBuilder().setDesiredCapabilities(caps).get();
     registerDriverTeardown(driver);
 
-    driver.get(appServer.whereIs("simpleTest.html"));
+    try {
+        driver.get(appServer.whereIs("simpleTest.html"));
+    } catch (Throwable e) {
+        // TODO: handle exception
+        e.printStackTrace();
+    }
     assertFalse("Proxy should not have been called", proxyServer.hasBeenCalled("simpleTest.html"));
 
     driver.get(appServer.whereElseIs("simpleTest.html"));

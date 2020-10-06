@@ -53,7 +53,7 @@ WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 HtmlUnit offers a lot more customization options. To adjust these options you can use this pattern.
 
 ```java
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX_68, true) {
+WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true) {
     @Override
     protected WebClient modifyWebClient(WebClient client) {
         final WebClient webClient = super.modifyWebClient(client);

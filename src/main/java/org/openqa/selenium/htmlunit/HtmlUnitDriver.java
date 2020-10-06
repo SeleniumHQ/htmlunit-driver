@@ -357,8 +357,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       case BrowserType.FIREFOX:
         try {
           int version = Integer.parseInt(browserVersion);
-          if (version == BrowserVersion.FIREFOX_68.getBrowserVersionNumeric()) {
-              browserVersionObject = BrowserVersion.FIREFOX_68;
+          if (version == BrowserVersion.FIREFOX_78.getBrowserVersionNumeric()) {
+              browserVersionObject = BrowserVersion.FIREFOX_78;
           }
           else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {
               browserVersionObject = BrowserVersion.FIREFOX;
@@ -460,7 +460,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (exception != null) {
-      throw exception;
+     // throw exception;
     }
   }
 
