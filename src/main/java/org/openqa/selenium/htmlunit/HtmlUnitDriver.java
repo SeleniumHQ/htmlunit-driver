@@ -460,7 +460,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     if (exception != null) {
-     // throw exception;
+      throw exception;
     }
   }
 
