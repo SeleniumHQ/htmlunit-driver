@@ -29,6 +29,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidElementStateException;
 import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -151,13 +152,13 @@ public class HtmlUnitWebElement implements WrapsDriver,
       } else if (element instanceof HtmlInput) {
         HtmlForm form = ((HtmlElement) element).getEnclosingForm();
         if (form == null) {
-          throw new NoSuchElementException("Unable to find the containing form");
+          throw new JavascriptException("Unable to find the containing form");
         }
         submitForm(form);
       } else {
         HtmlUnitWebElement form = findParentForm();
         if (form == null) {
-          throw new NoSuchElementException("Unable to find the containing form");
+          throw new JavascriptException("Unable to find the containing form");
         }
         form.submitImpl();
       }

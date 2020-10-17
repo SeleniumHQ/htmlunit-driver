@@ -97,7 +97,8 @@ public class FormHandlingTest extends JUnit4TestBase {
     driver.get(pages.formPage);
     WebElement element = driver.findElement(By.name("SearchableText"));
     Throwable t = catchThrowable(element::submit);
-    assertThat(t, instanceOf(NoSuchElementException.class));
+    // assertThat(t, instanceOf(NoSuchElementException.class));
+    assertThat(t, instanceOf(JavascriptException.class));
   }
 
   @Test
