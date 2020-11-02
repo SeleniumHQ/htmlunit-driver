@@ -1018,9 +1018,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   protected void assertElementNotStale(DomElement element) {
     SgmlPage elementPage = element.getPage();
-    Page currentPage = lastPage();
+    Page lastPage = lastPage();
 
-    if (!currentPage.equals(elementPage)) {
+    if (!lastPage.equals(elementPage)) {
       throw new StaleElementReferenceException(
           "Element appears to be stale. Did you navigate away from the page that contained it? "
               + " And is the current window focussed the same as the one holding this element?");
@@ -1202,13 +1202,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByLinkText(String selector) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Cannot find links for " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new IllegalStateException("Cannot find links for " + lastPage);
     }
 
     String expectedText = selector.trim();
 
-    List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
+    List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText().trim())) {
         return toWebElement(anchor);
@@ -1247,13 +1248,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   public List<WebElement> findElementsByLinkText(String selector) {
     List<WebElement> elements = new ArrayList<>();
 
-    if (!(lastPage() instanceof HtmlPage)) {
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
       return elements;
     }
 
     String expectedText = selector.trim();
 
-    List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
+    List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
     for (HtmlAnchor anchor : anchors) {
       if (expectedText.equals(anchor.asText().trim())) {
         elements.add(toWebElement(anchor));
@@ -1264,11 +1266,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementById(String id) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new NoSuchElementException("Unable to locate element by id for " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new NoSuchElementException("Unable to locate element by id for " + lastPage);
     }
 
-    DomElement element = ((HtmlPage) lastPage()).getElementById(id);
+    DomElement element = ((HtmlPage) lastPage).getElementById(id);
     if (element == null) {
       throw new NoSuchElementException("Unable to locate element with ID: '" + id + "'");
     }
@@ -1277,11 +1280,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsById(String id) {
-    if (!(lastPage() instanceof HtmlPage)) {
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
       return new ArrayList<>();
     }
 
-    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsById(id);
+    List<DomElement> allElements = ((HtmlPage) lastPage).getElementsById(id);
     return convertRawDomElementsToWebElements(allElements);
   }
 
@@ -1303,13 +1307,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByCssSelector(String using) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new NoSuchElementException("Unable to locate element using css: " + lastPage);
     }
 
     DomNode node;
     try {
-      node = ((HtmlPage) lastPage()).querySelector(using);
+      node = ((HtmlPage) lastPage).querySelector(using);
     } catch (CSSException ex) {
       throw new NoSuchElementException("Unable to locate element using css", ex);
     }
@@ -1323,14 +1328,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsByCssSelector(String using) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new NoSuchElementException("Unable to locate element using css: " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new NoSuchElementException("Unable to locate element using css: " + lastPage);
     }
 
     DomNodeList<DomNode> allNodes;
 
     try {
-      allNodes = ((HtmlPage) lastPage()).querySelectorAll(using);
+      allNodes = ((HtmlPage) lastPage).querySelectorAll(using);
     } catch (CSSException ex) {
       throw new NoSuchElementException("Unable to locate element using css", ex);
     }
@@ -1350,11 +1356,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByName(String name) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Unable to locate element by name for " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new IllegalStateException("Unable to locate element by name for " + lastPage);
     }
 
-    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
+    List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(name);
     if (!allElements.isEmpty()) {
       return toWebElement(allElements.get(0));
     }
@@ -1364,21 +1371,23 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsByName(String name) {
-    if (!(lastPage() instanceof HtmlPage)) {
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
       return new ArrayList<>();
     }
 
-    List<DomElement> allElements = ((HtmlPage) lastPage()).getElementsByName(name);
+    List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(name);
     return convertRawDomElementsToWebElements(allElements);
   }
 
   @Override
   public WebElement findElementByTagName(String name) {
-    if (!(lastPage() instanceof HtmlPage)) {
-      throw new IllegalStateException("Unable to locate element by name for " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
+      throw new IllegalStateException("Unable to locate element by name for " + lastPage);
     }
 
-    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
+    NodeList allElements = ((HtmlPage) lastPage).getElementsByTagName(name);
     if (allElements.getLength() > 0) {
       return toWebElement((HtmlElement) allElements.item(0));
     }
@@ -1392,11 +1401,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
       throw new InvalidSelectorException("Unable to locate element by xpath for " + lastPage());
     }
 
-    if (!(lastPage() instanceof HtmlPage)) {
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof HtmlPage)) {
       return new ArrayList<>();
     }
 
-    NodeList allElements = ((HtmlPage) lastPage()).getElementsByTagName(name);
+    NodeList allElements = ((HtmlPage) lastPage).getElementsByTagName(name);
     List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
     for (int i = 0; i < allElements.getLength(); i++) {
       Node item = allElements.item(i);
@@ -1409,13 +1419,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public WebElement findElementByXPath(String selector) {
-    if (!(lastPage() instanceof SgmlPage)) {
-      throw new IllegalStateException("Unable to locate element by xpath for " + lastPage());
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof SgmlPage)) {
+      throw new IllegalStateException("Unable to locate element by xpath for " + lastPage);
     }
 
     Object node;
     try {
-      node = ((SgmlPage) lastPage()).getFirstByXPath(selector);
+      node = ((SgmlPage) lastPage).getFirstByXPath(selector);
     } catch (Exception ex) {
       // The xpath expression cannot be evaluated, so the expression is invalid
       throw new InvalidSelectorException(
@@ -1436,13 +1447,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public List<WebElement> findElementsByXPath(String selector) {
-    if (!(lastPage() instanceof SgmlPage)) {
+    Page lastPage = lastPage();
+    if (!(lastPage instanceof SgmlPage)) {
       return new ArrayList<>();
     }
 
     List<?> nodes;
     try {
-      nodes = ((SgmlPage) lastPage()).getByXPath(selector);
+      nodes = ((SgmlPage) lastPage).getByXPath(selector);
     } catch (RuntimeException ex) {
         // The xpath expression cannot be evaluated, so the expression is invalid
         throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, selector), ex);
