@@ -1,11 +1,13 @@
-[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver)](https://jenkins.wetator.org/job/HtmlUnitDriver/)
-
 # HtmlUnitDriver
 
 HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlunit.sourceforge.net/) headless browser.
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit-driver)
+
 ##### News
 [<img src="http://htmlunit.sourceforge.net/images/logos/twitter.png" alt="Twitter" height="44" width="60">](https://twitter.com/HtmlUnit)
+
+[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver)](https://jenkins.wetator.org/job/HtmlUnitDriver/)
 
 ## Download and Installation
 
