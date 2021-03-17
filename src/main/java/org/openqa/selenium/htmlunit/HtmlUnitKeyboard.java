@@ -25,6 +25,7 @@ import org.openqa.selenium.WebDriverException;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlNumberInput;
 import com.gargoylesoftware.htmlunit.html.Keyboard;
 
 /**
@@ -74,7 +75,8 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     }
 
     try {
-      Keyboard keyboard = asHtmlUnitKeyboard(lastElement != element, keysSequence, true);
+      final boolean startAtEnd = lastElement != element && !(element instanceof HtmlNumberInput);
+      Keyboard keyboard = asHtmlUnitKeyboard(startAtEnd, keysSequence, true);
       if (releaseAllAtEnd) {
         if (isShiftPressed()) {
           addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false);
