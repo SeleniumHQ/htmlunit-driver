@@ -160,8 +160,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   private Point windowPosition = new Point(0, 0);
   private Dimension initialWindowDimension;
 
-  private boolean enableJavascript;
-  private ProxyConfig proxyConfig;
   private long implicitWait = 0;
   private long scriptTimeout = 0;
   private HtmlUnitKeyboard keyboard;
@@ -197,7 +195,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * and the {@link BrowserVersion#getDefault() default} BrowserVersion.
    */
   public HtmlUnitDriver() {
-    this(false);
+    this(BrowserVersion.getDefault(), false);
+  }
+
+  /**
+   * Constructs a new instance with the specified {@link BrowserVersion}.
+   *
+   * @param version the browser version to use
+   */
+  public HtmlUnitDriver(BrowserVersion version) {
+      this(version, false);
   }
 
   /**
@@ -217,17 +224,67 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param enableJavascript whether to enable JavaScript support or not
    */
   public HtmlUnitDriver(BrowserVersion version, boolean enableJavascript) {
-    this(version);
-    setJavascriptEnabled(enableJavascript);
+      this(version, enableJavascript, null);
+
+      modifyWebClient(webClient);
   }
 
   /**
-   * Constructs a new instance with the specified {@link BrowserVersion}.
+   * The browserName is {@link BrowserType#HTMLUNIT} "htmlunit" and the browserVersion
+   * denotes the required browser AND its version.
+   * For example "chrome" for Chrome, "firefox-45" for Firefox 45
+   * or "internet explorer" for IE.
    *
-   * @param version the browser version to use
+   * @param capabilities desired capabilities requested for the htmlunit driver session
    */
-  public HtmlUnitDriver(BrowserVersion version) {
-    webClient = createWebClient(version);
+  public HtmlUnitDriver(Capabilities capabilities) {
+    this(determineBrowserVersion(capabilities),
+            capabilities.getCapability(JAVASCRIPT_ENABLED) == null || capabilities.is(JAVASCRIPT_ENABLED),
+            Proxy.extractFrom(capabilities));
+
+    setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
+
+    unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
+    if (unexpectedAlertBehaviour == null) {
+      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+    }
+
+    Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
+    if (acceptSslCerts == null) {
+      acceptSslCerts = true;
+    }
+    setAcceptSslCertificates(acceptSslCerts);
+
+    String pageLoadStrategyString = (String) capabilities.getCapability(PAGE_LOAD_STRATEGY);
+    if ("none".equals(pageLoadStrategyString)) {
+      pageLoadStrategy = PageLoadStrategy.NONE;
+    }
+    else if ("eager".equals(pageLoadStrategyString)) {
+      pageLoadStrategy = PageLoadStrategy.EAGER;
+    }
+
+    modifyWebClient(webClient);
+  }
+
+  public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
+    this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
+  }
+
+  private HtmlUnitDriver(BrowserVersion version, boolean enableJavascript, Proxy proxy) {
+    webClient = newWebClient(version);
+
+    final WebClientOptions clienOptions = webClient.getOptions();
+    clienOptions.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
+    clienOptions.setThrowExceptionOnFailingStatusCode(false);
+    clienOptions.setPrintContentOnFailingStatusCode(false);
+    clienOptions.setRedirectEnabled(true);
+    clienOptions.setUseInsecureSSL(true);
+
+    setJavascriptEnabled(enableJavascript);
+    setProxySettings(proxy);
+
+    webClient.setRefreshHandler(new WaitingRefreshHandler());
+
     alert = new HtmlUnitAlert(this);
     currentWindow = webClient.getCurrentWindow();
     initialWindowDimension = new Dimension(currentWindow.getOuterWidth(), currentWindow.getOuterHeight());
@@ -235,7 +292,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     defaultExecutor = Executors.newCachedThreadPool();
     executor = defaultExecutor;
-
 
     webClient.addWebWindowListener(new WebWindowListener() {
       @Override
@@ -272,54 +328,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     });
 
     // Now put us on the home page, like a real browser
-    get(webClient.getOptions().getHomePage());
+    get(clienOptions.getHomePage());
     gotPage = false;
     resetKeyboardAndMouseState();
 
     options = new HtmlUnitOptions();
   }
 
-  /**
-   * The browserName is {@link BrowserType#HTMLUNIT} "htmlunit" and the browserVersion
-   * denotes the required browser AND its version.
-   * For example "chrome" for Chrome, "firefox-45" for Firefox 45
-   * or "internet explorer" for IE.
-   *
-   * @param capabilities desired capabilities requested for the htmlunit driver session
-   */
-  public HtmlUnitDriver(Capabilities capabilities) {
-    this(determineBrowserVersion(capabilities));
-
-    setJavascriptEnabled(capabilities.getCapability(JAVASCRIPT_ENABLED) == null
-        || capabilities.is(JAVASCRIPT_ENABLED));
-
-    setProxySettings(Proxy.extractFrom(capabilities));
-
-    setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
-
-    unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
-    if (unexpectedAlertBehaviour == null) {
-      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
-    }
-
-    Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
-    if (acceptSslCerts == null) {
-      acceptSslCerts = true;
-    }
-    setAcceptSslCertificates(acceptSslCerts);
-
-    String pageLoadStrategyString = (String) capabilities.getCapability(PAGE_LOAD_STRATEGY);
-    if ("none".equals(pageLoadStrategyString)) {
-      pageLoadStrategy = PageLoadStrategy.NONE;
-    }
-    else if ("eager".equals(pageLoadStrategyString)) {
-      pageLoadStrategy = PageLoadStrategy.EAGER;
-    }
-  }
-
-  public HtmlUnitDriver(Capabilities desiredCapabilities, Capabilities requiredCapabilities) {
-    this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
-  }
 
   static BrowserVersion determineBrowserVersion(Capabilities capabilities) {
     String capBrowserName = capabilities.getBrowserName();
@@ -384,27 +399,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     }
 
     return browserVersionObject;
-  }
-
-  private WebClient createWebClient(BrowserVersion version) {
-    WebClient client = newWebClient(version);
-
-    final WebClientOptions clienOptions = client.getOptions();
-    clienOptions.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
-    clienOptions.setThrowExceptionOnFailingStatusCode(false);
-    clienOptions.setPrintContentOnFailingStatusCode(false);
-    clienOptions.setJavaScriptEnabled(enableJavascript);
-    clienOptions.setRedirectEnabled(true);
-    clienOptions.setUseInsecureSSL(true);
-
-    // Ensure that we've set the proxy if necessary
-    if (proxyConfig != null) {
-      clienOptions.setProxyConfig(proxyConfig);
-    }
-
-    client.setRefreshHandler(new WaitingRefreshHandler());
-
-    return modifyWebClient(client);
   }
 
   /**
@@ -609,7 +603,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
    */
   public void setHTTPProxy(String host, int port, List<String> noProxyHosts) {
-    proxyConfig = new ProxyConfig();
+    ProxyConfig proxyConfig = new ProxyConfig();
     proxyConfig.setProxyHost(host);
     proxyConfig.setProxyPort(port);
     if (noProxyHosts != null && noProxyHosts.size() > 0) {
@@ -638,7 +632,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
    */
   public void setSocksProxy(String host, int port, List<String> noProxyHosts) {
-    proxyConfig = new ProxyConfig();
+    ProxyConfig proxyConfig = new ProxyConfig();
     proxyConfig.setProxyHost(host);
     proxyConfig.setProxyPort(port);
     proxyConfig.setSocksProxy(true);
@@ -668,7 +662,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
    * @param autoProxyUrl The Proxy Autoconfiguration URL
    */
   public void setAutoProxy(String autoProxyUrl) {
-    proxyConfig = new ProxyConfig();
+    ProxyConfig proxyConfig = new ProxyConfig();
     proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
     getWebClient().getOptions().setProxyConfig(proxyConfig);
   }
@@ -1491,7 +1485,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   }
 
   public void setJavascriptEnabled(boolean enableJavascript) {
-    this.enableJavascript = enableJavascript;
     getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
   }
 
