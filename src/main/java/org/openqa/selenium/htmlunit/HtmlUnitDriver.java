@@ -128,6 +128,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.Location;
 import com.gargoylesoftware.htmlunit.javascript.host.html.DocumentProxy;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
+import com.gargoylesoftware.htmlunit.util.UrlUtils;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -389,7 +390,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     WebClient client = newWebClient(version);
 
     final WebClientOptions clienOptions = client.getOptions();
-    clienOptions.setHomePage(WebClient.URL_ABOUT_BLANK.toString());
+    clienOptions.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
     clienOptions.setThrowExceptionOnFailingStatusCode(false);
     clienOptions.setPrintContentOnFailingStatusCode(false);
     clienOptions.setJavaScriptEnabled(enableJavascript);
@@ -687,8 +688,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
   @Override
   public void get(String url) {
     // Prevent the malformed URL exception.
-    if (WebClient.URL_ABOUT_BLANK.toString().equals(url)) {
-      get(WebClient.URL_ABOUT_BLANK);
+    if (UrlUtils.URL_ABOUT_BLANK.toString().equals(url)) {
+      get(UrlUtils.URL_ABOUT_BLANK);
       return;
     }
 
