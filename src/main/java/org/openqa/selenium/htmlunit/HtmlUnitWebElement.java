@@ -197,7 +197,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     }
     try {
       // this has to ignore the visibility like browsers are doing
-      submit.click(false, false, false, true, true, false);
+      submit.click(false, false, false, true, true, true, false);
     } catch (IOException e) {
       throw new WebDriverException(e);
     }
