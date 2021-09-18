@@ -91,7 +91,7 @@ public class BrowserRunner extends Suite {
             if (browsers.contains("hu-ff78")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, false));
             }
-            else if (browsers.contains("hu-ff")) {
+            if (browsers.contains("hu-ff")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, false));
             }
             if (browsers.contains("hu-ie")) {
