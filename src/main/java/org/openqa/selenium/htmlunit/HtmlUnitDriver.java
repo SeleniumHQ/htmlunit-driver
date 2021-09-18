@@ -681,15 +681,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
   @Override
   public void get(String url) {
-    // Prevent the malformed URL exception.
-    if (UrlUtils.URL_ABOUT_BLANK.toString().equals(url)) {
-      get(UrlUtils.URL_ABOUT_BLANK);
-      return;
-    }
-
     URL fullUrl;
     try {
-      fullUrl = new URL(url);
+      // this takes care of data: and about:
+      fullUrl = UrlUtils.toUrlUnsafe(url);
     } catch (Exception e) {
       throw new WebDriverException(e);
     }

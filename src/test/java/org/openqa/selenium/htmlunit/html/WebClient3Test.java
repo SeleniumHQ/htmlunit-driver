@@ -19,6 +19,9 @@ package org.openqa.selenium.htmlunit.html;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.BrowserRunner;
 import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -39,4 +42,44 @@ public class WebClient3Test extends WebDriverTestCase {
     loadPageWithAlerts2(URL_FIRST);
   }
 
+  /**
+   * @throws Exception if test fails
+   */
+  @Test
+  public void getPageAboutProtocol() throws Exception {
+    final String html = "<html><body>DataUrl Test</body></html>";
+
+    final WebDriver driver = getWebDriver();
+    driver.get("about:blank");
+
+    WebElement body = driver.findElement(By.tagName("body"));
+    assertEquals("", body.getText());
+  }
+
+  /**
+   * @throws Exception if test fails
+   */
+  @Test
+  public void getPageDataProtocol() throws Exception {
+    final String html = "<html><body>DataUrl Test</body></html>";
+
+    final WebDriver driver = getWebDriver();
+    driver.get("data:text/html;charset=utf-8," + html);
+
+    WebElement body = driver.findElement(By.tagName("body"));
+    assertEquals("DataUrl Test", body.getText());
+  }
+
+
+  /**
+   * @throws Exception if test fails
+   */
+  @Test
+  public void getPageJavascriptProtocol() throws Exception {
+
+    final WebDriver driver = getWebDriver();
+    driver.get("javascript:void(document.title='Hello')");
+
+    assertEquals("Hello", driver.getTitle());
+  }
 }
