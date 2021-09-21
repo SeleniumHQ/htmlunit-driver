@@ -91,7 +91,7 @@ public class GridSupplier implements Supplier<WebDriver> {
       HttpResponse response = null;
       try {
         response = c.execute(req);
-      } catch (IOException e) {
+      } catch (Exception e) {
         throw new RuntimeException(e);
       }
       Map<?, ?> value = json.toType(response.getContentString(), Map.class);
@@ -104,7 +104,7 @@ public class GridSupplier implements Supplier<WebDriver> {
 
   public static void main(String[] args) {
     System.setProperty("selenium.browser.grid", "true");
-    WebDriver driver = new GridSupplier(DesiredCapabilities.firefox()).get();
+    WebDriver driver = new GridSupplier(BrowserToCapabilities.of(Browser.ff)).get();
     driver.get("http://www.google.com");
   }
 }

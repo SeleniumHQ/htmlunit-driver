@@ -20,7 +20,7 @@ package org.openqa.selenium.testing;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.logging.Logger;
 import java.util.stream.Stream;

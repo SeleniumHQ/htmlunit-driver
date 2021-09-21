@@ -21,7 +21,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitWebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -213,14 +213,14 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
   public void canGetCoordinatesOnPage() {
     driver.get(appServer.whereIs("box.html"));
     WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(((Locatable) redBox).getCoordinates().onPage(), equalTo(new Point(100, 101)));
+    assertThat(((Coordinates) redBox).onPage(), equalTo(new Point(100, 101)));
   }
 
   @Test
   public void canGetCoordinatesInViewport() {
     driver.get(appServer.whereIs("box.html"));
     WebElement redBox = driver.findElement(By.id("red_box"));
-    assertThat(((Locatable) redBox).getCoordinates().inViewPort(), equalTo(new Point(100, 101)));
+    assertThat(((Coordinates) redBox).inViewPort(), equalTo(new Point(100, 101)));
   }
 
   @Test
@@ -237,7 +237,7 @@ public class HtmlUnitElementTest extends JUnit4TestBase {
 
   @Test(expected = UnsupportedOperationException.class)
   public void coordinatesOnScreenAreNotSupported() {
-    ((Locatable) driver.findElement(By.tagName("body"))).getCoordinates().onScreen();
+    ((Coordinates) driver.findElement(By.tagName("body"))).onScreen();
   }
 
 }

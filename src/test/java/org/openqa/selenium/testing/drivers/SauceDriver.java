@@ -122,7 +122,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability("name", jobName);
     }
 
-    if (DesiredCapabilities.internetExplorer().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserToCapabilities.of(Browser.ie).getBrowserName().equals(desiredCapabilities.getBrowserName())) {
       String ieDriverVersion = System.getenv(SELENIUM_IEDRIVER_ENV_NAME);
       if (ieDriverVersion != null) {
         mungedCapabilities.setCapability("iedriver-version", ieDriverVersion);
@@ -130,7 +130,7 @@ public class SauceDriver extends RemoteWebDriver {
       mungedCapabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
     }
 
-    if (DesiredCapabilities.chrome().getBrowserName().equals(desiredCapabilities.getBrowserName())) {
+    if (BrowserToCapabilities.of(Browser.chrome).getBrowserName().equals(desiredCapabilities.getBrowserName())) {
       String chromeDriverVersion = System.getenv(SELENIUM_CHROMEDRIVER_ENV_NAME);
       if (chromeDriverVersion != null) {
         System.out.println("Setting chromedriver-version capability to " + chromeDriverVersion);

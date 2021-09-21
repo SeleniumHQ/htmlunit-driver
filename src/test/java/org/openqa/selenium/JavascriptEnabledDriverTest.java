@@ -21,7 +21,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
@@ -33,7 +33,8 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsFreshDriver;
@@ -204,7 +205,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
 
     assumeTrue(element instanceof Locatable);
 
-    Point point = ((Locatable) element).getCoordinates().inViewPort();
+    Point point = ((Coordinates) element).inViewPort();
 
     assertTrue(String.format("Non-positive X coordinates: %d", point.getX()),
                point.getX() > 1);

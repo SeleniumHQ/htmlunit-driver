@@ -63,7 +63,7 @@ public class HtmlUnitMouse implements Mouse {
   @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
-    parent.click(element, false);
+    parent.click(element,false);
   }
 
   /**

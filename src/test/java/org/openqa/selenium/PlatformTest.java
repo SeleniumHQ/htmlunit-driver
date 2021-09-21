@@ -59,11 +59,6 @@ public class PlatformTest {
   }
 
   @Test
-  public void androidIsAUnixVariant() {
-    assertTrue(Platform.ANDROID.is(Platform.UNIX));
-  }
-
-  @Test
   public void testXpIsAny() {
     assertTrue(Platform.XP.is(Platform.ANY));
   }

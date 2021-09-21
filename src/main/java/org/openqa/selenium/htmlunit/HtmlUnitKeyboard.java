@@ -19,20 +19,19 @@ package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriverException;
-
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlNumberInput;
 import com.gargoylesoftware.htmlunit.html.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriverException;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
  */
 public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
-  private KeyboardModifiersState modifiersState = new KeyboardModifiersState();
+  private final KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
   private HtmlElement lastElement;
 
@@ -51,7 +50,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
 
     final HtmlElement element = (HtmlElement) htmlElem.element;
     final boolean inputElementInsideForm = element instanceof HtmlInput
-        && ((HtmlInput) element).getEnclosingForm() != null;
+        && element.getEnclosingForm() != null;
     InputKeysContainer keysContainer = new InputKeysContainer(inputElementInsideForm, value);
 
     htmlElem.switchFocusToThisIfNeeded();
