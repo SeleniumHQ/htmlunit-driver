@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.determineBrowserVersion;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
@@ -46,7 +45,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities ieCapabilities = new DesiredCapabilities(BrowserType.IE, "", Platform.ANY);
 
     try {
-        determineBrowserVersion(ieCapabilities);
+        BrowserVersionDeterminer.determine(ieCapabilities);
         fail("IllegalArgumentException expected");
     }
     catch (IllegalArgumentException e) {
@@ -60,8 +59,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox", Platform.ANY);
 
-    assertEquals(FIREFOX,
-        determineBrowserVersion(firefoxCapabilities));
+    assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
@@ -69,7 +67,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox-78", Platform.ANY);
 
-    assertEquals(FIREFOX_78, determineBrowserVersion(firefoxCapabilities));
+    assertEquals(FIREFOX_78, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
@@ -77,14 +75,14 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities ieCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "internet explorer", Platform.ANY);
 
-    assertEquals(INTERNET_EXPLORER, determineBrowserVersion(ieCapabilities));
+    assertEquals(INTERNET_EXPLORER, BrowserVersionDeterminer.determine(ieCapabilities));
   }
 
   @Test
   public void tetsDefautlBrowserVersion() {
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
 
-    assertEquals(BrowserVersion.getDefault(), determineBrowserVersion(capabilities));
+    assertEquals(BrowserVersion.getDefault(), BrowserVersionDeterminer.determine(capabilities));
   }
 
   @Test
@@ -106,8 +104,7 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
     capabilities.setCapability(BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
 
-    assertEquals(browserLanguage,
-        determineBrowserVersion(capabilities).getBrowserLanguage());
+    assertEquals(browserLanguage, BrowserVersionDeterminer.determine(capabilities).getBrowserLanguage());
   }
 
 }

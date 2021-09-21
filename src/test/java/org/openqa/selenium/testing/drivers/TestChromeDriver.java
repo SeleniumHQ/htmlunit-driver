@@ -90,7 +90,7 @@ public class TestChromeDriver extends RemoteWebDriver {
       options.setBinary(new File(chromePath));
     }
 
-    DesiredCapabilities capabilities = DesiredCapabilities.chrome();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(Browser.chrome);
     capabilities.setCapability(ChromeOptions.CAPABILITY, options);
 
     if (originalCapabilities != null) {

@@ -19,7 +19,9 @@ package org.openqa.selenium.testing.drivers;
 
 import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserToCapabilities {
@@ -32,11 +34,11 @@ public class BrowserToCapabilities {
 
     switch (browser) {
       case chrome:
-        caps = DesiredCapabilities.chrome();
+        caps = new DesiredCapabilities(BrowserType.CHROME,"", Platform.ANY);
         break;
 
       case ff:
-        caps = DesiredCapabilities.firefox();
+        caps = new DesiredCapabilities(BrowserType.FIREFOX,"", Platform.ANY);
         String property =
           System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
         boolean useMarionette = property != null && Boolean.parseBoolean(property);
@@ -48,15 +50,15 @@ public class BrowserToCapabilities {
         break;
 
       case ie:
-        caps = DesiredCapabilities.internetExplorer();
+        caps = new DesiredCapabilities(BrowserType.IE,"", Platform.WINDOWS);
         break;
 
       case operablink:
-        caps = DesiredCapabilities.operaBlink();
+        caps = new DesiredCapabilities(BrowserType.OPERA,"", Platform.ANY);
         break;
 
       case safari:
-        caps = DesiredCapabilities.safari();
+        caps = new DesiredCapabilities(BrowserType.SAFARI,"", Platform.MAC);
         break;
 
       default:

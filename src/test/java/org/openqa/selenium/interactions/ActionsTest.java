@@ -36,8 +36,7 @@ import org.mockito.MockitoAnnotations;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.Coordinates;
-import org.openqa.selenium.interactions.internal.Locatable;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElement;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -229,11 +228,10 @@ public class ActionsTest {
     assertEquals(Keys.CONTROL.toString(), keyUpAction.get("value"));
   }
 
-
   private WebElement mockLocatableElementWithCoordinates(Coordinates coord) {
-    WebElement element = mock(WebElement.class,
-                              withSettings().extraInterfaces(Locatable.class));
-    when(((Locatable) element).getCoordinates()).thenReturn(coord);
+    HtmlUnitWebElement element = mock(HtmlUnitWebElement.class,
+            withSettings().extraInterfaces(Coordinates.class));
+    when(element.getCoordinates()).thenReturn(coord);
     return element;
   }
 }

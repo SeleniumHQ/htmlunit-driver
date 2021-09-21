@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
@@ -34,7 +34,6 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
-import org.openqa.selenium.interactions.internal.Locatable;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
@@ -189,11 +188,10 @@ public class PositionAndSizeTest extends JUnit4TestBase {
 
   private Point getLocationInViewPort(By locator) {
     WebElement element = driver.findElement(locator);
-    return ((Locatable) element).getCoordinates().inViewPort();
+    return element.getLocation();
   }
 
   private Point getLocationOnPage(By locator) {
-    WebElement element = driver.findElement(locator);
-    return ((Locatable) element).getCoordinates().onPage();
+    return getLocationInViewPort(locator);
   }
 }

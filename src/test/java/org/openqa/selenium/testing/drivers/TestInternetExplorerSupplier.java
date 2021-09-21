@@ -36,7 +36,7 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!DesiredCapabilities.internetExplorer().getBrowserName().equals(caps.getBrowserName())) {
+    if (!BrowserToCapabilities.of(Browser.ie).getBrowserName().equals(caps.getBrowserName())) {
       return null;
     }
 

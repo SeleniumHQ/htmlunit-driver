@@ -13,8 +13,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <selenium.version>3.141.59</selenium.version>
     <htmlunit.version>2.53.0</htmlunit.version>
+    <selenium.version>4.0.0-rc-1</selenium.version>
     <jetty.version>9.4.43.v20210629</jetty.version>
   </properties>
 
