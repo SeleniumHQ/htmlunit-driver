@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.css.parser.CSSException;
 import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.DomNodeList;
@@ -57,11 +58,15 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(By locator) {
-            HtmlPage htmlPage = getLastPage();
+            SgmlPage lastPage = getLastPage();
+            if (!(lastPage instanceof HtmlPage)) {
+                throw new IllegalStateException("Cannot find elements by id for " + lastPage);
+            }
+
             By.Remotable remote = getRemotable(locator);
 
             String id = (String) remote.getRemoteParameters().value();
-            DomElement element = htmlPage.getElementById(id);
+            DomElement element = ((HtmlPage) lastPage).getElementById(id);
 
             if (element == null) {
                 throw new NoSuchElementException("Unable to locate element with ID: '" + id + "'");
@@ -71,7 +76,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(By locator) {
-            final List<DomElement> allElements = getLastPage().getElementsById(getValue(locator));
+            SgmlPage lastPage = getLastPage();
+            if (!(lastPage instanceof HtmlPage)) {
+                throw new IllegalStateException("Cannot find elements by id for " + lastPage);
+            }
+
+            final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsById(getValue(locator));
             return convertRawDomElementsToWebElements(getDriver(), allElements);
         }
     }
@@ -84,7 +94,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(By locator) {
-            final List<DomElement> allElements = getLastPage().getElementsByName(getValue(locator));
+            SgmlPage lastPage = getLastPage();
+            if (!(lastPage instanceof HtmlPage)) {
+                throw new IllegalStateException("Cannot find elements by id for " + lastPage);
+            }
+
+            final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(getValue(locator));
             return convertRawDomElementsToWebElements(getDriver(), allElements);
         }
     }
@@ -97,9 +112,14 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(By locator) {
+            SgmlPage lastPage = getLastPage();
+            if (!(lastPage instanceof HtmlPage)) {
+                throw new IllegalStateException("Cannot find links for " + lastPage);
+            }
+
             List<WebElement> elements = new ArrayList<>();
 
-            List<HtmlAnchor> anchors = getLastPage().getAnchors();
+            List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
             String value = getValue(locator);
 
             for (HtmlAnchor anchor : anchors) {
@@ -120,7 +140,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(By locator) {
-            List<HtmlAnchor> anchors = getLastPage().getAnchors();
+            SgmlPage lastPage = getLastPage();
+            if (!(lastPage instanceof HtmlPage)) {
+                throw new IllegalStateException("Cannot find links for " + lastPage);
+            }
+
+            List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
             List<WebElement> elements = new ArrayList<>();
             for (HtmlAnchor anchor : anchors) {
                 if (anchor.asNormalizedText().contains(getValue(locator))) {
@@ -227,7 +252,7 @@ public class HtmlUnitElementFinder {
                 throw new InvalidSelectorException("Unable to locate element by xpath for " + getLastPage());
             }
 
-            HtmlPage lastPage;
+            SgmlPage lastPage;
             try {
                 lastPage = getLastPage();
             } catch (IllegalStateException e) {
@@ -255,7 +280,7 @@ public class HtmlUnitElementFinder {
         @Override
         public WebElement findElement(By locator) {
             Object node;
-            final HtmlPage lastPage = getLastPage();
+            final SgmlPage lastPage = getLastPage();
             final String value = getValue(locator);
 
             try {
@@ -281,7 +306,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(By locator) {
-            HtmlPage lastPage;
+            SgmlPage lastPage;
             try {
                 lastPage = getLastPage();
             } catch (IllegalStateException e) {
@@ -341,12 +366,12 @@ public class HtmlUnitElementFinder {
             return (By.Remotable) locator;
         }
 
-        protected HtmlPage getLastPage() {
+        protected SgmlPage getLastPage() {
             Page lastPage = driver.getWindowManager().lastPage();
-            if (!(lastPage instanceof HtmlPage)) {
-                throw new IllegalStateException("Cannot find links for " + lastPage);
+            if (!(lastPage instanceof SgmlPage)) {
+                throw new IllegalStateException("Current page is not a SgmlPage");
             }
-            return (HtmlPage) lastPage;
+            return (SgmlPage) lastPage;
         }
 
         protected static String getValue(By locator) {
