@@ -14,7 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <htmlunit.version>2.53.0</htmlunit.version>
-    <selenium.version>4.0.0-rc-1</selenium.version>
+    <selenium.version>4.0.0-rc-2</selenium.version>
     <jetty.version>9.4.43.v20210629</jetty.version>
   </properties>
 
@@ -46,6 +46,11 @@
       <name>Alexei Barantsev</name>
     </developer>
   </developers>
+  <contributors>
+    <contributor>
+      <name>Martin Barto&#x160;</name>
+    </contributor>
+  </contributors>
 
   <dependencies>
     <dependency>
