@@ -51,6 +51,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
+import org.openqa.selenium.interactions.Locatable;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
@@ -62,7 +63,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class HtmlUnitWebElement implements WrapsDriver, WebElement,Coordinates {
+public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 
   protected final HtmlUnitDriver parent;
   protected final int id;
@@ -570,7 +571,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement,Coordinates {
     }
     return null;
   }
-  
+
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof WebElement)) {

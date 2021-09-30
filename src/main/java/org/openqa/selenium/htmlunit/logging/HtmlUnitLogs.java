@@ -60,7 +60,7 @@ public class HtmlUnitLogs implements Logs {
      */
     @Override
     public Set<String> getAvailableLogTypes() {
-        return Collections.EMPTY_SET;
+        return Collections.<String>emptySet();
     }
 
     private static class HtmlUnitDriverLogger implements Logger {
