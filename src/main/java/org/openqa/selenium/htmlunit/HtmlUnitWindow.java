@@ -53,7 +53,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
             @Override
             public void webWindowContentChanged(WebWindowEvent event) {
-                getElementsMap().remove(event.getOldPage());
+                driver.getElementsMap().remove(event.getOldPage());
                 WebWindow current = driver.getCurrentWindow();
 
                 if (current == event.getWebWindow()) {
@@ -63,7 +63,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
             @Override
             public void webWindowClosed(WebWindowEvent event) {
-                getElementsMap().remove(event.getOldPage());
+                driver.getElementsMap().remove(event.getOldPage());
 
                 WebWindow current = getWebClient().getCurrentWindow();
                 do {
@@ -80,10 +80,6 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
     private WebClient getWebClient() {
         return driver.getWebClient();
-    }
-
-    private Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> getElementsMap() {
-        return driver.getElementsMap().getMap();
     }
 
     @Override

@@ -1055,16 +1055,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
   }
 
   protected HtmlUnitWebElement toWebElement(DomElement element) {
-    HtmlUnitDriver.ElementsMap elementsMap = getElementsMap();
-    Map<DomElement, HtmlUnitWebElement> pageMap = elementsMap.getMap().computeIfAbsent(element.getPage(), k -> new HashMap<>());
-
-    HtmlUnitWebElement e = pageMap.get(element);
-    if (e == null) {
-      elementsMap.setCounter(elementsMap.getCounter() + 1);
-      e = new HtmlUnitWebElement(this, elementsMap.getCounter(), element);
-      pageMap.put(element, e);
-    }
-    return e;
+    return getElementsMap().addIfAbsent(this, element);
   }
 
   public boolean isJavascriptEnabled() {
@@ -1219,23 +1210,27 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
   protected static class ElementsMap {
     private final Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> elementsMap;
-    private int counter;
+    private int idCounter;
 
     public ElementsMap() {
-      this.elementsMap = new WeakHashMap<>();
-      this.counter = 0;
+      elementsMap = new WeakHashMap<>();
+      idCounter = 0;
     }
 
-    public Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> getMap() {
-      return elementsMap;
+    public HtmlUnitWebElement addIfAbsent(final HtmlUnitDriver driver, final DomElement element) {
+        Map<DomElement, HtmlUnitWebElement> pageMap = elementsMap.computeIfAbsent(element.getPage(), k -> new HashMap<>());
+
+        HtmlUnitWebElement e = pageMap.get(element);
+        if (e == null) {
+            idCounter++;
+          e = new HtmlUnitWebElement(driver, idCounter, element);
+          pageMap.put(element, e);
+        }
+        return e;
     }
 
-    public int getCounter() {
-      return counter;
-    }
-
-    public void setCounter(int count) {
-      this.counter = count;
+    public void remove(final Page page) {
+        elementsMap.remove(page);
     }
   }
 }
