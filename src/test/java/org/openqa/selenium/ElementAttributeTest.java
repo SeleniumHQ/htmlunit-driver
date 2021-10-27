@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
@@ -409,5 +411,16 @@ public class ElementAttributeTest extends JUnit4TestBase {
     driver.get(pages.userDefinedProperty);
     WebElement element = driver.findElement(By.id("d"));
     assertEquals("sampleValue", element.getAttribute("dynamicProperty"));
+  }
+
+  @Test
+  public void testConvertWebElementToSelectComponent() {
+    driver.get(pages.selectPage);
+
+    WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
+    assertThat(element,notNullValue());
+
+    Select select = new Select(element);
+    assertThat(select, notNullValue());
   }
 }

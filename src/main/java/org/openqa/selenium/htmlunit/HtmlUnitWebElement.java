@@ -547,6 +547,11 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     return getColor(style);
   }
 
+  @Override
+  public String getDomAttribute(String name) {
+    return element.getAttribute(name);
+  }
+
   private static String getColor(String name) {
     if ("null".equals(name)) {
       return "transparent";
