@@ -190,6 +190,40 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
         assertEquals("true", elem.getDomAttribute("disabled"));
     }
 
+    @Test
+    public void attribute() throws Exception {
+        String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId' name prop='' >TestDiv</div>\n"
+                        + "  <div id='testDivId2' disabled>TestDiv</div>\n"
+                        + "  <div id='testDivId3' disabled='disabled'>TestDiv</div>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='checkbox' id='chkBx' name='chbox' value='dis' disabled>disabled\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        WebElement elem = driver.findElement(By.id("testDivId"));
+        assertEquals("testDivId", elem.getAttribute("id"));
+        assertNull(elem.getAttribute("unknown"));
+        assertEquals("", elem.getAttribute("name"));
+        assertEquals("", elem.getAttribute("prop"));
+
+        elem = driver.findElement(By.id("testDivId2"));
+        assertEquals("true", elem.getAttribute("disabled"));
+
+        elem = driver.findElement(By.id("testDivId3"));
+        assertEquals("true", elem.getAttribute("disabled"));
+
+        elem = driver.findElement(By.id("chkBx"));
+        assertEquals("chbox", elem.getAttribute("name"));
+        assertEquals("dis", elem.getAttribute("value"));
+        assertEquals("true", elem.getAttribute("disabled"));
+    }
+
     // @Test
     public void memoryLeak() throws Exception {
         final int elements = 1000;

@@ -384,6 +384,27 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     return null;
   }
 
+  @Override
+  public String getDomProperty(String name) {
+    assertElementNotStale();
+
+    final String lowerName = name.toLowerCase();
+    String value = element.getAttribute(lowerName);
+    if (DomElement.ATTRIBUTE_NOT_DEFINED == value || DomElement.ATTRIBUTE_VALUE_EMPTY == value) {
+        return null;
+    }
+    return value;
+  }
+
+  @Override
+  public String getDomAttribute(String name) {
+    assertElementNotStale();
+
+    final String lowerName = name.toLowerCase();
+    String value = element.getAttribute(lowerName);
+    return value;
+  }
+
   private static String trueOrNull(boolean condition) {
     return condition ? "true" : null;
   }
