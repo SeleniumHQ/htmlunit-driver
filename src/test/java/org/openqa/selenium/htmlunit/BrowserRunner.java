@@ -17,6 +17,11 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.CHROME;
+import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.FF;
+import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.FF78;
+import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.IE;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -77,7 +82,7 @@ public class BrowserRunner extends Suite {
                 if (browsers.contains("ff78")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, true));
                 }
-                else if (browsers.contains("ff")) {
+                if (browsers.contains("ff")) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, true));
                 }
                 if (browsers.contains("ie")) {
@@ -93,6 +98,9 @@ public class BrowserRunner extends Suite {
             }
             if (browsers.contains("hu-ff")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, false));
+            }
+            if (browsers.contains("hu-ff78")) {
+                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, false));
             }
             if (browsers.contains("hu-ie")) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, false));
@@ -145,16 +153,16 @@ public class BrowserRunner extends Suite {
     public static final String EMPTY_DEFAULT = "~InTerNal_To_BrowSeRRunNer#@$";
 
     /**
-     * Browser.
+     * Browser under test.
      */
-    public enum Browser {
+    public enum TestedBrowser {
         /** Latest version of Chrome. */
         CHROME,
 
         /** Internet Explorer 11. */
         IE,
 
-        /** All versions of Firefox. */
+        /** Firefox. */
         FF,
 
         /** Firefox 78. */
@@ -187,13 +195,13 @@ public class BrowserRunner extends Suite {
         String[] IE() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for any Firefox, it can be overridden by specific FF version.
+         * Alerts for latest Firefox.
          * @return the alerts
          */
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78. If not defined, {@link #FF()} is used.
+         * Alerts for Firefox 78.
          * @return the alerts
          */
         String[] FF78() default { EMPTY_DEFAULT };
@@ -227,19 +235,19 @@ public class BrowserRunner extends Suite {
         String[] value() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for any Internet Explorer, it can be overridden by specific IE version.
+         * Alerts for Internet Explorer 11.
          * @return the alerts
          */
         String[] IE() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for any Firefox, it can be overridden by specific FF version.
+         * Alerts for latest Firefox.
          * @return the alerts
          */
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78. If not defined, {@link #FF()} is used.
+         * Alerts for Firefox 78.
          * @return the alerts
          */
         String[] FF78() default { EMPTY_DEFAULT };
@@ -258,10 +266,21 @@ public class BrowserRunner extends Suite {
     }
 
     /**
+     * Marks the os.
+     */
+    public enum OS {
+        /** Linux. */
+        Linux,
+
+        /** Windows. */
+        Windows
+    }
+
+    /**
      * Marks a test as not yet working for a particular browser (default value is all).
      * This will cause a failure to be considered as success and a success as failure forcing
      * us to remove this annotation when a feature has been implemented even unintentionally.
-     * @see Browser
+     * @see TestedBrowser
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -271,31 +290,97 @@ public class BrowserRunner extends Suite {
          * The browsers with which the case is not yet implemented.
          * @return the browsers
          */
-        Browser[] value() default {
-          Browser.IE, Browser.FF, Browser.CHROME
+        TestedBrowser[] value() default {
+            IE, FF78, FF, CHROME
         };
 
         /**
-         * @return an optional reason.
+         * The operating systems with which the case is not yet implemented.
+         * @return the operating systems
          */
-        String reason() default "";
+        OS[] os() default {};
     }
 
     /**
      * Indicates that the test runs manually in a real browser but not when using WebDriver to drive the browser.
-     * @see Browser
+     * @see TestedBrowser
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public static @interface BuggyWebDriver {
+        /**
+         * Alerts that is used for all browsers (if defined, the other values are ignored).
+         * @return the alerts
+         */
+        String[] value() default { EMPTY_DEFAULT };
 
         /**
-         * The browsers with which the case is failing.
-         * @return the browsers
+         * Alerts for Internet Explorer 11.
+         * @return the alerts
          */
-        Browser[] value() default {
-          Browser.IE, Browser.FF, Browser.CHROME
-        };
+        String[] IE() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for any Firefox, it can be overridden by specific FF version.
+         * @return the alerts
+         */
+        String[] FF() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for Firefox 78.
+         * @return the alerts
+         */
+        String[] FF78() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for latest Chrome.
+         * @return the alerts
+         */
+        String[] CHROME() default { EMPTY_DEFAULT };
+
+        /**
+         * The default alerts, if nothing more specific is defined.
+         * @return the alerts
+         */
+        String[] DEFAULT() default { EMPTY_DEFAULT };
+    }
+
+    /**
+     * Indicates that the test produces different result when running with HtmlUnit.
+     * @see TestedBrowser
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public static @interface HtmlUnitNYI {
+        /**
+         * Alerts that is used for all browsers (if defined, the other values are ignored).
+         * @return the alerts
+         */
+        String[] value() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for Internet Explorer 11.
+         * @return the alerts
+         */
+        String[] IE() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for latest Firefox.
+         * @return the alerts
+         */
+        String[] FF() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for Firefox 78.
+         * @return the alerts
+         */
+        String[] FF78() default { EMPTY_DEFAULT };
+
+        /**
+         * Alerts for latest Chrome.
+         * @return the alerts
+         */
+        String[] CHROME() default { EMPTY_DEFAULT };
     }
 
     /**

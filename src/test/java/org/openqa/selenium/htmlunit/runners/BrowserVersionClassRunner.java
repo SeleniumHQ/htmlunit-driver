@@ -17,23 +17,19 @@
 
 package org.openqa.selenium.htmlunit.runners;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.internal.runners.statements.Fail;
 import org.junit.rules.RunRules;
 import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runner.manipulation.Filter;
-import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
@@ -42,9 +38,11 @@ import org.junit.runners.model.TestClass;
 import org.openqa.selenium.htmlunit.BrowserRunner;
 import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.BrowserRunner.AlertsStandards;
-import org.openqa.selenium.htmlunit.BrowserRunner.Browser;
 import org.openqa.selenium.htmlunit.BrowserRunner.BuggyWebDriver;
+import org.openqa.selenium.htmlunit.BrowserRunner.HtmlUnitNYI;
 import org.openqa.selenium.htmlunit.BrowserRunner.NotYetImplemented;
+import org.openqa.selenium.htmlunit.BrowserRunner.OS;
+import org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser;
 import org.openqa.selenium.htmlunit.BrowserRunner.Tries;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
@@ -52,9 +50,12 @@ import org.openqa.selenium.htmlunit.WebTestCase;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
- * The runner for test methods that run with a specific browser ({@link BrowserRunner.Browser}).
+ * The runner for test methods that run with a specific browser ({@link BrowserRunner.TestedBrowser}).
  */
 public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
+
+    /** If no alerts defined. */
+    public static final String[] NO_ALERTS_DEFINED = {"no alerts defined"};
 
     private final BrowserVersion browserVersion_;
     private final boolean realBrowser_;
@@ -78,6 +79,7 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         final Alerts alerts = method.getAnnotation(Alerts.class);
         String[] expectedAlerts = {};
         if (alerts != null) {
+            expectedAlerts = NO_ALERTS_DEFINED;
             if (isDefined(alerts.value())) {
                 expectedAlerts = alerts.value();
             }
@@ -96,13 +98,58 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                 }
             }
         }
+
+        if (isRealBrowser()) {
+            final BuggyWebDriver buggyWebDriver = method.getAnnotation(BuggyWebDriver.class);
+            if (buggyWebDriver != null) {
+                if (isDefined(buggyWebDriver.value())) {
+                    expectedAlerts = buggyWebDriver.value();
+                }
+                else {
+                    if (browserVersion_ == BrowserVersion.INTERNET_EXPLORER) {
+                        expectedAlerts = firstDefinedOrGiven(expectedAlerts,
+                                            buggyWebDriver.IE(), buggyWebDriver.DEFAULT());
+                    }
+                    else if (browserVersion_ == BrowserVersion.FIREFOX_78) {
+                        expectedAlerts = firstDefinedOrGiven(expectedAlerts,
+                                            buggyWebDriver.FF78(), buggyWebDriver.DEFAULT());
+                    }
+                    else if (browserVersion_ == BrowserVersion.FIREFOX) {
+                        expectedAlerts = firstDefinedOrGiven(expectedAlerts,
+                                            buggyWebDriver.FF(), buggyWebDriver.DEFAULT());
+                    }
+                    else if (browserVersion_ == BrowserVersion.CHROME) {
+                        expectedAlerts = firstDefinedOrGiven(expectedAlerts,
+                                            buggyWebDriver.CHROME(), buggyWebDriver.DEFAULT());
+                    }
+                }
+            }
+        }
+        else {
+            final HtmlUnitNYI htmlUnitNYI = method.getAnnotation(HtmlUnitNYI.class);
+            if (htmlUnitNYI != null) {
+                if (browserVersion_ == BrowserVersion.INTERNET_EXPLORER) {
+                    expectedAlerts = firstDefinedOrGiven(expectedAlerts, htmlUnitNYI.IE());
+                }
+                else if (browserVersion_ == BrowserVersion.FIREFOX_78) {
+                    expectedAlerts = firstDefinedOrGiven(expectedAlerts, htmlUnitNYI.FF78());
+                }
+                else if (browserVersion_ == BrowserVersion.FIREFOX) {
+                    expectedAlerts = firstDefinedOrGiven(expectedAlerts, htmlUnitNYI.FF());
+                }
+                else if (browserVersion_ == BrowserVersion.CHROME) {
+                    expectedAlerts = firstDefinedOrGiven(expectedAlerts, htmlUnitNYI.CHROME());
+                }
+            }
+        }
+
         testCase.setExpectedAlerts(expectedAlerts);
     }
 
     private void setAlertsStandards(final WebTestCase testCase, final Method method) {
         final AlertsStandards alerts = method.getAnnotation(AlertsStandards.class);
         if (alerts != null) {
-            String[] expectedAlerts = {};
+            String[] expectedAlerts = NO_ALERTS_DEFINED;
             if (isDefined(alerts.value())) {
                 expectedAlerts = alerts.value();
             }
@@ -133,7 +180,23 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                 return var;
             }
         }
-        return new String[] {};
+        return NO_ALERTS_DEFINED;
+    }
+
+    public static String[] firstDefinedOrGiven(final String[] given, final String[]... variants) {
+        for (final String[] var : variants) {
+            if (isDefined(var)) {
+                try {
+                    assertArrayEquals(var, given);
+                    fail("BuggyWebDriver duplicates expectations");
+                }
+                catch (final AssertionError e) {
+                    // ok
+                }
+                return var;
+            }
+        }
+        return given;
     }
 
     /**
@@ -151,31 +214,6 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         return object;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void filter(final Filter filter) throws NoTestsRemainException {
-        final List<FrameworkMethod> testMethods = computeTestMethods();
-
-        for (final ListIterator<FrameworkMethod> iter = testMethods.listIterator(); iter.hasNext();) {
-            final FrameworkMethod method = iter.next();
-            // compute 2 descriptions to verify if it is the intended test:
-            // - one "normal", this is what Eclipse's filter awaits when typing Ctrl+X T
-            //   when cursor is located on a test method
-            // - one with browser nickname, this is what is needed when re-running a test from
-            //   the JUnit view
-            // as the list of methods is cached, this is what will be returned when computeTestMethods() is called
-            final Description description = Description.createTestDescription(getTestClass().getJavaClass(),
-                method.getName());
-            final Description description2 = Description.createTestDescription(getTestClass().getJavaClass(),
-                testName(method));
-            if (!filter.shouldRun(description) && !filter.shouldRun(description2)) {
-                iter.remove();
-            }
-        }
-    }
-
     @Override
     protected String getName() {
         String browserString = browserVersion_.getNickname();
@@ -191,9 +229,6 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         if (isNotYetImplemented(method) && !realBrowser_) {
             prefix = "(NYI) ";
         }
-        else if (realBrowser_ && isBuggyWebDriver(method)) {
-            prefix = "(buggy) ";
-        }
 
         String browserString = browserVersion_.getNickname();
         if (realBrowser_) {
@@ -205,25 +240,6 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         String className = method.getMethod().getDeclaringClass().getName();
         className = className.substring(className.lastIndexOf('.') + 1);
         return String.format("%s%s [%s]", prefix, className + '.' + method.getName(), browserString);
-    }
-
-    private List<FrameworkMethod> testMethods_;
-
-    @Override
-    protected List<FrameworkMethod> computeTestMethods() {
-        if (testMethods_ != null) {
-            return testMethods_;
-        }
-        final List<FrameworkMethod> methods = new ArrayList<>(super.computeTestMethods());
-        final Comparator<FrameworkMethod> comparator = new Comparator<FrameworkMethod>() {
-            @Override
-            public int compare(final FrameworkMethod fm1, final FrameworkMethod fm2) {
-                return fm1.getName().compareTo(fm2.getName());
-            }
-        };
-        Collections.sort(methods, comparator);
-        testMethods_ = methods;
-        return testMethods_;
     }
 
     /**
@@ -241,18 +257,35 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         return false;
     }
 
-    static boolean isDefined(final String[] alerts) {
+    public static boolean isDefined(final String[] alerts) {
         return alerts.length != 1 || !alerts[0].equals(BrowserRunner.EMPTY_DEFAULT);
+    }
+
+    /**
+     * Returns true if current operating system is contained in the specific <tt>oses</tt>.
+     */
+    private boolean isDefinedIn(final OS[] oses) {
+        for (final OS os : oses) {
+            switch (os) {
+                case Linux:
+                    return SystemUtils.IS_OS_LINUX;
+                case Windows:
+                    return SystemUtils.IS_OS_WINDOWS;
+                default:
+                    break;
+            }
+        }
+        return false;
     }
 
     /**
      * Returns true if current {@link #browserVersion_} is contained in the specific <tt>browsers</tt>.
      */
-    private boolean isDefinedIn(final Browser[] browsers) {
-        for (final Browser browser : browsers) {
+    private boolean isDefinedIn(final TestedBrowser[] browsers) {
+        for (final TestedBrowser browser : browsers) {
             switch (browser) {
                 case IE:
-                    if (browserVersion_.isIE()) {
+                    if (browserVersion_ == BrowserVersion.INTERNET_EXPLORER) {
                         return true;
                     }
                     break;
@@ -264,13 +297,13 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
                     break;
 
                 case FF:
-                    if (browserVersion_.isFirefox()) {
+                    if (browserVersion_ == BrowserVersion.FIREFOX) {
                         return true;
                     }
                     break;
 
                 case CHROME:
-                    if (browserVersion_.isChrome()) {
+                    if (browserVersion_ == BrowserVersion.CHROME) {
                         return true;
                     }
                     break;
@@ -305,14 +338,14 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
         statement = withBefores(method, test, statement);
         statement = withAfters(method, test, statement);
         statement = withRules(method, test, statement);
+        statement = withInterruptIsolation(statement);
 
         //  End of copy & paste from super.methodBlock()  //
 
-        final boolean notYetImplemented;
+        boolean notYetImplemented = false;
         final int tries;
 
         if (testCase instanceof WebDriverTestCase && realBrowser_) {
-            notYetImplemented = isBuggyWebDriver(method);
             tries = 1;
         }
         else {
@@ -369,17 +402,10 @@ public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
      */
     protected boolean isNotYetImplemented(final FrameworkMethod method) {
         final NotYetImplemented notYetImplementedBrowsers = method.getAnnotation(NotYetImplemented.class);
-        return notYetImplementedBrowsers != null && isDefinedIn(notYetImplementedBrowsers.value());
-    }
-
-    /**
-     * Is buggy web driver.
-     * @param method the method
-     * @return is buggy web driver
-     */
-    protected boolean isBuggyWebDriver(final FrameworkMethod method) {
-        final BuggyWebDriver buggyWebDriver = method.getAnnotation(BuggyWebDriver.class);
-        return buggyWebDriver != null && isDefinedIn(buggyWebDriver.value());
+        if (notYetImplementedBrowsers == null) {
+            return false;
+        }
+        return isDefinedIn(notYetImplementedBrowsers.value()) || isDefinedIn(notYetImplementedBrowsers.os());
     }
 
     private static int getTries(final FrameworkMethod method) {

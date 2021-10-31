@@ -86,18 +86,17 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
 /**
  * Base class for tests using WebDriver.
- * <p>
+ *
  * By default, this test runs with HtmlUnit, but this behavior can be changed by having a property file named
  * "{@code test.properties}" in the HtmlUnit root directory.
  * Sample:
  * <pre>
    browsers=hu,ff78,ie
    chrome.bin=/path/to/chromedriver                     [Unix-like]
-   ff78.bin=/usr/bin/firefox_78                         [Unix-like]
-   ff.bin=/usr/bin/firefox                              [Unix-like]
+   ff78.bin=/usr/bin/firefox                            [Unix-like]
    ie.bin=C:\\path\\to\\32bit\\IEDriverServer.exe       [Windows]
-   autofix=true
- * </pre>
+   edge.bin=C:\\path\\to\\msedgedriver.exe              [Windows]
+   </pre>
  * The file could contain some properties:
  * <ul>
  *   <li>browsers: is a comma separated list contains any combination of "hu" (for HtmlUnit with all browser versions),
@@ -105,21 +104,17 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
  *
  *   <li>chrome.bin (mandatory if it does not exist in the <i>path</i>): is the location of the ChromeDriver binary (see
  *   <a href="http://chromedriver.storage.googleapis.com/index.html">Chrome Driver downloads</a>)</li>
+ *   <li>geckodriver.bin (mandatory if it does not exist in the <i>path</i>): is the location of the GeckoDriver binary
+ *   (see <a href="https://firefox-source-docs.mozilla.org/testing/geckodriver/Usage.html">Gecko Driver Usage</a>)</li>
  *   <li>ff.bin (optional): is the location of the FF binary, in Windows use double back-slashes</li>
- *   <li>ff78.bin (optional): is the location of the FF 78 binary, in Windows use double back-slashes</li>
+ *   <li>ff78.bin (optional): is the location of the FF binary, in Windows use double back-slashes</li>
  *   <li>ie.bin (mandatory if it does not exist in the <i>path</i>): is the location of the IEDriverServer binary (see
  *   <a href="http://selenium-release.storage.googleapis.com/index.html">IEDriverServer downloads</a>)</li>
- *   <li>autofix (optional): if {@code true}, try to automatically fix the real browser expectations,
- *   or add/remove {@code @NotYetImplemented} annotations, use with caution!</li>
+ *   <li>edge.bin (mandatory if it does not exist in the <i>path</i>): is the location of the MicrosoftWebDriver binary
+ *   (see <a href="http://go.microsoft.com/fwlink/?LinkId=619687">MicrosoftWebDriver downloads</a>)</li>
  * </ul>
- * </p>
  */
 public abstract class WebDriverTestCase extends WebTestCase {
-
-  /**
-   * The system property for automatically fixing the test case expectations.
-   */
-  public static final String AUTOFIX_ = "htmlunit.autofix";
 
   /**
    * All browsers supported.
@@ -132,6 +127,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   private static Set<String> BROWSERS_PROPERTIES_;
   private static String CHROME_BIN_;
   private static String IE_BIN_;
+  private static String GECKO_BIN_;
   private static String FF_BIN_;
   private static String FF78_BIN_;
 
@@ -184,11 +180,10 @@ public abstract class WebDriverTestCase extends WebTestCase {
                           .toLowerCase(Locale.ROOT).split(",")));
                   CHROME_BIN_ = properties.getProperty("chrome.bin");
                   IE_BIN_ = properties.getProperty("ie.bin");
+
+                  GECKO_BIN_ = properties.getProperty("geckodriver.bin");
                   FF_BIN_ = properties.getProperty("ff.bin");
                   FF78_BIN_ = properties.getProperty("ff78.bin");
-
-                  final boolean autofix = Boolean.parseBoolean(properties.getProperty("autofix"));
-                  System.setProperty(AUTOFIX_, Boolean.toString(autofix));
               }
           }
           catch (final Exception e) {
@@ -408,21 +403,11 @@ public abstract class WebDriverTestCase extends WebTestCase {
           }
 
           if (BrowserVersion.FIREFOX == getBrowserVersion()) {
-              if (FF_BIN_ != null) {
-                  final FirefoxOptions options = new FirefoxOptions();
-                  options.setBinary(FF_BIN_);
-                  return new FirefoxDriver(options);
-              }
-              return new FirefoxDriver();
+              return createFirefoxDriver(GECKO_BIN_, FF_BIN_);
           }
 
           if (BrowserVersion.FIREFOX_78 == getBrowserVersion()) {
-              if (FF78_BIN_ != null) {
-                  final FirefoxOptions options = new FirefoxOptions();
-                  options.setBinary(FF78_BIN_);
-                  return new FirefoxDriver(options);
-              }
-              return new FirefoxDriver();
+              return createFirefoxDriver(GECKO_BIN_, FF78_BIN_);
           }
 
           throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
@@ -434,6 +419,26 @@ public abstract class WebDriverTestCase extends WebTestCase {
           webDriver_ = new HtmlUnitDriver(capabilities);
       }
       return webDriver_;
+  }
+
+  private static FirefoxDriver createFirefoxDriver(final String geckodriverBinary, final String binary) {
+      if (geckodriverBinary != null
+              && !geckodriverBinary.equals(System.getProperty("webdriver.gecko.driver"))) {
+          System.setProperty("webdriver.gecko.driver", geckodriverBinary);
+      }
+
+      if (binary != null) {
+          final FirefoxOptions options = new FirefoxOptions();
+          options.setBinary(binary);
+
+          // at least FF79 is not stable when using a profile
+          // final FirefoxProfile profile = new FirefoxProfile();
+          // profile.setPreference("intl.accept_languages", "en-US");
+          // options.setProfile(profile);
+          return new FirefoxDriver(options);
+      }
+
+      return new FirefoxDriver();
   }
 
   private static String getBrowserName(final BrowserVersion browserVersion) {

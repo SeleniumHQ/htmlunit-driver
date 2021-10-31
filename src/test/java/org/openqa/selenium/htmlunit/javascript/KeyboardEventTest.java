@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.htmlunit.javascript;
 
-import static org.openqa.selenium.htmlunit.BrowserRunner.Browser.FF;
+import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.FF;
 
 import java.util.Arrays;
 
