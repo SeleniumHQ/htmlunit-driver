@@ -31,15 +31,15 @@ import com.google.common.collect.Lists;
 
 public class WebDriverBuilder implements Supplier<WebDriver> {
   private Capabilities desiredCapabilities;
-  private final Browser browser;
+  private final BrowserType browser;
 
   public WebDriverBuilder() {
-    this(Browser.detect());
+    this(BrowserType.detect());
   }
 
-  public WebDriverBuilder(Browser browser) {
+  public WebDriverBuilder(BrowserType browser) {
     if (browser == null) {
-      this.browser = Browser.chrome;
+      this.browser = BrowserType.CHROME;
     } else {
       this.browser = browser;
     }

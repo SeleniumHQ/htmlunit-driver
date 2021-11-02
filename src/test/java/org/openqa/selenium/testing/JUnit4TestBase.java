@@ -45,7 +45,7 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
@@ -56,7 +56,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   private static final Logger logger = Logger.getLogger(JUnit4TestBase.class.getName());
 
-  private Browser browser = Browser.detect();
+  private final BrowserType browser = BrowserType.detect();
   protected TestEnvironment environment;
   protected AppServer appServer;
   protected Pages pages;
@@ -275,44 +275,44 @@ public abstract class JUnit4TestBase implements WrapsDriver {
     return e.getClass().getName().contains("TimedOutException");
   }
 
-  private static boolean matches(Browser browser, Driver[] drivers) {
+  private static boolean matches(BrowserType browser, Driver[] drivers) {
     for (Driver driver : drivers) {
       switch (driver) {
         case ALL:
           return true;
 
         case CHROME:
-          if (browser == Browser.chrome) {
+          if (browser == BrowserType.CHROME) {
             return true;
           }
           break;
 
         case FIREFOX:
-          if (browser == Browser.ff && !Boolean.getBoolean("webdriver.firefox.marionette")) {
+          if (browser == BrowserType.FIREFOX && !Boolean.getBoolean("webdriver.firefox.marionette")) {
             return true;
           }
           break;
 
         case HTMLUNIT:
-          if (browser == Browser.htmlunit) {
+          if (browser == BrowserType.HTML_UNIT) {
             return true;
           }
           break;
 
         case IE:
-          if (browser == Browser.ie) {
+          if (browser == BrowserType.IE) {
             return true;
           }
           break;
 
         case EDGE:
-          if (browser == Browser.edge) {
+          if (browser == BrowserType.EDGE) {
             return true;
           }
           break;
 
         case MARIONETTE:
-          if (browser != Browser.ff) {
+          if (browser != BrowserType.FIREFOX) {
             return false;
           }
           if (System.getProperty("webdriver.firefox.marionette") == null ||
@@ -336,7 +336,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
           break;
 
         case SAFARI:
-          if (browser == Browser.safari) {
+          if (browser == BrowserType.SAFARI) {
             return true;
           }
           break;

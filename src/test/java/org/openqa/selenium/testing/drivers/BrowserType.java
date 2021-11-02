@@ -17,34 +17,52 @@
 
 package org.openqa.selenium.testing.drivers;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
-public enum Browser {
+public enum BrowserType {
 
-  chrome,
-  edge,
-  ff,
-  htmlunit,
-  ie,
-  none, // For those cases where you don't actually want a browser
-  opera,
-  operablink,
-  safari;
+  CHROME("chrome"),
+  EDGE("edge"),
+  FIREFOX("ff"),
+  HTML_UNIT("htmlunit"),
+  IE("ie"),
+  NONE("none"), // For those cases where you don't actually want a browser
+  OPERA("opera"),
+  OPERA_BLINK("operablink"),
+  SAFARI("safari");
 
-  private static final Logger log = Logger.getLogger(Browser.class.getName());
+  private static final Logger log = Logger.getLogger(BrowserType.class.getName());
 
-  public static Browser detect() {
+  private final String name;
+
+  BrowserType(String name) {
+    this.name = name;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public static BrowserType detect() {
     String browserName = System.getProperty("selenium.browser");
     if (browserName == null) {
-        return htmlunit;
+      return HTML_UNIT;
     }
 
     try {
-      return Browser.valueOf(browserName);
+      return BrowserType.getByName(browserName);
     } catch (IllegalArgumentException e) {
-      log.severe("Cannot locate matching browser for: " + browserName);
+      log.severe(e.getMessage());
       return null;
     }
+  }
+
+  public static BrowserType getByName(String name) {
+    return Arrays.stream(BrowserType.values())
+            .filter(f -> f.getName().equals(name))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Cannot locate matching browser for: " + name));
   }
 
 }

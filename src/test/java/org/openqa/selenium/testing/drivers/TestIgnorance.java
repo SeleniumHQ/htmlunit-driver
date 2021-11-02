@@ -29,10 +29,6 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.REMOTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
-import static org.openqa.selenium.testing.drivers.Browser.chrome;
-import static org.openqa.selenium.testing.drivers.Browser.htmlunit;
-import static org.openqa.selenium.testing.drivers.Browser.ie;
-import static org.openqa.selenium.testing.drivers.Browser.opera;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -52,16 +48,16 @@ import com.google.common.collect.Sets;
  */
 public class TestIgnorance {
 
-  private Set<Browser> alwaysNativeEvents = ImmutableSet.of(chrome, ie, opera);
-  private Set<Browser> neverNativeEvents = ImmutableSet.of(htmlunit);
-  private IgnoreComparator ignoreComparator = new IgnoreComparator();
-  private Set<String> methods = Sets.newHashSet();
-  private Set<String> only = Sets.newHashSet();
-  private Set<String> ignoreMethods = Sets.newHashSet();
-  private Set<String> ignoreClasses = Sets.newHashSet();
-  private Browser browser;
+  private final Set<BrowserType> alwaysNativeEvents = ImmutableSet.of(BrowserType.CHROME, BrowserType.IE, BrowserType.OPERA);
+  private final Set<BrowserType> neverNativeEvents = ImmutableSet.of(BrowserType.HTML_UNIT);
+  private final IgnoreComparator ignoreComparator = new IgnoreComparator();
+  private final Set<String> methods = Sets.newHashSet();
+  private final Set<String> only = Sets.newHashSet();
+  private final Set<String> ignoreMethods = Sets.newHashSet();
+  private final Set<String> ignoreClasses = Sets.newHashSet();
+  private BrowserType browser;
 
-  public TestIgnorance(Browser browser) {
+  public TestIgnorance(BrowserType browser) {
     setBrowser(browser);
 
     String onlyRun = System.getProperty("only_run");
@@ -157,28 +153,28 @@ public class TestIgnorance {
            ignoreMethods.contains(method.getMethodName());
   }
 
-  public void setBrowser(Browser browser) {
+  public void setBrowser(BrowserType browserType) {
     this.browser = checkNotNull(
-        browser,
+            browserType,
         "Browser to use must be set. Do this by setting the 'selenium.browser' system property");
-    addIgnoresForBrowser(browser, ignoreComparator);
+    addIgnoresForBrowser(browserType, ignoreComparator);
   }
 
-  private void addIgnoresForBrowser(Browser browser, IgnoreComparator comparator) {
+  private void addIgnoresForBrowser(BrowserType browserType, IgnoreComparator comparator) {
     if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
       comparator.addDriver(REMOTE);
     }
 
-    switch (browser) {
-      case chrome:
+    switch (browserType) {
+      case CHROME:
         comparator.addDriver(CHROME);
         break;
 
-      case edge:
+      case EDGE:
         comparator.addDriver(EDGE);
         break;
 
-      case ff:
+      case FIREFOX:
         if (Boolean.getBoolean("webdriver.firefox.marionette")) {
           comparator.addDriver(MARIONETTE);
         } else {
@@ -186,26 +182,26 @@ public class TestIgnorance {
         }
         break;
 
-      case htmlunit:
+      case HTML_UNIT:
         comparator.addDriver(HTMLUNIT);
         break;
 
-      case ie:
+      case IE:
         comparator.addDriver(IE);
         break;
 
-      case none:
+      case NONE:
         comparator.addDriver(ALL);
         break;
 
-      case opera:
+      case OPERA:
         break;
 
-      case operablink:
+      case OPERA_BLINK:
         comparator.addDriver(CHROME);
         break;
 
-      case safari:
+      case SAFARI:
         comparator.addDriver(SAFARI);
         break;
 

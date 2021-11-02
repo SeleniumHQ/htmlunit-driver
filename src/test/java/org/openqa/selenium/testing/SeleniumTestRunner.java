@@ -21,7 +21,7 @@ import org.junit.runner.Description;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 import org.openqa.selenium.testing.drivers.TestIgnorance;
 
 public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
@@ -37,11 +37,11 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
    */
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
-    Browser browser = Browser.detect();
-    if (browser == null && DevMode.isInDevMode()) {
-      browser = Browser.chrome;
+    BrowserType browserType = BrowserType.detect();
+    if (browserType == null && DevMode.isInDevMode()) {
+      browserType = BrowserType.CHROME;
     }
-    ignorance = new TestIgnorance(browser);
+    ignorance = new TestIgnorance(browserType);
   }
 
   @Override

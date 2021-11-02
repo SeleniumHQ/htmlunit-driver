@@ -43,7 +43,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
@@ -54,6 +54,8 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 public class AlertsTest extends JUnit4TestBase {
@@ -633,7 +635,7 @@ public class AlertsTest extends JUnit4TestBase {
 
   @Test(expected = UnhandledAlertException.class)
   public void capabilitiesConstructor() {
-    HtmlUnitDriver driver = new HtmlUnitDriver(new DesiredCapabilities(BrowserType.HTMLUNIT, null, Platform.ANY));
+    HtmlUnitDriver driver = new HtmlUnitDriver(BrowserToCapabilities.of(BrowserType.HTML_UNIT));
 
     driver.get(alertPage("cheese"));
     driver.findElement(By.id("alert")).click();

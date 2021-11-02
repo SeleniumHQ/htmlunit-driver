@@ -24,12 +24,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
+import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 public class HtmlUnitDriverTest {
 
@@ -228,7 +230,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesJsTrue() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
     capabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
 
     new HtmlUnitDriver(capabilities){
@@ -247,7 +249,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesJsFalse() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
     capabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
 
     new HtmlUnitDriver(capabilities){
@@ -266,8 +268,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesVersionString() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion("firefox");
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox");
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -278,8 +279,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion("googlechrome");
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "googlechrome");
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -290,8 +290,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion("MicrosoftEdge");
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "MicrosoftEdge");
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -302,8 +301,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion("firefox-78");
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox-78");
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -317,8 +315,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesVersion() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion(BrowserType.FIREFOX);
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, Browser.FIREFOX.browserName());
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -329,8 +326,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion(BrowserType.CHROME);
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, Browser.CHROME.browserName());
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -341,8 +337,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion(BrowserType.EDGE);
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, Browser.EDGE.browserName());
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -353,8 +348,7 @@ public class HtmlUnitDriverTest {
       }
     };
 
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion(BrowserType.FIREFOX + "-78");
+    capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox-78");
 
     new HtmlUnitDriver(capabilities){
       @Override
@@ -368,7 +362,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesJsEnabledTrue() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
     capabilities.setJavascriptEnabled(true);
 
     new HtmlUnitDriver(capabilities){
@@ -387,7 +381,7 @@ public class HtmlUnitDriverTest {
 
   @Test
   public void ctorWebClientCapabilitiesJsEnabledFalse() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
     capabilities.setJavascriptEnabled(false);
 
     new HtmlUnitDriver(capabilities){
@@ -409,7 +403,7 @@ public class HtmlUnitDriverTest {
     Proxy proxy = new Proxy();
     proxy.setHttpProxy("hostname:1234");
 
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
     capabilities.setCapability(CapabilityType.PROXY, proxy);
 
     new HtmlUnitDriver(capabilities){
