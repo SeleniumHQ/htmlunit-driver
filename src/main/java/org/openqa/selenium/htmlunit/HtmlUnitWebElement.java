@@ -17,25 +17,15 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.DomNode;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
-import com.gargoylesoftware.htmlunit.html.impl.SelectableTextInput;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
-import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
-import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
+import static com.gargoylesoftware.htmlunit.html.DomElement.ATTRIBUTE_NOT_DEFINED;
+import static com.gargoylesoftware.htmlunit.html.DomElement.ATTRIBUTE_VALUE_EMPTY;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -57,11 +47,26 @@ import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
+import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.DomNode;
+import com.gargoylesoftware.htmlunit.html.HtmlButton;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlImageInput;
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import com.gargoylesoftware.htmlunit.html.HtmlTextArea;
+import com.gargoylesoftware.htmlunit.html.impl.SelectableTextInput;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
+
+import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
+import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 
@@ -234,7 +239,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
       htmlTextArea.setText("");
-    } else if (!element.getAttribute("contenteditable").equals(DomElement.ATTRIBUTE_NOT_DEFINED)) {
+    } else if (!element.getAttribute("contenteditable").equals(ATTRIBUTE_NOT_DEFINED)) {
       element.setTextContent("");
     }
   }
@@ -306,7 +311,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     if ("href".equals(lowerName) || "src".equals(lowerName)) {
       String link = element.getAttribute(name);
-      if (DomElement.ATTRIBUTE_NOT_DEFINED == link) {
+      if (ATTRIBUTE_NOT_DEFINED == link) {
           return null;
       }
       HtmlPage page = (HtmlPage) element.getPage();
@@ -390,7 +395,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     final String lowerName = name.toLowerCase();
     String value = element.getAttribute(lowerName);
-    if (DomElement.ATTRIBUTE_NOT_DEFINED == value || DomElement.ATTRIBUTE_VALUE_EMPTY == value) {
+    if (ATTRIBUTE_NOT_DEFINED == value || ATTRIBUTE_VALUE_EMPTY == value) {
         return null;
     }
     return value;
