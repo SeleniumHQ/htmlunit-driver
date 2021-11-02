@@ -44,15 +44,13 @@ public class HtmlUnitOptions implements WebDriver.Options {
     private final HtmlUnitLogs logs;
     private final HtmlUnitDriver driver;
     private final HtmlUnitTimeouts timeouts;
+    private final HtmlUnitWindow window;
 
     public HtmlUnitOptions(HtmlUnitDriver driver) {
         this.driver = driver;
         this.logs = new HtmlUnitLogs(getWebClient());
         this.timeouts = new HtmlUnitTimeouts(getWebClient());
-    }
-
-    private HtmlUnitWindow getWindow() {
-        return driver.getWindowManager();
+        this.window = driver.getWindowManager();
     }
 
     @Override
@@ -62,7 +60,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
 
     @Override
     public void addCookie(Cookie cookie) {
-        Page page = getWindow().lastPage();
+        Page page = window.lastPage();
         if (!(page instanceof HtmlPage)) {
             throw new UnableToSetCookieException("You may not set cookies on a page that is not HTML");
         }
@@ -203,11 +201,11 @@ public class HtmlUnitOptions implements WebDriver.Options {
 
     @Override
     public WebDriver.Window window() {
-        return new HtmlUnitWindow(driver);
+        return window;
     }
 
     private URL getRawUrl() {
-        return Optional.ofNullable(getWindow().lastPage())
+        return Optional.ofNullable(window.lastPage())
                 .map(Page::getUrl)
                 .orElse(null);
     }
