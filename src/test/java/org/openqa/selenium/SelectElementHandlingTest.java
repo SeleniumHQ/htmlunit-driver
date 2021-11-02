@@ -17,6 +17,7 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -26,6 +27,7 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import java.util.List;
 
 import org.junit.Test;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 
@@ -163,5 +165,16 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     WebElement element = driver.findElement(By.cssSelector("#transparent option"));
     element.click();
     assertTrue("Expected to be selected", element.isSelected());
+  }
+
+  @Test
+  public void testConvertWebElementToSelectComponent() {
+    driver.get(pages.selectPage);
+
+    WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
+    assertThat(element, notNullValue());
+
+    Select select = new Select(element);
+    assertThat(select, notNullValue());
   }
 }
