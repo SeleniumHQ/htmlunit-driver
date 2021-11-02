@@ -17,7 +17,7 @@
 
 package org.openqa.selenium;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.time.Duration.ofSeconds;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -101,7 +101,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     localDriver.get(slowPage);
     // We discard the element, but want a check to make sure the page is loaded
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    new WebDriverWait(localDriver, ofSeconds(10)).until(presenceOfElementLocated(By.tagName("body")));
 
     long start = System.currentTimeMillis();
     localDriver.navigate().refresh();
@@ -127,7 +127,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     localDriver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually
     // completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    new WebDriverWait(localDriver, ofSeconds(10)).until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -148,12 +148,12 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     localDriver.get(slowPage);
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    new WebDriverWait(localDriver, ofSeconds(10)).until(presenceOfElementLocated(By.id("peas")));
 
     long start = System.currentTimeMillis();
     localDriver.navigate().refresh();
     // We discard the element, but want a check to make sure the refresh actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.id("peas")));
+    new WebDriverWait(localDriver, ofSeconds(10)).until(presenceOfElementLocated(By.id("peas")));
     long end = System.currentTimeMillis();
 
     // The slow loading resource on that page takes 6 seconds to return. If we
@@ -172,7 +172,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     localDriver.get(slowPage);
 
     // We discard the element, but want a check to make sure the GET actually completed.
-    new WebDriverWait(localDriver, 10).until(presenceOfElementLocated(By.tagName("body")));
+    new WebDriverWait(localDriver, ofSeconds(10)).until(presenceOfElementLocated(By.tagName("body")));
   }
 
   @Test
@@ -384,7 +384,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   public void testCanHandleSequentialPageLoadTimeouts() {
     long pageLoadTimeout = 2;
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(ofSeconds(2));
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
     assertPageLoadTimeoutIsEnforced(pageLoadTimeout, pageLoadTimeBuffer);
   }
@@ -396,7 +396,7 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(2);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -412,7 +412,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = CHROME, issue = "https://code.google.com/p/chromedriver/issues/detail?id=1125")
   @NeedsLocalEnvironment
   public void testShouldTimeoutIfAPageTakesTooLongToLoadAfterClick() {
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(ofSeconds(2));
 
     driver.get(appServer.whereIs("page_with_link_to_slow_loading_page.html"));
     WebElement link = wait.until(visibilityOfElementLocated(By.id("link-to-slow-loading-page")));
@@ -430,7 +430,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(5000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -447,7 +447,7 @@ public class PageLoadingTest extends JUnit4TestBase {
 
     driver.get(slowPage);
 
-    driver.manage().timeouts().pageLoadTimeout(2, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(ofSeconds(2));
 
     long start = System.currentTimeMillis();
     try {
@@ -462,7 +462,7 @@ public class PageLoadingTest extends JUnit4TestBase {
       assertThat(duration, greaterThan(2000));
       assertThat(duration, lessThan(4000));
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(ofSeconds(300));
     }
 
     // Load another page after get() timed out but before test HTTP server served previous page.
@@ -480,10 +480,10 @@ public class PageLoadingTest extends JUnit4TestBase {
     try {
       testPageLoadTimeoutIsEnforced(1);
     } finally {
-      driver.manage().timeouts().pageLoadTimeout(300, SECONDS);
+      driver.manage().timeouts().pageLoadTimeout(ofSeconds(300));
     }
 
-    new WebDriverWait(driver, 30)
+    new WebDriverWait(driver, ofSeconds(30))
         .ignoring(StaleElementReferenceException.class)
         .until(elementTextToEqual(By.tagName("body"), "Slept for 11s"));
   }
@@ -507,7 +507,7 @@ public class PageLoadingTest extends JUnit4TestBase {
   private void testPageLoadTimeoutIsEnforced(long webDriverPageLoadTimeout) {
     // Test page will load this many seconds longer than WD pageLoadTimeout.
     long pageLoadTimeBuffer = 10;
-    driver.manage().timeouts().pageLoadTimeout(webDriverPageLoadTimeout, SECONDS);
+    driver.manage().timeouts().pageLoadTimeout(ofSeconds(webDriverPageLoadTimeout));
     assertPageLoadTimeoutIsEnforced(webDriverPageLoadTimeout, pageLoadTimeBuffer);
   }
 
