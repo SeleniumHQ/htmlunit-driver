@@ -91,9 +91,6 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     wait.until(newWindowIsOpened(currentWindowHandles));
 
-    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
-
-    driver.switchTo().window("result");
     assertThat(driver.getTitle(), equalTo("We Arrive Here"));
 
     driver.get(pages.iframePage);
@@ -101,6 +98,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     driver.findElement(By.id("iframe_page_heading"));
     driver.switchTo().frame("iframe1");
     assertThat(driver.getWindowHandle(), equalTo(handle));
+
+    driver.switchTo().window("");
+    assertThat(driver.getTitle(), equalTo("XHTML Test Page"));
   }
 
   @Test
@@ -110,59 +110,11 @@ public class WindowSwitchingTest extends JUnit4TestBase {
     assertThat(t, instanceOf(NoSuchWindowException.class));
   }
 
-  @NoDriverAfterTest(failedOnly = true)
   @Test
-  public void testShouldThrowNoSuchWindowExceptionOnAnAttemptToGetItsHandle() {
+  public void testShouldThrowNoSuchFrameException() {
     driver.get(pages.xhtmlTestPage);
-    Set<String> currentWindowHandles = driver.getWindowHandles();
-
-    driver.findElement(By.linkText("Open new window")).click();
-
-    wait.until(newWindowIsOpened(currentWindowHandles));
-
-    driver.switchTo().window("result");
-    driver.close();
-
-    Throwable t = catchThrowable(driver::getWindowHandle);
-    assertThat(t, instanceOf(NoSuchWindowException.class));
-  }
-
-  @NoDriverAfterTest(failedOnly = true)
-  @Test
-  public void testShouldThrowNoSuchWindowExceptionOnAnyOperationIfAWindowIsClosed() {
-    driver.get(pages.xhtmlTestPage);
-    Set<String> currentWindowHandles = driver.getWindowHandles();
-
-    driver.findElement(By.linkText("Open new window")).click();
-
-    wait.until(newWindowIsOpened(currentWindowHandles));
-
-    driver.switchTo().window("result");
-    driver.close();
-
-    Throwable t = catchThrowable(driver::getTitle);
-    assertThat(t, instanceOf(NoSuchWindowException.class));
-
-    Throwable t2 = catchThrowable(() -> driver.findElement(By.tagName("body")));
-    assertThat(t2, instanceOf(NoSuchWindowException.class));
-  }
-
-  @NoDriverAfterTest(failedOnly = true)
-  @Test
-  public void testShouldThrowNoSuchWindowExceptionOnAnyElementOperationIfAWindowIsClosed() {
-    driver.get(pages.xhtmlTestPage);
-    Set<String> currentWindowHandles = driver.getWindowHandles();
-
-    driver.findElement(By.linkText("Open new window")).click();
-
-    wait.until(newWindowIsOpened(currentWindowHandles));
-
-    driver.switchTo().window("result");
-    WebElement body = driver.findElement(By.tagName("body"));
-    driver.close();
-
-    Throwable t = catchThrowable(body::getText);
-    assertThat(t, instanceOf(NoSuchWindowException.class));
+    Throwable t = catchThrowable(() -> driver.switchTo().frame("invalid name"));
+    assertThat(t, instanceOf(NoSuchFrameException.class));
   }
 
   @NoDriverAfterTest
@@ -349,6 +301,9 @@ public class WindowSwitchingTest extends JUnit4TestBase {
 
     driver.findElement(By.id("a-link-that-opens-a-new-window")).click();
     wait.until(newWindowIsOpened(currentWindowHandles));
+
+    assertThat(driver.getTitle(), equalTo("Simple Page"));
+    driver.switchTo().window(mainWindow);
 
     driver.switchTo().frame("myframe");
 

@@ -1,12 +1,26 @@
 package org.openqa.selenium.htmlunit;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+
+import static org.openqa.selenium.WaitingConditions.pageSourceToContain;
+import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitAlertTest extends WebDriverTestCase {
+
+  protected Wait<WebDriver> wait;
+
+  @Before
+  public void setUpWait() {
+    this.wait = new WebDriverWait(getWebDriver(), Duration.ofSeconds(30));
+  }
 
   @Test
   public void confirm() throws Exception {
@@ -44,7 +58,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     assertEquals(message, driver.switchTo().alert().getText());
     driver.switchTo().alert().accept();
 
-    Thread.sleep(2000);
+    wait.until(pageSourceToContain("Welcome to HtmlUnit"));
 
     assertTrue("Title was '" + driver.getTitle() + "'",
             driver.getTitle().contains("Welcome to HtmlUnit"));
@@ -79,7 +93,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     assertEquals(message, driver.switchTo().alert().getText());
     driver.switchTo().alert().dismiss();
 
-    Thread.sleep(1000);
+    wait.until(textToBe(By.id("message"), "False"));
 
     assertEquals("False", driver.findElement(By.id("message")).getText());
     assertEquals("ConfirmWithoutRedirect", driver.getTitle());

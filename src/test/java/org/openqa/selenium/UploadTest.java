@@ -73,6 +73,8 @@ public class UploadTest extends JUnit4TestBase {
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
 
+    driver.switchTo().defaultContent();
+
     // Uploading files across a network may take a while, even if they're really small
     WebElement label = driver.findElement(By.id("upload_label"));
     wait.until(not(visibilityOf(label)));
@@ -111,6 +113,8 @@ public class UploadTest extends JUnit4TestBase {
     driver.get(appServer.whereIs("upload_invisible.html"));
     driver.findElement(By.id("upload")).sendKeys(testFile.getAbsolutePath());
     driver.findElement(By.id("go")).click();
+
+    driver.switchTo().defaultContent();
 
     // Uploading files across a network may take a while, even if they're really small
     WebElement label = driver.findElement(By.id("upload_label"));

@@ -327,7 +327,7 @@ public class AlertsTest extends JUnit4TestBase {
       driver.close();
 
       Throwable t = catchThrowable(() -> driver.switchTo().alert());
-      assertThat(t, instanceOf(NoSuchWindowException.class));
+      assertThat(t, instanceOf(NoAlertPresentException.class));
 
     } finally {
       driver.switchTo().window(mainWindow);
@@ -416,37 +416,6 @@ public class AlertsTest extends JUnit4TestBase {
 
     assertEquals("onload", value);
     wait.until(textInElementLocated(By.tagName("p"), "Page with onload event handler"));
-  }
-
-  @Test
-  @Ignore(CHROME)
-  @Ignore(FIREFOX)
-  @Ignore(value = IE, reason = "Fails in versions 6 and 7")
-  @Ignore(SAFARI)
-  public void testShouldNotHandleAlertInAnotherWindow() {
-    String pageWithOnLoad = appServer.create(new Page()
-        .withOnLoad("javascript:alert(\"onload\")")
-        .withBody("<p>Page with onload event handler</p>"));
-    driver.get(appServer.create(new Page()
-        .withBody(String.format(
-            "<a id='open-new-window' href='%s' target='newwindow'>open new window</a>", pageWithOnLoad))));
-
-    String mainWindow = driver.getWindowHandle();
-    Set<String> currentWindowHandles = driver.getWindowHandles();
-    try {
-      driver.findElement(By.id("open-new-window")).click();
-      wait.until(newWindowIsOpened(currentWindowHandles));
-
-      Throwable t = catchThrowable(() -> wait.until(alertIsPresent()));
-      assertThat(t, instanceOf(TimeoutException.class));
-
-    } finally {
-      driver.switchTo().window("newwindow");
-      wait.until(alertIsPresent()).dismiss();
-      driver.close();
-      driver.switchTo().window(mainWindow);
-      wait.until(textInElementLocated(By.id("open-new-window"), "open new window"));
-    }
   }
 
   @Test

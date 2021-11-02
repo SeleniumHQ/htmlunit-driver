@@ -291,18 +291,6 @@ public class HtmlUnitDriverTest {
     };
 
     capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion("MicrosoftEdge");
-
-    new HtmlUnitDriver(capabilities){
-      @Override
-      protected WebClient modifyWebClient(WebClient client){
-        assertEquals(BrowserVersion.EDGE, client.getBrowserVersion());
-
-        return client;
-      }
-    };
-
-    capabilities = DesiredCapabilities.htmlUnit();
     capabilities.setVersion("firefox-78");
 
     new HtmlUnitDriver(capabilities){
@@ -336,18 +324,6 @@ public class HtmlUnitDriverTest {
       @Override
       protected WebClient modifyWebClient(WebClient client){
         assertEquals(BrowserVersion.CHROME, client.getBrowserVersion());
-
-        return client;
-      }
-    };
-
-    capabilities = DesiredCapabilities.htmlUnit();
-    capabilities.setVersion(BrowserType.EDGE);
-
-    new HtmlUnitDriver(capabilities){
-      @Override
-      protected WebClient modifyWebClient(WebClient client){
-        assertEquals(BrowserVersion.EDGE, client.getBrowserVersion());
 
         return client;
       }

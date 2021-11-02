@@ -316,7 +316,6 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   public void testCombiningShiftAndClickResultsInANewWindow() {
     driver.get(pages.linkedImage);
     WebElement link = driver.findElement(By.id("link"));
-    String originalTitle = driver.getTitle();
 
     int nWindows = driver.getWindowHandles().size();
     new Actions(driver)
@@ -328,7 +327,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
     assertEquals("Should have opened a new window.",
         nWindows + 1, driver.getWindowHandles().size());
-    assertEquals("Should not have navigated away.", originalTitle, driver.getTitle());
+    assertEquals("Should have navigated away.", "We Arrive Here", driver.getTitle());
   }
 
   @Test

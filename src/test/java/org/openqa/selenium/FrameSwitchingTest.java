@@ -417,6 +417,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
+
+    driver.switchTo().parentFrame();
+
     wait.until(presenceOfElementLocated(By.id("iframe1")));
 
     driver.switchTo().frame("iframe1");
@@ -437,6 +440,9 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
+
+    driver.switchTo().parentFrame();
+
     wait.until(frameToBeAvailableAndSwitchToIt(iframe));
 
     wait.until(presenceOfElementLocated(By.id("success")));
@@ -455,6 +461,8 @@ public class FrameSwitchingTest extends JUnit4TestBase {
 
     WebElement addIFrame = driver.findElement(By.id("addBackFrame"));
     addIFrame.click();
+
+    driver.switchTo().parentFrame();
 
     iframe = driver.findElement(By.id("iframe1"));
     wait.until(frameToBeAvailableAndSwitchToIt(iframe));
