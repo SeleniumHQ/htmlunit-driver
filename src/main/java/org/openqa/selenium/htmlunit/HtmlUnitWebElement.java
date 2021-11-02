@@ -395,9 +395,18 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     final String lowerName = name.toLowerCase();
     String value = element.getAttribute(lowerName);
-    if (ATTRIBUTE_NOT_DEFINED == value || ATTRIBUTE_VALUE_EMPTY == value) {
+    if (ATTRIBUTE_NOT_DEFINED == value) {
         return null;
     }
+
+    if ("disabled".equals(lowerName)) {
+        return "true";
+    }
+
+    if (ATTRIBUTE_VALUE_EMPTY == value) {
+        return null;
+    }
+
     return value;
   }
 
@@ -407,6 +416,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     final String lowerName = name.toLowerCase();
     String value = element.getAttribute(lowerName);
+    if (ATTRIBUTE_NOT_DEFINED == value) {
+        return null;
+    }
     return value;
   }
 
