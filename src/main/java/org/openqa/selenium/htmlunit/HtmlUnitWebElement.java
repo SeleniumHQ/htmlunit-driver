@@ -512,7 +512,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
   @Override
   public WebElement findElement(By by) {
-    parent.ensureAlertUnlocked();
+    parent.getAlert().ensureUnlocked();
     return parent.implicitlyWaitFor(() -> {
       assertElementNotStale();
       return HtmlUnitWebElementFinder.findElement(getParent(), element, by);
@@ -521,7 +521,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
   @Override
   public List<WebElement> findElements(By by) {
-    parent.ensureAlertUnlocked();
+    parent.getAlert().ensureUnlocked();
     return parent.implicitlyWaitFor(() -> {
       assertElementNotStale();
       return HtmlUnitWebElementFinder.findElements(getParent(), element, by);

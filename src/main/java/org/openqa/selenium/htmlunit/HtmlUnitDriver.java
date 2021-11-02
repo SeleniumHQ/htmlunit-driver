@@ -122,7 +122,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
   private boolean gotPage;
   private final TargetLocator targetLocator;
   private AsyncScriptExecutor asyncScriptExecutor;
-  private UnexpectedAlertBehaviour unexpectedAlertBehaviour;
   private PageLoadStrategy pageLoadStrategy = PageLoadStrategy.NORMAL;
   private final ElementsMap elementsMap = new ElementsMap();
   private final Options options;
@@ -198,9 +197,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
 
-    unexpectedAlertBehaviour = (UnexpectedAlertBehaviour) capabilities.getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
-    if (unexpectedAlertBehaviour == null) {
-      unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
+    if (alert != null) {
+        alert.handleBrowserCapabilities(capabilities);
     }
 
     Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
@@ -242,7 +240,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     alert = new HtmlUnitAlert(this);
     windowManager = new HtmlUnitWindow(this);
 
-    unexpectedAlertBehaviour = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
     defaultExecutor = Executors.newCachedThreadPool();
     executor = defaultExecutor;
 
@@ -621,7 +618,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
   @Override
   public String getTitle() {
-    ensureAlertUnlocked();
+    alert.ensureUnlocked();
     Page page = getWindowManager().lastPage();
     if (!(page instanceof HtmlPage)) {
       return null; // no page so there is no title
@@ -633,37 +630,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     return ((HtmlPage) page).getTitleText();
   }
 
-  public void ensureAlertUnlocked() {
-    if (alert.isLocked()) {
-      String text = alert.getText();
-
-      switch (unexpectedAlertBehaviour) {
-        case ACCEPT:
-          alert.accept();
-          return;
-
-        case ACCEPT_AND_NOTIFY:
-          alert.accept();
-          break;
-
-        case DISMISS:
-          alert.dismiss();
-          return;
-
-        case DISMISS_AND_NOTIFY:
-          alert.dismiss();
-          break;
-
-        case IGNORE:
-          break;
-      }
-      throw new UnhandledAlertException("Alert found", text);
-    }
-  }
-
   @Override
   public WebElement findElement(By by) {
-    ensureAlertUnlocked();
+    alert.ensureUnlocked();
     return implicitlyWaitFor(() -> HtmlUnitElementFinder.findElement(this, by));
   }
 
@@ -780,7 +749,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     try {
       Object result = asyncScriptExecutor.execute(script, args);
 
-      ensureAlertUnlocked();
+      alert.ensureUnlocked();
       return parseNativeJavascriptResult(result);
     }
     finally {
