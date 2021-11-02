@@ -45,6 +45,7 @@ import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 import org.junit.Test;
@@ -563,7 +564,7 @@ public class CorrectEventFiringTest extends JUnit4TestBase {
   private static void assertEventFired(String eventName, WebDriver driver) {
     WebElement result = driver.findElement(By.id("result"));
 
-    String text = new WebDriverWait(driver, 10).until(elementTextToContain(result, eventName));
+    String text = new WebDriverWait(driver, Duration.ofSeconds(10)).until(elementTextToContain(result, eventName));
     boolean conditionMet = text.contains(eventName);
 
     assertTrue("No " + eventName + " fired: " + text, conditionMet);
