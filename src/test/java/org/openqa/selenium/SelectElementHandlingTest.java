@@ -166,15 +166,4 @@ public class SelectElementHandlingTest extends JUnit4TestBase {
     element.click();
     assertTrue("Expected to be selected", element.isSelected());
   }
-
-  @Test
-  public void testConvertWebElementToSelectComponent() {
-    driver.get(pages.selectPage);
-
-    WebElement element = driver.findElement(By.id("selectWithoutMultiple"));
-    assertThat(element, notNullValue());
-
-    Select select = new Select(element);
-    assertThat(select, notNullValue());
-  }
 }
