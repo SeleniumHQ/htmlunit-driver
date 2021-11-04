@@ -458,7 +458,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
           return Browser.FIREFOX.browserName() + '-' + browserVersion.getBrowserVersionNumeric();
       }
       if (browserVersion == BrowserVersion.FIREFOX_78) {
-          return Browser.FIREFOX.browserName();
+          return Browser.FIREFOX.browserName() + '-' + browserVersion.getBrowserVersionNumeric();
       }
       if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {
           return Browser.IE.browserName();
