@@ -48,6 +48,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 
 import com.gargoylesoftware.htmlunit.ScriptResult;
+import com.gargoylesoftware.htmlunit.html.DisabledElement;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.HtmlButton;
@@ -444,7 +445,10 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
   public boolean isEnabled() {
     assertElementNotStale();
 
-    return !element.hasAttribute("disabled");
+    if (element instanceof DisabledElement) {
+        return !((DisabledElement) element).isDisabled();
+    }
+    return true;
   }
 
   @Override
