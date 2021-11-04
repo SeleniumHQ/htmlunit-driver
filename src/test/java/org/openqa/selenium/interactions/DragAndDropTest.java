@@ -44,7 +44,7 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +55,7 @@ public class DragAndDropTest extends JUnit4TestBase {
   @Test
   public void testDragAndDropRelative() {
     assumeFalse("See issue 2281", TestUtilities.getEffectivePlatform().is(Platform.MAC));
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.dragAndDropPage);

@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 
 public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
 
@@ -57,21 +57,21 @@ public class ReflectionBackedDriverSupplier implements Supplier<WebDriver> {
     String name = caps == null ? "" : caps.getBrowserName();
     String className;
 
-    if (BrowserType.CHROME.equals(name)) {
+    if (Browser.CHROME.browserName().equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestChromeDriver";
-    } else if (BrowserType.OPERA_BLINK.equals(name)) {
+    } else if (Browser.OPERA.browserName().equals(name)) {
       className = "org.openqa.selenium.testing.drivers.TestOperaBlinkDriver";
-    } else if (BrowserType.FIREFOX.equals(name)) {
+    } else if (Browser.FIREFOX.browserName().equals(name)) {
       if (isInDevMode()) {
         className = "org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver";
       } else {
         className = "org.openqa.selenium.firefox.FirefoxDriver";
       }
-    } else if (BrowserType.HTMLUNIT.equals(name)) {
-        className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
-    } else if (BrowserType.IE.equals(name)) {
+    } else if (Browser.HTMLUNIT.browserName().equals(name)) {
+      className = "org.openqa.selenium.htmlunit.HtmlUnitDriver";
+    } else if (Browser.IE.browserName().equals(name)) {
       className = "org.openqa.selenium.ie.InternetExplorerDriver";
-    } else if (BrowserType.SAFARI.equals(name)) {
+    } else if (Browser.SAFARI.browserName().equals(name)) {
       className = "org.openqa.selenium.safari.SafariDriver";
     } else {
       // The last chance saloon.

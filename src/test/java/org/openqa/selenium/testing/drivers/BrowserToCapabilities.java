@@ -21,57 +21,60 @@ import static org.openqa.selenium.remote.CapabilityType.HAS_NATIVE_EVENTS;
 
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class BrowserToCapabilities {
-  public static DesiredCapabilities of(Browser browser) {
-    if (browser == null) {
+
+  public static DesiredCapabilities of(BrowserType browserType) {
+    return of(browserType, "");
+  }
+
+  public static DesiredCapabilities of(BrowserType browserType, String version) {
+    if (browserType == null) {
       return null;
     }
 
     DesiredCapabilities caps;
 
-    switch (browser) {
-      case chrome:
-        caps = new DesiredCapabilities(BrowserType.CHROME,"", Platform.ANY);
+    switch (browserType) {
+      case CHROME:
+        caps = new DesiredCapabilities(Browser.CHROME.browserName(), version, Platform.ANY);
         break;
 
-      case ff:
-        caps = new DesiredCapabilities(BrowserType.FIREFOX,"", Platform.ANY);
-        String property =
-          System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
-        boolean useMarionette = property != null && Boolean.parseBoolean(property);
-        caps.setCapability(FirefoxDriver.MARIONETTE, useMarionette);
+      case FIREFOX:
+        caps = new DesiredCapabilities(Browser.FIREFOX.browserName(), version, Platform.ANY);
+        String property = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+        boolean useMarionette = Boolean.parseBoolean(property);
+        caps.setCapability(FirefoxDriver.Capability.MARIONETTE, useMarionette);
         break;
 
-      case htmlunit:
-        caps = DesiredCapabilities.htmlUnit();
+      case HTML_UNIT:
+        caps = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), version, Platform.ANY);
         break;
 
-      case ie:
-        caps = new DesiredCapabilities(BrowserType.IE,"", Platform.WINDOWS);
+      case IE:
+        caps = new DesiredCapabilities(Browser.IE.browserName(), version, Platform.WINDOWS);
         break;
 
-      case operablink:
-        caps = new DesiredCapabilities(BrowserType.OPERA,"", Platform.ANY);
+      case OPERA_BLINK:
+        caps = new DesiredCapabilities(Browser.OPERA.browserName(), version, Platform.ANY);
         break;
 
-      case safari:
-        caps = new DesiredCapabilities(BrowserType.SAFARI,"", Platform.MAC);
+      case SAFARI:
+        caps = new DesiredCapabilities(Browser.SAFARI.browserName(), version, Platform.MAC);
         break;
 
       default:
         throw new RuntimeException("Cannot determine browser config to use");
     }
 
-    String version = System.getProperty("selenium.browser.version");
-    if (version != null) {
-      caps.setVersion(version);
+    final String systemVersion = System.getProperty("selenium.browser.version");
+    if (systemVersion != null) {
+      caps.setVersion(systemVersion);
     }
 
-    caps.setCapability(HAS_NATIVE_EVENTS,
-        Boolean.getBoolean("selenium.browser.native_events"));
+    caps.setCapability(HAS_NATIVE_EVENTS, Boolean.getBoolean("selenium.browser.native_events"));
 
     return caps;
   }

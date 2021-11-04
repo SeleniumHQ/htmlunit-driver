@@ -19,7 +19,7 @@ package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.BrowserType;
+import org.openqa.selenium.remote.Browser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +41,9 @@ public class BrowserVersionDeterminer {
      * Determine browser by its capabilities
      */
     public static BrowserVersion determine(Capabilities capabilities) {
-        String capBrowserName = capabilities.getBrowserName();
-        if (!BrowserType.HTMLUNIT.equals(capBrowserName)) {
+        if (!Browser.HTMLUNIT.is(capabilities)) {
             throw new IllegalArgumentException("When building an HtmlUntDriver, the capability browser name must be set to '"
-                    + BrowserType.HTMLUNIT + "' but was '" + capBrowserName + "'.");
+                    + Browser.HTMLUNIT.browserName() + "' but was '" + capabilities.getBrowserName() + "'.");
         }
 
         String browserName;
@@ -66,7 +65,7 @@ public class BrowserVersionDeterminer {
 
         final BrowserVersion result = browsers.stream()
                 .filter(Objects::nonNull)
-                .filter(item -> browserName.equals(item.getBrowserType()))
+                .filter(item -> item.getBrowser().is(browserName))
                 .findFirst()
                 .map(item -> item.getBrowserVersion(browserVersion))
                 .orElse(BrowserVersion.getDefault());
@@ -84,7 +83,7 @@ public class BrowserVersionDeterminer {
      * Basic browser info
      */
     protected interface BrowserInfo {
-        String getBrowserType();
+        Browser getBrowser();
 
         BrowserVersion getBrowserVersion();
 
@@ -95,8 +94,8 @@ public class BrowserVersionDeterminer {
 
     protected static class Chrome implements BrowserInfo {
         @Override
-        public String getBrowserType() {
-            return BrowserType.CHROME;
+        public Browser getBrowser() {
+            return Browser.CHROME;
         }
 
         @Override
@@ -107,8 +106,8 @@ public class BrowserVersionDeterminer {
 
     protected static class IE implements BrowserInfo {
         @Override
-        public String getBrowserType() {
-            return BrowserType.IE;
+        public Browser getBrowser() {
+            return Browser.IE;
         }
 
         @Override
@@ -119,8 +118,8 @@ public class BrowserVersionDeterminer {
 
     protected static class Firefox implements BrowserInfo {
         @Override
-        public String getBrowserType() {
-            return BrowserType.FIREFOX;
+        public Browser getBrowser() {
+            return Browser.FIREFOX;
         }
 
         @Override

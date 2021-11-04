@@ -26,7 +26,6 @@ import java.util.function.Supplier;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.http.HttpClient;
@@ -104,7 +103,7 @@ public class GridSupplier implements Supplier<WebDriver> {
 
   public static void main(String[] args) {
     System.setProperty("selenium.browser.grid", "true");
-    WebDriver driver = new GridSupplier(BrowserToCapabilities.of(Browser.ff)).get();
+    WebDriver driver = new GridSupplier(BrowserToCapabilities.of(BrowserType.FIREFOX)).get();
     driver.get("http://www.google.com");
   }
 }

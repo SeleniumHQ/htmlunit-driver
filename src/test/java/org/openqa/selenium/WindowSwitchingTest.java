@@ -45,7 +45,7 @@ import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -81,7 +81,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NoDriverAfterTest(failedOnly = true)
   @Test
   public void testShouldSwitchFocusToANewWindowWhenItIsOpenedAndNotStopFutureOperations() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -193,7 +193,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @NotYetImplemented(SAFARI)
   public void testClickingOnAButtonThatClosesAnOpenWindowDoesNotCauseTheBrowserToHang()
       throws Exception {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);
@@ -225,7 +225,7 @@ public class WindowSwitchingTest extends JUnit4TestBase {
   @Test
   @NotYetImplemented(SAFARI)
   public void testCanCallGetWindowHandlesAfterClosingAWindow() throws Exception {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 TestUtilities.getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.xhtmlTestPage);

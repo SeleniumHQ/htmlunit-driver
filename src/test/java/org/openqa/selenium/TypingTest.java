@@ -40,7 +40,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 public class TypingTest extends JUnit4TestBase {
 
@@ -254,7 +254,7 @@ public class TypingTest extends JUnit4TestBase {
   @Test
   @Ignore(IE)
   public void testShouldReportKeyCodeOfArrowKeys() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);
@@ -280,7 +280,7 @@ public class TypingTest extends JUnit4TestBase {
 
   @Test
   public void testShouldReportKeyCodeOfArrowKeysUpDownEvents() {
-    assumeFalse(Browser.detect() == Browser.opera &&
+    assumeFalse(BrowserType.detect() == BrowserType.OPERA &&
                 getEffectivePlatform().is(Platform.WINDOWS));
 
     driver.get(pages.javascriptPage);

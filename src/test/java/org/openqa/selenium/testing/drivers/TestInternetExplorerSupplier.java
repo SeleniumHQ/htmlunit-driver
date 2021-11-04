@@ -22,10 +22,9 @@ import java.util.function.Supplier;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
-  private Capabilities caps;
+  private final Capabilities caps;
 
   public TestInternetExplorerSupplier(Capabilities caps) {
     this.caps = caps;
@@ -36,7 +35,7 @@ public class TestInternetExplorerSupplier implements Supplier<WebDriver> {
       return null;
     }
 
-    if (!BrowserToCapabilities.of(Browser.ie).getBrowserName().equals(caps.getBrowserName())) {
+    if (!BrowserToCapabilities.of(BrowserType.IE).getBrowserName().equals(caps.getBrowserName())) {
       return null;
     }
 

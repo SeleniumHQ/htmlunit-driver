@@ -41,7 +41,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.Browser;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 @Ignore(value = HTMLUNIT, reason = "Scrolling requires rendering")
 public class ClickScrollingTest extends JUnit4TestBase {
@@ -227,10 +227,10 @@ public class ClickScrollingTest extends JUnit4TestBase {
       toCheck.run();
       assumeFalse(
           "It appears https://github.com/mozilla/geckodriver/issues/" + mozIssue + " is fixed",
-          Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff);
+          Platform.getCurrent() == Platform.MAC && BrowserType.detect() == BrowserType.FIREFOX);
     } catch (Throwable e) {
       // Swallow the exception, as this is expected for Firefox on OS X
-      if (!(Platform.getCurrent() == Platform.MAC && Browser.detect() == Browser.ff)) {
+      if (!(Platform.getCurrent() == Platform.MAC && BrowserType.detect() == BrowserType.FIREFOX)) {
         throw e;
       }
     }
