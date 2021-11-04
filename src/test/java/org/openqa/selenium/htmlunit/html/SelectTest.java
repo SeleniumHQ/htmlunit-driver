@@ -78,4 +78,55 @@ public class SelectTest extends WebDriverTestCase {
       Select select = new Select(element);
       assertTrue(select.isMultiple());
   }
+
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void selectWithMultipleWithoutValue() throws Exception {
+      final String html =
+          "<html>\n"
+          + "<head></head>\n"
+          + "<body>\n"
+          + "<form>\n"
+          + "  <select id='selectWithMultipleWithoutValue' multiple>\n"
+          + "    <option value='one'>one</option>\n"
+          + "    <option value='two'>two</option>\n"
+          + "  </select>\n"
+          + "</form>\n"
+          + "</body></html>";
+
+      final WebDriver driver = loadPage2(html);
+      WebElement element = driver.findElement(By.id("selectWithMultipleWithoutValue"));
+      assertNotNull(element);
+
+      Select select = new Select(element);
+      assertTrue(select.isMultiple());
+  }
+
+
+  /**
+   * @throws Exception if the test fails
+   */
+  @Test
+  public void selectWithRandomMultipleValue() throws Exception {
+      final String html =
+          "<html>\n"
+          + "<head></head>\n"
+          + "<body>\n"
+          + "<form>\n"
+          + "  <select id='selectWithRandomMultipleValue' multiple='somethingElse'>\n"
+          + "    <option value='one'>one</option>\n"
+          + "    <option value='two'>two</option>\n"
+          + "  </select>\n"
+          + "</form>\n"
+          + "</body></html>";
+
+      final WebDriver driver = loadPage2(html);
+      WebElement element = driver.findElement(By.id("selectWithRandomMultipleValue"));
+      assertNotNull(element);
+
+      Select select = new Select(element);
+      assertTrue(select.isMultiple());
+  }
 }
