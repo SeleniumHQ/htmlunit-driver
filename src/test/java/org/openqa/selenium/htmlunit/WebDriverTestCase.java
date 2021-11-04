@@ -37,6 +37,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -66,11 +67,17 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerDriverService;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
@@ -143,7 +150,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
   private static Server STATIC_SERVER2_;
   // third server for multi-origin cross-origin tests.
   private static Server STATIC_SERVER3_;
-  private static ChromeDriverService CHROME_SERVICE_;
 
   private boolean useRealBrowser_;
   private Boolean useStandards_;
@@ -380,26 +386,32 @@ public abstract class WebDriverTestCase extends WebTestCase {
    */
   protected WebDriver buildWebDriver() throws IOException {
       if (useRealBrowser()) {
-          if (getBrowserVersion().isIE()) {
+          if (BrowserVersion.INTERNET_EXPLORER == getBrowserVersion()) {
               if (IE_BIN_ != null) {
-                  System.setProperty("webdriver.ie.driver", IE_BIN_);
+                  System.setProperty(InternetExplorerDriverService.IE_DRIVER_EXE_PROPERTY, IE_BIN_);
               }
-              return new InternetExplorerDriver();
+
+              final InternetExplorerOptions options = new InternetExplorerOptions();
+              options.ignoreZoomSettings();
+
+              // clear the cookies - seems to be not done by the driver
+              final InternetExplorerDriver ieDriver = new InternetExplorerDriver(options);
+              ieDriver.manage().deleteAllCookies();
+              return ieDriver;
           }
 
           if (BrowserVersion.CHROME == getBrowserVersion()) {
-              if (CHROME_SERVICE_ == null) {
-                  final ChromeDriverService.Builder builder = new ChromeDriverService.Builder();
-                  if (CHROME_BIN_ != null) {
-                      builder.usingDriverExecutable(new File(CHROME_BIN_));
-                  }
-                  CHROME_SERVICE_ = builder
-                          .usingAnyFreePort()
-                          .build();
-
-                  CHROME_SERVICE_.start();
+              if (CHROME_BIN_ != null) {
+                  System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, CHROME_BIN_);
               }
-              return new ChromeDriver(CHROME_SERVICE_);
+              final ChromeOptions options = new ChromeOptions();
+              options.addArguments("--lang=en-US");
+
+              final LoggingPreferences logPrefs = new LoggingPreferences();
+              logPrefs.enable(LogType.BROWSER, Level.INFO);
+              options.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+
+              return new ChromeDriver(options);
           }
 
           if (BrowserVersion.FIREFOX == getBrowserVersion()) {
@@ -445,7 +457,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
       if (browserVersion == BrowserVersion.FIREFOX) {
           return Browser.FIREFOX.browserName() + '-' + browserVersion.getBrowserVersionNumeric();
       }
-      else if (browserVersion == BrowserVersion.FIREFOX_78) {
+      if (browserVersion == BrowserVersion.FIREFOX_78) {
           return Browser.FIREFOX.browserName();
       }
       if (browserVersion == BrowserVersion.INTERNET_EXPLORER) {

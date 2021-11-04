@@ -17,8 +17,8 @@
 
 package org.openqa.selenium;
 
+import static java.time.Duration.ofSeconds;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -145,11 +145,12 @@ public class ImplicitWaitTest extends JUnit4TestBase {
   @Ignore(IE)
   @NotYetImplemented(SAFARI)
   public void testShouldRetainImplicitlyWaitFromTheReturnedWebDriverOfFrameSwitchTo() {
-    driver.manage().timeouts().implicitlyWait(1, SECONDS);
+    driver.manage().timeouts().implicitlyWait(ofSeconds(1));
+
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.name("windowOne")).click();
 
-    Wait<WebDriver> wait = new WebDriverWait(driver, 1);
+    Wait<WebDriver> wait = new WebDriverWait(driver, ofSeconds(1));
     wait.until(ExpectedConditions.numberOfWindowsToBe(2));
     String handle = (String)driver.getWindowHandles().toArray()[1];
 

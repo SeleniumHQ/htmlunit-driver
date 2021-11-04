@@ -18,18 +18,14 @@
 package org.openqa.selenium.htmlunit;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.SgmlPage;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
 import com.gargoylesoftware.htmlunit.WebWindowEvent;
 import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-
-import java.util.Map;
 
 public class HtmlUnitWindow implements WebDriver.Window {
 
@@ -37,6 +33,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
     private final int HEADER_HEIGHT = 150;
     private final HtmlUnitDriver driver;
     private final Dimension initialWindowDimension;
+    private Point windowPosition = getBasePoint();
 
     public HtmlUnitWindow(HtmlUnitDriver driver) {
         this.driver = driver;
@@ -99,7 +96,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
     @Override
     public void setPosition(Point targetPosition) {
-        //nop
+        this.windowPosition = targetPosition;
     }
 
     @Override
@@ -110,12 +107,13 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
     @Override
     public Point getPosition() {
-        return getFictivePoint();
+        return windowPosition;
     }
 
     @Override
     public void maximize() {
         setSize(initialWindowDimension);
+        setPosition(getBasePoint());
     }
 
     @Override
@@ -139,7 +137,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
         }
     }
 
-    private Point getFictivePoint() {
+    private Point getBasePoint() {
         return new Point(0, 0);
     }
 }
