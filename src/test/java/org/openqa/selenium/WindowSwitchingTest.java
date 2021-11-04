@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
@@ -32,6 +32,9 @@ import static org.openqa.selenium.testing.Driver.IE;
 import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -46,9 +49,6 @@ import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.BrowserType;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class WindowSwitchingTest extends JUnit4TestBase {
 

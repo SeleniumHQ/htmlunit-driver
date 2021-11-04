@@ -17,6 +17,20 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDSELECTIONERROR;
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDXPATHERROR;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebElement;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.gargoylesoftware.css.parser.CSSException;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.SgmlPage;
@@ -26,19 +40,6 @@ import com.gargoylesoftware.htmlunit.html.DomNodeList;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidSelectorException;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDSELECTIONERROR;
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDXPATHERROR;
 
 public class HtmlUnitElementFinder {
 

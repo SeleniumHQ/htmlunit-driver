@@ -17,14 +17,10 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
+import java.net.URL;
+import java.util.Optional;
+import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.InvalidCookieDomainException;
@@ -33,9 +29,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.logging.Logs;
 
-import java.net.URL;
-import java.util.Optional;
-import java.util.Set;
+import com.gargoylesoftware.htmlunit.CookieManager;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 /**
  * Manages driver options

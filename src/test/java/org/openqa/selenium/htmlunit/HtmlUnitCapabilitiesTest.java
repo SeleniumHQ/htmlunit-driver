@@ -32,6 +32,7 @@ import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.BrowserType;
+
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**

@@ -17,10 +17,10 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;

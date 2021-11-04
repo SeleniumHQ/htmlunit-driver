@@ -24,7 +24,6 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;

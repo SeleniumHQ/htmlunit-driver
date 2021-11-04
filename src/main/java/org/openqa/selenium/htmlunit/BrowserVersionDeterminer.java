@@ -17,13 +17,14 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.remote.Browser;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.remote.Browser;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Determine browser and its version

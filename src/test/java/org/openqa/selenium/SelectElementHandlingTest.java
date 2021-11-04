@@ -17,9 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.testing.Driver.HTMLUNIT;
 import static org.openqa.selenium.testing.Driver.SAFARI;
@@ -27,7 +26,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import java.util.List;
 
 import org.junit.Test;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 

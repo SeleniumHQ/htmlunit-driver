@@ -17,29 +17,29 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import org.openqa.selenium.By;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Objects;
 
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByClassName;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByCssSelector;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByID;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByLinkText;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByName;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByPartialLinkText;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByTagName;
-import static org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByXPath;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByCssSelector;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindById;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByLinkText;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByPartialLinkText;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByXPath;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByName;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByTagName;
-import static org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByClassName;
+import org.openqa.selenium.By;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByClassName;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByCssSelector;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByID;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByLinkText;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByName;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByPartialLinkText;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByTagName;
+import org.openqa.selenium.htmlunit.HtmlUnitElementFinder.FindByXPath;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByClassName;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByCssSelector;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindById;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByLinkText;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByName;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByPartialLinkText;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByTagName;
+import org.openqa.selenium.htmlunit.HtmlUnitWebElementFinder.WebFindByXPath;
+
+import com.gargoylesoftware.htmlunit.html.DomElement;
 
 /**
  * Used for converting By locators to custom ones

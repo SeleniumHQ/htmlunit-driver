@@ -17,15 +17,8 @@
 
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
-import com.gargoylesoftware.htmlunit.html.BaseFrameElement;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.FrameWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlHtml;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
@@ -38,7 +31,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsElement;
 
-import java.util.List;
+import com.gargoylesoftware.htmlunit.Page;
+import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowNotFoundException;
+import com.gargoylesoftware.htmlunit.html.BaseFrameElement;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.FrameWindow;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import com.gargoylesoftware.htmlunit.html.HtmlHtml;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 /**
  * HtmlUnit target locator

@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.testing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littleshoot.proxy.HttpFilters;
 import org.littleshoot.proxy.HttpFiltersAdapter;
 import org.littleshoot.proxy.HttpFiltersSourceAdapter;
@@ -30,9 +33,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProxyServer {
   private HttpProxyServer proxyServer;

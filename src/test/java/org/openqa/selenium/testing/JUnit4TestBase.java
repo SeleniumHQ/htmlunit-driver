@@ -17,10 +17,10 @@
 
 package org.openqa.selenium.testing;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -37,11 +37,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.environment.InProcessTestEnvironment;
 import org.openqa.selenium.environment.TestEnvironment;
 import org.openqa.selenium.environment.webserver.AppServer;
-import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;

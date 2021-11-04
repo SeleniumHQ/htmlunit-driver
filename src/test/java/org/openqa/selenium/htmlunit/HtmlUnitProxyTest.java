@@ -28,10 +28,10 @@ import java.util.List;
 import org.junit.Test;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import com.gargoylesoftware.htmlunit.ProxyConfig;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.BrowserType;
+
+import com.gargoylesoftware.htmlunit.ProxyConfig;
 
 /**
  * Test the proxy setting.

@@ -35,17 +35,6 @@ import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
-import com.google.common.collect.Sets;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.SauceDriver;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.Raster;
 import java.io.ByteArrayInputStream;
@@ -56,6 +45,17 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.imageio.ImageIO;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+import org.openqa.selenium.testing.drivers.SauceDriver;
+
+import com.google.common.collect.Sets;
 
 /**
  * Test screenshot feature.

@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
 import org.junit.Test;

@@ -1,15 +1,16 @@
 package org.openqa.selenium.htmlunit;
 
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import com.gargoylesoftware.htmlunit.html.DomElement;
+import com.gargoylesoftware.htmlunit.html.HtmlElement;
 
 public class HtmlUnitWebElementFinder {
 

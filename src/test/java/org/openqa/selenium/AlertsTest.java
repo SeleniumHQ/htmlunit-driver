@@ -17,11 +17,11 @@
 
 package org.openqa.selenium;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.newWindowIsOpened;
 import static org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent;
@@ -43,8 +43,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.environment.webserver.Page;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.Browser;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
@@ -52,10 +50,10 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.BrowserType;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 @Ignore(value = CHROME, reason = "https://bugs.chromium.org/p/chromedriver/issues/detail?id=1500")
 public class AlertsTest extends JUnit4TestBase {

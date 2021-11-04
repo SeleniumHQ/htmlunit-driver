@@ -17,8 +17,8 @@
 
 package org.openqa.selenium;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
 import static org.openqa.selenium.testing.Driver.CHROME;
@@ -27,6 +27,8 @@ import static org.openqa.selenium.testing.Driver.MARIONETTE;
 import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.catchThrowable;
 
+import java.time.Duration;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -34,7 +36,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-import java.time.Duration;
 
 @NeedsLocalEnvironment(reason = "Requires local browser launching environment")
 @Ignore(value = SAFARI, reason = "Does not support alerts yet")

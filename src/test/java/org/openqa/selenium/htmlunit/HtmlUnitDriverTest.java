@@ -27,11 +27,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
+import org.openqa.selenium.testing.drivers.BrowserType;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
-import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
-import org.openqa.selenium.testing.drivers.BrowserType;
 
 public class HtmlUnitDriverTest {
 
