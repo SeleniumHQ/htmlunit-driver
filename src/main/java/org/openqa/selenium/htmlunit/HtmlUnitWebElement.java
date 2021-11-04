@@ -322,8 +322,12 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         return null;
       }
     }
+
     if ("disabled".equals(lowerName)) {
-      return trueOrNull(!isEnabled());
+        if (element instanceof DisabledElement) {
+            return trueOrNull(((DisabledElement) element).isDisabled());
+        }
+        return "true";
     }
 
     if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
@@ -401,7 +405,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     }
 
     if ("disabled".equals(lowerName)) {
-        return "true";
+        if (element instanceof DisabledElement) {
+            return trueOrNull(((DisabledElement) element).isDisabled());
+        }
     }
 
     if (ATTRIBUTE_VALUE_EMPTY == value) {
