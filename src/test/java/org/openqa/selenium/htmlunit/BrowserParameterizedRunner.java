@@ -149,6 +149,10 @@ public class BrowserParameterizedRunner extends Suite {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.INTERNET_EXPLORER, true, tests));
                 }
+                if (browsers.contains("edge")) {
+                    runners_.add(new BrowserVersionClassRunnerWithParameters(
+                            klass, BrowserVersion.EDGE, true, tests));
+                }
             }
 
             if (browsers.contains("hu-chrome")) {

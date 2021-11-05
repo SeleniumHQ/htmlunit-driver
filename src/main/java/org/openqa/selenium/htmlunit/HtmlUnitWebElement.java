@@ -426,6 +426,13 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     if (ATTRIBUTE_NOT_DEFINED == value) {
         return null;
     }
+
+    if ("disabled".equals(lowerName)) {
+        if (element instanceof DisabledElement) {
+            return trueOrNull(((DisabledElement) element).isDisabled());
+        }
+    }
+
     return value;
   }
 

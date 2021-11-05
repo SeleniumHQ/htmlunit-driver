@@ -68,6 +68,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.html.HtmlPageTest;
@@ -126,7 +128,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   /**
    * All browsers supported.
    */
-  public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.FIREFOX,
+  public static BrowserVersion[] ALL_BROWSERS_ = {BrowserVersion.CHROME, BrowserVersion.EDGE, BrowserVersion.FIREFOX,
       BrowserVersion.FIREFOX_78, BrowserVersion.INTERNET_EXPLORER};
 
   private static final Log LOG = LogFactory.getLog(WebDriverTestCase.class);
@@ -134,6 +136,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
   private static Set<String> BROWSERS_PROPERTIES_;
   private static String CHROME_BIN_;
   private static String IE_BIN_;
+  private static String EDGE_BIN_;
   private static String GECKO_BIN_;
   private static String FF_BIN_;
   private static String FF78_BIN_;
@@ -186,6 +189,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                           .toLowerCase(Locale.ROOT).split(",")));
                   CHROME_BIN_ = properties.getProperty("chrome.bin");
                   IE_BIN_ = properties.getProperty("ie.bin");
+                  EDGE_BIN_ = properties.getProperty("edge.bin");
 
                   GECKO_BIN_ = properties.getProperty("geckodriver.bin");
                   FF_BIN_ = properties.getProperty("ff.bin");
@@ -398,6 +402,13 @@ public abstract class WebDriverTestCase extends WebTestCase {
               final InternetExplorerDriver ieDriver = new InternetExplorerDriver(options);
               ieDriver.manage().deleteAllCookies();
               return ieDriver;
+          }
+
+          if (BrowserVersion.EDGE == getBrowserVersion()) {
+              if (EDGE_BIN_ != null) {
+                  System.setProperty(EdgeDriverService.EDGE_DRIVER_EXE_PROPERTY, EDGE_BIN_);
+              }
+              return new EdgeDriver();
           }
 
           if (BrowserVersion.CHROME == getBrowserVersion()) {

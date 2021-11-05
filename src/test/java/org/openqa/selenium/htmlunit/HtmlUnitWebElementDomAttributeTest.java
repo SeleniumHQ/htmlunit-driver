@@ -68,9 +68,6 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
     }
 
     @Test
-    @Alerts(DEFAULT = {"true", "true"},
-            FF = {"", "disabled"},
-            FF78 = {"", "disabled"})
     public void disabled() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
@@ -85,5 +82,22 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getDomAttribute("disabled"));
+    }
+
+    @Test
+    public void notDisabled() throws Exception {
+        String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='checkbox' id='chkBx' name='chbox' value='dis'>not disabled\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        WebElement elem = driver.findElement(By.id("chkBx"));
+        assertNull(elem.getDomAttribute("disabled"));
     }
 }

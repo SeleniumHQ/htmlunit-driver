@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.BrowserRunner.HtmlUnitNYI;
 import org.openqa.selenium.htmlunit.BrowserRunner.NotYetImplemented;
 
 /**
@@ -39,10 +40,13 @@ public class HtmlUnitWebElementTextTest extends WebDriverTestCase {
      */
     @Test
     @Alerts(CHROME = "    option1\n     Number Three\n    Number 4\n  ",
+            EDGE = "    option1\n     Number Three\n    Number 4\n  ",
             FF = "option1\nNumber Three\nNumber 4",
             FF78 = "option1\nNumber Three\nNumber 4",
             IE = "option1 Number Three Number 4")
-    @NotYetImplemented({CHROME, IE})
+    @HtmlUnitNYI(CHROME = "option1\nNumber Three\nNumber 4",
+            EDGE = "option1\nNumber Three\nNumber 4",
+            IE = "option1\nNumber Three\nNumber 4")
     public void select() throws Exception {
         final String html =
             "<html>\n"

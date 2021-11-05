@@ -33,6 +33,7 @@ public class HTMLImageElementTest extends WebDriverTestCase {
   @Test
   @Alerts(DEFAULT = {"number: 300", "number: 200", "number: 24", "number: 24", "number: 24", "number: 24"},
           CHROME = {"number: 300", "number: 200", "number: 16", "number: 16", "number: 16", "number: 16"},
+          EDGE = {"number: 300", "number: 200", "number: 16", "number: 16", "number: 16", "number: 16"},
           IE = {"number: 300", "number: 200", "number: 28", "number: 30", "number: 28", "number: 30"})
   public void widthHeightInvalidSource() throws Exception {
       getMockWebConnection().setDefaultResponse("");

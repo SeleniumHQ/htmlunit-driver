@@ -34,8 +34,9 @@ public class BrowserVersionDeterminer {
 
     static {
         browsers.add(new Chrome());
-        browsers.add(new IE());
+        browsers.add(new Edge());
         browsers.add(new Firefox());
+        browsers.add(new IE());
     }
 
     /**
@@ -102,6 +103,18 @@ public class BrowserVersionDeterminer {
         @Override
         public BrowserVersion getBrowserVersion() {
             return BrowserVersion.CHROME;
+        }
+    }
+
+    protected static class Edge implements BrowserInfo {
+        @Override
+        public Browser getBrowser() {
+            return Browser.EDGE;
+        }
+
+        @Override
+        public BrowserVersion getBrowserVersion() {
+            return BrowserVersion.EDGE;
         }
     }
 
