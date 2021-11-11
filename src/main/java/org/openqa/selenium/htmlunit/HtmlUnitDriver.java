@@ -1201,7 +1201,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
     for (HtmlAnchor anchor : anchors) {
-      if (expectedText.equals(anchor.asText().trim())) {
+      if (expectedText.equals(anchor.asNormalizedText().trim())) {
         return toWebElement(anchor);
       }
     }
@@ -1247,7 +1247,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
     for (HtmlAnchor anchor : anchors) {
-      if (expectedText.equals(anchor.asText().trim())) {
+      if (expectedText.equals(anchor.asNormalizedText().trim())) {
         elements.add(toWebElement(anchor));
       }
     }
@@ -2020,7 +2020,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
 
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     for (HtmlAnchor anchor : anchors) {
-      if (anchor.asText().contains(using)) {
+      if (anchor.asNormalizedText().contains(using)) {
         return toWebElement(anchor);
       }
     }
@@ -2032,7 +2032,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     List<HtmlAnchor> anchors = ((HtmlPage) lastPage()).getAnchors();
     List<WebElement> elements = new ArrayList<>();
     for (HtmlAnchor anchor : anchors) {
-      if (anchor.asText().contains(using)) {
+      if (anchor.asNormalizedText().contains(using)) {
         elements.add(toWebElement(anchor));
       }
     }
