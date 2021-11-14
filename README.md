@@ -11,17 +11,38 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlun
 
 ## Download and Installation
 
-### Maven/Gradle/...
+There are two versions available
 
-Add a dependency on the latest `htmlunit-driver` version available in the Maven Central, please note that both `artifactId` and `version` are changed to match the dependent HtmlUnit version:
+### Version 3.xx
+This version is compatible with Selenium 4 - xx points to the matching HtmlUnit version.
+
+**Maven/Gradle/...**
+
+Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
 
 ```xml
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.54.0</version>
+    <version>3.55.0</version>
 </dependency>
 ```
+
+### Version 2.xx
+This version is compatible with Selenium 3.141.59 - again xx points to the matching HtmlUnit version.
+
+**Maven/Gradle/...**
+
+Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
+
+```xml
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>htmlunit-driver</artifactId>
+    <version>2.55.0</version>
+</dependency>
+```
+
 
 ## Usage
 
