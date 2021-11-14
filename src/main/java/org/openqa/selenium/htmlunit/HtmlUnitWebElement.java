@@ -369,7 +369,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
       // if the value attribute doesn't exist, getting the "value" attribute defers to the
       // option's content.
       if (element instanceof HtmlOption && !element.hasAttribute("value")) {
-        return element.getTextContent();
+        return getText();
       }
 
       return value == null ? "" : value;

@@ -78,4 +78,32 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
         WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getAttribute("disabled"));
     }
+
+    @Test
+    public void valueOption() throws Exception {
+        String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<form>\n"
+                        + "  <select id='selectWithRandomMultipleValue' multiple='somethingElse'>\n"
+                        + "    <option id='o1' value='one'>option one</option>\n"
+                        + "    <option id='o2'>option two</option>\n"
+                        + "    <option id='o3'>option  three    \n    second line</option>\n"
+                        + "  </select>\n"
+                        + "</form>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("o1"));
+        assertEquals("one", elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("o2"));
+        assertEquals("option two", elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("o3"));
+        assertEquals("option three second line", elem.getAttribute("value"));
+    }
 }
