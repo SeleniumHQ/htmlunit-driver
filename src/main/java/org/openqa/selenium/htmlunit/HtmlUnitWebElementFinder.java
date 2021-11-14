@@ -149,7 +149,7 @@ public class HtmlUnitWebElementFinder {
 
             List<WebElement> webElements = new ArrayList<>();
             for (DomElement e : htmlElements) {
-                if (expectedText.equals(e.getTextContent().trim()) && e.getAttribute("href") != null) {
+                if (expectedText.equals(e.asNormalizedText()) && e.getAttribute("href") != null) {
                     webElements.add(getDriver().toWebElement(e));
                 }
             }
@@ -168,7 +168,7 @@ public class HtmlUnitWebElementFinder {
             List<WebElement> webElements = new ArrayList<>();
             final String value = getValue(locator);
             for (HtmlElement e : htmlElements) {
-                if (e.getTextContent().contains(value) && e.getAttribute("href") != null) {
+                if (e.asNormalizedText().contains(value) && e.getAttribute("href") != null) {
                     webElements.add(getDriver().toWebElement(e));
                 }
             }
