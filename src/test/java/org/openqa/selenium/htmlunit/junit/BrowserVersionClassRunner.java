@@ -41,6 +41,7 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
+import org.openqa.selenium.htmlunit.annotations.StandardsMode;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.AlertsStandards;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Browser;

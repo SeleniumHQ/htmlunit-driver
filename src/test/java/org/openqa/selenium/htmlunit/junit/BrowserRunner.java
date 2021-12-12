@@ -35,6 +35,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
+import org.openqa.selenium.htmlunit.annotations.StandardsMode;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 

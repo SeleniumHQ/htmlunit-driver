@@ -30,7 +30,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
 /**
- * Test class annotated with {@link org.openqa.selenium.htmlunit.junit.annotations.StandardsMode}.
+ * Test class annotated with {@link org.openqa.selenium.htmlunit.annotations.annotations.StandardsMode}.
  */
 public class StandardsTestClass extends TestClass {
 

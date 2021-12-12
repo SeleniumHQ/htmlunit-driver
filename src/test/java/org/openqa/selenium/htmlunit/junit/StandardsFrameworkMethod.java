@@ -23,7 +23,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 
 /**
- * A method of a class annotated with {@link org.openqa.selenium.htmlunit.junit.annotations.StandardsMode}.
+ * A method of a class annotated with {@link org.openqa.selenium.htmlunit.annotations.annotations.StandardsMode}.
  */
 public class StandardsFrameworkMethod extends FrameworkMethod {
 
