@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitAlertTest extends WebDriverTestCase {

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.runners;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

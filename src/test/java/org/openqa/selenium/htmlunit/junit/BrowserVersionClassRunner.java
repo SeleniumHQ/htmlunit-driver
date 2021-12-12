@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.runners;
+package org.openqa.selenium.htmlunit.junit;
 
 import static org.junit.Assert.assertTrue;
 
@@ -39,15 +39,14 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.model.TestClass;
-import org.openqa.selenium.htmlunit.BrowserRunner;
-import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
-import org.openqa.selenium.htmlunit.BrowserRunner.AlertsStandards;
-import org.openqa.selenium.htmlunit.BrowserRunner.Browser;
-import org.openqa.selenium.htmlunit.BrowserRunner.BuggyWebDriver;
-import org.openqa.selenium.htmlunit.BrowserRunner.NotYetImplemented;
-import org.openqa.selenium.htmlunit.BrowserRunner.Tries;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.AlertsStandards;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Browser;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.BuggyWebDriver;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Tries;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 

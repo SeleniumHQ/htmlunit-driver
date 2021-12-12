@@ -20,8 +20,8 @@ package org.openqa.selenium.htmlunit.html;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.htmlunit.BrowserRunner;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 @RunWith(BrowserRunner.class)
 public class HtmlPage3Test extends WebDriverTestCase {

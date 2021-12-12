@@ -15,15 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.runners;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.util.Arrays;
 
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
-import org.openqa.selenium.htmlunit.BrowserRunner;
-import org.openqa.selenium.htmlunit.BrowserRunner.Alerts;
-import org.openqa.selenium.htmlunit.BrowserRunner.AlertsStandards;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.AlertsStandards;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 

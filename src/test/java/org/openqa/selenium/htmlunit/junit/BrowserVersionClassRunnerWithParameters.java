@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.runners;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import org.junit.runners.parameterized.TestWithParameters;
-import org.openqa.selenium.htmlunit.BrowserParameterizedRunner.Default;
 import org.openqa.selenium.htmlunit.WebTestCase;
+import org.openqa.selenium.htmlunit.junit.BrowserParameterizedRunner.Default;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 

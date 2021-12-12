@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -37,22 +37,22 @@ import org.junit.runners.Suite;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 import org.junit.runners.parameterized.TestWithParameters;
-import org.openqa.selenium.htmlunit.runners.BrowserVersionClassRunner;
-import org.openqa.selenium.htmlunit.runners.BrowserVersionClassRunnerWithParameters;
+import org.openqa.selenium.htmlunit.WebDriverTestCase;
+import org.openqa.selenium.htmlunit.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * The custom runner <code>BrowserParameterizedRunner</code> combines the behavior of both
- * {@link com.gargoylesoftware.htmlunit.BrowserRunner} and {@link org.junit.runners.Parameterized}.
+ * {@link org.openqa.selenium.htmlunit.junit.BrowserRunner} and {@link org.junit.runners.Parameterized}.
  *
  * It uses {@link org.junit.runners.Parameterized.Parameter} for field injection.
  *
  * You must define a single {@link Default} method, which has global
- * {@link com.gargoylesoftware.htmlunit.BrowserRunner.Alerts}.
+ * {@link org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts}.
  * You can add other specific tests, which will not be parameterized, and they can have other
- * {@link com.gargoylesoftware.htmlunit.BrowserRunner.Alerts} or
- * {@link com.gargoylesoftware.htmlunit.BrowserRunner.NotYetImplemented}.
+ * {@link org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts} or
+ * {@link org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented}.
  *
  * The method name will start with underscore '_' and have the parameters joined by an underscore.
  * If the method of a data entry already exists, then it will not be considered, as the actual method will override it.

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -33,8 +33,8 @@ import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 import org.junit.runners.model.Statement;
-import org.openqa.selenium.htmlunit.runners.BrowserVersionClassRunner;
-import org.openqa.selenium.htmlunit.runners.StandardsMode;
+import org.openqa.selenium.htmlunit.WebDriverTestCase;
+import org.openqa.selenium.htmlunit.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
