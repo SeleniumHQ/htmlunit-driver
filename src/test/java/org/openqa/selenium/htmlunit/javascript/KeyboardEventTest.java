@@ -30,6 +30,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.BuggyWebDriver;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
 
 @RunWith(BrowserRunner.class)
@@ -39,32 +40,32 @@ public class KeyboardEventTest extends WebDriverTestCase {
    * @throws Exception if the test fails
    */
   @Test
-  @Alerts(DEFAULT = {"keydown:16,0,16",
-                     "keydown:65,0,65",
-                     "keypress:65,65,65",
-                     "keyup:65,0,65",
-                     "keyup:16,0,16",
-                     "keydown:65,0,65",
-                     "keypress:97,97,97",
-                     "keyup:65,0,65",
-                     "keydown:190,0,190",
-                     "keypress:46,46,46",
-                     "keyup:190,0,190",
-                     "keydown:13,0,13",
-                     "keypress:13,13,13",
-                      "keyup:13,0,13"},
-          FF = {"keydown:65,0,65",
-                "keypress:65,65,65",
-                "keyup:65,0,65",
-                "keydown:65,0,65",
-                "keypress:97,97,97",
-                "keyup:65,0,65",
-                "keydown:190,0,190",
-                "keypress:46,46,46",
-                "keyup:190,0,190",
-                "keydown:13,0,13",
-                "keypress:13,13,13",
-                "keyup:13,0,13"},
+  @Alerts({"keydown:16,0,16",
+           "keydown:65,0,65",
+           "keypress:65,65,65",
+           "keyup:65,0,65",
+           "keyup:16,0,16",
+           "keydown:65,0,65",
+           "keypress:97,97,97",
+           "keyup:65,0,65",
+           "keydown:190,0,190",
+           "keypress:46,46,46",
+           "keyup:190,0,190",
+           "keydown:13,0,13",
+           "keypress:13,13,13",
+           "keyup:13,0,13"})
+  @BuggyWebDriver(FF = {"keydown:65,0,65",
+                        "keypress:65,65,65",
+                        "keyup:65,0,65",
+                        "keydown:65,0,65",
+                        "keypress:97,97,97",
+                        "keyup:65,0,65",
+                        "keydown:190,0,190",
+                        "keypress:46,46,46",
+                        "keyup:190,0,190",
+                        "keydown:13,0,13",
+                        "keypress:13,13,13",
+                        "keyup:13,0,13"},
           FF_ESR = {"keydown:65,0,65",
                     "keypress:65,65,65",
                     "keyup:65,0,65",
@@ -76,8 +77,7 @@ public class KeyboardEventTest extends WebDriverTestCase {
                     "keyup:190,0,190",
                     "keydown:13,0,13",
                     "keypress:13,13,13",
-                    "keyup:13,0,13"})
-  @NotYetImplemented({FF, FF_ESR})
+                      "keyup:13,0,13"})
   public void which() throws Exception {
       final String html
           = "<html><head></head><body>\n"
