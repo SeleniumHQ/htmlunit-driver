@@ -164,7 +164,24 @@ public class HtmlUnitDriverTest {
       @Override
       protected WebClient modifyWebClient(WebClient client){
 
-        assertEquals(BrowserVersion.FIREFOX_78, client.getBrowserVersion());
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        assertFalse("client.getOptions().isJavaScriptEnabled() is true", client.getOptions().isJavaScriptEnabled());
+        assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
+
+        return client;
+      }
+    };
+  }
+
+  @Test
+  public void ctorWebClientBrowserVersionFirefoxEsr() {
+    new HtmlUnitDriver(BrowserVersion.FIREFOX_ESR) {
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
 
         assertFalse("client.getOptions().isJavaScriptEnabled() is true", client.getOptions().isJavaScriptEnabled());
         assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
@@ -215,7 +232,24 @@ public class HtmlUnitDriverTest {
       @Override
       protected WebClient modifyWebClient(WebClient client){
 
-        assertEquals(BrowserVersion.FIREFOX_78, client.getBrowserVersion());
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        assertTrue("client.getOptions().isJavaScriptEnabled() is false", client.getOptions().isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
+
+        return client;
+      }
+    };
+  }
+
+  @Test
+  public void ctorWebClientBrowserVersionFirefoxEsrJsTrue() {
+    new HtmlUnitDriver(BrowserVersion.FIREFOX_ESR, true){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
 
         assertTrue("client.getOptions().isJavaScriptEnabled() is false", client.getOptions().isJavaScriptEnabled());
         assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
@@ -308,7 +342,31 @@ public class HtmlUnitDriverTest {
     new HtmlUnitDriver(capabilities){
       @Override
       protected WebClient modifyWebClient(WebClient client){
-        assertEquals(BrowserVersion.FIREFOX_78, client.getBrowserVersion());
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        return client;
+      }
+    };
+
+    capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setVersion("firefox-91");
+
+    new HtmlUnitDriver(capabilities){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        return client;
+      }
+    };
+
+    capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setVersion("firefox-esr");
+
+    new HtmlUnitDriver(capabilities){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
 
         return client;
       }
@@ -359,7 +417,31 @@ public class HtmlUnitDriverTest {
     new HtmlUnitDriver(capabilities){
       @Override
       protected WebClient modifyWebClient(WebClient client){
-        assertEquals(BrowserVersion.FIREFOX_78, client.getBrowserVersion());
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        return client;
+      }
+    };
+
+    capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setVersion(BrowserType.FIREFOX + "-91");
+
+    new HtmlUnitDriver(capabilities){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        return client;
+      }
+    };
+
+    capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setVersion(BrowserType.FIREFOX + "-esr");
+
+    new HtmlUnitDriver(capabilities){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
 
         return client;
       }

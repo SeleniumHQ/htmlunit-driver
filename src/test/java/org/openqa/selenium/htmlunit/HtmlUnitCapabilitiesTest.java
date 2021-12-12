@@ -18,7 +18,6 @@
 package org.openqa.selenium.htmlunit;
 
 import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX;
-import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_78;
 import static com.gargoylesoftware.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -69,7 +68,23 @@ public class HtmlUnitCapabilitiesTest {
     DesiredCapabilities firefoxCapabilities =
         new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox-78", Platform.ANY);
 
-    assertEquals(FIREFOX_78, determineBrowserVersion(firefoxCapabilities));
+    assertEquals(BrowserVersion.FIREFOX_ESR, determineBrowserVersion(firefoxCapabilities));
+  }
+
+  @Test
+  public void configurationOfFirefox91ViaRemote() {
+    DesiredCapabilities firefoxCapabilities =
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox-91", Platform.ANY);
+
+    assertEquals(BrowserVersion.FIREFOX_ESR, determineBrowserVersion(firefoxCapabilities));
+  }
+
+  @Test
+  public void configurationOfFirefoxEsrViaRemote() {
+    DesiredCapabilities firefoxCapabilities =
+        new DesiredCapabilities(BrowserType.HTMLUNIT, "firefox-esr", Platform.ANY);
+
+    assertEquals(BrowserVersion.FIREFOX_ESR, determineBrowserVersion(firefoxCapabilities));
   }
 
   @Test

@@ -59,48 +59,48 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  *
  * For example, you can have:
  * <pre>
- * &#064;RunWith(BrowserParameterizedRunner.class)
- * public class SomeTest extends WebDriverTestCase {
+   &#064;RunWith(BrowserParameterizedRunner.class)
+   public class SomeTest extends WebDriverTestCase {
+
+      &#064;Parameters
+      public static Iterable&lt;Object[]&gt; data() {
+          return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 }, { 2, 1 },
+                   /&#042; will be overridden, see below &#042;/ { 3, 2 },
+                   { 4, 3 }, { 5, 5 }, { 6, 8 } });
+      }
+
+      &#064;Parameter
+      public int param1;
+
+      &#064;Parameter(1)
+      public int param2;
+
+      &#064;Test
+      &#064;Alerts("some alert")
+      &#064;Default
+      public void test() throws Exception {
+         loadPageWithAlerts2("some HTML with " + param1 + " " + param2);
+      }
+
+      /&#042;&#042;
+       &#042; This method will override the <tt>{ 3, 2 }</tt> entry.
+       &#042;/
+      &#064;Test
+      &#064;Alerts("another alert")
+      &#064;NotYetImplemented
+      public void _3_2() throws Exception {
+         loadPageWithAlerts2("some HTML without the parameters, since it is not the &#064;Default");
+      }
+
+      &#064;Test
+      &#064;Alerts("another alert")
+      &#064;NotYetImplemented
+      public void anotherTest() throws Exception {
+         loadPageWithAlerts2("some HTML without the parameters, since it is not the &#064;Default");
+      }
+   }
+   </pre>
  *
- *    &#064;Parameters
- *    public static Iterable&lt;Object[]&gt; data() {
- *        return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 }, { 2, 1 },
- *                 /&#042 will be overridden, see below &#042/ { 3, 2 },
- *                 { 4, 3 }, { 5, 5 }, { 6, 8 } });
- *    }
- *
- *    &#064;Parameter
- *    public int param1;
- *
- *    &#064;Parameter(1)
- *    public int param2;
- *
- *    &#064;Test
- *    &#064;Alerts("some alert")
- *    &#064;Default
- *    public void test() throws Exception {
- *       loadPageWithAlerts2("some HTML with " + param1 + " " + param2);
- *    }
- *
- *
- *    /&#042&#042
- *     &#042 This method will override the <tt>{ 3, 2 }</tt> entry.
- *     &#042/
- *    &#064;Test
- *    &#064;Alerts("another alert")
- *    &#064;NotYetImplemented
- *    public void _3_2() throws Exception {
- *       loadPageWithAlerts2("some HTML without the parameters, since it is not the &#064;Default");
- *    }
- *
- *    &#064;Test
- *    &#064;Alerts("another alert")
- *    &#064;NotYetImplemented
- *    public void anotherTest() throws Exception {
- *       loadPageWithAlerts2("some HTML without the parameters, since it is not the &#064;Default");
- *    }
- * }
- * </pre>
  */
 public class BrowserParameterizedRunner extends Suite {
 
@@ -124,8 +124,7 @@ public class BrowserParameterizedRunner extends Suite {
 
         verifyDefaultMEthod();
 
-        final Parameters parameters = getParametersMethod().getAnnotation(
-                Parameters.class);
+        final Parameters parameters = getParametersMethod().getAnnotation(Parameters.class);
 
         final List<TestWithParameters> tests = createTestsForParameters(
                 allParameters(), parameters.name());
@@ -133,39 +132,47 @@ public class BrowserParameterizedRunner extends Suite {
         if (BrowserVersionClassRunner.containsTestMethods(klass)) {
             final Set<String> browsers = WebDriverTestCase.getBrowsersProperties();
             if (WebDriverTestCase.class.isAssignableFrom(klass)) {
-                if (browsers.contains("chrome")) {
+                if (browsers.contains(BrowserRunner.REAL_CHROME)) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.CHROME, true, tests));
                 }
-                if (browsers.contains("ff78")) {
+                if (browsers.contains(BrowserRunner.REAL_FIREFOX_ESR)) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
-                            klass, BrowserVersion.FIREFOX_78, true, tests));
+                            klass, BrowserVersion.FIREFOX_ESR, true, tests));
                 }
-                else if (browsers.contains("ff")) {
+                if (browsers.contains(BrowserRunner.REAL_FIREFOX)) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.FIREFOX, true, tests));
                 }
-                if (browsers.contains("ie")) {
+                if (browsers.contains(BrowserRunner.REAL_IE)) {
                     runners_.add(new BrowserVersionClassRunnerWithParameters(
                             klass, BrowserVersion.INTERNET_EXPLORER, true, tests));
                 }
+                if (browsers.contains(BrowserRunner.REAL_EDGE)) {
+                    runners_.add(new BrowserVersionClassRunnerWithParameters(
+                            klass, BrowserVersion.EDGE, true, tests));
+                }
             }
 
-            if (browsers.contains("hu-chrome")) {
+            if (browsers.contains(BrowserRunner.HTMLUNIT_CHROME)) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.CHROME, false, tests));
             }
-            if (browsers.contains("hu-ff78")) {
+            if (browsers.contains(BrowserRunner.HTMLUNIT_FIREFOX_ESR)) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
-                        klass, BrowserVersion.FIREFOX_78, false, tests));
+                        klass, BrowserVersion.FIREFOX_ESR, false, tests));
             }
-            else if (browsers.contains("hu-ff")) {
+            if (browsers.contains(BrowserRunner.HTMLUNIT_FIREFOX)) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.FIREFOX, false, tests));
             }
-            if (browsers.contains("hu-ie")) {
+            if (browsers.contains(BrowserRunner.HTMLUNIT_IE)) {
                 runners_.add(new BrowserVersionClassRunnerWithParameters(
                         klass, BrowserVersion.INTERNET_EXPLORER, false, tests));
+            }
+            if (browsers.contains(BrowserRunner.HTMLUNIT_EDGE)) {
+                runners_.add(new BrowserVersionClassRunnerWithParameters(
+                        klass, BrowserVersion.EDGE, false, tests));
             }
         }
         else {

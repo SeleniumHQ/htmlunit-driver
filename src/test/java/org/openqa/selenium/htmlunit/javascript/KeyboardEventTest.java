@@ -17,7 +17,8 @@
 
 package org.openqa.selenium.htmlunit.javascript;
 
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.Browser.FF;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF_ESR;
 
 import java.util.Arrays;
 
@@ -39,32 +40,44 @@ public class KeyboardEventTest extends WebDriverTestCase {
    */
   @Test
   @Alerts(DEFAULT = {"keydown:16,0,16",
-                  "keydown:65,0,65",
-                  "keypress:65,65,65",
-                  "keyup:65,0,65",
-                  "keyup:16,0,16",
-                  "keydown:65,0,65",
-                  "keypress:97,97,97",
-                  "keyup:65,0,65",
-                  "keydown:190,0,190",
-                  "keypress:46,46,46",
-                  "keyup:190,0,190",
-                  "keydown:13,0,13",
-                  "keypress:13,13,13",
-                  "keyup:13,0,13"},
-          FF = {  "keydown:65,0,65",
-                  "keypress:0,65,65",
-                  "keyup:65,0,65",
-                  "keydown:65,0,65",
-                  "keypress:0,97,97",
-                  "keyup:65,0,65",
-                  "keydown:190,0,190",
-                  "keypress:0,46,46",
-                  "keyup:190,0,190",
-                  "keydown:13,0,13",
-                  "keypress:13,0,13",
-                  "keyup:13,0,13"})
-  @NotYetImplemented(FF)
+                     "keydown:65,0,65",
+                     "keypress:65,65,65",
+                     "keyup:65,0,65",
+                     "keyup:16,0,16",
+                     "keydown:65,0,65",
+                     "keypress:97,97,97",
+                     "keyup:65,0,65",
+                     "keydown:190,0,190",
+                     "keypress:46,46,46",
+                     "keyup:190,0,190",
+                     "keydown:13,0,13",
+                     "keypress:13,13,13",
+                      "keyup:13,0,13"},
+          FF = {"keydown:65,0,65",
+                "keypress:65,65,65",
+                "keyup:65,0,65",
+                "keydown:65,0,65",
+                "keypress:97,97,97",
+                "keyup:65,0,65",
+                "keydown:190,0,190",
+                "keypress:46,46,46",
+                "keyup:190,0,190",
+                "keydown:13,0,13",
+                "keypress:13,13,13",
+                "keyup:13,0,13"},
+          FF_ESR = {"keydown:65,0,65",
+                    "keypress:65,65,65",
+                    "keyup:65,0,65",
+                    "keydown:65,0,65",
+                    "keypress:97,97,97",
+                    "keyup:65,0,65",
+                    "keydown:190,0,190",
+                    "keypress:46,46,46",
+                    "keyup:190,0,190",
+                    "keydown:13,0,13",
+                    "keypress:13,13,13",
+                    "keyup:13,0,13"})
+  @NotYetImplemented({FF, FF_ESR})
   public void which() throws Exception {
       final String html
           = "<html><head></head><body>\n"

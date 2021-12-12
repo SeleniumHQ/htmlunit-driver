@@ -371,19 +371,27 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
         break;
 
       case BrowserType.FIREFOX:
-        try {
-          int version = Integer.parseInt(browserVersion);
-          if (version == BrowserVersion.FIREFOX_78.getBrowserVersionNumeric()) {
-              browserVersionObject = BrowserVersion.FIREFOX_78;
-          }
-          else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {
+        if ("esr".equalsIgnoreCase(browserVersion)) {
+            browserVersionObject = BrowserVersion.FIREFOX_ESR;
+        }
+        else {
+          try {
+            int version = Integer.parseInt(browserVersion);
+            if (version == 78) {
+                browserVersionObject = BrowserVersion.FIREFOX_ESR;
+            }
+            else if (version == BrowserVersion.FIREFOX_ESR.getBrowserVersionNumeric()) {
+                browserVersionObject = BrowserVersion.FIREFOX_ESR;
+            }
+            else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {
+              browserVersionObject = BrowserVersion.FIREFOX;
+            }
+            else {
+                browserVersionObject = BrowserVersion.FIREFOX;
+            }
+          } catch (NumberFormatException e) {
               browserVersionObject = BrowserVersion.FIREFOX;
           }
-          else {
-              browserVersionObject = BrowserVersion.FIREFOX;
-          }
-        } catch (NumberFormatException e) {
-            browserVersionObject = BrowserVersion.FIREFOX;
         }
         break;
 
