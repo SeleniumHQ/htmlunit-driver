@@ -15,13 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.junit;
 
-import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.CHROME;
-import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.EDGE;
-import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.FF;
-import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.FF78;
-import static org.openqa.selenium.htmlunit.BrowserRunner.TestedBrowser.IE;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.CHROME;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.EDGE;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF78;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.IE;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,8 +39,9 @@ import org.junit.runner.manipulation.NoTestsRemainException;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
 import org.junit.runners.model.Statement;
-import org.openqa.selenium.htmlunit.runners.BrowserVersionClassRunner;
-import org.openqa.selenium.htmlunit.runners.StandardsMode;
+import org.openqa.selenium.htmlunit.WebDriverTestCase;
+import org.openqa.selenium.htmlunit.WebTestCase;
+import org.openqa.selenium.htmlunit.annotations.StandardsMode;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit.runners;
+package org.openqa.selenium.htmlunit.junit;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.TestClass;
 
 /**
- * Test class annotated with {@link org.openqa.selenium.htmlunit.runners.annotations.StandardsMode}.
+ * Test class annotated with {@link org.openqa.selenium.htmlunit.annotations.annotations.StandardsMode}.
  */
 public class StandardsTestClass extends TestClass {
 

@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementTest extends WebDriverTestCase {
