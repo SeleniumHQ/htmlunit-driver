@@ -53,7 +53,7 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
     @Test
     @Alerts(DEFAULT = "true",
             FF = "",
-            FF78 = "")
+            FF_ESR = "")
     public void unsupportedAttribute() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"

@@ -18,7 +18,7 @@
 package org.openqa.selenium.htmlunit.javascript;
 
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF;
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF78;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF_ESR;
 
 import java.util.Arrays;
 
@@ -65,19 +65,19 @@ public class KeyboardEventTest extends WebDriverTestCase {
                   "keydown:13,0,13",
                   "keypress:13,13,13",
                   "keyup:13,0,13"},
-          FF78 = {"keydown:65,0,65",
-                  "keypress:65,65,65",
-                  "keyup:65,0,65",
-                  "keydown:65,0,65",
-                  "keypress:97,97,97",
-                  "keyup:65,0,65",
-                  "keydown:190,0,190",
-                  "keypress:46,46,46",
-                  "keyup:190,0,190",
-                  "keydown:13,0,13",
-                  "keypress:13,13,13",
-                  "keyup:13,0,13"})
-  @NotYetImplemented({FF, FF78})
+          FF_ESR = {"keydown:65,0,65",
+                    "keypress:65,65,65",
+                    "keyup:65,0,65",
+                    "keydown:65,0,65",
+                    "keypress:97,97,97",
+                    "keyup:65,0,65",
+                    "keydown:190,0,190",
+                    "keypress:46,46,46",
+                    "keyup:190,0,190",
+                    "keydown:13,0,13",
+                    "keypress:13,13,13",
+                    "keyup:13,0,13"})
+  @NotYetImplemented({FF, FF_ESR})
   public void which() throws Exception {
       final String html
           = "<html><head></head><body>\n"

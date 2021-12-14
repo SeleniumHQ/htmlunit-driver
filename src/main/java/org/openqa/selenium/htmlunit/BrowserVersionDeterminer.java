@@ -17,10 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Browser;
 
@@ -30,14 +26,6 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  * Determine browser and its version
  */
 public class BrowserVersionDeterminer {
-    protected static final List<BrowserInfo> browsers = new ArrayList<>();
-
-    static {
-        browsers.add(new Chrome());
-        browsers.add(new Edge());
-        browsers.add(new Firefox());
-        browsers.add(new IE());
-    }
 
     /**
      * Determine browser by its capabilities
@@ -61,98 +49,54 @@ public class BrowserVersionDeterminer {
             browserVersion = null;
         }
 
-        if (browserName == null) {
-            return BrowserVersion.getDefault();
-        }
+        BrowserVersion browserVersionObject;
 
-        final BrowserVersion result = browsers.stream()
-                .filter(Objects::nonNull)
-                .filter(item -> item.getBrowser().is(browserName))
-                .findFirst()
-                .map(item -> item.getBrowserVersion(browserVersion))
-                .orElse(BrowserVersion.getDefault());
+        if (browserName.equalsIgnoreCase(BrowserVersion.CHROME.getNickname())
+            || "googlechrome".equalsIgnoreCase(browserName)) {
+          browserVersionObject = BrowserVersion.CHROME;
+
+        } else if (browserName.equalsIgnoreCase(BrowserVersion.EDGE.getNickname())
+            || "MicrosoftEdge".equalsIgnoreCase(browserName)) {
+            browserVersionObject = BrowserVersion.EDGE;
+
+        } else if (browserName.equalsIgnoreCase(BrowserVersion.INTERNET_EXPLORER.getNickname())
+            || "internet explorer".equalsIgnoreCase(browserName)) {
+          browserVersionObject = BrowserVersion.INTERNET_EXPLORER;
+
+        } else if (browserName.equalsIgnoreCase(BrowserVersion.FIREFOX.getNickname())
+            || "firefox".equalsIgnoreCase(browserName)) {
+          if ("esr".equalsIgnoreCase(browserVersion)) {
+              browserVersionObject = BrowserVersion.FIREFOX_ESR;
+          }
+          else {
+            try {
+              int version = Integer.parseInt(browserVersion);
+              if (version == 78) {
+                  browserVersionObject = BrowserVersion.FIREFOX_ESR;
+              }
+              else if (version == BrowserVersion.FIREFOX_ESR.getBrowserVersionNumeric()) {
+                  browserVersionObject = BrowserVersion.FIREFOX_ESR;
+              }
+              else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {
+                browserVersionObject = BrowserVersion.FIREFOX;
+              }
+              else {
+                  browserVersionObject = BrowserVersion.FIREFOX;
+              }
+            } catch (NumberFormatException e) {
+                browserVersionObject = BrowserVersion.FIREFOX;
+            }
+        }
+      } else {
+        browserVersionObject = BrowserVersion.getDefault();
+      }
 
         Object rawLanguage = capabilities.getCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY);
         if (rawLanguage instanceof String) {
-            return new BrowserVersion.BrowserVersionBuilder(result)
+            return new BrowserVersion.BrowserVersionBuilder(browserVersionObject)
                     .setBrowserLanguage((String) rawLanguage).build();
         }
 
-        return result;
-    }
-
-    /**
-     * Basic browser info
-     */
-    protected interface BrowserInfo {
-        Browser getBrowser();
-
-        BrowserVersion getBrowserVersion();
-
-        default BrowserVersion getBrowserVersion(String versionNumeric) {
-            return getBrowserVersion();
-        }
-    }
-
-    protected static class Chrome implements BrowserInfo {
-        @Override
-        public Browser getBrowser() {
-            return Browser.CHROME;
-        }
-
-        @Override
-        public BrowserVersion getBrowserVersion() {
-            return BrowserVersion.CHROME;
-        }
-    }
-
-    protected static class Edge implements BrowserInfo {
-        @Override
-        public Browser getBrowser() {
-            return Browser.EDGE;
-        }
-
-        @Override
-        public BrowserVersion getBrowserVersion() {
-            return BrowserVersion.EDGE;
-        }
-    }
-
-    protected static class IE implements BrowserInfo {
-        @Override
-        public Browser getBrowser() {
-            return Browser.IE;
-        }
-
-        @Override
-        public BrowserVersion getBrowserVersion() {
-            return BrowserVersion.INTERNET_EXPLORER;
-        }
-    }
-
-    protected static class Firefox implements BrowserInfo {
-        @Override
-        public Browser getBrowser() {
-            return Browser.FIREFOX;
-        }
-
-        @Override
-        public BrowserVersion getBrowserVersion() {
-            return BrowserVersion.FIREFOX;
-        }
-
-        @Override
-        public BrowserVersion getBrowserVersion(String versionNumeric) {
-            try {
-                int version = Integer.parseInt(versionNumeric);
-
-                return BrowserVersion.FIREFOX_78.getBrowserVersionNumeric() == version ?
-                        BrowserVersion.FIREFOX_78 :
-                        BrowserVersion.FIREFOX;
-
-            } catch (NumberFormatException e) {
-                return BrowserVersion.FIREFOX;
-            }
-        }
+        return browserVersionObject;
     }
 }

@@ -19,6 +19,8 @@ package org.openqa.selenium.htmlunit;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 
+import java.io.IOException;
+import java.net.BindException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -30,13 +32,20 @@ import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.security.ConstraintMapping;
 import org.eclipse.jetty.security.ConstraintSecurityHandler;
 import org.eclipse.jetty.security.HashLoginService;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.util.security.Constraint;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
@@ -47,6 +56,7 @@ import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
 import com.gargoylesoftware.htmlunit.MockWebConnection;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.util.MimeType;
 
 /**
  * A WebTestCase which starts a local server, and doens't use WebDriver.
@@ -59,374 +69,465 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  */
 public abstract class WebServerTestCase extends WebTestCase {
 
-  private Server server_;
-  private static Boolean LAST_TEST_MockWebConnection_;
-  private static Server STATIC_SERVER_;
-  private WebClient webClient_;
-  private CollectingAlertHandler alertHandler_ = new CollectingAlertHandler();
+    /** Timeout used when waiting for successful bind. */
+    public static final int BIND_TIMEOUT = 1000;
 
-  /**
-   * Starts the web server on the default {@link #PORT}.
-   * The given resourceBase is used to be the ROOT directory that serves the default context.
-   * <p><b>Don't forget to stop the returned HttpServer after the test</b>
-   *
-   * @param resourceBase the base of resources for the default context
-   * @throws Exception if the test fails
-   */
-  protected void startWebServer(final String resourceBase) throws Exception {
-    if (server_ != null) {
-      throw new IllegalStateException("startWebServer() can not be called twice");
-    }
-    server_ = new Server(PORT);
+    private Server server_;
+    private static Server STATIC_SERVER_;
+    private WebClient webClient_;
+    private CollectingAlertHandler alertHandler_ = new CollectingAlertHandler();
 
-    final WebAppContext context = new WebAppContext();
-    context.setContextPath("/");
-    context.setResourceBase(resourceBase);
-
-    final ResourceHandler resourceHandler = new ResourceHandler();
-    resourceHandler.setResourceBase(resourceBase);
-    final MimeTypes mimeTypes = new MimeTypes();
-    mimeTypes.addMimeMapping("js", "application/javascript");
-    resourceHandler.setMimeTypes(mimeTypes);
-
-    final HandlerList handlers = new HandlerList();
-    handlers.setHandlers(new Handler[]{resourceHandler, context});
-    server_.setHandler(handlers);
-    server_.setHandler(resourceHandler);
-    server_.start();
-  }
-
-  /**
-   * Starts the web server on the default {@link #PORT}.
-   * The given resourceBase is used to be the ROOT directory that serves the default context.
-   * <p><b>Don't forget to stop the returned HttpServer after the test</b>
-   *
-   * @param resourceBase the base of resources for the default context
-   * @param classpath additional classpath entries to add (may be null)
-   * @throws Exception if the test fails
-   */
-  protected void startWebServer(final String resourceBase, final String[] classpath) throws Exception {
-    if (server_ != null) {
-      throw new IllegalStateException("startWebServer() can not be called twice");
-    }
-    server_ = createWebServer(resourceBase, classpath);
-  }
-
-  /**
-   * This is usually needed if you want to have a running server during many tests invocation.
-   *
-   * Creates and starts a web server on the default {@link #PORT}.
-   * The given resourceBase is used to be the ROOT directory that serves the default context.
-   * <p><b>Don't forget to stop the returned Server after the test</b>
-   *
-   * @param resourceBase the base of resources for the default context
-   * @param classpath additional classpath entries to add (may be null)
-   * @return the newly created server
-   * @throws Exception if an error occurs
-   */
-  public static Server createWebServer(final String resourceBase, final String[] classpath) throws Exception {
-    return createWebServer(PORT, resourceBase, classpath, null, null);
-  }
-
-  /**
-   * This is usually needed if you want to have a running server during many tests invocation.
-   *
-   * Creates and starts a web server on the default {@link #PORT}.
-   * The given resourceBase is used to be the ROOT directory that serves the default context.
-   * <p><b>Don't forget to stop the returned Server after the test</b>
-   *
-   * @param port the port to which the server is bound
-   * @param resourceBase the base of resources for the default context
-   * @param classpath additional classpath entries to add (may be null)
-   * @param servlets map of {String, Class} pairs: String is the path spec, while class is the class
-   * @param handler wrapper for handler (can be null)
-   * @return the newly created server
-   * @throws Exception if an error occurs
-   */
-  public static Server createWebServer(final int port, final String resourceBase, final String[] classpath,
-      final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
-
-    final Server server = new Server(port);
-
-    final WebAppContext context = new WebAppContext();
-    context.setContextPath("/");
-    context.setResourceBase(resourceBase);
-
-    if (servlets != null) {
-      for (final Map.Entry<String, Class<? extends Servlet>> entry : servlets.entrySet()) {
-        final String pathSpec = entry.getKey();
-        final Class<? extends Servlet> servlet = entry.getValue();
-        context.addServlet(servlet, pathSpec);
-
-        // disable defaults if someone likes to register his own root servlet
-        if ("/".equals(pathSpec)) {
-          context.setDefaultsDescriptor(null);
-          context.addServlet(DefaultServlet.class, "/favicon.ico");
+    /**
+     * Starts the web server on the default {@link #PORT}.
+     * The given resourceBase is used to be the ROOT directory that serves the default context.
+     * <p><b>Don't forget to stop the returned HttpServer after the test</b>
+     *
+     * @param resourceBase the base of resources for the default context
+     * @throws Exception if the test fails
+     */
+    protected void startWebServer(final String resourceBase) throws Exception {
+        if (server_ != null) {
+            throw new IllegalStateException("startWebServer() can not be called twice");
         }
-      }
+        final Server server = buildServer(PORT);
+
+        final WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        context.setResourceBase(resourceBase);
+
+        final ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setResourceBase(resourceBase);
+        final MimeTypes mimeTypes = new MimeTypes();
+        mimeTypes.addMimeMapping("js", MimeType.APPLICATION_JAVASCRIPT);
+        resourceHandler.setMimeTypes(mimeTypes);
+
+        final HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resourceHandler, context});
+        server.setHandler(handlers);
+        server.setHandler(resourceHandler);
+
+        tryStart(PORT, server);
+        server_ = server;
     }
 
-    final WebAppClassLoader loader = new WebAppClassLoader(context);
-    if (classpath != null) {
-      for (final String path : classpath) {
-        loader.addClassPath(path);
-      }
-    }
-    context.setClassLoader(loader);
-    if (handler != null) {
-      handler.setHandler(context);
-      server.setHandler(handler);
-    }
-    else {
-      server.setHandler(context);
-    }
-    server.start();
-    return server;
-  }
-
-  /**
-   * Starts the web server on the default {@link #PORT}.
-   * The given resourceBase is used to be the ROOT directory that serves the default context.
-   * <p><b>Don't forget to stop the returned HttpServer after the test</b>
-   *
-   * @param resourceBase the base of resources for the default context
-   * @param classpath additional classpath entries to add (may be null)
-   * @param servlets map of {String, Class} pairs: String is the path spec, while class is the class
-   * @throws Exception if the test fails
-   */
-  protected void startWebServer(final String resourceBase, final String[] classpath,
-      final Map<String, Class<? extends Servlet>> servlets) throws Exception {
-    if (server_ != null) {
-      throw new IllegalStateException("startWebServer() can not be called twice");
-    }
-    server_ = new Server(PORT);
-
-    final WebAppContext context = new WebAppContext();
-    context.setContextPath("/");
-    context.setResourceBase(resourceBase);
-
-    for (final Map.Entry<String, Class<? extends Servlet>> entry : servlets.entrySet()) {
-      final String pathSpec = entry.getKey();
-      final Class<? extends Servlet> servlet = entry.getValue();
-      context.addServlet(servlet, pathSpec);
-    }
-    final WebAppClassLoader loader = new WebAppClassLoader(context);
-    if (classpath != null) {
-      for (final String path : classpath) {
-        loader.addClassPath(path);
-      }
-    }
-    context.setClassLoader(loader);
-    server_.setHandler(context);
-    server_.start();
-  }
-
-  /**
-   * Performs post-test deconstruction.
-   * @throws Exception if an error occurs
-   */
-  @After
-  public void tearDown() throws Exception {
-    if (server_ != null) {
-      server_.stop();
-    }
-    server_ = null;
-    stopWebServer();
-    LAST_TEST_MockWebConnection_ = null;
-  }
-
-  /**
-   * Defines the provided string as response for the provided URL and loads it using the currently
-   * configured browser version. Finally it extracts the captured alerts and verifies them.
-   * @param html the HTML to use
-   * @param url the URL to use to load the page
-   * @return the page
-   * @throws Exception if something goes wrong
-   */
-  protected final HtmlPage loadPageWithAlerts(final String html, final URL url)
-      throws Exception {
-    return loadPageWithAlerts(html, url, 0);
-  }
-
-  /**
-   * Same as {@link #loadPageWithAlerts(String, URL)}, but configuring the max wait time.
-   * @param html the HTML to use
-   * @param url the URL to use to load the page
-   * @param maxWaitTime to wait to get the alerts (in ms)
-   * @return the page
-   * @throws Exception if something goes wrong
-   */
-  protected final HtmlPage loadPageWithAlerts(final String html, final URL url, final int maxWaitTime)
-      throws Exception {
-    alertHandler_.clear();
-    expandExpectedAlertsVariables(URL_FIRST);
-
-    final String[] expectedAlerts = getExpectedAlerts();
-    final HtmlPage page = loadPage(html, url);
-
-    List<String> actualAlerts = getCollectedAlerts(page);
-    final long maxWait = System.currentTimeMillis() + maxWaitTime;
-    while (actualAlerts.size() < expectedAlerts.length && System.currentTimeMillis() < maxWait) {
-      Thread.sleep(30);
-      actualAlerts = getCollectedAlerts(page);
+    /**
+     * Starts the web server on the default {@link #PORT}.
+     * The given resourceBase is used to be the ROOT directory that serves the default context.
+     * <p><b>Don't forget to stop the returned HttpServer after the test</b>
+     *
+     * @param resourceBase the base of resources for the default context
+     * @param classpath additional classpath entries to add (may be null)
+     * @throws Exception if the test fails
+     */
+    protected void startWebServer(final String resourceBase, final String[] classpath) throws Exception {
+        if (server_ != null) {
+            throw new IllegalStateException("startWebServer() can not be called twice");
+        }
+        server_ = createWebServer(resourceBase, classpath);
     }
 
-    assertEquals(expectedAlerts, getCollectedAlerts(page));
-    return page;
-  }
-
-  /**
-   * Defines the provided string as response for the default URL and loads it using the currently
-   * configured browser version.
-   * @param html the HTML to use
-   * @return the page
-   * @throws Exception if something goes wrong
-   */
-  protected final HtmlPage loadPage(final String html) throws Exception {
-    return loadPage(html, URL_FIRST);
-  }
-
-  /**
-   * Same as {@link #loadPage(String)}... but defining the default URL.
-   * @param html the HTML to use
-   * @param url the url to use to load the page
-   * @return the page
-   * @throws Exception if something goes wrong
-   */
-  protected final HtmlPage loadPage(final String html, final URL url) throws Exception {
-    return loadPage(html, url, "text/html", ISO_8859_1);
-  }
-
-  /**
-   * Same as {@link #loadPage(String, URL)}... but defining content type and charset as well.
-   * @param html the HTML to use
-   * @param url the url to use to load the page
-   * @param contentType the content type to return
-   * @param charset the charset
-   * @return the page
-   * @throws Exception if something goes wrong
-   */
-  private HtmlPage loadPage(final String html, final URL url,
-      final String contentType, final Charset charset) throws Exception {
-    final MockWebConnection mockWebConnection = getMockWebConnection();
-    mockWebConnection.setResponse(url, html, contentType, charset);
-    startWebServer(mockWebConnection);
-
-    return getWebClient().getPage(url);
-  }
-
-  /**
-   * Starts the web server delivering response from the provided connection.
-   * @param mockConnection the sources for responses
-   * @throws Exception if a problem occurs
-   */
-  protected void startWebServer(final MockWebConnection mockConnection) throws Exception {
-    if (Boolean.FALSE.equals(LAST_TEST_MockWebConnection_)) {
-      stopWebServer();
+    /**
+     * This is usually needed if you want to have a running server during many tests invocation.
+     *
+     * Creates and starts a web server on the default {@link #PORT}.
+     * The given resourceBase is used to be the ROOT directory that serves the default context.
+     * <p><b>Don't forget to stop the returned Server after the test</b>
+     *
+     * @param resourceBase the base of resources for the default context
+     * @param classpath additional classpath entries to add (may be null)
+     * @return the newly created server
+     * @throws Exception if an error occurs
+     */
+    public static Server createWebServer(final String resourceBase, final String[] classpath) throws Exception {
+        return createWebServer(PORT, resourceBase, classpath, null, null);
     }
-    LAST_TEST_MockWebConnection_ = Boolean.TRUE;
-    if (STATIC_SERVER_ == null) {
-      STATIC_SERVER_ = new Server(PORT);
 
-      final WebAppContext context = new WebAppContext();
-      context.setContextPath("/");
-      context.setResourceBase("./");
+    /**
+     * This is usually needed if you want to have a running server during many tests invocation.
+     *
+     * Creates and starts a web server on the default {@link #PORT}.
+     * The given resourceBase is used to be the ROOT directory that serves the default context.
+     * <p><b>Don't forget to stop the returned Server after the test</b>
+     *
+     * @param port the port to which the server is bound
+     * @param resourceBase the base of resources for the default context
+     * @param classpath additional classpath entries to add (may be null)
+     * @param servlets map of {String, Class} pairs: String is the path spec, while class is the class
+     * @param handler wrapper for handler (can be null)
+     * @return the newly created server
+     * @throws Exception if an error occurs
+     */
+    public static Server createWebServer(final int port, final String resourceBase, final String[] classpath,
+            final Map<String, Class<? extends Servlet>> servlets, final HandlerWrapper handler) throws Exception {
 
-      if (isBasicAuthentication()) {
-        final Constraint constraint = new Constraint();
-        constraint.setName(Constraint.__BASIC_AUTH);
-        constraint.setRoles(new String[]{"user"});
-        constraint.setAuthenticate(true);
+        final Server server = buildServer(port);
 
-        final ConstraintMapping constraintMapping = new ConstraintMapping();
-        constraintMapping.setConstraint(constraint);
-        constraintMapping.setPathSpec("/*");
+        final WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        context.setResourceBase(resourceBase);
 
-        final ConstraintSecurityHandler handler = (ConstraintSecurityHandler) context.getSecurityHandler();
-        handler.setLoginService(new HashLoginService("MyRealm", "./src/test/resources/realm.properties"));
-        handler.setConstraintMappings(new ConstraintMapping[]{constraintMapping});
-      }
+        if (servlets != null) {
+            for (final Map.Entry<String, Class<? extends Servlet>> entry : servlets.entrySet()) {
+                final String pathSpec = entry.getKey();
+                final Class<? extends Servlet> servlet = entry.getValue();
+                context.addServlet(servlet, pathSpec);
 
-      context.addServlet(MockWebConnectionServlet.class, "/*");
-      STATIC_SERVER_.setHandler(context);
-      STATIC_SERVER_.start();
+                // disable defaults if someone likes to register his own root servlet
+                if ("/".equals(pathSpec)) {
+                    context.setDefaultsDescriptor(null);
+                    context.addServlet(DefaultServlet.class, "/favicon.ico");
+                }
+            }
+        }
+
+        final WebAppClassLoader loader = new WebAppClassLoader(context);
+        if (classpath != null) {
+            for (final String path : classpath) {
+                loader.addClassPath(path);
+            }
+        }
+        context.setClassLoader(loader);
+        if (handler != null) {
+            handler.setHandler(context);
+            server.setHandler(handler);
+        }
+        else {
+            server.setHandler(context);
+        }
+
+        tryStart(port, server);
+        return server;
     }
-    MockWebConnectionServlet.setMockconnection(mockConnection);
-  }
 
-  /**
-   * Stops the WebServer.
-   * @throws Exception if it fails
-   */
-  protected static void stopWebServer() throws Exception {
-    if (STATIC_SERVER_ != null) {
-      STATIC_SERVER_.stop();
+    /**
+     * Starts the web server on the default {@link #PORT}.
+     * The given resourceBase is used to be the ROOT directory that serves the default context.
+     * <p><b>Don't forget to stop the returned HttpServer after the test</b>
+     *
+     * @param resourceBase the base of resources for the default context
+     * @param classpath additional classpath entries to add (may be null)
+     * @param servlets map of {String, Class} pairs: String is the path spec, while class is the class
+     * @throws Exception if the test fails
+     */
+    protected void startWebServer(final String resourceBase, final String[] classpath,
+            final Map<String, Class<? extends Servlet>> servlets) throws Exception {
+        if (server_ != null) {
+            throw new IllegalStateException("startWebServer() can not be called twice");
+        }
+        final Server server = buildServer(PORT);
+
+        final WebAppContext context = new WebAppContext();
+        context.setContextPath("/");
+        context.setResourceBase(resourceBase);
+
+        for (final Map.Entry<String, Class<? extends Servlet>> entry : servlets.entrySet()) {
+            final String pathSpec = entry.getKey();
+            final Class<? extends Servlet> servlet = entry.getValue();
+            context.addServlet(servlet, pathSpec);
+        }
+        final WebAppClassLoader loader = new WebAppClassLoader(context);
+        if (classpath != null) {
+            for (final String path : classpath) {
+                loader.addClassPath(path);
+            }
+        }
+        context.setClassLoader(loader);
+        server.setHandler(context);
+
+        tryStart(PORT, server);
+        server_ = server;
     }
-    STATIC_SERVER_ = null;
-  }
 
-  /**
-   * Loads the provided URL serving responses from {@link #getMockWebConnection()}
-   * and verifies that the captured alerts are correct.
-   * @param url the URL to use to load the page
-   * @return the web driver
-   * @throws Exception if something goes wrong
-   */
-  protected final HtmlPage loadPageWithAlerts(final URL url) throws Exception {
-    alertHandler_.clear();
-    expandExpectedAlertsVariables(url);
-    final String[] expectedAlerts = getExpectedAlerts();
+    /**
+     * Performs post-test deconstruction.
+     * @throws Exception if an error occurs
+     */
+    @After
+    public void tearDown() throws Exception {
+        if (server_ != null) {
+            server_.stop();
+            server_.destroy();
+            server_ = null;
+        }
 
-    startWebServer(getMockWebConnection());
-
-    final HtmlPage page = getWebClient().getPage(url);
-
-    assertEquals(expectedAlerts, getCollectedAlerts(page));
-    return page;
-  }
-
-  /**
-   * Returns the collected alerts.
-   * @param page the page
-   * @return the alerts
-   */
-  protected List<String> getCollectedAlerts(final HtmlPage page) {
-    return alertHandler_.getCollectedAlerts();
-  }
-
-  /**
-   * Returns whether to use basic authentication for all resources or not.
-   * The default implementation returns false.
-   * @return whether to use basic authentication or not
-   */
-  protected boolean isBasicAuthentication() {
-    return false;
-  }
-
-  /**
-   * Returns the WebClient instance for the current test with the current {@link BrowserVersion}.
-   * @return a WebClient with the current {@link BrowserVersion}
-   */
-  protected final WebClient getWebClient() {
-    if (webClient_ == null) {
-      webClient_ = new WebClient(getBrowserVersion());
-      webClient_.setAlertHandler(alertHandler_);
+        stopWebServer();
     }
-    return webClient_;
-  }
 
-  /**
-   * Cleanup after a test.
-   */
-  @Override
-  @After
-  public void releaseResources() {
-    super.releaseResources();
-    if (webClient_ != null) {
-      webClient_.close();
-      webClient_.getCookieManager().clearCookies();
+    /**
+     * Defines the provided string as response for the provided URL and loads it using the currently
+     * configured browser version. Finally it extracts the captured alerts and verifies them.
+     * @param html the HTML to use
+     * @param url the URL to use to load the page
+     * @return the page
+     * @throws Exception if something goes wrong
+     */
+    protected final HtmlPage loadPageWithAlerts(final String html, final URL url)
+        throws Exception {
+        return loadPageWithAlerts(html, url, 0);
     }
-    webClient_ = null;
-    alertHandler_ = null;
-  }
+
+    /**
+     * Same as {@link #loadPageWithAlerts(String, URL)}, but configuring the max wait time.
+     * @param html the HTML to use
+     * @param url the URL to use to load the page
+     * @param maxWaitTime to wait to get the alerts (in ms)
+     * @return the page
+     * @throws Exception if something goes wrong
+     */
+    protected final HtmlPage loadPageWithAlerts(final String html, final URL url, final long maxWaitTime)
+        throws Exception {
+        alertHandler_.clear();
+        expandExpectedAlertsVariables(URL_FIRST);
+
+        final String[] expectedAlerts = getExpectedAlerts();
+        final HtmlPage page = loadPage(html, url);
+
+        List<String> actualAlerts = getCollectedAlerts(page);
+        final long maxWait = System.currentTimeMillis() + maxWaitTime;
+        while (actualAlerts.size() < expectedAlerts.length && System.currentTimeMillis() < maxWait) {
+            Thread.sleep(30);
+            actualAlerts = getCollectedAlerts(page);
+        }
+
+        assertEquals(expectedAlerts, getCollectedAlerts(page));
+        return page;
+    }
+
+    /**
+     * Defines the provided string as response for the default URL and loads it using the currently
+     * configured browser version.
+     * @param html the HTML to use
+     * @return the page
+     * @throws Exception if something goes wrong
+     */
+    protected final HtmlPage loadPage(final String html) throws Exception {
+        return loadPage(html, URL_FIRST);
+    }
+
+    /**
+     * Same as {@link #loadPage(String)}... but defining the default URL.
+     * @param html the HTML to use
+     * @param url the url to use to load the page
+     * @return the page
+     * @throws Exception if something goes wrong
+     */
+    protected final HtmlPage loadPage(final String html, final URL url) throws Exception {
+        return loadPage(html, url, MimeType.TEXT_HTML, ISO_8859_1);
+    }
+
+    /**
+     * Same as {@link #loadPage(String, URL)}... but defining content type and charset as well.
+     * @param html the HTML to use
+     * @param url the url to use to load the page
+     * @param contentType the content type to return
+     * @param charset the charset
+     * @return the page
+     * @throws Exception if something goes wrong
+     */
+    private HtmlPage loadPage(final String html, final URL url,
+            final String contentType, final Charset charset) throws Exception {
+        final MockWebConnection mockWebConnection = getMockWebConnection();
+        mockWebConnection.setResponse(url, html, contentType, charset);
+        startWebServer(mockWebConnection);
+
+        return getWebClient().getPage(url);
+    }
+
+    /**
+     * Starts the web server delivering response from the provided connection.
+     * @param mockConnection the sources for responses
+     * @throws Exception if a problem occurs
+     */
+    protected void startWebServer(final MockWebConnection mockConnection) throws Exception {
+        if (STATIC_SERVER_ == null) {
+            final Server server = buildServer(PORT);
+
+            final WebAppContext context = new WebAppContext();
+            context.setContextPath("/");
+            context.setResourceBase("./");
+
+            if (isBasicAuthentication()) {
+                final Constraint constraint = new Constraint();
+                constraint.setName(Constraint.__BASIC_AUTH);
+                constraint.setRoles(new String[]{"user"});
+                constraint.setAuthenticate(true);
+
+                final ConstraintMapping constraintMapping = new ConstraintMapping();
+                constraintMapping.setConstraint(constraint);
+                constraintMapping.setPathSpec("/*");
+
+                final ConstraintSecurityHandler handler = (ConstraintSecurityHandler) context.getSecurityHandler();
+                handler.setLoginService(new HashLoginService("MyRealm", "./src/test/resources/realm.properties"));
+                handler.setAuthMethod(Constraint.__BASIC_AUTH);
+                handler.setConstraintMappings(new ConstraintMapping[]{constraintMapping});
+            }
+
+            context.addServlet(MockWebConnectionServlet.class, "/*");
+            server.setHandler(context);
+
+            if (isHttps()) {
+                final SslConnectionFactory sslConnectionFactory = getSslConnectionFactory();
+
+                final HttpConfiguration sslConfiguration = new HttpConfiguration();
+                sslConfiguration.addCustomizer(new SecureRequestCustomizer());
+                final HttpConnectionFactory httpConnectionFactory = new HttpConnectionFactory(sslConfiguration);
+
+                final ServerConnector connector =
+                        new ServerConnector(server, sslConnectionFactory, httpConnectionFactory);
+                connector.setPort(PORT2);
+                server.addConnector(connector);
+            }
+
+            tryStart(PORT, server);
+            STATIC_SERVER_ = server;
+        }
+        MockWebConnectionServlet.setMockconnection(mockConnection);
+    }
+
+    /**
+     * Starts the server; handles BindExceptions and retries.
+     * @param port the port only used for the error message
+     * @param server the server to start
+     * @throws Exception in case of error
+     */
+    public static void tryStart(final int port, final Server server) throws Exception {
+        final long maxWait = System.currentTimeMillis() + BIND_TIMEOUT;
+
+        while (true) {
+            try {
+                server.start();
+                return;
+            }
+            catch (final BindException e) {
+                if (System.currentTimeMillis() > maxWait) {
+                    // destroy the server to free all associated resources
+                    server.stop();
+                    server.destroy();
+
+                    throw (BindException) new BindException("Port " + port + " is already in use").initCause(e);
+                }
+                Thread.sleep(200);
+            }
+            catch (final IOException e) {
+                // looks like newer jetty already catches the bind exception
+                final Throwable cause = e.getCause();
+                if (cause != null && cause instanceof BindException) {
+                    if (System.currentTimeMillis() > maxWait) {
+                        // destroy the server to free all associated resources
+                        server.stop();
+                        server.destroy();
+
+                        throw (BindException) new BindException("Port " + port + " is already in use").initCause(e);
+                    }
+                    Thread.sleep(200);
+                }
+                else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Stops the WebServer.
+     * @throws Exception if it fails
+     */
+    protected static void stopWebServer() throws Exception {
+        if (STATIC_SERVER_ != null) {
+            STATIC_SERVER_.stop();
+            STATIC_SERVER_.destroy();
+            STATIC_SERVER_ = null;
+        }
+    }
+
+    /**
+     * Loads the provided URL serving responses from {@link #getMockWebConnection()}
+     * and verifies that the captured alerts are correct.
+     * @param url the URL to use to load the page
+     * @return the web driver
+     * @throws Exception if something goes wrong
+     */
+    protected final HtmlPage loadPageWithAlerts(final URL url) throws Exception {
+        alertHandler_.clear();
+        expandExpectedAlertsVariables(url);
+        final String[] expectedAlerts = getExpectedAlerts();
+
+        startWebServer(getMockWebConnection());
+
+        final HtmlPage page = getWebClient().getPage(url);
+
+        assertEquals(expectedAlerts, getCollectedAlerts(page));
+        return page;
+    }
+
+    /**
+     * Returns the collected alerts.
+     * @param page the page
+     * @return the alerts
+     */
+    protected List<String> getCollectedAlerts(final HtmlPage page) {
+        return alertHandler_.getCollectedAlerts();
+    }
+
+    /**
+     * Returns whether to use basic authentication for all resources or not.
+     * The default implementation returns false.
+     * @return whether to use basic authentication or not
+     */
+    protected boolean isBasicAuthentication() {
+        return false;
+    }
+
+    /**
+     * @return whether to support https also
+     */
+    protected boolean isHttps() {
+        return false;
+    }
+
+    /**
+     * @return SslConnectionFactory for https
+     */
+    protected SslConnectionFactory getSslConnectionFactory() {
+        return null;
+    }
+
+    /**
+     * Returns the WebClient instance for the current test with the current {@link BrowserVersion}.
+     * @return a WebClient with the current {@link BrowserVersion}
+     */
+    protected final WebClient getWebClient() {
+        if (webClient_ == null) {
+            webClient_ = new WebClient(getBrowserVersion());
+            webClient_.setAlertHandler(alertHandler_);
+        }
+        return webClient_;
+    }
+
+    /**
+     * Cleanup after a test.
+     */
+    @Override
+    @After
+    public void releaseResources() {
+        super.releaseResources();
+        if (webClient_ != null) {
+            webClient_.close();
+            webClient_.getCookieManager().clearCookies();
+        }
+        webClient_ = null;
+        alertHandler_ = null;
+    }
+
+    private static Server buildServer(final int port) {
+        final QueuedThreadPool threadPool = new QueuedThreadPool(10, 2);
+
+        final Server server = new Server(threadPool);
+
+        final ServerConnector connector = new ServerConnector(server);
+        connector.setPort(port);
+        server.setConnectors(new Connector[] {connector});
+
+        return server;
+    }
 }

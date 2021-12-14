@@ -20,7 +20,7 @@ package org.openqa.selenium.htmlunit.junit;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.CHROME;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.EDGE;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF;
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF78;
+import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF_ESR;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.IE;
 
 import java.lang.annotation.ElementType;
@@ -64,6 +64,18 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  */
 public class BrowserRunner extends Suite {
 
+    static final String REAL_CHROME = "chrome";
+    static final String REAL_FIREFOX = "ff";
+    static final String REAL_FIREFOX_ESR = "ff-esr";
+    static final String REAL_EDGE = "edge";
+    static final String REAL_IE = "ie";
+
+    static final String HTMLUNIT_CHROME = "hu-chrome";
+    static final String HTMLUNIT_FIREFOX = "hu-ff";
+    static final String HTMLUNIT_FIREFOX_ESR = "hu-ff-esr";
+    static final String HTMLUNIT_EDGE = "hu-edge";
+    static final String HTMLUNIT_IE = "hu-ie";
+
     private final ArrayList<Runner> runners_ = new ArrayList<>();
 
     /**
@@ -78,39 +90,36 @@ public class BrowserRunner extends Suite {
         if (BrowserVersionClassRunner.containsTestMethods(klass)) {
             final Set<String> browsers = WebDriverTestCase.getBrowsersProperties();
             if (WebDriverTestCase.class.isAssignableFrom(klass)) {
-                if (browsers.contains("chrome")) {
+                if (browsers.contains(REAL_CHROME)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.CHROME, true));
                 }
-                if (browsers.contains("ff78")) {
-                    runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, true));
+                if (browsers.contains(REAL_FIREFOX_ESR)) {
+                    runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_ESR, true));
                 }
-                if (browsers.contains("ff")) {
+                if (browsers.contains(REAL_FIREFOX)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, true));
                 }
-                if (browsers.contains("ie")) {
+                if (browsers.contains(REAL_IE)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, true));
                 }
-                if (browsers.contains("edge")) {
+                if (browsers.contains(REAL_EDGE)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, true));
                 }
             }
 
-            if (browsers.contains("hu-chrome")) {
+            if (browsers.contains(HTMLUNIT_CHROME)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.CHROME, false));
             }
-            if (browsers.contains("hu-ff78")) {
-                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, false));
+            if (browsers.contains(HTMLUNIT_FIREFOX_ESR)) {
+                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_ESR, false));
             }
-            if (browsers.contains("hu-ff")) {
+            if (browsers.contains(HTMLUNIT_FIREFOX)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, false));
             }
-            if (browsers.contains("hu-ff78")) {
-                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX_78, false));
-            }
-            if (browsers.contains("hu-ie")) {
+            if (browsers.contains(HTMLUNIT_IE)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, false));
             }
-            if (browsers.contains("hu-edge")) {
+            if (browsers.contains(HTMLUNIT_EDGE)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, false));
             }
         }
@@ -176,8 +185,8 @@ public class BrowserRunner extends Suite {
         /** Firefox. */
         FF,
 
-        /** Firefox 78. */
-        FF78
+        /** Firefox ESR. */
+        FF_ESR
     }
 
     /**
@@ -218,10 +227,10 @@ public class BrowserRunner extends Suite {
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78.
+         * Alerts for Firefox ESR.
          * @return the alerts
          */
-        String[] FF78() default { EMPTY_DEFAULT };
+        String[] FF_ESR() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.
@@ -270,10 +279,10 @@ public class BrowserRunner extends Suite {
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78.
+         * Alerts for Firefox ESR.
          * @return the alerts
          */
-        String[] FF78() default { EMPTY_DEFAULT };
+        String[] FF_ESR() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.
@@ -314,7 +323,7 @@ public class BrowserRunner extends Suite {
          * @return the browsers
          */
         TestedBrowser[] value() default {
-            IE, EDGE, FF78, FF, CHROME
+            IE, EDGE, FF_ESR, FF, CHROME
         };
 
         /**
@@ -350,16 +359,16 @@ public class BrowserRunner extends Suite {
         String[] EDGE() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for any Firefox, it can be overridden by specific FF version.
+         * Alerts for latest Firefox.
          * @return the alerts
          */
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78.
+         * Alerts for Firefox ESR.
          * @return the alerts
          */
-        String[] FF78() default { EMPTY_DEFAULT };
+        String[] FF_ESR() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.
@@ -406,10 +415,10 @@ public class BrowserRunner extends Suite {
         String[] FF() default { EMPTY_DEFAULT };
 
         /**
-         * Alerts for Firefox 78.
+         * Alerts for Firefox ESR.
          * @return the alerts
          */
-        String[] FF78() default { EMPTY_DEFAULT };
+        String[] FF_ESR() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Chrome.

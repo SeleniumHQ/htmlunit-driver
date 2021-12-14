@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.CHROME;
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.IE;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -28,7 +25,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
-import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
 
 /**
  * Separate test class for the HtmlUnitWebElement.getDomProperty(String) method.
@@ -43,7 +39,7 @@ public class HtmlUnitWebElementTextTest extends WebDriverTestCase {
     @Alerts(CHROME = "    option1\n     Number Three\n    Number 4\n  ",
             EDGE = "    option1\n     Number Three\n    Number 4\n  ",
             FF = "option1\nNumber Three\nNumber 4",
-            FF78 = "option1\nNumber Three\nNumber 4",
+            FF_ESR = "option1\nNumber Three\nNumber 4",
             IE = "option1 Number Three Number 4")
     @HtmlUnitNYI(CHROME = "option1\nNumber Three\nNumber 4",
             EDGE = "option1\nNumber Three\nNumber 4",
