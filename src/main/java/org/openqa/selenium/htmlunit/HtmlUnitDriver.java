@@ -123,6 +123,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
   private final ElementsMap elementsMap = new ElementsMap();
   private final Options options;
 
+  private final HtmlUnitElementFinder elementFinder;
+
   public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
   public static final String INVALIDSELECTIONERROR =
           "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
@@ -233,6 +235,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     setProxySettings(proxy);
 
     webClient.setRefreshHandler(new WaitingRefreshHandler());
+
+    elementFinder = new HtmlUnitElementFinder();
 
     alert = new HtmlUnitAlert(this);
     windowManager = new HtmlUnitWindow(this);
@@ -630,20 +634,44 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
   @Override
   public WebElement findElement(By by) {
     alert.ensureUnlocked();
-    return implicitlyWaitFor(() -> HtmlUnitElementFinder.findElement(this, by));
+    return implicitlyWaitFor(() -> elementFinder.findElement(this, by));
   }
 
   @Override
   public List<WebElement> findElements(By by) {
     long implicitWait = options.timeouts().getImplicitWaitTimeout().toMillis();
     if (implicitWait < sleepTime) {
-      return HtmlUnitElementFinder.findElements(this, by);
+      return elementFinder.findElements(this, by);
     }
 
     long end = System.currentTimeMillis() + implicitWait;
     List<WebElement> found;
     do {
-      found = HtmlUnitElementFinder.findElements(this, by);
+      found = elementFinder.findElements(this, by);
+      if (!found.isEmpty()) {
+        return found;
+      }
+      sleepQuietly(sleepTime);
+    } while (System.currentTimeMillis() < end);
+
+    return found;
+  }
+
+  public WebElement findElement(HtmlUnitWebElement element, By by) {
+    alert.ensureUnlocked();
+    return implicitlyWaitFor(() -> elementFinder.findElement(element, by));
+  }
+
+  public List<WebElement> findElements(HtmlUnitWebElement element, By by) {
+    long implicitWait = options.timeouts().getImplicitWaitTimeout().toMillis();
+    if (implicitWait < sleepTime) {
+      return elementFinder.findElements(element, by);
+    }
+
+    long end = System.currentTimeMillis() + implicitWait;
+    List<WebElement> found;
+    do {
+      found = elementFinder.findElements(element, by);
       if (!found.isEmpty()) {
         return found;
       }

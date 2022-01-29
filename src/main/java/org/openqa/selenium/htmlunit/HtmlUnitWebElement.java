@@ -71,7 +71,7 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 
-  protected final HtmlUnitDriver parent;
+  protected final HtmlUnitDriver driver;
   protected final int id;
   protected final DomElement element;
   private static final String[] booleanAttributes = {
@@ -120,8 +120,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
   private String toString;
 
-  public HtmlUnitWebElement(HtmlUnitDriver parent, int id, DomElement element) {
-    this.parent = parent;
+  public HtmlUnitWebElement(HtmlUnitDriver driver, int id, DomElement element) {
+    this.driver = driver;
     this.id = id;
     this.element = element;
   }
@@ -129,12 +129,12 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
   @Override
   public void click() {
     verifyCanInteractWithElement(true);
-    parent.click(element,true);
+    driver.click(element,true);
   }
 
   @Override
   public void submit() {
-    parent.submit(this);
+    driver.submit(this);
   }
 
   void submitImpl() {
@@ -180,10 +180,10 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     }
 
     if (submit == null) {
-      if (parent.isJavascriptEnabled()) {
+      if (driver.isJavascriptEnabled()) {
         ScriptResult eventResult = form.fireEvent("submit");
         if (!ScriptResult.isFalse(eventResult)) {
-          parent.executeScript("arguments[0].submit()", form);
+          driver.executeScript("arguments[0].submit()", form);
         }
         return;
       }
@@ -248,7 +248,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
   void verifyCanInteractWithElement(boolean ignoreDisabled) {
     assertElementNotStale();
 
-    Boolean displayed = parent.implicitlyWaitFor(new Callable<Boolean>() {
+    Boolean displayed = driver.implicitlyWaitFor(new Callable<Boolean>() {
       @Override
       public Boolean call() throws Exception {
         return isDisplayed();
@@ -266,9 +266,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
   void switchFocusToThisIfNeeded() {
     HtmlUnitWebElement oldActiveElement =
-        ((HtmlUnitWebElement) parent.switchTo().activeElement());
+        ((HtmlUnitWebElement) driver.switchTo().activeElement());
 
-    boolean jsEnabled = parent.isJavascriptEnabled();
+    boolean jsEnabled = driver.isJavascriptEnabled();
     boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
     try {
       boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
@@ -288,7 +288,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     if (value == null) {
       throw new IllegalArgumentException("Keys to send should nor be null");
     }
-    parent.sendKeys(this, value);
+    driver.sendKeys(this, value);
   }
 
   @Override
@@ -514,8 +514,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     return element.getVisibleText();
   }
 
-  protected HtmlUnitDriver getParent() {
-    return parent;
+  protected HtmlUnitDriver getDriver() {
+    return driver;
   }
 
   protected DomElement getElement() {
@@ -534,26 +534,26 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
       }
 
       HtmlElement child = (HtmlElement) o;
-      elements.add(getParent().toWebElement(child));
+      elements.add(getDriver().toWebElement(child));
     }
     return elements;
   }
 
   @Override
   public WebElement findElement(By by) {
-    parent.getAlert().ensureUnlocked();
-    return parent.implicitlyWaitFor(() -> {
+    driver.getAlert().ensureUnlocked();
+    return driver.implicitlyWaitFor(() -> {
       assertElementNotStale();
-      return HtmlUnitWebElementFinder.findElement(getParent(), element, by);
+      return driver.findElement(this, by);
     });
   }
 
   @Override
   public List<WebElement> findElements(By by) {
-    parent.getAlert().ensureUnlocked();
-    return parent.implicitlyWaitFor(() -> {
+    driver.getAlert().ensureUnlocked();
+    return driver.implicitlyWaitFor(() -> {
       assertElementNotStale();
-      return HtmlUnitWebElementFinder.findElements(getParent(), element, by);
+      return driver.findElements(this, by);
     });
   }
 
@@ -562,7 +562,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     while (!(current == null || current instanceof HtmlForm)) {
       current = current.getParentNode();
     }
-    return getParent().toWebElement((HtmlForm) current);
+    return getDriver().toWebElement((HtmlForm) current);
   }
 
   @Override
@@ -588,7 +588,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
   }
 
   protected void assertElementNotStale() {
-    parent.assertElementNotStale(element);
+    driver.assertElementNotStale(element);
   }
 
   @Override
@@ -654,7 +654,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
    */
   @Override
   public WebDriver getWrappedDriver() {
-    return parent;
+    return driver;
   }
 
 
