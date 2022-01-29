@@ -24,16 +24,16 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
-import org.openqa.selenium.support.pagefactory.ByAll;
+import org.openqa.selenium.support.pagefactory.ByChained;
 
 /**
- * Tests for ByAll.
+ * Tests for ByChained.
  */
 @RunWith(BrowserRunner.class)
-public class FindElementByAllTest extends WebDriverTestCase {
+public class FindByChainedTest extends WebDriverTestCase {
 
     @Test
-    public void byAllOneId() throws Exception {
+    public void byByChainedOne() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
@@ -43,24 +43,24 @@ public class FindElementByAllTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        final WebElement element = driver.findElement(new ByAll(By.id("testDivId")));
+        final WebElement element = driver.findElement(new ByChained(By.id("testDivId")));
         assertEquals("TestDiv", element.getText());
     }
 
     @Test
-    public void byAllTwoIds() throws Exception {
+    public void byByChained() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
-                        + "  <div id='testDivId'>TestDiv</div>\n"
-                        + "  <div id='testDivId2'>TestDiv2</div>\n"
-                        + "  <div id='testDivId3'>TestDiv3</div>\n"
+                        + "  <div id='testDivId'>\n"
+                        + "    <div id='testDivId2'>TestDiv2</div>\n"
+                        + "  </div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        final WebElement element = driver.findElement(new ByAll(By.id("testDivId"), By.id("testDivId3")));
-        assertEquals("TestDiv", element.getText());
+        final WebElement element = driver.findElement(new ByChained(By.id("testDivId"), By.id("testDivId2")));
+        assertEquals("TestDiv2", element.getText());
     }
 }
