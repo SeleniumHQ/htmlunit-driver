@@ -15,66 +15,52 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package org.openqa.selenium.htmlunit;
+package org.openqa.selenium.htmlunit.by;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.support.pagefactory.ByAll;
 
 /**
- * Separate test class for the HtmlUnitWebElement.getAttribute(String) method.
+ * Tests for ByAll.
  */
 @RunWith(BrowserRunner.class)
-public class HtmlUnitWebElementFinderTest extends WebDriverTestCase {
+public class FindElementByAllTest extends WebDriverTestCase {
 
     @Test
-    public void linkText() throws Exception {
+    public void byAllOneId() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
-                        + "  <a id='a1' href='about:blank' >Link 1</div>\n"
-                        + "  <a id='a2' href='about:blank' >Link  2    \n \t\t x\n</div>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-
-        WebElement body = driver.findElement(By.tagName("body"));
-
-        WebElement elem = body.findElement(By.linkText("Link 1"));
-        assertEquals("Link 1", elem.getText());
-
-        elem = body.findElement(By.linkText("Link 2 x"));
-        assertEquals("Link 2 x", elem.getText());
+        final WebElement element = driver.findElement(new ByAll(By.id("testDivId")));
+        assertEquals("TestDiv", element.getText());
     }
 
     @Test
-    public void partialLinkText() throws Exception {
+    public void byAllTwoIds() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
-                        + "  <a id='a1' href='about:blank' >Link 1</div>\n"
-                        + "  <a id='a2' href='about:blank' >pre Link 2 post </div>\n"
-                        + "  <a id='a3' href='about:blank' >pre Link  3    \n \t\t post\n</div>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
+                        + "  <div id='testDivId2'>TestDiv2</div>\n"
+                        + "  <div id='testDivId3'>TestDiv3</div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-
-        WebElement body = driver.findElement(By.tagName("body"));
-
-        WebElement elem = body.findElement(By.partialLinkText("Link 1"));
-        assertEquals("Link 1", elem.getText());
-
-        elem = body.findElement(By.partialLinkText("Link 2"));
-        assertEquals("pre Link 2 post", elem.getText());
-
-        elem = body.findElement(By.partialLinkText("Link 3"));
-        assertEquals("pre Link 3 post", elem.getText());
+        final WebElement element = driver.findElement(new ByAll(By.id("testDivId"), By.id("testDivId3")));
+        assertEquals("TestDiv", element.getText());
     }
 }
