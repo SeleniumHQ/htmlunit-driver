@@ -91,6 +91,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.Location;
 import com.gargoylesoftware.htmlunit.javascript.host.html.DocumentProxy;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
+import com.gargoylesoftware.htmlunit.platform.AwtClipboardHandler;
 import com.gargoylesoftware.htmlunit.util.UrlUtils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -235,6 +236,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     setProxySettings(proxy);
 
     webClient.setRefreshHandler(new WaitingRefreshHandler());
+    webClient.setClipboardHandler(new AwtClipboardHandler());
 
     elementFinder = new HtmlUnitElementFinder();
 
