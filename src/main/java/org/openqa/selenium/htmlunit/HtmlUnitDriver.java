@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.remote.Browser.HTMLUNIT;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
@@ -539,7 +540,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
   @Override
   public Capabilities getCapabilities() {
-    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+    DesiredCapabilities capabilities = new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
 
     capabilities.setPlatform(Platform.getCurrent());
     capabilities.setJavascriptEnabled(isJavascriptEnabled());
@@ -1000,7 +1001,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
       return Instant.ofEpochMilli(l).toString();
     }
 
-    if (value instanceof Undefined) {
+    if (Undefined.isUndefined(value)) {
       return null;
     }
 

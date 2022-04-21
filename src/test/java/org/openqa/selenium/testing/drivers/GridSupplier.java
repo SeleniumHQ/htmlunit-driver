@@ -19,10 +19,12 @@ package org.openqa.selenium.testing.drivers;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.apache.commons.io.IOUtils;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.json.Json;
@@ -93,9 +95,17 @@ public class GridSupplier implements Supplier<WebDriver> {
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
-      Map<?, ?> value = json.toType(response.getContentString(), Map.class);
+      String content;
+    try {
+        content = IOUtils.toString(response.getContent().get(), StandardCharsets.UTF_8.name());
+        Map<?, ?> value = json.toType(content, Map.class);
 
-      return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
+        return ((Map<?, ?>) value.get("value")).get("ready") == Boolean.TRUE;
+    } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+    return null;
     });
 
     started = true;

@@ -244,7 +244,7 @@ public class BasicMouseInterfaceTest extends JUnit4TestBase {
     try {
       getBuilder(driver).click().build().perform();
       fail("Shouldn't be allowed to click without a context.");
-    } catch (InvalidCoordinatesException expected) {
+    } catch (NoSuchElementException expected) {
       // expected
     }
   }

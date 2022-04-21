@@ -68,10 +68,10 @@ public class BuckBuild {
 
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     findBuck(projectRoot, builder);
-    builder.add("build", "--config", "color.ui=never", target);
+    builder.add("--config", "color.ui=never", target);
 
     ImmutableList<String> command = builder.build();
-    CommandLine commandLine = new CommandLine(command.toArray(new String[command.size()]));
+    CommandLine commandLine = new CommandLine("build", command.toArray(new String[command.size()]));
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
 
@@ -85,10 +85,10 @@ public class BuckBuild {
   private Path findOutput(Path projectRoot) throws IOException {
     ImmutableList.Builder<String> builder = ImmutableList.builder();
     findBuck(projectRoot, builder);
-    builder.add("targets", "--show-full-output", "--config", "color.ui=never", target);
+    builder.add("--show-full-output", "--config", "color.ui=never", target);
 
     ImmutableList<String> command = builder.build();
-    CommandLine commandLine = new CommandLine(command.toArray(new String[command.size()]));
+    CommandLine commandLine = new CommandLine("targets", command.toArray(new String[command.size()]));
     commandLine.copyOutputTo(System.err);
     commandLine.execute();
 

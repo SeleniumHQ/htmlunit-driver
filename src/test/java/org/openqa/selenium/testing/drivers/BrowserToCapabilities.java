@@ -44,7 +44,7 @@ public class BrowserToCapabilities {
 
       case FIREFOX:
         caps = new DesiredCapabilities(Browser.FIREFOX.browserName(), version, Platform.ANY);
-        String property = System.getProperty(FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
+        String property = System.getProperty(FirefoxDriver.Capability.MARIONETTE, "true");
         boolean useMarionette = Boolean.parseBoolean(property);
         caps.setCapability(FirefoxDriver.Capability.MARIONETTE, useMarionette);
         break;

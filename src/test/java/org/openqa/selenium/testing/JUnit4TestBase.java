@@ -22,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+import java.time.Duration;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -235,8 +236,8 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
   private void createDriver() {
     driver = actuallyCreateDriver();
-    wait = new WebDriverWait(driver, 30);
-    shortWait = new WebDriverWait(driver, 5);
+    wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+    shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));
   }
 
   public static WebDriver actuallyCreateDriver() {

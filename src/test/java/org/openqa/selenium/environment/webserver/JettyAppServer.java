@@ -23,9 +23,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.openqa.selenium.net.PortProber.findFreePort;
 import static org.openqa.selenium.testing.InProject.locate;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.StringBufferInputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -34,6 +37,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Connector;
@@ -206,9 +210,9 @@ public class JettyAppServer implements AppServer {
       HttpClient client = HttpClient.Factory.createDefault().createClient(new URL(whereIs("/")));
       HttpRequest request = new HttpRequest(HttpMethod.POST, "/common/createPage");
       request.setHeader(CONTENT_TYPE, JSON_UTF_8.toString());
-      request.setContent(data);
+      request.setContent(() -> new ByteArrayInputStream(data));
       HttpResponse response = client.execute(request);
-      return response.getContentString();
+      return IOUtils.toString(response.getContent().get(), StandardCharsets.UTF_8.name());
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }

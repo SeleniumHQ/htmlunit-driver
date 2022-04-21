@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.InvalidCoordinatesException;
 import org.openqa.selenium.interactions.Mouse;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
@@ -53,7 +53,7 @@ public class HtmlUnitMouse implements Mouse {
     }
 
     if (currentActiveElement == null) {
-      throw new InvalidCoordinatesException("About to perform an interaction that relies"
+      throw new NoSuchElementException("About to perform an interaction that relies"
           + " on the active element, but there isn't one.");
     }
 

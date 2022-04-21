@@ -67,13 +67,12 @@ public class OutOfProcessSeleniumServer {
     baseUrl = String.format("http://%s:%d", localAddress, port);
 
     List<String> cmdLine = new LinkedList<>();
-    cmdLine.add("java");
     cmdLine.add("-jar");
     cmdLine.add(serverJar);
     cmdLine.add("-port");
     cmdLine.add(String.valueOf(port));
     cmdLine.addAll(Arrays.asList(extraFlags));
-    command = new CommandLine(cmdLine.toArray(new String[cmdLine.size()]));
+    command = new CommandLine("java", cmdLine.toArray(new String[cmdLine.size()]));
 
     if (Boolean.getBoolean("webdriver.development")) {
       command.copyOutputTo(System.err);
