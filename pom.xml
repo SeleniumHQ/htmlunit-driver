@@ -5,7 +5,7 @@
 
   <groupId>org.seleniumhq.selenium</groupId>
   <artifactId>htmlunit-driver</artifactId>
-  <version>3.61.0</version>
+  <version>3.62.0-SNAPSHOT</version>
 
   <name>htmlunit-driver</name>
   <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -14,7 +14,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <selenium.version>4.1.3</selenium.version>
-    <htmlunit.version>2.61.0</htmlunit.version>
+    <htmlunit.version>2.62.0-SNAPSHOT</htmlunit.version>
     <jetty.version>9.4.46.v20220331</jetty.version>
   </properties>
 

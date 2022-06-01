@@ -70,7 +70,7 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     // HtmlElement.type doesn't modify the value of a file input element. Special case.
     if (element instanceof HtmlFileInput) {
       HtmlFileInput fileInput = (HtmlFileInput) element;
-      fileInput.setValueAttribute(keysSequence);
+      fileInput.setValue(keysSequence);
       return;
     }
 

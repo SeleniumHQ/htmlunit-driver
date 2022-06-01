@@ -226,7 +226,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
       if (htmlInput.isDisabled()) {
         throw new InvalidElementStateException("You may only interact with enabled elements");
       }
-      htmlInput.setValueAttribute("");
+      htmlInput.setValue("");
       if (htmlInput instanceof SelectableTextInput) {
           ((SelectableTextInput) htmlInput).setSelectionEnd(0);
       }
