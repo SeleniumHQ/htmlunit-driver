@@ -24,7 +24,7 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.61.0</version>
+    <version>3.62.0</version>
 </dependency>
 ```
 
@@ -39,7 +39,7 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.61.0</version>
+    <version>2.62.0</version>
 </dependency>
 ```
 
