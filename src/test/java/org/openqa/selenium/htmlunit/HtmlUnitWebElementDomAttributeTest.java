@@ -24,6 +24,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * Separate test class for the HtmlUnitWebElement.getDomAttribute(String) method.
@@ -54,6 +55,9 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "true",
             FF = "",
             FF_ESR = "")
+    @HtmlUnitNYI(CHROME = "",
+            EDGE = "",
+            IE = "")
     public void unsupportedAttribute() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
