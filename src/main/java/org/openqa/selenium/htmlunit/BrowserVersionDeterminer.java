@@ -28,7 +28,9 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 public class BrowserVersionDeterminer {
 
     /**
-     * Determine browser by its capabilities
+     * Determine browser by its capabilities.
+     *
+     * @param capabilities the Capabilities
      */
     public static BrowserVersion determine(Capabilities capabilities) {
         if (!Browser.HTMLUNIT.is(capabilities)) {
