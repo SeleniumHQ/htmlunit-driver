@@ -27,7 +27,6 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class TestUtilities {
 
@@ -174,10 +173,6 @@ public class TestUtilities {
 
 
   public static Platform getEffectivePlatform() {
-    if (SauceDriver.shouldUseSauce()) {
-      return SauceDriver.getEffectivePlatform();
-    }
-
     return Platform.getCurrent();
   }
 
@@ -194,7 +189,7 @@ public class TestUtilities {
   }
 
   public static boolean isLocal() {
-    return !Boolean.getBoolean("selenium.browser.remote") && !SauceDriver.shouldUseSauce();
+    return !Boolean.getBoolean("selenium.browser.remote");
   }
 
   public static boolean isOnTravis() {

@@ -60,7 +60,6 @@ import org.openqa.selenium.testing.NeedsLocalEnvironment;
 import org.openqa.selenium.testing.NoDriverAfterTest;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 public class PageLoadingTest extends JUnit4TestBase {
@@ -224,7 +223,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @Ignore(value = SAFARI)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformed() {
-    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
     Throwable t = catchThrowable(() -> driver.get("www.test.com"));
     assertThat(t, instanceOf(WebDriverException.class));
   }
@@ -234,7 +232,6 @@ public class PageLoadingTest extends JUnit4TestBase {
   @NotYetImplemented(value = SAFARI)
   @NeedsFreshDriver
   public void testShouldThrowIfUrlIsMalformedInPortPart() {
-    assumeFalse("Fails in Sauce Cloud", SauceDriver.shouldUseSauce());
     Throwable t = catchThrowable(() -> driver.get("http://localhost:3001bla"));
     assertThat(t, instanceOf(WebDriverException.class));
   }

@@ -53,7 +53,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import com.google.common.collect.Sets;
 
@@ -123,8 +122,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testShouldCaptureScreenshotOfCurrentViewport() {
     // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
+    assumeFalse(getEffectivePlatform(driver).is(LINUX)
         && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen.html"));
 
@@ -276,8 +274,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Test
   public void testShouldCaptureScreenshotAtFramePage() {
     // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
+    assumeFalse(getEffectivePlatform(driver).is(LINUX)
         && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
     wait.until(frameToBeAvailableAndSwitchToIt(By.id("frame1")));
@@ -339,8 +336,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   @Ignore(MARIONETTE)
   public void testShouldCaptureScreenshotAtFramePageAfterSwitching() {
     // Fails on Sauce for whatever reason; probably display or window manager.
-    assumeFalse(SauceDriver.shouldUseSauce()
-        && getEffectivePlatform(driver).is(LINUX)
+    assumeFalse(getEffectivePlatform(driver).is(LINUX)
         && isChrome(driver));
     driver.get(appServer.whereIs("screen/screen_frames.html"));
 

@@ -47,7 +47,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.testing.drivers.BrowserType;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
 
 import com.google.common.base.Throwables;
@@ -324,8 +323,7 @@ public abstract class JUnit4TestBase implements WrapsDriver {
 
         case REMOTE:
           if (Boolean.getBoolean("selenium.browser.grid") ||
-              Boolean.getBoolean("selenium.browser.remote") ||
-              SauceDriver.shouldUseSauce()) {
+              Boolean.getBoolean("selenium.browser.remote")) {
             return true;
           }
           break;

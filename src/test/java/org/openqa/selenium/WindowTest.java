@@ -32,7 +32,6 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
-import org.openqa.selenium.testing.drivers.SauceDriver;
 
 public class WindowTest extends JUnit4TestBase {
 
@@ -54,7 +53,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
+        TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     // resize relative to the initial size, since we don't know what it is
     changeSizeBy(-20, -20);
@@ -67,7 +66,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
+        TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.framesetPage);
     driver.switchTo().frame("fourth");
@@ -82,7 +81,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
+        TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     driver.get(pages.iframePage);
     driver.switchTo().frame("iframe1-name");
@@ -113,7 +112,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeFalse("https://code.google.com/p/chromedriver/issues/detail?id=1129",
-        SauceDriver.shouldUseSauce() && TestUtilities.isChrome(driver)
+        TestUtilities.isChrome(driver)
         && TestUtilities.getEffectivePlatform(driver).is(LINUX));
     WebDriver.Window window = driver.manage().window();
     Point position = window.getPosition();
@@ -231,7 +230,7 @@ public class WindowTest extends JUnit4TestBase {
     // Chrome/Linux: simply fail.
     // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
     // the maximize command, but video never shows the maximized window.
-    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX));
   }
 
 }

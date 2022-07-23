@@ -130,19 +130,12 @@ public class TestIgnorance {
   }
 
   private static Platform getEffectivePlatform() {
-    if (SauceDriver.shouldUseSauce()) {
-      return SauceDriver.getEffectivePlatform();
-    }
-
     return Platform.getCurrent();
   }
 
   private boolean isIgnoredDueToBeingOnSauce(Description method) {
     boolean isLocal = method.getAnnotation(NeedsLocalEnvironment.class) != null
                       || method.getTestClass().getAnnotation(NeedsLocalEnvironment.class) != null;
-    if (SauceDriver.shouldUseSauce()) {
-      return isLocal;
-    }
     return Boolean.getBoolean("local_only") && !isLocal;
   }
 
@@ -161,7 +154,7 @@ public class TestIgnorance {
   }
 
   private void addIgnoresForBrowser(BrowserType browserType, IgnoreComparator comparator) {
-    if (Boolean.getBoolean("selenium.browser.remote") || SauceDriver.shouldUseSauce()) {
+    if (Boolean.getBoolean("selenium.browser.remote")) {
       comparator.addDriver(REMOTE);
     }
 
