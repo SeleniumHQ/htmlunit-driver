@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.testing.drivers;
 
-import static org.openqa.selenium.testing.DevMode.isInDevMode;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -34,18 +32,7 @@ public class DefaultDriverSupplier implements Supplier<WebDriver> {
 
   public DefaultDriverSupplier(Capabilities desiredCapabilities) {
     this.desiredCapabilities = desiredCapabilities;
-
-    try {
-      // Only support a default driver if we're actually in dev mode.
-      if (isInDevMode()) {
-        driverClass = Class.forName("org.openqa.selenium.testing.drivers.SynthesizedFirefoxDriver")
-            .asSubclass(WebDriver.class);
-      } else {
-        driverClass = null;
-      }
-    } catch (ClassNotFoundException e) {
-      log.severe("Unable to find the default class on the classpath. Tests will fail");
-    }
+    driverClass = null;
   }
 
   public WebDriver get() {

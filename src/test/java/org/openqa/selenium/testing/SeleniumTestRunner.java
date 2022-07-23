@@ -38,9 +38,6 @@ public class SeleniumTestRunner extends BlockJUnit4ClassRunner {
   public SeleniumTestRunner(Class<?> klass) throws InitializationError {
     super(klass);
     BrowserType browserType = BrowserType.detect();
-    if (browserType == null && DevMode.isInDevMode()) {
-      browserType = BrowserType.CHROME;
-    }
     ignorance = new TestIgnorance(browserType);
   }
 
