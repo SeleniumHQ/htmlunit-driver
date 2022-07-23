@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.html5.ApplicationCache;
 import org.openqa.selenium.html5.Location;
 import org.openqa.selenium.html5.LocationContext;
 import org.openqa.selenium.html5.WebStorage;
@@ -47,16 +48,16 @@ import org.openqa.selenium.testing.JUnit4TestBase;
  * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
-public class WebStorageTest extends WebDriverTestCase {
+public class ApplicationCacheTest extends WebDriverTestCase {
 
     @Test
-    @Alerts(DEFAULT = "WebStorage supported",
-            IE = "WebStorage not supported")
-    @HtmlUnitNYI(CHROME = "WebStorage not supported",
-            EDGE = "WebStorage not supported",
-            FF = "WebStorage not supported",
-            FF_ESR = "WebStorage not supported")
-    public void webStorage() throws Exception {
+    @Alerts("ApplicationCache not supported")
+    @HtmlUnitNYI(CHROME = "ApplicationCache not supported",
+            EDGE = "ApplicationCache not supported",
+            FF = "ApplicationCache not supported",
+            FF_ESR = "ApplicationCache not supported",
+            IE = "ApplicationCache not supported")
+    public void applicationCache() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
@@ -67,10 +68,10 @@ public class WebStorageTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
 
         List<String> collectedAlerts = getCollectedAlerts(driver);
-        if (driver instanceof WebStorage) {
-            collectedAlerts.add("WebStorage supported");
+        if (driver instanceof ApplicationCache) {
+            collectedAlerts.add("ApplicationCache supported");
         } else {
-            collectedAlerts.add("WebStorage not supported");
+            collectedAlerts.add("ApplicationCache not supported");
         }
 
         assertEquals(getExpectedAlerts(), collectedAlerts);
