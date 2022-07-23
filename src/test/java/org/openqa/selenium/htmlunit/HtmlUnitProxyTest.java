@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
-import org.openqa.selenium.testing.drivers.BrowserType;
 
 import com.gargoylesoftware.htmlunit.ProxyConfig;
 
@@ -40,7 +40,8 @@ public class HtmlUnitProxyTest {
 
   @Test
   public void testProxyAsCapability() {
-    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
+    DesiredCapabilities capabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
     Proxy proxy = new Proxy().setHttpProxy("http.proxy");
     capabilities.setCapability(PROXY, proxy);
 

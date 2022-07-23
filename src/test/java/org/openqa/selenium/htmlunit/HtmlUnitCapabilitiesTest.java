@@ -29,9 +29,9 @@ import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
 
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.Platform;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
-import org.openqa.selenium.testing.drivers.BrowserType;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 
@@ -42,7 +42,8 @@ public class HtmlUnitCapabilitiesTest {
 
   @Test
   public void configurationViaDirectCapabilities() {
-    DesiredCapabilities ieCapabilities = BrowserToCapabilities.of(BrowserType.IE);
+    DesiredCapabilities ieCapabilities =
+            new DesiredCapabilities(Browser.IE.browserName(), "", Platform.ANY);
 
     try {
         BrowserVersionDeterminer.determine(ieCapabilities);
@@ -56,37 +57,43 @@ public class HtmlUnitCapabilitiesTest {
 
   @Test
   public void configurationOfFirefoxDefaultViaRemote() {
-    DesiredCapabilities firefoxCapabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox");
+    DesiredCapabilities firefoxCapabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox", Platform.ANY);
     assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
   public void configurationOfFirefox78ViaRemote() {
-    DesiredCapabilities firefoxCapabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox-78");
+    DesiredCapabilities firefoxCapabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-78", Platform.ANY);
     assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
   public void configurationOfFirefox91ViaRemote() {
-    DesiredCapabilities firefoxCapabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox-91");
+    DesiredCapabilities firefoxCapabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-91", Platform.ANY);
     assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
   public void configurationOfFirefoxEsrViaRemote() {
-    DesiredCapabilities firefoxCapabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "firefox-esr");
+    DesiredCapabilities firefoxCapabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr", Platform.ANY);
     assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
   }
 
   @Test
   public void configurationOfIEViaRemote() {
-    DesiredCapabilities ieCapabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT, "internet explorer");
+    DesiredCapabilities ieCapabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "internet explorer", Platform.ANY);
     assertEquals(INTERNET_EXPLORER, BrowserVersionDeterminer.determine(ieCapabilities));
   }
 
   @Test
   public void tetsDefautlBrowserVersion() {
-    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
+    DesiredCapabilities capabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
 
     assertEquals(BrowserVersion.getDefault(), BrowserVersionDeterminer.determine(capabilities));
   }
@@ -107,7 +114,8 @@ public class HtmlUnitCapabilitiesTest {
   public void configurationOfBrowserLanguage() {
     String browserLanguage = "es-ES";
 
-    DesiredCapabilities capabilities = BrowserToCapabilities.of(BrowserType.HTML_UNIT);
+    DesiredCapabilities capabilities =
+            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
     capabilities.setCapability(BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
 
     assertEquals(browserLanguage, BrowserVersionDeterminer.determine(capabilities).getBrowserLanguage());
