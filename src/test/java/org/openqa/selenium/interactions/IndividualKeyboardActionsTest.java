@@ -38,115 +38,115 @@ import org.openqa.selenium.Keys;
 @RunWith(JUnit4.class)
 public class IndividualKeyboardActionsTest {
 
-  @Mock private Keyboard mockKeyboard;
-  @Mock private Mouse mockMouse;
-  @Mock private Coordinates mockCoordinates;
-  @Mock private Locatable stubLocatable;
-  final String keysToSend = "hello";
-
-  @Before
-  public void setUp() {
-    MockitoAnnotations.initMocks(this);
-
-    when(stubLocatable.getCoordinates()).thenReturn(mockCoordinates);
-  }
-
-  @Test
-  public void keyDownActionWithoutProvidedElement() {
-    final Keys keyToPress = Keys.SHIFT;
-
-    KeyDownAction keyDown = new KeyDownAction(mockKeyboard, mockMouse, keyToPress);
-    keyDown.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockKeyboard).pressKey(keyToPress);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void keyDownActionOnAnElement() {
-    final Keys keyToPress = Keys.SHIFT;
-
-    KeyDownAction keyDown = new KeyDownAction(
-        mockKeyboard, mockMouse, stubLocatable, keyToPress);
-
-    keyDown.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockMouse).click(mockCoordinates);
-    order.verify(mockKeyboard).pressKey(keyToPress);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void keyUpActionWithoutProvidedElement() {
-    final Keys keyToRelease = Keys.CONTROL;
-
-    KeyUpAction keyUp = new KeyUpAction(mockKeyboard, mockMouse, keyToRelease);
-    keyUp.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockKeyboard).releaseKey(keyToRelease);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void keyUpOnAnAnElement() {
-    final Keys keyToRelease = Keys.SHIFT;
-
-    KeyUpAction upAction = new KeyUpAction(
-        mockKeyboard, mockMouse, stubLocatable, keyToRelease);
-    upAction.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockMouse).click(mockCoordinates);
-    order.verify(mockKeyboard).releaseKey(keyToRelease);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void sendKeysActionWithoutProvidedElement() {
-    SendKeysAction sendKeys = new SendKeysAction(mockKeyboard, mockMouse, keysToSend);
-    sendKeys.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockKeyboard).sendKeys(keysToSend);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void sendKeysActionOnAnElement() {
-    SendKeysAction sendKeys = new SendKeysAction(
-        mockKeyboard, mockMouse, stubLocatable, keysToSend);
-    sendKeys.perform();
-
-    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
-    order.verify(mockMouse).click(mockCoordinates);
-    order.verify(mockKeyboard).sendKeys(keysToSend);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void keyDownActionFailsOnNonModifier() {
-    final Keys keyToPress = Keys.BACK_SPACE;
-
-    try {
-      new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, keyToPress);
-      fail();
-    } catch (IllegalArgumentException e) {
-      assertTrue(e.getMessage().contains("modifier keys"));
-    }
-  }
-
-  @Test
-  public void testAllModifierKeysRegardedAsSuch() {
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.SHIFT);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_SHIFT);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.CONTROL);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_CONTROL);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.ALT);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_ALT);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.META);
-    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.COMMAND);
-  }
+//  @Mock private Keyboard mockKeyboard;
+//  @Mock private Mouse mockMouse;
+//  @Mock private Coordinates mockCoordinates;
+//  @Mock private Locatable stubLocatable;
+//  final String keysToSend = "hello";
+//
+//  @Before
+//  public void setUp() {
+//    MockitoAnnotations.initMocks(this);
+//
+//    when(stubLocatable.getCoordinates()).thenReturn(mockCoordinates);
+//  }
+//
+//  @Test
+//  public void keyDownActionWithoutProvidedElement() {
+//    final Keys keyToPress = Keys.SHIFT;
+//
+//    KeyDownAction keyDown = new KeyDownAction(mockKeyboard, mockMouse, keyToPress);
+//    keyDown.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockKeyboard).pressKey(keyToPress);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void keyDownActionOnAnElement() {
+//    final Keys keyToPress = Keys.SHIFT;
+//
+//    KeyDownAction keyDown = new KeyDownAction(
+//        mockKeyboard, mockMouse, stubLocatable, keyToPress);
+//
+//    keyDown.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockMouse).click(mockCoordinates);
+//    order.verify(mockKeyboard).pressKey(keyToPress);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void keyUpActionWithoutProvidedElement() {
+//    final Keys keyToRelease = Keys.CONTROL;
+//
+//    KeyUpAction keyUp = new KeyUpAction(mockKeyboard, mockMouse, keyToRelease);
+//    keyUp.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockKeyboard).releaseKey(keyToRelease);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void keyUpOnAnAnElement() {
+//    final Keys keyToRelease = Keys.SHIFT;
+//
+//    KeyUpAction upAction = new KeyUpAction(
+//        mockKeyboard, mockMouse, stubLocatable, keyToRelease);
+//    upAction.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockMouse).click(mockCoordinates);
+//    order.verify(mockKeyboard).releaseKey(keyToRelease);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void sendKeysActionWithoutProvidedElement() {
+//    SendKeysAction sendKeys = new SendKeysAction(mockKeyboard, mockMouse, keysToSend);
+//    sendKeys.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockKeyboard).sendKeys(keysToSend);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void sendKeysActionOnAnElement() {
+//    SendKeysAction sendKeys = new SendKeysAction(
+//        mockKeyboard, mockMouse, stubLocatable, keysToSend);
+//    sendKeys.perform();
+//
+//    InOrder order = Mockito.inOrder(mockKeyboard, mockMouse, mockCoordinates);
+//    order.verify(mockMouse).click(mockCoordinates);
+//    order.verify(mockKeyboard).sendKeys(keysToSend);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void keyDownActionFailsOnNonModifier() {
+//    final Keys keyToPress = Keys.BACK_SPACE;
+//
+//    try {
+//      new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, keyToPress);
+//      fail();
+//    } catch (IllegalArgumentException e) {
+//      assertTrue(e.getMessage().contains("modifier keys"));
+//    }
+//  }
+//
+//  @Test
+//  public void testAllModifierKeysRegardedAsSuch() {
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.SHIFT);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_SHIFT);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.CONTROL);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_CONTROL);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.ALT);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.LEFT_ALT);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.META);
+//    new KeyDownAction(mockKeyboard, mockMouse, stubLocatable, Keys.COMMAND);
+//  }
 }

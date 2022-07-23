@@ -27,7 +27,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.Mouse;
 
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.html.DomElement;
@@ -37,7 +36,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
  */
-public class HtmlUnitMouse implements Mouse {
+public class HtmlUnitMouse {
   private final HtmlUnitDriver parent;
   private final HtmlUnitKeyboard keyboard;
   private DomElement currentActiveElement;
@@ -60,7 +59,6 @@ public class HtmlUnitMouse implements Mouse {
     return currentActiveElement;
   }
 
-  @Override
   public void click(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
     parent.click(element,false);
@@ -131,7 +129,6 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  @Override
   public void doubleClick(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
     parent.doubleClick(element);
@@ -152,7 +149,6 @@ public class HtmlUnitMouse implements Mouse {
     }
   }
 
-  @Override
   public void contextClick(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
 
@@ -164,7 +160,6 @@ public class HtmlUnitMouse implements Mouse {
     updateActiveElement(element);
   }
 
-  @Override
   public void mouseDown(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
     parent.mouseDown(element);
@@ -180,7 +175,6 @@ public class HtmlUnitMouse implements Mouse {
     updateActiveElement(element);
   }
 
-  @Override
   public void mouseUp(Coordinates elementCoordinates) {
     DomElement element = getElementForOperation(elementCoordinates);
     parent.mouseUp(element);
@@ -196,7 +190,6 @@ public class HtmlUnitMouse implements Mouse {
     updateActiveElement(element);
   }
 
-  @Override
   public void mouseMove(Coordinates elementCoordinates) {
     DomElement element = (DomElement) elementCoordinates.getAuxiliary();
     parent.mouseMove(element);
@@ -208,7 +201,6 @@ public class HtmlUnitMouse implements Mouse {
     updateActiveElement(element);
   }
 
-  @Override
   public void mouseMove(Coordinates where, long xOffset, long yOffset) {
     throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
   }

@@ -35,138 +35,138 @@ import org.mockito.MockitoAnnotations;
 @RunWith(JUnit4.class)
 public class IndividualMouseActionsTest {
 
-  @Mock private Mouse mockMouse;
-  @Mock private Coordinates mockCoordinates;
-  @Mock private Locatable locatableStub;
-
-  @Before
-  public void setUp() {
-    MockitoAnnotations.initMocks(this);
-    when(locatableStub.getCoordinates()).thenReturn(mockCoordinates);
-  }
-
-  @Test
-  public void mouseClickAndHoldAction() {
-    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verify(mockMouse).mouseDown(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseClickAndHoldActionOnCurrentLocation() {
-    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, null);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseDown(null);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseReleaseAction() {
-    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verify(mockMouse).mouseUp(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseReleaseActionOnCurrentLocation() {
-    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, null);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseUp(null);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseClickAction() {
-    ClickAction action = new ClickAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verify(mockMouse).click(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseClickActionOnCurrentLocation() {
-    ClickAction action = new ClickAction(mockMouse, null);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).click(null);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseDoubleClickAction() {
-    DoubleClickAction action = new DoubleClickAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verify(mockMouse).doubleClick(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseDoubleClickActionOnCurrentLocation() {
-    DoubleClickAction action = new DoubleClickAction(mockMouse, null);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).doubleClick(null);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseMoveAction() {
-    MoveMouseAction action = new MoveMouseAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseMoveActionToCoordinatesInElement() {
-    MoveToOffsetAction action = new MoveToOffsetAction(mockMouse, locatableStub, 20, 20);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates, 20, 20);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseContextClickAction() {
-    ContextClickAction action = new ContextClickAction(mockMouse, locatableStub);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).mouseMove(mockCoordinates);
-    order.verify(mockMouse).contextClick(mockCoordinates);
-    order.verifyNoMoreInteractions();
-  }
-
-  @Test
-  public void mouseContextClickActionOnCurrentLocation() {
-    ContextClickAction action = new ContextClickAction(mockMouse, null);
-    action.perform();
-
-    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
-    order.verify(mockMouse).contextClick(null);
-    order.verifyNoMoreInteractions();
-  }
+//  @Mock private Mouse mockMouse;
+//  @Mock private Coordinates mockCoordinates;
+//  @Mock private Locatable locatableStub;
+//
+//  @Before
+//  public void setUp() {
+//    MockitoAnnotations.initMocks(this);
+//    when(locatableStub.getCoordinates()).thenReturn(mockCoordinates);
+//  }
+//
+//  @Test
+//  public void mouseClickAndHoldAction() {
+//    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verify(mockMouse).mouseDown(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseClickAndHoldActionOnCurrentLocation() {
+//    ClickAndHoldAction action = new ClickAndHoldAction(mockMouse, null);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseDown(null);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseReleaseAction() {
+//    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verify(mockMouse).mouseUp(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseReleaseActionOnCurrentLocation() {
+//    ButtonReleaseAction action = new ButtonReleaseAction(mockMouse, null);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseUp(null);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseClickAction() {
+//    ClickAction action = new ClickAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verify(mockMouse).click(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseClickActionOnCurrentLocation() {
+//    ClickAction action = new ClickAction(mockMouse, null);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).click(null);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseDoubleClickAction() {
+//    DoubleClickAction action = new DoubleClickAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verify(mockMouse).doubleClick(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseDoubleClickActionOnCurrentLocation() {
+//    DoubleClickAction action = new DoubleClickAction(mockMouse, null);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).doubleClick(null);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseMoveAction() {
+//    MoveMouseAction action = new MoveMouseAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseMoveActionToCoordinatesInElement() {
+//    MoveToOffsetAction action = new MoveToOffsetAction(mockMouse, locatableStub, 20, 20);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates, 20, 20);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseContextClickAction() {
+//    ContextClickAction action = new ContextClickAction(mockMouse, locatableStub);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).mouseMove(mockCoordinates);
+//    order.verify(mockMouse).contextClick(mockCoordinates);
+//    order.verifyNoMoreInteractions();
+//  }
+//
+//  @Test
+//  public void mouseContextClickActionOnCurrentLocation() {
+//    ContextClickAction action = new ContextClickAction(mockMouse, null);
+//    action.perform();
+//
+//    InOrder order = Mockito.inOrder(mockMouse, mockCoordinates);
+//    order.verify(mockMouse).contextClick(null);
+//    order.verifyNoMoreInteractions();
+//  }
 }

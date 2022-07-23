@@ -31,7 +31,7 @@ import com.gargoylesoftware.htmlunit.html.Keyboard;
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
  */
-public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboard {
+public class HtmlUnitKeyboard {
   private final KeyboardModifiersState modifiersState = new KeyboardModifiersState();
   private final HtmlUnitDriver parent;
   private HtmlElement lastElement;
@@ -40,7 +40,6 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     this.parent = parent;
   }
 
-  @Override
   public void sendKeys(CharSequence... keysToSend) {
     HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) parent.switchTo().activeElement();
     sendKeys(htmlElem, false, keysToSend);
@@ -121,7 +120,6 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     }
   }
 
-  @Override
   public void pressKey(CharSequence keyToPress) {
     HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent.switchTo().activeElement();
     HtmlElement element = (HtmlElement) htmlElement.element;
@@ -136,7 +134,6 @@ public class HtmlUnitKeyboard implements org.openqa.selenium.interactions.Keyboa
     }
   }
 
-  @Override
   public void releaseKey(CharSequence keyToRelease) {
     HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent.switchTo().activeElement();
     HtmlElement element = (HtmlElement) htmlElement.element;

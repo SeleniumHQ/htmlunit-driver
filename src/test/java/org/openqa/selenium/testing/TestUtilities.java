@@ -190,7 +190,7 @@ public class TestUtilities {
     }
 
     Capabilities caps = ((HasCapabilities) driver).getCapabilities();
-    return caps.getPlatform();
+    return caps.getPlatformName();
   }
 
   public static boolean isLocal() {
