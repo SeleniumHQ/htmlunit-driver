@@ -20,6 +20,7 @@ package org.openqa.selenium.htmlunit.interactions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -122,5 +123,114 @@ public class ClickTest extends WebDriverTestCase {
       actions.perform();
 
       assertEquals(String.join(";", getExpectedAlerts()) + ";", driver.getTitle());
+    }
+
+    /**
+     * @exception Exception If the test fails
+     */
+    @Test
+    @Alerts({"1", "First"})
+    public void shiftClick() throws Exception {
+        final String html = "<html><head><title>First</title></head><body>\n"
+            + "<a href='" + URL_SECOND + "'>Click Me</a>\n"
+            + "</form></body></html>";
+
+        getMockWebConnection().setResponse(URL_SECOND, "<head><title>Second</title>");
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement link = driver.findElement(By.linkText("Click Me"));
+
+        final int windowsSize = driver.getWindowHandles().size();
+
+        new Actions(driver)
+            .moveToElement(link)
+            .keyDown(Keys.SHIFT)
+            .click()
+            .keyUp(Keys.SHIFT)
+            .perform();
+
+        Thread.sleep(100);
+        assertEquals("Should have opened a new window",
+                windowsSize + Integer.parseInt(getExpectedAlerts()[0]), driver.getWindowHandles().size());
+        assertEquals("Should not have navigated away", getExpectedAlerts()[1], driver.getTitle());
+    }
+
+    /**
+     * @exception Exception If the test fails
+     */
+    @Test
+    @Alerts({"1", "First"})
+    public void ctrlClick() throws Exception {
+        final String html = "<html><head><title>First</title></head><body>\n"
+            + "<a href='" + URL_SECOND + "'>Click Me</a>\n"
+            + "</form></body></html>";
+
+        getMockWebConnection().setResponse(URL_SECOND, "<head><title>Second</title>");
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement link = driver.findElement(By.linkText("Click Me"));
+
+        final int windowsSize = driver.getWindowHandles().size();
+
+        new Actions(driver)
+                .moveToElement(link)
+                .keyDown(Keys.CONTROL)
+                .click()
+                .keyUp(Keys.CONTROL)
+                .perform();
+
+        Thread.sleep(DEFAULT_WAIT_TIME);
+        assertEquals("Should have opened a new window",
+                windowsSize + Integer.parseInt(getExpectedAlerts()[0]), driver.getWindowHandles().size());
+        assertEquals("Should not have navigated away", getExpectedAlerts()[1], driver.getTitle());
+    }
+
+    /**
+     * @throws Exception if an error occurs
+     */
+    @Test
+    @Alerts(DEFAULT = {"[object Event]", "undefined", "[object MouseEvent]", "1",
+                       "[object MouseEvent]", "2", "[object MouseEvent]", "2"},
+            CHROME = {"[object Event]", "undefined", "[object PointerEvent]", "1",
+                      "[object MouseEvent]", "2", "[object PointerEvent]", "0"},
+            EDGE = {"[object Event]", "undefined", "[object PointerEvent]", "1",
+                    "[object MouseEvent]", "2", "[object PointerEvent]", "0"},
+            IE = {"[object Event]", "undefined", "[object PointerEvent]", "0",
+                  "[object PointerEvent]", "0", "[object PointerEvent]", "0"})
+    public void detail() throws Exception {
+        final String html =
+              "<html><head><script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function alertDetail(e) {\n"
+            + "    log(e);\n"
+            + "    log(e.detail);\n"
+            + "  }\n"
+            + "</script></head>\n"
+            + "<body onload='alertDetail(event)'>\n"
+            + "  <div id='a' onclick='alertDetail(event)'>abc</div>\n"
+            + "  <div id='b' ondblclick='alertDetail(event)'>xyz</div>\n"
+            + "  <div id='c' oncontextmenu='alertDetail(event)'>xyz</div>\n"
+            + "</body></html>";
+
+        final String[] alerts = getExpectedAlerts();
+        int i = 0;
+
+        final WebDriver driver = loadPage2(html);
+        verifyTitle2(driver, alerts[i++], alerts[i++]);
+
+        i = 0;
+        driver.findElement(By.id("a")).click();
+        verifyTitle2(driver, alerts[i++], alerts[i++], alerts[i++], alerts[i++]);
+
+        i = 0;
+        Actions action = new Actions(driver);
+        action.doubleClick(driver.findElement(By.id("b")));
+        action.perform();
+        verifyTitle2(driver, alerts[i++], alerts[i++], alerts[i++], alerts[i++], alerts[i++], alerts[i++]);
+
+        action = new Actions(driver);
+        action.contextClick(driver.findElement(By.id("c")));
+        action.perform();
+        verifyTitle2(driver, alerts);
     }
 }
