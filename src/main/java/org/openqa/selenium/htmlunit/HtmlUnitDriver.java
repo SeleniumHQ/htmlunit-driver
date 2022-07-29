@@ -61,6 +61,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.interactions.Interactive;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -108,7 +110,7 @@ import net.sourceforge.htmlunit.corejs.javascript.Undefined;
  * <p>
  * The main supported browsers are Chrome, Edge, Firefox and Internet Explorer.
  */
-public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabilities /*, Interactive */ {
+public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabilities, Interactive {
 
     private static final int sleepTime = 200;
 
@@ -1217,34 +1219,54 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
     }
 
-//    @Override
-//    public void perform(Collection<Sequence> actions) {
-//        // see https://www.w3.org/TR/webdriver/#processing-actions
-//
-//        for (final Sequence sequence : actions) {
-//            Map<String, Object> encodedSeq = sequence.encode();
-//
-//            final String sequenceId = encodedSeq.get("id").toString();
-//
-//            // valid types are "key", "pointer", "wheel", or "none"
-//            // we have to check this
-//            final String sequenceType = encodedSeq.get("type").toString();
-//
-//            final Object sequenceParameters = encodedSeq.get("parameters");
-//
-//            final List<Map> sequenceActions = (List<Map>)encodedSeq.get("actions");
-//
-//            System.out.println(encodedSeq);
-//        }
-//
-//        throw new RuntimeException(
-//                "org.openqa.selenium.interactions.Interactive.perform(Collection<Sequence>) is not supported so far");
-//    }
-//
-//    @Override
-//    public void resetInputState() {
-//        throw new RuntimeException(
-//                "org.openqa.selenium.interactions.Interactive.resetInputState() is not supported so far");
-//
-//    }
+    @Override
+    public void perform(Collection<Sequence> sequences) {
+        // see https://www.w3.org/TR/webdriver/#processing-actions
+
+        for (final Sequence sequence : sequences) {
+            Map<String, Object> encodedSeq = sequence.encode();
+
+            // final String sequenceId = encodedSeq.get("id").toString();
+            // final Object sequenceParameters = encodedSeq.get("parameters");
+
+            // valid types are "key", "pointer", "wheel", or "none"
+            // we have to check this
+            final String sequenceType = encodedSeq.get("type").toString();
+
+            final List<Map<String, Object>> actions = (List<Map<String, Object>>)encodedSeq.get("actions");
+            for (Map<String, Object> action : actions) {
+                switch (sequenceType) {
+                case "pointer":
+                    processPointerAction(action);
+                    break;
+
+                default:
+                    throw new RuntimeException("Sequence type '" + sequenceType + "' is not supported so far");
+                }
+            }
+        }
+    }
+
+    private void processPointerAction(Map<String, Object> action) {
+        final String actionType = action.get("type").toString();
+
+        switch (actionType) {
+        case "pointerMove":
+            HtmlUnitWebElement origin = (HtmlUnitWebElement) action.get("origin");
+            mouseMove(origin.getElement());
+            break;
+
+        default:
+            break;
+        }
+
+        System.out.println(action);
+    }
+
+    @Override
+    public void resetInputState() {
+        throw new RuntimeException(
+                "org.openqa.selenium.interactions.Interactive.resetInputState() is not supported so far");
+
+    }
 }
