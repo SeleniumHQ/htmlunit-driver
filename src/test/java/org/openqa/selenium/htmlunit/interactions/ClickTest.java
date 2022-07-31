@@ -42,8 +42,7 @@ public class ClickTest extends WebDriverTestCase {
      * @throws Exception on test failure
      */
     @Test
-    @NotYetImplemented
-    public void clickElement() throws Exception {
+    public void click() throws Exception {
         String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
@@ -98,7 +97,6 @@ public class ClickTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("focus-start")
-    @NotYetImplemented
     public void mouseMoveDoesNotTriggerBlurEvent() throws Exception {
       final String html = "<html>\n"
               + "  <head>\n"

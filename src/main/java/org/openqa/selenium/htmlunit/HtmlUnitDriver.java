@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,6 +62,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WrapsElement;
+import org.openqa.selenium.htmlunit.w3.Action;
+import org.openqa.selenium.htmlunit.w3.Algorithms;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.BrowserType;
@@ -1219,54 +1222,30 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
     }
 
+    private HtmlUnitInputProcessor inputProcessor = new HtmlUnitInputProcessor(this);
+
     @Override
     public void perform(Collection<Sequence> sequences) {
-        // see https://www.w3.org/TR/webdriver/#processing-actions
+        // https://www.w3.org/TR/webdriver/#perform-actions
 
-        for (final Sequence sequence : sequences) {
-            Map<String, Object> encodedSeq = sequence.encode();
+        // Let input state be the result of get the input state with current session and current top-level browsing context.
 
-            // final String sequenceId = encodedSeq.get("id").toString();
-            // final Object sequenceParameters = encodedSeq.get("parameters");
+        // Let actions by tick be the result of trying to extract an action sequence given input state, and parameters.
+        List<List<Action>> actionsByTick = Algorithms.extractActionSequence(sequences);
+System.out.println(actionsByTick);
+        // If the current browsing context is no longer open, return error with error code no such window.
 
-            // valid types are "key", "pointer", "wheel", or "none"
-            // we have to check this
-            final String sequenceType = encodedSeq.get("type").toString();
+        // Handle any user prompts. If this results in an error, return that error.
 
-            final List<Map<String, Object>> actions = (List<Map<String, Object>>)encodedSeq.get("actions");
-            for (Map<String, Object> action : actions) {
-                switch (sequenceType) {
-                case "pointer":
-                    processPointerAction(action);
-                    break;
+        // Dispatch actions given input state, actions by tick, and current browsing context.
+        // If this results in an error return that error.
+        Algorithms.dispatchActions(/* inputState_, */ actionsByTick, inputProcessor);
 
-                default:
-                    throw new RuntimeException("Sequence type '" + sequenceType + "' is not supported so far");
-                }
-            }
-        }
-    }
-
-    private void processPointerAction(Map<String, Object> action) {
-        final String actionType = action.get("type").toString();
-
-        switch (actionType) {
-        case "pointerMove":
-            HtmlUnitWebElement origin = (HtmlUnitWebElement) action.get("origin");
-            mouseMove(origin.getElement());
-            break;
-
-        default:
-            break;
-        }
-
-        System.out.println(action);
+        // Return success with data null.
     }
 
     @Override
     public void resetInputState() {
-        throw new RuntimeException(
-                "org.openqa.selenium.interactions.Interactive.resetInputState() is not supported so far");
-
+        inputProcessor = new HtmlUnitInputProcessor(this);
     }
 }

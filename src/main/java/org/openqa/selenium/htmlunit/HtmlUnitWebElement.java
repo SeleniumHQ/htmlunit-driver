@@ -518,7 +518,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     return driver;
   }
 
-  protected DomElement getElement() {
+  public DomElement getElement() {
     return element;
   }
 
