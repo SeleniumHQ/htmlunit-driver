@@ -260,19 +260,22 @@ public class Algorithms {
         action.setPointerType(parameters.get("pointerType").toString());
 
         // If subtype is "pointerUp" or "pointerDown", process a pointer up or pointer down action
-        // with arguments action item and action. If doing so results in an error, return that error.
+        // with arguments action item and action.
+        // If doing so results in an error, return that error.
         if ("pointerUp".equals(subtype) || "pointerDown".equals(subtype)) {
-            processPointerUpOrPointerDownAction(id, actionItem);
+            processPointerUpOrPointerDownAction(actionItem, action);
         }
 
-        // If subtype is "pointerMove" process a pointer move action with arguments action item and action. If doing so results in an error, return that error.
+        // If subtype is "pointerMove" process a pointer move action with
+        // arguments action item and action.
+        // If doing so results in an error, return that error.
         if ("pointerMove".equals(subtype)) {
-            processPointerMoveAction(id, actionItem);
+            processPointerMoveAction(actionItem, action);
         }
 
         // If subtype is "pointerCancel" process a pointer cancel action. If doing so results in an error, return that error.
         if ("pointerCancel".equals(subtype)) {
-            processPointerCancelAction(id, actionItem);
+            processPointerCancelAction(actionItem);
         }
 
         // Return success with data action.
@@ -289,21 +292,94 @@ public class Algorithms {
     /**
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-up-or-pointer-down-action">process a pointer up or pointer down action</a>
      */
-    private static Action processPointerUpOrPointerDownAction(String id, Map<String, Object> actionItem) {
-        return null;
+    private static void processPointerUpOrPointerDownAction(Map<String, Object> actionItem, Action action) {
+        // Let button be the result of getting the property button from action item.
+        Object button = actionItem.get("button");
+
+        // If button is not an Integer greater than or equal to 0 return error with error code invalid argument.
+        if (button == null) {
+            // TODO
+        }
+        try {
+            int butt = Integer.parseInt(button.toString());
+            if (butt < 0) {
+                // TODO
+            }
+
+            // Set the button property of action to button.
+            action.setButton(butt);
+        }
+        catch (NumberFormatException e) {
+            // TODO
+        }
+
+        //Let width be the result of getting the property width from action item.
+        //
+        //If width is not undefined and width is not a Number greater than or equal to 0 return error with error code invalid argument.
+        //
+        //Set the width property of action to width.
+        //
+        //Let height be the result of getting the property height from action item.
+        //
+        //If height is not undefined and height is not a Number greater than or equal to 0 return error with error code invalid argument.
+        //
+        //Set the height property of action to height.
+        //
+        //Let pressure be the result of getting the property pressure from action item.
+        //
+        //If pressure is not undefined and pressure is not a Number greater than or equal to 0 and less than or equal to 1 return error with error code invalid argument.
+        //
+        //Set the pressure property of action to pressure.
+        //
+        //Let tangentialPressure be the result of getting the property tangentialPressure from action item.
+        //
+        //If tangentialPressure is not undefined and tangentialPressure is not a Number greater than or equal to -1 and less than or equal to 1 return error with error code invalid argument.
+        //
+        //Set the tangentialPressure property of action to tangentialPressure.
+        //
+        //Let tiltX be the result of getting the property tiltX from action item.
+        //
+        //If tiltX is not undefined and tiltX is not an Integer greater than or equal to -90 and less than or equal to 90 return error with error code invalid argument.
+        //
+        //Set the tiltX property of action to tiltX.
+        //
+        //Let tiltY be the result of getting the property tiltY from action item.
+        //
+        //If tiltY is not undefined and tiltY is not an Integer greater than or equal to -90 and less than or equal to 90 return error with error code invalid argument.
+        //
+        //Set the tiltY property of action to tiltY.
+        //
+        //Let twist be the result of getting the property twist from action item.
+        //
+        //If twist is not undefined and twist is not an Integer greater than or equal to 0 and less than or equal to 359 return error with error code invalid argument.
+        //
+        //Set the twist property of action to twist.
+        //
+        //Let altitudeAngle be the result of getting the property altitudeAngle from action item.
+        //
+        //If altitudeAngle is not undefined and altitudeAngle is not a Number greater than or equal to 0 and less than or equal to π/2 return error with error code invalid argument.
+        //
+        //Set the altitudeAngle property of action to altitudeAngle.
+        //
+        //Let azimuthAngle be the result of getting the property azimuthAngle from action item.
+        //
+        //If azimuthAngle is not undefined and azimuthAngle is not a Number greater than or equal to 0 and less than or equal to 2π return error with error code invalid argument.
+        //
+        //Set the azimuthAngle property of action to azimuthAngle.
+        //
+        //Return success with data null.
     }
 
     /**
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-move-action">process a pointer move action</a>
      */
-    private static Action processPointerMoveAction(String id, Map<String, Object> actionItem) {
-        return null;
+    private static void processPointerMoveAction(Map<String, Object> actionItem, Action action) {
     }
 
     /**
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action">process a pointer cancel action</a>
      */
-    private static Action processPointerCancelAction(String id, Map<String, Object> actionItem) {
+    private static Action processPointerCancelAction(Map<String, Object> actionItem) {
         return null;
     }
 

@@ -104,10 +104,23 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    public static final class PointerDownHtmlUnitAction extends DomElementHtmlUnitAction {
+    public static abstract class PointerHtmlUnitAction extends DomElementHtmlUnitAction {
+        private final int button_;
 
-        public PointerDownHtmlUnitAction(DomElement domElement) {
+        public PointerHtmlUnitAction(DomElement domElement, int button) {
             super(domElement);
+            button_ = button;
+        }
+
+        public int getButton() {
+            return button_;
+        }
+    }
+
+    public static final class PointerDownHtmlUnitAction extends PointerHtmlUnitAction {
+
+        public PointerDownHtmlUnitAction(DomElement domElement, int button) {
+            super(domElement, button);
         }
 
         public void process(final HtmlUnitDriver driver) {
@@ -119,10 +132,10 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    public static final class PointerUpHtmlUnitAction extends DomElementHtmlUnitAction {
+    public static final class PointerUpHtmlUnitAction extends PointerHtmlUnitAction {
 
-        public PointerUpHtmlUnitAction(DomElement domElement) {
-            super(domElement);
+        public PointerUpHtmlUnitAction(DomElement domElement, int button) {
+            super(domElement, button);
         }
 
         public void process(final HtmlUnitDriver driver) {
@@ -132,8 +145,9 @@ public class HtmlUnitInputProcessor {
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof PointerDownHtmlUnitAction) {
                 PointerDownHtmlUnitAction pointerDownAction = (PointerDownHtmlUnitAction) previousAction;
-                if (pointerDownAction.getDomElement() == getDomElement()) {
-                    return new PointerClickHtmlUnitAction(getDomElement());
+                if (pointerDownAction.getDomElement() == getDomElement()
+                        && pointerDownAction.getButton() == getButton()) {
+                    return new PointerClickHtmlUnitAction(getDomElement(), getButton());
                 }
             }
 
@@ -141,13 +155,18 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    private static final class PointerClickHtmlUnitAction extends DomElementHtmlUnitAction {
+    private static final class PointerClickHtmlUnitAction extends PointerHtmlUnitAction {
 
-        public PointerClickHtmlUnitAction(DomElement domElement) {
-            super(domElement);
+        public PointerClickHtmlUnitAction(DomElement domElement, int button) {
+            super(domElement, button);
         }
 
         public void process(final HtmlUnitDriver driver) {
+            if (2 == getButton()) {
+                driver.getMouse().contextClick(null);
+                return;
+            }
+
             driver.getMouse().click(null);
         }
 

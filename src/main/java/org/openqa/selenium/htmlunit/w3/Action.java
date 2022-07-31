@@ -41,7 +41,9 @@ public class Action {
 
     private Integer duration_;
     private String value_;
+
     private String pointerType_;
+    private Integer button_;
 
     private DomElement domElement_;
 
@@ -54,7 +56,7 @@ public class Action {
         subtype_ = subtype;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration_;
     }
 
@@ -76,6 +78,14 @@ public class Action {
 
     public void setPointerType(String pointerType) {
         pointerType_ = pointerType;
+    }
+
+    public Integer getButton() {
+        return button_;
+    }
+
+    public void setButton(int button) {
+        button_ = button;
     }
 
     public DomElement getDomElement() {
@@ -102,11 +112,11 @@ public class Action {
             }
 
             if ("pointerUp".equals(subtype_)) {
-                return new PointerUpHtmlUnitAction(domElement_);
+                return new PointerUpHtmlUnitAction(domElement_, getButton());
             }
 
             if ("pointerDown".equals(subtype_)) {
-                return new PointerDownHtmlUnitAction(domElement_);
+                return new PointerDownHtmlUnitAction(domElement_, getButton());
             }
         }
 
