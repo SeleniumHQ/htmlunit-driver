@@ -18,6 +18,8 @@
 package org.openqa.selenium.htmlunit.w3;
 
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.HtmlUnitAction;
+import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyDownHtmlUnitAction;
+import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyUpHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerDownHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerMoveHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerUpHtmlUnitAction;
@@ -105,6 +107,20 @@ public class Action {
 
             if ("pointerDown".equals(subtype_)) {
                 return new PointerDownHtmlUnitAction(domElement_);
+            }
+        }
+
+        if ("key".equals(type_)) {
+            if ("pause".equals(subtype_)) {
+                return null;
+            }
+
+            if ("keyUp".equals(subtype_)) {
+                return new KeyUpHtmlUnitAction(value_);
+            }
+
+            if ("keyDown".equals(subtype_)) {
+                return new KeyDownHtmlUnitAction(value_);
             }
         }
 

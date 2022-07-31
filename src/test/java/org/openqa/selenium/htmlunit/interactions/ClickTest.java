@@ -26,7 +26,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
-import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
 import org.openqa.selenium.interactions.Action;
 import org.openqa.selenium.interactions.Actions;
 
@@ -65,7 +64,6 @@ public class ClickTest extends WebDriverTestCase {
      */
     @Test
     @Alerts({"focus-start", "blur-start", "focus-target"})
-    @NotYetImplemented
     public void clickTriggerBlurEvent() throws Exception {
       final String html = "<html>\n"
               + "  <head>\n"

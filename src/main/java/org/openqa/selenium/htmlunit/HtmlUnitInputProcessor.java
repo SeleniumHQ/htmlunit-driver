@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.htmlunit.w3.Action;
+import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.Sequence;
 
 import com.gargoylesoftware.htmlunit.html.DomElement;
@@ -98,7 +99,7 @@ public class HtmlUnitInputProcessor {
         }
 
         public void process(final HtmlUnitDriver driver) {
-            driver.mouseMove(getDomElement());
+            driver.getMouse().mouseMove(getDomElement());
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -113,7 +114,7 @@ public class HtmlUnitInputProcessor {
         }
 
         public void process(final HtmlUnitDriver driver) {
-            driver.mouseDown(getDomElement());
+            driver.getMouse().mouseDown((Coordinates) null);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -128,7 +129,7 @@ public class HtmlUnitInputProcessor {
         }
 
         public void process(final HtmlUnitDriver driver) {
-            driver.mouseUp(getDomElement());
+            driver.getMouse().mouseUp((Coordinates) null);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -150,7 +151,7 @@ public class HtmlUnitInputProcessor {
         }
 
         public void process(final HtmlUnitDriver driver) {
-            driver.click(getDomElement(), false);
+            driver.getMouse().click(null);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -172,7 +173,7 @@ public class HtmlUnitInputProcessor {
         }
 
         public void process(final HtmlUnitDriver driver) {
-            driver.click(getDomElement(), false);
+            driver.getMouse().doubleClick((Coordinates) null);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -180,15 +181,15 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    private static final class KeyDownHtmlUnitAction extends DomElementHtmlUnitAction {
+    public static final class KeyDownHtmlUnitAction implements HtmlUnitAction {
         private final String value_;
 
-        public KeyDownHtmlUnitAction(DomElement domElement, String value) {
-            super(domElement);
+        public KeyDownHtmlUnitAction(String value) {
             value_ = value;
         }
 
         public void process(final HtmlUnitDriver driver) {
+            driver.getKeyboard().pressKey(value_);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
@@ -196,15 +197,15 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    private static final class KeyUpHtmlUnitAction extends DomElementHtmlUnitAction {
+    public static final class KeyUpHtmlUnitAction implements HtmlUnitAction {
         private final String value_;
 
-        public KeyUpHtmlUnitAction(DomElement domElement, String value) {
-            super(domElement);
+        public KeyUpHtmlUnitAction(String value) {
             value_ = value;
         }
 
         public void process(final HtmlUnitDriver driver) {
+            driver.getKeyboard().releaseKey(value_);
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
