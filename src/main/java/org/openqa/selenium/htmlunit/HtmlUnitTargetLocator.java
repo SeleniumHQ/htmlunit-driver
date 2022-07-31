@@ -58,7 +58,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver frame(int index) {
-        Page page = driver.getWindowManager().lastPage();
+        Page page = driver.getCurrentWindow().lastPage();
         if (page instanceof HtmlPage) {
             try {
                 driver.setCurrentWindow(((HtmlPage) page).getFrames().get(index));
@@ -71,7 +71,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver frame(final String nameOrId) {
-        Page page = driver.getWindowManager().lastPage();
+        Page page = driver.getCurrentWindow().lastPage();
         if (page instanceof HtmlPage) {
             // First check for a frame with the matching name.
             for (final FrameWindow frameWindow : ((HtmlPage) page).getFrames()) {
@@ -119,7 +119,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver parentFrame() {
-        driver.setCurrentWindow(driver.getCurrentWindow().getParentWindow());
+        driver.setCurrentWindow(driver.getCurrentWindow().getWebWindow().getParentWindow());
         return driver;
     }
 
@@ -150,13 +150,13 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver defaultContent() {
-        driver.getWindowManager().switchToDefaultContentOfWindow(driver.getCurrentWindow().getTopWindow());
+        driver.switchToDefaultContentOfWindow(driver.getCurrentWindow().getWebWindow().getTopWindow());
         return driver;
     }
 
     @Override
     public WebElement activeElement() {
-        Page page = driver.getWindowManager().lastPage();
+        Page page = driver.getCurrentWindow().lastPage();
         if (page instanceof HtmlPage) {
             DomElement element = ((HtmlPage) page).getFocusedElement();
             if (element == null || element instanceof HtmlHtml) {
@@ -194,7 +194,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         }
 
         final WebWindow alertWindow = alert.getWebWindow();
-        final WebWindow currentWindow = driver.getCurrentWindow();
+        final WebWindow currentWindow = driver.getCurrentWindow().getWebWindow();
 
         if (alertWindow != currentWindow
                 && !isChild(currentWindow, alertWindow)

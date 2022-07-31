@@ -32,7 +32,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -84,6 +83,8 @@ import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.WebWindow;
+import com.gargoylesoftware.htmlunit.WebWindowEvent;
+import com.gargoylesoftware.htmlunit.WebWindowListener;
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
 import com.gargoylesoftware.htmlunit.html.FrameWindow;
@@ -119,7 +120,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     private WebClient webClient;
     private final HtmlUnitAlert alert;
-    private final HtmlUnitWindow windowManager;
+    private HtmlUnitWindow currentWindow;
     private HtmlUnitKeyboard keyboard;
     private HtmlUnitMouse mouse;
     private boolean gotPage;
@@ -249,7 +250,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         elementFinder = new HtmlUnitElementFinder();
 
         alert = new HtmlUnitAlert(this);
-        windowManager = new HtmlUnitWindow(this);
+        currentWindow = new HtmlUnitWindow(webClient.getCurrentWindow());
 
         defaultExecutor = Executors.newCachedThreadPool();
         executor = defaultExecutor;
@@ -260,6 +261,41 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         options = new HtmlUnitOptions(this);
         targetLocator = new HtmlUnitTargetLocator(this);
+
+        webClient.addWebWindowListener(new WebWindowListener() {
+            @Override
+            public void webWindowOpened(WebWindowEvent webWindowEvent) {
+                // Ignore
+            }
+
+            @Override
+            public void webWindowContentChanged(WebWindowEvent event) {
+                elementsMap.remove(event.getOldPage());
+                if (event.getWebWindow() != currentWindow.getWebWindow()) {
+                    return;
+                }
+
+                // Do we need to pick some new default content?
+                switchToDefaultContentOfWindow(currentWindow.getWebWindow());
+            }
+
+            @Override
+            public void webWindowClosed(WebWindowEvent event) {
+                elementsMap.remove(event.getOldPage());
+                // Check if the event window refers to us or one of our parent windows
+                // setup the currentWindow appropriately if necessary
+                WebWindow curr = currentWindow.getWebWindow();
+                do {
+                    // Instance equality is okay in this case
+                    if (curr == event.getWebWindow()) {
+                        setCurrentWindow(currentWindow.getWebWindow().getTopWindow());
+                        return;
+                    }
+                    curr = curr.getParentWindow();
+                } while (curr != currentWindow.getWebWindow().getTopWindow());
+            }
+        });
+
         resetKeyboardAndMouseState();
     }
 
@@ -378,10 +414,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return client;
     }
 
-    public HtmlUnitWindow getWindowManager() {
-        return windowManager;
-    }
-
     public HtmlUnitAlert getAlert() {
         return alert;
     }
@@ -391,7 +423,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     public void setCurrentWindow(WebWindow window) {
-        getWebClient().setCurrentWindow(window);
+        if (currentWindow.getWebWindow() != window) {
+            currentWindow = new HtmlUnitWindow(window);
+        }
     }
 
     /**
@@ -585,13 +619,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             final WebRequest request = new WebRequest(fullUrl, browser.getHtmlAcceptHeader(),
                     browser.getAcceptEncodingHeader());
             request.setCharset(StandardCharsets.UTF_8);
-            getWebClient().getPage(getCurrentWindow().getTopWindow(), request);
+            getWebClient().getPage(getCurrentWindow().getWebWindow().getTopWindow(), request);
 
             // A "get" works over the entire page
-            setCurrentWindow(getCurrentWindow().getTopWindow());
+            setCurrentWindow(getCurrentWindow().getWebWindow().getTopWindow());
         } catch (UnknownHostException e) {
-            getCurrentWindow().getTopWindow().setEnclosedPage(new UnexpectedPage(
-                    new StringWebResponse("Unknown host", fullUrl), getCurrentWindow().getTopWindow()));
+            final WebWindow currentTopWebWindow = getCurrentWindow().getWebWindow().getTopWindow();
+            final UnexpectedPage unexpectedPage = new UnexpectedPage(new StringWebResponse("Unknown host", fullUrl), currentTopWebWindow);
+            currentTopWebWindow.setEnclosedPage(unexpectedPage);
         } catch (ConnectException e) {
             // This might be expected
         } catch (SocketTimeoutException e) {
@@ -616,7 +651,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     @Override
     public String getCurrentUrl() {
         getWebClient(); // check that session is active
-        Page page = getCurrentWindow().getTopWindow().getEnclosedPage();
+        Page page = getCurrentWindow().getWebWindow().getTopWindow().getEnclosedPage();
         if (page == null) {
             return null;
         }
@@ -630,12 +665,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     @Override
     public String getTitle() {
         alert.ensureUnlocked();
-        Page page = getWindowManager().lastPage();
+        Page page = getCurrentWindow().lastPage();
         if (!(page instanceof HtmlPage)) {
             return null; // no page so there is no title
         }
-        if (getCurrentWindow() instanceof FrameWindow) {
-            page = getCurrentWindow().getTopWindow().getEnclosedPage();
+        if (getCurrentWindow().getWebWindow() instanceof FrameWindow) {
+            page = getCurrentWindow().getWebWindow().getTopWindow().getEnclosedPage();
         }
 
         return ((HtmlPage) page).getTitleText();
@@ -693,7 +728,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public String getPageSource() {
-        Page page = windowManager.lastPage();
+        Page page = getCurrentWindow().lastPage();
         if (page == null) {
             return null;
         }
@@ -712,7 +747,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             // closing the last window is equivalent to quit
             quit();
         } else {
-            WebWindow thisWindow = getCurrentWindow(); // check that the current window is active
+            WebWindow thisWindow = getCurrentWindow().getWebWindow(); // check that the current window is active
             if (thisWindow != null) {
                 alert.close();
                 ((TopLevelWindow) thisWindow.getTopWindow()).close();
@@ -745,7 +780,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public String getWindowHandle() {
-        WebWindow topWindow = getCurrentWindow().getTopWindow();
+        WebWindow topWindow = getCurrentWindow().getWebWindow().getTopWindow();
         if (topWindow.isClosed()) {
             throw new NoSuchWindowException("Window is closed");
         }
@@ -763,7 +798,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         Object[] parameters = convertScriptArgs(page, args);
 
         try {
-            result = page.executeJavaScriptFunction(function, getCurrentWindow().getScriptableObject(), parameters,
+            result = page.executeJavaScriptFunction(function, getCurrentWindow().getWebWindow().getScriptableObject(), parameters,
                     page.getDocumentElement());
 
             return parseNativeJavascriptResult(result);
@@ -812,7 +847,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             throw new UnsupportedOperationException("Javascript is not enabled for this HtmlUnitDriver instance");
         }
 
-        final Page lastPage = windowManager.lastPage();
+        final Page lastPage = getCurrentWindow().lastPage();
         if (!(lastPage instanceof HtmlPage)) {
             throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
         } else if (!gotPage) {
@@ -876,7 +911,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     protected void assertElementNotStale(DomElement element) {
         SgmlPage elementPage = element.getPage();
-        Page lastPage = windowManager.lastPage();
+        Page lastPage = getCurrentWindow().lastPage();
 
         if (!lastPage.equals(elementPage)) {
             throw new StaleElementReferenceException(
@@ -973,6 +1008,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             final HTMLCollection array = (HTMLCollection) value;
 
             JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+
                 @Override
                 public int getLength() {
                     return array.getLength();
@@ -988,6 +1024,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         if (value instanceof IdScriptableObject && value.getClass().getSimpleName().equals("NativeDate")) {
+
             long l = ((Number) getPrivateField(value, "date")).longValue();
             return Instant.ofEpochMilli(l).toString();
         }
@@ -1121,12 +1158,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return webClient;
     }
 
-    protected WebWindow getCurrentWindow() {
-        WebWindow currentWindow = getWebClient().getCurrentWindow();
-        if (currentWindow == null || currentWindow.isClosed()) {
+    protected HtmlUnitWindow getCurrentWindow() {
+        if (currentWindow == null || currentWindow.getWebWindow().isClosed()) {
             throw new NoSuchWindowException("Window is closed");
-        }
-        return currentWindow;
+          }
+          return currentWindow;
     }
 
     private class HtmlUnitNavigation implements Navigation {
@@ -1135,7 +1171,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         public void back() {
             runAsync(() -> {
                 try {
-                    getCurrentWindow().getHistory().back();
+                    getCurrentWindow().getWebWindow().getHistory().back();
                 } catch (IOException e) {
                     throw new WebDriverException(e);
                 }
@@ -1146,7 +1182,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         public void forward() {
             runAsync(() -> {
                 try {
-                    getCurrentWindow().getHistory().forward();
+                    getCurrentWindow().getWebWindow().getHistory().forward();
                 } catch (IOException e) {
                     throw new WebDriverException(e);
                 }
@@ -1165,10 +1201,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         @Override
         public void refresh() {
-            if (windowManager.lastPage() instanceof HtmlPage) {
+            if (getCurrentWindow().lastPage() instanceof HtmlPage) {
                 runAsync(() -> {
                     try {
-                        ((HtmlPage) windowManager.lastPage()).refresh();
+                        ((HtmlPage) getCurrentWindow().lastPage()).refresh();
                     } catch (SocketTimeoutException e) {
                         throw new TimeoutException(e);
                     } catch (IOException e) {
@@ -1228,16 +1264,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     public void perform(Collection<Sequence> sequences) {
         // https://www.w3.org/TR/webdriver/#perform-actions
 
-        // Let input state be the result of get the input state with current session and current top-level browsing context.
+        // Let input state be the result of get the input state with current session and
+        // current top-level browsing context.
 
-        // Let actions by tick be the result of trying to extract an action sequence given input state, and parameters.
+        // Let actions by tick be the result of trying to extract an action sequence
+        // given input state, and parameters.
         List<List<Action>> actionsByTick = Algorithms.extractActionSequence(sequences);
 
-        // If the current browsing context is no longer open, return error with error code no such window.
+        // If the current browsing context is no longer open, return error with error
+        // code no such window.
 
         // Handle any user prompts. If this results in an error, return that error.
 
-        // Dispatch actions given input state, actions by tick, and current browsing context.
+        // Dispatch actions given input state, actions by tick, and current browsing
+        // context.
         // If this results in an error return that error.
         Algorithms.dispatchActions(/* inputState_, */ actionsByTick, inputProcessor);
 
@@ -1247,5 +1287,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     @Override
     public void resetInputState() {
         inputProcessor = new HtmlUnitInputProcessor(this);
+    }
+
+    protected void switchToDefaultContentOfWindow(WebWindow window) {
+        Page page = window.getEnclosedPage();
+        if (page instanceof HtmlPage) {
+            setCurrentWindow(page.getEnclosingWindow());
+        }
     }
 }

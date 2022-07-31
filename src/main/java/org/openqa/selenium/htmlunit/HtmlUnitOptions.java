@@ -42,26 +42,24 @@ import com.google.common.collect.Sets;
  * Manages driver options
  */
 public class HtmlUnitOptions implements WebDriver.Options {
-    private final HtmlUnitLogs logs;
-    private final HtmlUnitDriver driver;
-    private final HtmlUnitTimeouts timeouts;
-    private final HtmlUnitWindow window;
+    private final HtmlUnitLogs logs_;
+    private final HtmlUnitDriver driver_;
+    private final HtmlUnitTimeouts timeouts_;
 
     public HtmlUnitOptions(HtmlUnitDriver driver) {
-        this.driver = driver;
-        this.logs = new HtmlUnitLogs(getWebClient());
-        this.timeouts = new HtmlUnitTimeouts(getWebClient());
-        this.window = driver.getWindowManager();
+        driver_ = driver;
+        logs_ = new HtmlUnitLogs(getWebClient());
+        timeouts_ = new HtmlUnitTimeouts(getWebClient());
     }
 
     @Override
     public Logs logs() {
-        return logs;
+        return logs_;
     }
 
     @Override
     public void addCookie(Cookie cookie) {
-        Page page = window.lastPage();
+        Page page = window().lastPage();
         if (!(page instanceof HtmlPage)) {
             throw new UnableToSetCookieException("You may not set cookies on a page that is not HTML");
         }
@@ -187,12 +185,12 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     private WebClient getWebClient() {
-        return driver.getWebClient();
+        return driver_.getWebClient();
     }
 
     @Override
     public WebDriver.Timeouts timeouts() {
-        return timeouts;
+        return timeouts_;
     }
 
     @Override
@@ -201,12 +199,12 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public WebDriver.Window window() {
-        return window;
+    public HtmlUnitWindow window() {
+        return driver_.getCurrentWindow();
     }
 
     private URL getRawUrl() {
-        return Optional.ofNullable(window.lastPage())
+        return Optional.ofNullable(window().lastPage())
                 .map(Page::getUrl)
                 .orElse(null);
     }

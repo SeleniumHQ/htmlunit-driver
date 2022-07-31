@@ -18,13 +18,10 @@
 package org.openqa.selenium.htmlunit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.openqa.selenium.htmlunit.w3.Action;
 import org.openqa.selenium.interactions.Coordinates;
-import org.openqa.selenium.interactions.Sequence;
 
 import com.gargoylesoftware.htmlunit.html.DomElement;
 

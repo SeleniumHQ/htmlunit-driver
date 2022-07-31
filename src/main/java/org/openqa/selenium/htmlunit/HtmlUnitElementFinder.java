@@ -537,7 +537,7 @@ public class HtmlUnitElementFinder {
         }
 
         protected SgmlPage getLastPage(final HtmlUnitDriver driver) {
-            Page lastPage = driver.getWindowManager().lastPage();
+            Page lastPage = driver.getCurrentWindow().lastPage();
             if (!(lastPage instanceof SgmlPage)) {
                 throw new IllegalStateException("Current page is not a SgmlPage");
             }

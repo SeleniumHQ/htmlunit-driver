@@ -22,67 +22,30 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 
 import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.WebWindowEvent;
-import com.gargoylesoftware.htmlunit.WebWindowListener;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class HtmlUnitWindow implements WebDriver.Window {
 
     private final int SCROLLBAR_WIDTH = 8;
     private final int HEADER_HEIGHT = 150;
-    private final HtmlUnitDriver driver;
-    private final Dimension initialWindowDimension;
-    private Point windowPosition = getBasePoint();
 
-    public HtmlUnitWindow(HtmlUnitDriver driver) {
-        this.driver = driver;
-        this.initialWindowDimension = new Dimension(driver.getCurrentWindow().getOuterWidth(), driver.getCurrentWindow().getOuterHeight());
-        initWindow();
+    private final WebWindow webWindow_;
+    private final Dimension initialWindowDimension_;
+    private Point windowPosition_ = getBasePoint();
+
+    public HtmlUnitWindow(WebWindow webWindow) {
+        webWindow_ = webWindow;
+        windowPosition_ = getBasePoint();
+        initialWindowDimension_ = new Dimension(webWindow_.getOuterWidth(), webWindow_.getOuterHeight());
     }
 
-    private void initWindow() {
-        getWebClient().addWebWindowListener(new WebWindowListener() {
-            @Override
-            public void webWindowOpened(WebWindowEvent webWindowEvent) {
-                // Ignore
-            }
-
-            @Override
-            public void webWindowContentChanged(WebWindowEvent event) {
-                driver.getElementsMap().remove(event.getOldPage());
-                WebWindow current = driver.getCurrentWindow();
-
-                if (current == event.getWebWindow()) {
-                    switchToDefaultContentOfWindow(current);
-                }
-            }
-
-            @Override
-            public void webWindowClosed(WebWindowEvent event) {
-                driver.getElementsMap().remove(event.getOldPage());
-
-                WebWindow current = getWebClient().getCurrentWindow();
-                do {
-                    // Instance equality is okay in this case
-                    if (current == event.getWebWindow()) {
-                        getWebClient().setCurrentWindow(current.getTopWindow());
-                        return;
-                    }
-                    current = current.getParentWindow();
-                } while (current != getWebClient().getCurrentWindow().getTopWindow());
-            }
-        });
-    }
-
-    private WebClient getWebClient() {
-        return driver.getWebClient();
+    public WebWindow getWebWindow() {
+        return webWindow_;
     }
 
     @Override
     public void setSize(Dimension targetSize) {
-        WebWindow topWindow = driver.getCurrentWindow().getTopWindow();
+        WebWindow topWindow = webWindow_.getTopWindow();
 
         int width = targetSize.getWidth();
         if (width < SCROLLBAR_WIDTH) width = SCROLLBAR_WIDTH;
@@ -97,23 +60,23 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
     @Override
     public void setPosition(Point targetPosition) {
-        this.windowPosition = targetPosition;
+        this.windowPosition_ = targetPosition;
     }
 
     @Override
     public Dimension getSize() {
-        WebWindow topWindow = driver.getCurrentWindow().getTopWindow();
+        WebWindow topWindow = webWindow_.getTopWindow();
         return new Dimension(topWindow.getOuterWidth(), topWindow.getOuterHeight());
     }
 
     @Override
     public Point getPosition() {
-        return windowPosition;
+        return windowPosition_;
     }
 
     @Override
     public void maximize() {
-        setSize(initialWindowDimension);
+        setSize(initialWindowDimension_);
         setPosition(getBasePoint());
     }
 
@@ -128,14 +91,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
     }
 
     public Page lastPage() {
-        return driver.getCurrentWindow().getEnclosedPage();
-    }
-
-    protected void switchToDefaultContentOfWindow(WebWindow window) {
-        Page page = window.getEnclosedPage();
-        if (page instanceof HtmlPage) {
-            driver.setCurrentWindow(window);
-        }
+        return webWindow_.getEnclosedPage();
     }
 
     private Point getBasePoint() {
