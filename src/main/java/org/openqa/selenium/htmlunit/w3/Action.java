@@ -31,7 +31,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
  * with property id set to id, type set to type and subtype set to subtype.
  * Specific action objects have further properties added by other algorithms in this specification.
  *
- * {@link https://www.w3.org/TR/webdriver/#dfn-action-object}
+ * @see <a href="https://www.w3.org/TR/webdriver/#dfn-action-object">action object</a>
  * @author Ronald Brill
  */
 public class Action {

@@ -20,7 +20,6 @@ package org.openqa.selenium.htmlunit.w3;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,9 @@ public class Algorithms {
     private Algorithms() {
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-extract-an-action-sequence
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-extract-an-action-sequence">extract an action sequence</a>
+     */
     public static List<List<Action>> extractActionSequence(Collection<Sequence> sequences /* InputState inputState, paramters */) {
 
         // Let actions by tick be an empty List.
@@ -52,7 +53,6 @@ public class Algorithms {
         // actions:
         for (final Sequence sequence : sequences) {
             Map<String, Object> actionSequence = sequence.encode();
-            System.out.println("actionSequence: " + actionSequence);
 
             // Let source actions be the result of trying to process an input source action
             // sequence given input state and action sequence.
@@ -78,8 +78,10 @@ public class Algorithms {
         return actionsByTick;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-an-input-source-action-sequence
-    public static ArrayList<Action> processInputSourceActionSequence(Map<String, Object> actionSequence) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-an-input-source-action-sequence">process an input source action sequence</a>
+     */
+    private static ArrayList<Action> processInputSourceActionSequence(Map<String, Object> actionSequence) {
         // Let type be the result of getting a property named "type" from action
         // sequence.
         String type = actionSequence.get("type").toString();
@@ -147,8 +149,10 @@ public class Algorithms {
         return actions;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-pointer-parameters
-    public static Map<String, Object> processPointerParameters(Map<String, Object> parametersData) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-pointer-parameters">process pointer parameters</a>
+     */
+    private static Map<String, Object> processPointerParameters(Map<String, Object> parametersData) {
         // Let parameters be the default pointer parameters.
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("pointerType", "mouse");
@@ -175,8 +179,10 @@ public class Algorithms {
         return parameters;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-null-action
-    public static Action processNullAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-null-action">process a null action</a>
+     */
+    private static Action processNullAction(String id, Map<String, Object> actionItem) {
         // Let subtype be the result of getting a property named "type" from action item.
         String subtype = actionItem.get("type").toString();
 
@@ -192,8 +198,10 @@ public class Algorithms {
         return result;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-key-action
-    public static Action processKeyAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-key-action">process a key action</a>
+     */
+    private static Action processKeyAction(String id, Map<String, Object> actionItem) {
         // Let subtype be the result of getting a property named "type" from action item.
         String subtype = actionItem.get("type").toString();
 
@@ -222,8 +230,10 @@ public class Algorithms {
         return action;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-action
-    public static Action processPointerAction(String id, Map<String, Object> parameters, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-action">process a pointer action</a>
+     */
+    private static Action processPointerAction(String id, Map<String, Object> parameters, Map<String, Object> actionItem) {
         // Let subtype be the result of getting a property named "type" from action item.
         String subtype = actionItem.get("type").toString();
 
@@ -269,28 +279,38 @@ public class Algorithms {
         return action;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-wheel-action
-    public static Action processWheelAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-wheel-action">process a wheel action</a>
+     */
+    private static Action processWheelAction(String id, Map<String, Object> actionItem) {
         return null;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-up-or-pointer-down-action
-    public static Action processPointerUpOrPointerDownAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-up-or-pointer-down-action">process a pointer up or pointer down action</a>
+     */
+    private static Action processPointerUpOrPointerDownAction(String id, Map<String, Object> actionItem) {
         return null;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-move-action
-    public static Action processPointerMoveAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-move-action">process a pointer move action</a>
+     */
+    private static Action processPointerMoveAction(String id, Map<String, Object> actionItem) {
         return null;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action
-    public static Action processPointerCancelAction(String id, Map<String, Object> actionItem) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action">process a pointer cancel action</a>
+     */
+    private static Action processPointerCancelAction(String id, Map<String, Object> actionItem) {
         return null;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-process-a-pause-action
-    public static Action processPauseAction(Map<String, Object> actionItem, Action action) {
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pause-action">process a pause action</a>
+     */
+    private static Action processPauseAction(Map<String, Object> actionItem, Action action) {
         // Let duration be the result of getting the property "duration" from action item.
         Object duration = actionItem.get("duration");
 
@@ -316,7 +336,9 @@ public class Algorithms {
         return action;
     }
 
-    // https://www.w3.org/TR/webdriver/#dfn-dispatch-actions
+    /**
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-dispatch-actions">dispatch actions</a>
+     */
     public static void dispatchActions(List<List<Action>> actionsByTick, HtmlUnitInputProcessor inputProcessor) {
         //        Let token be a new unique identifier.
         //        Enqueue token in session's actions queue.

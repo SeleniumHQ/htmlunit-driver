@@ -31,7 +31,7 @@ import java.util.Map;
  *    stack trace report of the active stack frames at the time when the error occurred.
  * Optionally "data", which is a JSON Object with additional error data helpful in diagnosing the error.
  *
- * {@link https://www.w3.org/TR/webdriver/#errors}
+ * @see <a href="https://www.w3.org/TR/webdriver/#errors">Errors</a>
  *
  * @author Ronald Brill
  */

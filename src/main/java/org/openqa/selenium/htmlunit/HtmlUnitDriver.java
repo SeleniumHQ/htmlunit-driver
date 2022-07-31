@@ -1232,7 +1232,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         // Let actions by tick be the result of trying to extract an action sequence given input state, and parameters.
         List<List<Action>> actionsByTick = Algorithms.extractActionSequence(sequences);
-System.out.println(actionsByTick);
+
         // If the current browsing context is no longer open, return error with error code no such window.
 
         // Handle any user prompts. If this results in an error, return that error.
