@@ -17,13 +17,18 @@
 
 package org.openqa.selenium.htmlunit.html;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.interactions.Actions;
 
 /**
  * Test for window handling.
@@ -69,5 +74,135 @@ public class WindowsTest extends WebDriverTestCase {
         assertEquals(1, windowHandles.size());
 
         assertTrue(windowHandles.contains(windowHandle));
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void newWindowFromLinkWithTarget() throws Exception {
+        final String html =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "<a id='a' target='_blank' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "</body></html>\n";
+
+        final String secondHtml = "<html>\n"
+                + "<head><title>Second</title></head>\n"
+                + "<body></body></html>\n";
+        getMockWebConnection().setResponse(URL_SECOND, secondHtml);
+
+        final WebDriver driver = loadPage2(html);
+
+        assertEquals("First", driver.getTitle());
+
+        String windowHandle = driver.getWindowHandle();
+        assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.findElement(By.id("a")).click();
+        Thread.sleep(100);
+
+        assertEquals("First", driver.getTitle());
+
+        String windowHandleAfterClick = driver.getWindowHandle();
+        assertEquals(windowHandle, windowHandleAfterClick);
+
+        windowHandles = driver.getWindowHandles();
+        assertEquals(2, windowHandles.size());
+
+        assertTrue(windowHandles.contains(windowHandle));
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    // shift click seems not working with real IE
+    public void newWindowFromShiftClick() throws Exception {
+        final String html =
+                "<html>\n"
+                + "<head><title>foo</title></head>\n"
+                + "<body>\n"
+                + "<a id='a' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "</body></html>\n";
+
+        final String secondHtml = "<html>\n"
+                + "<head><title>Second</title></head>\n"
+                + "<body></body></html>\n";
+        getMockWebConnection().setResponse(URL_SECOND, secondHtml);
+
+        final WebDriver driver = loadPage2(html);
+
+        assertEquals("foo", driver.getTitle());
+
+        String windowHandle = driver.getWindowHandle();
+        assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        final WebElement link = driver.findElement(By.id("a"));
+        new Actions(driver)
+            .moveToElement(link)
+            .keyDown(Keys.SHIFT)
+            .click()
+            .keyUp(Keys.SHIFT)
+            .perform();
+        Thread.sleep(100);
+
+        assertEquals("foo", driver.getTitle());
+
+        String windowHandleAfterClick = driver.getWindowHandle();
+        assertEquals(windowHandle, windowHandleAfterClick);
+
+        windowHandles = driver.getWindowHandles();
+        assertEquals(2, windowHandles.size());
+
+        assertTrue(windowHandles.contains(windowHandle));
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void switchWindow() throws Exception {
+        final String html =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "<a id='a' target='_blank' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "</body></html>\n";
+
+        final String secondHtml = "<html>\n"
+                + "<head><title>Second</title></head>\n"
+                + "<body></body></html>\n";
+        getMockWebConnection().setResponse(URL_SECOND, secondHtml);
+
+        final WebDriver driver = loadPage2(html);
+
+        assertEquals("First", driver.getTitle());
+
+        String windowHandle = driver.getWindowHandle();
+        assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.findElement(By.id("a")).click();
+        Thread.sleep(100);
+
+        assertEquals("First", driver.getTitle());
+
+        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        assertEquals(2, windowHandles.size());
+
+        windowHandles.remove(windowHandle);
+        driver.switchTo().window(windowHandles.iterator().next());
+
+        assertEquals("Second", driver.getTitle());
     }
 }
