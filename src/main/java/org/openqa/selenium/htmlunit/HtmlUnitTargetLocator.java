@@ -82,9 +82,12 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
             }
         }
 
-        // Next, check for a frame with a matching ID. For simplicity, assume the ID is unique.
-        // Users can still switch to frames with non-unique IDs using a WebElement switch:
-        // WebElement frameElement = driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
+        // Next, check for a frame with a matching ID. For simplicity, assume the ID is
+        // unique.
+        // Users can still switch to frames with non-unique IDs using a WebElement
+        // switch:
+        // WebElement frameElement =
+        // driver.findElement(By.xpath("//frame[@id=\"foo\"]"));
         // driver.switchTo().frame(frameElement);
         try {
             HtmlUnitWebElement element = (HtmlUnitWebElement) driver.findElement(By.id(nameOrId));
@@ -160,8 +163,8 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         if (page instanceof HtmlPage) {
             DomElement element = ((HtmlPage) page).getFocusedElement();
             if (element == null || element instanceof HtmlHtml) {
-                List<? extends HtmlElement> allBodies =
-                        ((HtmlPage) page).getDocumentElement().getElementsByTagName("body");
+                List<? extends HtmlElement> allBodies = ((HtmlPage) page).getDocumentElement()
+                        .getElementsByTagName("body");
                 if (!allBodies.isEmpty()) {
                     return driver.toWebElement(allBodies.get(0));
                 }
@@ -196,8 +199,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         final WebWindow alertWindow = alert.getWebWindow();
         final WebWindow currentWindow = driver.getCurrentWindow().getWebWindow();
 
-        if (alertWindow != currentWindow
-                && !isChild(currentWindow, alertWindow)
+        if (alertWindow != currentWindow && !isChild(currentWindow, alertWindow)
                 && !isChild(alertWindow, currentWindow)) {
             throw new TimeoutException();
         }

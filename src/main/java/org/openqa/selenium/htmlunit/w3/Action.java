@@ -27,11 +27,13 @@ import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerUpHtmlUnitActi
 import com.gargoylesoftware.htmlunit.html.DomElement;
 
 /**
- * An action object constructed with arguments id, type, and subtype is an object
- * with property id set to id, type set to type and subtype set to subtype.
- * Specific action objects have further properties added by other algorithms in this specification.
+ * An action object constructed with arguments id, type, and subtype is an
+ * object with property id set to id, type set to type and subtype set to
+ * subtype. Specific action objects have further properties added by other
+ * algorithms in this specification.
  *
- * @see <a href="https://www.w3.org/TR/webdriver/#dfn-action-object">action object</a>
+ * @see <a href="https://www.w3.org/TR/webdriver/#dfn-action-object">action
+ *      object</a>
  * @author Ronald Brill
  */
 public class Action {
@@ -50,7 +52,7 @@ public class Action {
     /**
      * Ctor.
      */
-    public Action(String id, String type, String subtype) {
+    public Action(final String id, final String type, final String subtype) {
         id_ = id;
         type_ = type;
         subtype_ = subtype;
@@ -60,7 +62,7 @@ public class Action {
         return duration_;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(final int duration) {
         duration_ = duration;
     }
 
@@ -68,7 +70,7 @@ public class Action {
         return value_;
     }
 
-    public void setValue(String value) {
+    public void setValue(final String value) {
         value_ = value;
     }
 
@@ -76,7 +78,7 @@ public class Action {
         return pointerType_;
     }
 
-    public void setPointerType(String pointerType) {
+    public void setPointerType(final String pointerType) {
         pointerType_ = pointerType;
     }
 
@@ -84,7 +86,7 @@ public class Action {
         return button_;
     }
 
-    public void setButton(int button) {
+    public void setButton(final int button) {
         button_ = button;
     }
 
@@ -92,7 +94,7 @@ public class Action {
         return domElement_;
     }
 
-    public void setDomElement(DomElement domElement) {
+    public void setDomElement(final DomElement domElement) {
         domElement_ = domElement;
     }
 
@@ -139,7 +141,7 @@ public class Action {
 
     @Override
     public String toString() {
-        String toString = "Action: id=" + id_+ " type=" + type_ + " subtype=" + subtype_;
+        String toString = "Action: id=" + id_ + " type=" + type_ + " subtype=" + subtype_;
         if (duration_ != null) {
             toString += " duration=" + duration_;
         }

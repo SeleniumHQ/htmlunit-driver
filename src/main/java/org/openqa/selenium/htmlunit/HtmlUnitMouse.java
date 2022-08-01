@@ -35,173 +35,172 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Ronald Brill
+ * @author Martin Bartoš
  */
 public class HtmlUnitMouse {
-  private final HtmlUnitDriver parent;
-  private final HtmlUnitKeyboard keyboard;
-  private DomElement currentActiveElement;
+    private final HtmlUnitDriver parent_;
+    private final HtmlUnitKeyboard keyboard_;
+    private DomElement currentActiveElement_;
 
-  public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
-    this.parent = parent;
-    this.keyboard = keyboard;
-  }
-
-  private DomElement getElementForOperation(Coordinates potentialCoordinates) {
-    if (potentialCoordinates != null) {
-      return (DomElement) potentialCoordinates.getAuxiliary();
+    public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
+        this.parent_ = parent;
+        this.keyboard_ = keyboard;
     }
 
-    if (currentActiveElement == null) {
-      throw new NoSuchElementException("About to perform an interaction that relies"
-          + " on the active element, but there isn't one.");
-    }
-
-    return currentActiveElement;
-  }
-
-  public void click(Coordinates elementCoordinates) {
-    DomElement element = getElementForOperation(elementCoordinates);
-    parent.click(element,false);
-  }
-
-  /**
-   * @param directClick {@code true} for {@link WebElement#click()}
-   * or {@code false} for {@link Actions#click()}
-   */
-  void click(DomElement element, boolean directClick) {
-    if (!element.isDisplayed()) {
-      throw new ElementNotInteractableException("You may only interact with visible elements");
-    }
-
-    moveOutIfNeeded(element);
-
-    try {
-      element.mouseOver();
-      element.mouseMove();
-
-      element.click(keyboard.isShiftPressed(),
-          keyboard.isCtrlPressed() || (directClick && element instanceof HtmlOption),
-          keyboard.isAltPressed());
-      updateActiveElement(element);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    } catch (ScriptException e) {
-      // TODO(simon): This isn't good enough.
-      System.out.println(e.getMessage());
-      // Press on regardless
-    } catch (RuntimeException e) {
-      Throwable cause = e.getCause();
-      if (cause instanceof SocketTimeoutException) {
-        throw new TimeoutException(cause);
-      }
-      throw e;
-    }
-  }
-
-  private void moveOutIfNeeded(DomElement element) {
-    try {
-      if ((currentActiveElement != element)) {
-        if (currentActiveElement != null) {
-          currentActiveElement.mouseOver(keyboard.isShiftPressed(),
-              keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
-
-          currentActiveElement.mouseOut(keyboard.isShiftPressed(),
-              keyboard.isCtrlPressed(), keyboard.isAltPressed(), MouseEvent.BUTTON_LEFT);
+    private DomElement getElementForOperation(Coordinates potentialCoordinates) {
+        if (potentialCoordinates != null) {
+            return (DomElement) potentialCoordinates.getAuxiliary();
         }
 
+        if (currentActiveElement_ == null) {
+            throw new NoSuchElementException(
+                    "About to perform an interaction that relies" + " on the active element, but there isn't one.");
+        }
+
+        return currentActiveElement_;
+    }
+
+    public void click(Coordinates elementCoordinates) {
+        DomElement element = getElementForOperation(elementCoordinates);
+        parent_.click(element, false);
+    }
+
+    /**
+     * @param directClick {@code true} for {@link WebElement#click()} or
+     *                    {@code false} for {@link Actions#click()}
+     */
+    void click(DomElement element, boolean directClick) {
+        if (!element.isDisplayed()) {
+            throw new ElementNotInteractableException("You may only interact with visible elements");
+        }
+
+        moveOutIfNeeded(element);
+
+        try {
+            element.mouseOver();
+            element.mouseMove();
+
+            element.click(keyboard_.isShiftPressed(),
+                    keyboard_.isCtrlPressed() || (directClick && element instanceof HtmlOption),
+                    keyboard_.isAltPressed());
+            updateActiveElement(element);
+        } catch (IOException e) {
+            throw new WebDriverException(e);
+        } catch (ScriptException e) {
+            // TODO(simon): This isn't good enough.
+            System.out.println(e.getMessage());
+            // Press on regardless
+        } catch (RuntimeException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof SocketTimeoutException) {
+                throw new TimeoutException(cause);
+            }
+            throw e;
+        }
+    }
+
+    private void moveOutIfNeeded(DomElement element) {
+        try {
+            if ((currentActiveElement_ != element)) {
+                if (currentActiveElement_ != null) {
+                    currentActiveElement_.mouseOver(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(),
+                            keyboard_.isAltPressed(), MouseEvent.BUTTON_LEFT);
+
+                    currentActiveElement_.mouseOut(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(),
+                            keyboard_.isAltPressed(), MouseEvent.BUTTON_LEFT);
+                }
+
+                if (element != null) {
+                    element.mouseMove(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
+                            MouseEvent.BUTTON_LEFT);
+                    element.mouseOver(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
+                            MouseEvent.BUTTON_LEFT);
+                }
+            }
+        } catch (ScriptException ignored) {
+            System.out.println(ignored.getMessage());
+        }
+    }
+
+    private void updateActiveElement(DomElement element) {
         if (element != null) {
-          element.mouseMove(keyboard.isShiftPressed(),
-              keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-              MouseEvent.BUTTON_LEFT);
-          element.mouseOver(keyboard.isShiftPressed(),
-              keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-              MouseEvent.BUTTON_LEFT);
+            currentActiveElement_ = element;
         }
-      }
-    } catch (ScriptException ignored) {
-      System.out.println(ignored.getMessage());
     }
-  }
 
-  private void updateActiveElement(DomElement element) {
-    if (element != null) {
-      currentActiveElement = element;
+    public void doubleClick(Coordinates elementCoordinates) {
+        DomElement element = getElementForOperation(elementCoordinates);
+        parent_.doubleClick(element);
     }
-  }
 
-  public void doubleClick(Coordinates elementCoordinates) {
-    DomElement element = getElementForOperation(elementCoordinates);
-    parent.doubleClick(element);
-  }
+    void doubleClick(DomElement element) {
 
-  void doubleClick(DomElement element) {
+        moveOutIfNeeded(element);
 
-    moveOutIfNeeded(element);
-
-    // Send the state of modifier keys to the dblClick method.
-    try {
-      element.dblClick(keyboard.isShiftPressed(),
-          keyboard.isCtrlPressed(), keyboard.isAltPressed());
-      updateActiveElement(element);
-    } catch (IOException e) {
-      // TODO(eran.mes): What should we do in case of error?
-      e.printStackTrace();
+        // Send the state of modifier keys to the dblClick method.
+        try {
+            element.dblClick(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed());
+            updateActiveElement(element);
+        } catch (IOException e) {
+            // TODO(eran.mes): What should we do in case of error?
+            e.printStackTrace();
+        }
     }
-  }
 
-  public void contextClick(Coordinates elementCoordinates) {
-    DomElement element = getElementForOperation(elementCoordinates);
+    public void contextClick(Coordinates elementCoordinates) {
+        DomElement element = getElementForOperation(elementCoordinates);
 
-    moveOutIfNeeded(element);
+        moveOutIfNeeded(element);
 
-    element.rightClick(keyboard.isShiftPressed(),
-        keyboard.isCtrlPressed(), keyboard.isAltPressed());
+        element.rightClick(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed());
 
-    updateActiveElement(element);
-  }
+        updateActiveElement(element);
+    }
 
-  public void mouseDown(Coordinates elementCoordinates) {
-    DomElement element = getElementForOperation(elementCoordinates);
-    parent.mouseDown(element);
-  }
+    public void mouseDown(Coordinates elementCoordinates) {
+        DomElement element = getElementForOperation(elementCoordinates);
+        parent_.mouseDown(element);
+    }
 
-  void mouseDown(DomElement element) {
-    moveOutIfNeeded(element);
+    void mouseDown(DomElement element) {
+        moveOutIfNeeded(element);
 
-    element.mouseDown(keyboard.isShiftPressed(),
-        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-        MouseEvent.BUTTON_LEFT);
+        element.mouseDown(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
+                MouseEvent.BUTTON_LEFT);
 
-    updateActiveElement(element);
-  }
+        updateActiveElement(element);
+    }
 
-  public void mouseUp(Coordinates elementCoordinates) {
-    DomElement element = getElementForOperation(elementCoordinates);
-    parent.mouseUp(element);
-  }
+    public void mouseUp(Coordinates elementCoordinates) {
+        DomElement element = getElementForOperation(elementCoordinates);
+        parent_.mouseUp(element);
+    }
 
-  void mouseUp(DomElement element) {
-    moveOutIfNeeded(element);
+    void mouseUp(DomElement element) {
+        moveOutIfNeeded(element);
 
-    element.mouseUp(keyboard.isShiftPressed(),
-        keyboard.isCtrlPressed(), keyboard.isAltPressed(),
-        MouseEvent.BUTTON_LEFT);
+        element.mouseUp(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
+                MouseEvent.BUTTON_LEFT);
 
-    updateActiveElement(element);
-  }
+        updateActiveElement(element);
+    }
 
-  public void mouseMove(Coordinates elementCoordinates) {
-    DomElement element = (DomElement) elementCoordinates.getAuxiliary();
-    parent.mouseMove(element);
-  }
+    public void mouseMove(Coordinates elementCoordinates) {
+        DomElement element = (DomElement) elementCoordinates.getAuxiliary();
+        parent_.mouseMove(element);
+    }
 
-  void mouseMove(DomElement element) {
-    moveOutIfNeeded(element);
+    void mouseMove(DomElement element) {
+        moveOutIfNeeded(element);
 
-    updateActiveElement(element);
-  }
+        updateActiveElement(element);
+    }
 
-  public void mouseMove(Coordinates where, long xOffset, long yOffset) {
-    throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
-  }
+    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
+        throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
+    }
 }

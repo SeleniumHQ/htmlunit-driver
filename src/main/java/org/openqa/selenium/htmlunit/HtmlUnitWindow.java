@@ -33,7 +33,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
     private final Dimension initialWindowDimension_;
     private Point windowPosition_ = getBasePoint();
 
-    public HtmlUnitWindow(WebWindow webWindow) {
+    public HtmlUnitWindow(final WebWindow webWindow) {
         webWindow_ = webWindow;
         windowPosition_ = getBasePoint();
         initialWindowDimension_ = new Dimension(webWindow_.getOuterWidth(), webWindow_.getOuterHeight());
@@ -44,28 +44,32 @@ public class HtmlUnitWindow implements WebDriver.Window {
     }
 
     @Override
-    public void setSize(Dimension targetSize) {
-        WebWindow topWindow = webWindow_.getTopWindow();
+    public void setSize(final Dimension targetSize) {
+        final WebWindow topWindow = webWindow_.getTopWindow();
 
         int width = targetSize.getWidth();
-        if (width < SCROLLBAR_WIDTH) width = SCROLLBAR_WIDTH;
+        if (width < SCROLLBAR_WIDTH) {
+            width = SCROLLBAR_WIDTH;
+        }
         topWindow.setOuterWidth(width);
         topWindow.setInnerWidth(width - SCROLLBAR_WIDTH);
 
         int height = targetSize.getHeight();
-        if (height < HEADER_HEIGHT) height = HEADER_HEIGHT;
+        if (height < HEADER_HEIGHT) {
+            height = HEADER_HEIGHT;
+        }
         topWindow.setOuterHeight(height);
         topWindow.setInnerHeight(height - HEADER_HEIGHT);
     }
 
     @Override
-    public void setPosition(Point targetPosition) {
-        this.windowPosition_ = targetPosition;
+    public void setPosition(final Point targetPosition) {
+        windowPosition_ = targetPosition;
     }
 
     @Override
     public Dimension getSize() {
-        WebWindow topWindow = webWindow_.getTopWindow();
+        final WebWindow topWindow = webWindow_.getTopWindow();
         return new Dimension(topWindow.getOuterWidth(), topWindow.getOuterHeight());
     }
 

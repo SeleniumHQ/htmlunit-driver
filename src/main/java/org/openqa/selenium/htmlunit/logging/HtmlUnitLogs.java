@@ -32,24 +32,24 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebConsole.Logger;
 
 /**
- * An implementation of the {@link Logs} interface for HtmlUnit.
- * At the moment this is empty.
+ * An implementation of the {@link Logs} interface for HtmlUnit. At the moment
+ * this is empty.
  */
 public class HtmlUnitLogs implements Logs {
-    final HtmlUnitDriverLogger logger;
+    private final HtmlUnitDriverLogger logger_;
 
-    public HtmlUnitLogs(WebClient webClient) {
-        logger = new HtmlUnitDriverLogger();
-        webClient.getWebConsole().setLogger(logger);
+    public HtmlUnitLogs(final WebClient webClient) {
+        logger_ = new HtmlUnitDriverLogger();
+        webClient.getWebConsole().setLogger(logger_);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public LogEntries get(String logType) {
+    public LogEntries get(final String logType) {
         if (logType == LogType.BROWSER) {
-            return new LogEntries(logger.getContentAndFlush());
+            return new LogEntries(logger_.getContentAndFlush());
         }
 
         return new LogEntries(Collections.emptyList());
@@ -66,38 +66,38 @@ public class HtmlUnitLogs implements Logs {
     private static class HtmlUnitDriverLogger implements Logger {
         private static final int BUFFER_SIZE = 1000;
 
-        private LogEntry[] buffer = new LogEntry[BUFFER_SIZE];
-        private int insertPos = 0;
-        private boolean isFull = false;
+        private LogEntry[] buffer_ = new LogEntry[BUFFER_SIZE];
+        private int insertPos_ = 0;
+        private boolean isFull_ = false;
 
-        private void append(LogEntry entry) {
-            buffer[insertPos] = entry;
-            insertPos++;
-            if (insertPos == BUFFER_SIZE) {
-                insertPos = 0;
-                isFull = true;
+        private void append(final LogEntry entry) {
+            buffer_[insertPos_] = entry;
+            insertPos_++;
+            if (insertPos_ == BUFFER_SIZE) {
+                insertPos_ = 0;
+                isFull_ = true;
             }
         }
 
         private List<LogEntry> getContentAndFlush() {
-            List<LogEntry> result;
-            if (isFull) {
+            final List<LogEntry> result;
+            if (isFull_) {
                 result = new ArrayList<>(BUFFER_SIZE);
-                int i = insertPos;
-                for (; i < BUFFER_SIZE; i++) {
-                    result.add(buffer[i]);
+                int i = insertPos_;
+                for ( ; i < BUFFER_SIZE; i++) {
+                    result.add(buffer_[i]);
                 }
             }
             else {
-                result = new ArrayList<>(insertPos);
+                result = new ArrayList<>(insertPos_);
             }
 
-            for (int i = 0; i < insertPos; i++) {
-                result.add(buffer[i]);
+            for (int i = 0; i < insertPos_; i++) {
+                result.add(buffer_[i]);
             }
 
-            insertPos = 0;
-            isFull = false;
+            insertPos_ = 0;
+            isFull_ = false;
 
             return result;
         }

@@ -48,14 +48,14 @@ public class HtmlUnitElementFinder {
     private final Map<Class<? extends By>, HtmlUnitElementLocator> finders = new HashMap<>();
 
     HtmlUnitElementFinder() {
-      finders.put(By.id("a").getClass(), new FindByID());
-      finders.put(By.name("a").getClass(), new FindByName());
-      finders.put(By.linkText("a").getClass(), new FindByLinkText());
-      finders.put(By.partialLinkText("a").getClass(), new FindByPartialLinkText());
-      finders.put(By.className("a").getClass(), new FindByClassName());
-      finders.put(By.cssSelector("a").getClass(), new FindByCssSelector());
-      finders.put(By.tagName("a").getClass(), new FindByTagName());
-      finders.put(By.xpath("//a").getClass(), new FindByXPath());
+        finders.put(By.id("a").getClass(), new FindByID());
+        finders.put(By.name("a").getClass(), new FindByName());
+        finders.put(By.linkText("a").getClass(), new FindByLinkText());
+        finders.put(By.partialLinkText("a").getClass(), new FindByPartialLinkText());
+        finders.put(By.className("a").getClass(), new FindByClassName());
+        finders.put(By.cssSelector("a").getClass(), new FindByCssSelector());
+        finders.put(By.tagName("a").getClass(), new FindByTagName());
+        finders.put(By.xpath("//a").getClass(), new FindByXPath());
     }
 
     public WebElement findElement(HtmlUnitDriver driver, By locator) {
@@ -184,9 +184,9 @@ public class HtmlUnitElementFinder {
 
             List<WebElement> toReturn = new ArrayList<>();
             for (DomElement e : htmlElements) {
-              if (expectedText.equals(e.asNormalizedText())) {
-                toReturn.add(element.getDriver().toWebElement(e));
-              }
+                if (expectedText.equals(e.asNormalizedText())) {
+                    toReturn.add(element.getDriver().toWebElement(e));
+                }
             }
             return toReturn;
         }
@@ -405,9 +405,7 @@ public class HtmlUnitElementFinder {
                 node = lastPage.getFirstByXPath(value);
             } catch (Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
-                throw new InvalidSelectorException(
-                        String.format(INVALIDXPATHERROR, value),
-                        ex);
+                throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, value), ex);
             }
 
             if (node == null) {
@@ -441,7 +439,8 @@ public class HtmlUnitElementFinder {
 
             List<WebElement> toReturn = new ArrayList<>(nodes.size());
             for (Object node : nodes) {
-                // There exist elements in the nodes list which could not be converted to WebElements.
+                // There exist elements in the nodes list which could not be converted to
+                // WebElements.
                 // A valid xpath selector should only select WebElements.
                 if (!(node instanceof DomElement)) {
                     // We only want to know the type of one invalid element so that we can give this
@@ -462,8 +461,7 @@ public class HtmlUnitElementFinder {
                 node = element.getElement().getFirstByXPath(value);
             } catch (Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
-                throw new InvalidSelectorException(
-                        String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
+                throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
             }
 
             if (node == null) {
@@ -472,7 +470,8 @@ public class HtmlUnitElementFinder {
             if (node instanceof HtmlElement) {
                 return element.getDriver().toWebElement((HtmlElement) node);
             }
-            // The xpath selector selected something different than a WebElement. The selector is therefore
+            // The xpath selector selected something different than a WebElement. The
+            // selector is therefore
             // invalid
             throw new InvalidSelectorException(
                     String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, value, node.getClass().toString()));
@@ -488,19 +487,18 @@ public class HtmlUnitElementFinder {
                 domElements = element.getElement().getByXPath(value);
             } catch (Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
-                throw new InvalidSelectorException(
-                        String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
+                throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
             }
 
             for (Object e : domElements) {
                 if (e instanceof DomElement) {
                     toReturn.add(element.getDriver().toWebElement((DomElement) e));
                 } else {
-                    // The xpath selector selected something different than a WebElement. The selector is
+                    // The xpath selector selected something different than a WebElement. The
+                    // selector is
                     // therefore invalid
                     throw new InvalidSelectorException(
-                            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR,
-                                    value, e.getClass().toString()));
+                            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, value, e.getClass().toString()));
                 }
             }
             return toReturn;

@@ -67,10 +67,8 @@ public class HtmlUnitOptions implements WebDriver.Options {
         String domain = getDomainForCookie();
         verifyDomain(cookie, domain);
 
-        getWebClient().getCookieManager().addCookie(
-                new com.gargoylesoftware.htmlunit.util.Cookie(domain, cookie.getName(),
-                        cookie.getValue(),
-                        cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
+        getWebClient().getCookieManager().addCookie(new com.gargoylesoftware.htmlunit.util.Cookie(domain,
+                cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
     }
 
     private void verifyDomain(Cookie cookie, String expectedDomain) {
@@ -80,8 +78,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
         }
 
         if ("".equals(domain)) {
-            throw new InvalidCookieDomainException(
-                    "Domain must not be an empty string. Consider using null instead");
+            throw new InvalidCookieDomainException("Domain must not be an empty string. Consider using null instead");
         }
 
         // Line-noise-tastic
@@ -94,8 +91,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
 
         if (!expectedDomain.endsWith(domain)) {
             throw new InvalidCookieDomainException(
-                    String.format(
-                            "You may only add cookies that would be visible to the current domain: %s => %s",
+                    String.format("You may only add cookies that would be visible to the current domain: %s => %s",
                             domain, expectedDomain));
         }
     }
@@ -153,31 +149,18 @@ public class HtmlUnitOptions implements WebDriver.Options {
             return Sets.newHashSet();
         }
 
-        return ImmutableSet.copyOf(Collections2.transform(
-                getWebClient().getCookies(url),
+        return ImmutableSet.copyOf(Collections2.transform(getWebClient().getCookies(url),
                 htmlUnitCookieToSeleniumCookieTransformer::apply));
     }
 
     private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(Cookie cookie) {
-        return new com.gargoylesoftware.htmlunit.util.Cookie(
-                cookie.getDomain(),
-                cookie.getName(),
-                cookie.getValue(),
-                cookie.getPath(),
-                cookie.getExpiry(),
-                cookie.isSecure(),
-                cookie.isHttpOnly()
-        );
+        return new com.gargoylesoftware.htmlunit.util.Cookie(cookie.getDomain(), cookie.getName(), cookie.getValue(),
+                cookie.getPath(), cookie.getExpiry(), cookie.isSecure(), cookie.isHttpOnly());
     }
 
-    private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie> htmlUnitCookieToSeleniumCookieTransformer =
-            (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c -> new Cookie.Builder(c.getName(), c.getValue())
-                    .domain(c.getDomain())
-                    .path(c.getPath())
-                    .expiresOn(c.getExpires())
-                    .isSecure(c.isSecure())
-                    .isHttpOnly(c.isHttpOnly())
-                    .build();
+    private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie> htmlUnitCookieToSeleniumCookieTransformer = (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c -> new Cookie.Builder(
+            c.getName(), c.getValue()).domain(c.getDomain()).path(c.getPath()).expiresOn(c.getExpires())
+                    .isSecure(c.isSecure()).isHttpOnly(c.isHttpOnly()).build();
 
     private String getDomainForCookie() {
         URL current = getRawUrl();
@@ -204,8 +187,6 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     private URL getRawUrl() {
-        return Optional.ofNullable(window().lastPage())
-                .map(Page::getUrl)
-                .orElse(null);
+        return Optional.ofNullable(window().lastPage()).map(Page::getUrl).orElse(null);
     }
 }

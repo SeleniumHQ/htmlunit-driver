@@ -71,625 +71,593 @@ import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 
-  protected final HtmlUnitDriver driver;
-  protected final int id;
-  protected final DomElement element;
-  private static final String[] booleanAttributes = {
-          "async",
-          "autofocus",
-          "autoplay",
-          "checked",
-          "compact",
-          "complete",
-          "controls",
-          "declare",
-          "defaultchecked",
-          "defaultselected",
-          "defer",
-          "disabled",
-          "draggable",
-          "ended",
-          "formnovalidate",
-          "hidden",
-          "indeterminate",
-          "iscontenteditable",
-          "ismap",
-          "itemscope",
-          "loop",
-          "multiple",
-          "muted",
-          "nohref",
-          "noresize",
-          "noshade",
-          "novalidate",
-          "nowrap",
-          "open",
-          "paused",
-          "pubdate",
-          "readonly",
-          "required",
-          "reversed",
-          "scoped",
-          "seamless",
-          "seeking",
-          "selected",
-          "spellcheck",
-          "truespeed",
-          "willvalidate"
-  };
+    protected final HtmlUnitDriver driver_;
+    protected final int id_;
+    protected final DomElement element_;
+    private static final String[] booleanAttributes = {"async", "autofocus", "autoplay", "checked", "compact",
+            "complete", "controls", "declare", "defaultchecked", "defaultselected", "defer", "disabled", "draggable",
+            "ended", "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope", "loop",
+            "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open", "paused", "pubdate",
+            "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
+            "willvalidate"};
 
-  private String toString;
+    private String toString;
 
-  public HtmlUnitWebElement(HtmlUnitDriver driver, int id, DomElement element) {
-    this.driver = driver;
-    this.id = id;
-    this.element = element;
-  }
+    public HtmlUnitWebElement(final HtmlUnitDriver driver, final int id, final DomElement element) {
+        driver_ = driver;
+        id_ = id;
+        element_ = element;
+    }
 
-  @Override
-  public void click() {
-    verifyCanInteractWithElement(true);
-    driver.click(element,true);
-  }
+    @Override
+    public void click() {
+        verifyCanInteractWithElement(true);
+        driver_.click(element_, true);
+    }
 
-  @Override
-  public void submit() {
-    driver.submit(this);
-  }
+    @Override
+    public void submit() {
+        driver_.submit(this);
+    }
 
-  void submitImpl() {
-    try {
-      if (element instanceof HtmlForm) {
-        submitForm((HtmlForm) element);
-      } else if ((element instanceof HtmlSubmitInput) || (element instanceof HtmlImageInput)) {
-        element.click();
-      } else if (element instanceof HtmlInput) {
-        HtmlForm form = ((HtmlElement) element).getEnclosingForm();
-        if (form == null) {
-          throw new JavascriptException("Unable to find the containing form");
+    void submitImpl() {
+        try {
+            if (element_ instanceof HtmlForm) {
+                submitForm((HtmlForm) element_);
+            }
+            else if ((element_ instanceof HtmlSubmitInput) || (element_ instanceof HtmlImageInput)) {
+                element_.click();
+            }
+            else if (element_ instanceof HtmlInput) {
+                final HtmlForm form = ((HtmlElement) element_).getEnclosingForm();
+                if (form == null) {
+                    throw new JavascriptException("Unable to find the containing form");
+                }
+                submitForm(form);
+            }
+            else {
+                final HtmlUnitWebElement form = findParentForm();
+                if (form == null) {
+                    throw new JavascriptException("Unable to find the containing form");
+                }
+                form.submitImpl();
+            }
         }
-        submitForm(form);
-      } else {
-        HtmlUnitWebElement form = findParentForm();
-        if (form == null) {
-          throw new JavascriptException("Unable to find the containing form");
+        catch (final IOException e) {
+            throw new WebDriverException(e);
         }
-        form.submitImpl();
-      }
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
-
-  private void submitForm(HtmlForm form) {
-    assertElementNotStale();
-
-    List<HtmlElement> allElements = new ArrayList<>();
-    allElements.addAll(form.getElementsByTagName("input"));
-    allElements.addAll(form.getElementsByTagName("button"));
-
-    HtmlElement submit = null;
-    for (HtmlElement e : allElements) {
-      if (!isSubmitElement(e)) {
-        continue;
-      }
-
-      if (submit == null) {
-        submit = e;
-      }
     }
 
-    if (submit == null) {
-      if (driver.isJavascriptEnabled()) {
-        ScriptResult eventResult = form.fireEvent("submit");
-        if (!ScriptResult.isFalse(eventResult)) {
-          driver.executeScript("arguments[0].submit()", form);
+    private void submitForm(final HtmlForm form) {
+        assertElementNotStale();
+
+        final List<HtmlElement> allElements = new ArrayList<>();
+        allElements.addAll(form.getElementsByTagName("input"));
+        allElements.addAll(form.getElementsByTagName("button"));
+
+        HtmlElement submit = null;
+        for (final HtmlElement e : allElements) {
+            if (!isSubmitElement(e)) {
+                continue;
+            }
+
+            if (submit == null) {
+                submit = e;
+            }
         }
-        return;
-      }
-      throw new WebDriverException("Cannot locate element used to submit form");
-    }
-    try {
-      // this has to ignore the visibility like browsers are doing
-      submit.click(false, false, false, true, true, true, false);
-    } catch (IOException e) {
-      throw new WebDriverException(e);
-    }
-  }
 
-  private static boolean isSubmitElement(HtmlElement element) {
-    HtmlElement candidate = null;
-
-    if (element instanceof HtmlSubmitInput && !((HtmlSubmitInput) element).isDisabled()) {
-      candidate = element;
-    } else if (element instanceof HtmlImageInput && !((HtmlImageInput) element).isDisabled()) {
-      candidate = element;
-    } else if (element instanceof HtmlButton) {
-      HtmlButton button = (HtmlButton) element;
-      if ("submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled()) {
-        candidate = element;
-      }
-    }
-
-    return candidate != null;
-  }
-
-  @Override
-  public void clear() {
-    assertElementNotStale();
-
-    if (element instanceof HtmlInput) {
-      HtmlInput htmlInput = (HtmlInput) element;
-      if (htmlInput.isReadOnly()) {
-        throw new InvalidElementStateException("You may only edit editable elements");
-      }
-      if (htmlInput.isDisabled()) {
-        throw new InvalidElementStateException("You may only interact with enabled elements");
-      }
-      htmlInput.setValue("");
-      if (htmlInput instanceof SelectableTextInput) {
-          ((SelectableTextInput) htmlInput).setSelectionEnd(0);
-      }
-      htmlInput.fireEvent("change");
-    } else if (element instanceof HtmlTextArea) {
-      HtmlTextArea htmlTextArea = (HtmlTextArea) element;
-      if (htmlTextArea.isReadOnly()) {
-        throw new InvalidElementStateException("You may only edit editable elements");
-      }
-      if (htmlTextArea.isDisabled()) {
-        throw new InvalidElementStateException("You may only interact with enabled elements");
-      }
-      htmlTextArea.setText("");
-    } else if (!element.getAttribute("contenteditable").equals(ATTRIBUTE_NOT_DEFINED)) {
-      element.setTextContent("");
-    }
-  }
-
-  void verifyCanInteractWithElement(boolean ignoreDisabled) {
-    assertElementNotStale();
-
-    Boolean displayed = driver.implicitlyWaitFor(new Callable<Boolean>() {
-      @Override
-      public Boolean call() throws Exception {
-        return isDisplayed();
-      }
-    });
-
-    if (displayed == null || !displayed) {
-      throw new ElementNotInteractableException("You may only interact with visible elements");
-    }
-
-    if (!ignoreDisabled && !isEnabled()) {
-      throw new InvalidElementStateException("You may only interact with enabled elements");
-    }
-  }
-
-  void switchFocusToThisIfNeeded() {
-    HtmlUnitWebElement oldActiveElement =
-        ((HtmlUnitWebElement) driver.switchTo().activeElement());
-
-    boolean jsEnabled = driver.isJavascriptEnabled();
-    boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
-    try {
-      boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
-      if (jsEnabled &&
-          !oldActiveEqualsCurrent &&
-          !isBody) {
-        oldActiveElement.element.blur();
-      }
-    } catch (StaleElementReferenceException ex) {
-      // old element has gone, do nothing
-    }
-    element.focus();
-  }
-
-  @Override
-  public void sendKeys(CharSequence... value) {
-    if (value == null) {
-      throw new IllegalArgumentException("Keys to send should nor be null");
-    }
-    driver.sendKeys(this, value);
-  }
-
-  @Override
-  public String getTagName() {
-    assertElementNotStale();
-    return element.getNodeName();
-  }
-
-  @Override
-  public String getAttribute(String name) {
-    assertElementNotStale();
-
-    final String lowerName = name.toLowerCase();
-
-    String value = element.getAttribute(name);
-
-    if (element instanceof HtmlInput &&
-        ("selected".equals(lowerName) || "checked".equals(lowerName))) {
-      return trueOrNull(((HtmlInput) element).isChecked());
-    }
-
-    if ("href".equals(lowerName) || "src".equals(lowerName)) {
-      String link = element.getAttribute(name);
-      if (ATTRIBUTE_NOT_DEFINED == link) {
-          return null;
-      }
-      HtmlPage page = (HtmlPage) element.getPage();
-      try {
-        return page.getFullyQualifiedUrl(link.trim()).toString();
-      } catch (MalformedURLException e) {
-        return null;
-      }
-    }
-
-    if ("disabled".equals(lowerName)) {
-        if (element instanceof DisabledElement) {
-            return trueOrNull(((DisabledElement) element).isDisabled());
+        if (submit == null) {
+            if (driver_.isJavascriptEnabled()) {
+                final ScriptResult eventResult = form.fireEvent("submit");
+                if (!ScriptResult.isFalse(eventResult)) {
+                    driver_.executeScript("arguments[0].submit()", form);
+                }
+                return;
+            }
+            throw new WebDriverException("Cannot locate element used to submit form");
         }
-        return "true";
-    }
-
-    if ("multiple".equals(lowerName) && element instanceof HtmlSelect) {
-      String multipleAttribute = ((HtmlSelect) element).getMultipleAttribute();
-      if ("".equals(multipleAttribute)) {
-        return trueOrNull(element.hasAttribute("multiple"));
-      }
-      return "true";
-    }
-
-    for (String booleanAttribute : booleanAttributes) {
-      if (booleanAttribute.equals(lowerName)) {
-        return trueOrNull(element.hasAttribute(lowerName));
-      }
-    }
-    if ("index".equals(lowerName) && element instanceof HtmlOption) {
-      HtmlSelect select = ((HtmlOption) element).getEnclosingSelect();
-      List<HtmlOption> allOptions = select.getOptions();
-      for (int i = 0; i < allOptions.size(); i++) {
-        HtmlOption option = select.getOption(i);
-        if (element.equals(option)) {
-          return String.valueOf(i);
+        try {
+            // this has to ignore the visibility like browsers are doing
+            submit.click(false, false, false, true, true, true, false);
         }
-      }
-
-      return null;
+        catch (final IOException e) {
+            throw new WebDriverException(e);
+        }
     }
 
-    if ("value".equals(lowerName)) {
-      if (element instanceof HtmlFileInput) {
-        return ((HTMLInputElement) element.getScriptableObject()).getValue();
-      }
-      if (element instanceof HtmlTextArea) {
-        return ((HtmlTextArea) element).getText();
-      }
+    private static boolean isSubmitElement(final HtmlElement element) {
+        HtmlElement candidate = null;
 
-      // According to
-      // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-      // if the value attribute doesn't exist, getting the "value" attribute defers to the
-      // option's content.
-      if (element instanceof HtmlOption && !element.hasAttribute("value")) {
-        return getText();
-      }
+        if (element instanceof HtmlSubmitInput && !((HtmlSubmitInput) element).isDisabled()) {
+            candidate = element;
+        }
+        else if (element instanceof HtmlImageInput && !((HtmlImageInput) element).isDisabled()) {
+            candidate = element;
+        }
+        else if (element instanceof HtmlButton) {
+            final HtmlButton button = (HtmlButton) element;
+            if ("submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled()) {
+                candidate = element;
+            }
+        }
 
-      return value == null ? "" : value;
+        return candidate != null;
     }
 
-    if (!value.isEmpty()) {
-      return value;
+    @Override
+    public void clear() {
+        assertElementNotStale();
+
+        if (element_ instanceof HtmlInput) {
+            final HtmlInput htmlInput = (HtmlInput) element_;
+            if (htmlInput.isReadOnly()) {
+                throw new InvalidElementStateException("You may only edit editable elements");
+            }
+            if (htmlInput.isDisabled()) {
+                throw new InvalidElementStateException("You may only interact with enabled elements");
+            }
+            htmlInput.setValue("");
+            if (htmlInput instanceof SelectableTextInput) {
+                ((SelectableTextInput) htmlInput).setSelectionEnd(0);
+            }
+            htmlInput.fireEvent("change");
+        }
+        else if (element_ instanceof HtmlTextArea) {
+            final HtmlTextArea htmlTextArea = (HtmlTextArea) element_;
+            if (htmlTextArea.isReadOnly()) {
+                throw new InvalidElementStateException("You may only edit editable elements");
+            }
+            if (htmlTextArea.isDisabled()) {
+                throw new InvalidElementStateException("You may only interact with enabled elements");
+            }
+            htmlTextArea.setText("");
+        }
+        else if (!element_.getAttribute("contenteditable").equals(ATTRIBUTE_NOT_DEFINED)) {
+            element_.setTextContent("");
+        }
     }
 
-    if (element.hasAttribute(name)) {
-      return "";
+    void verifyCanInteractWithElement(final boolean ignoreDisabled) {
+        assertElementNotStale();
+
+        final Boolean displayed = driver_.implicitlyWaitFor(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return isDisplayed();
+            }
+        });
+
+        if (displayed == null || !displayed) {
+            throw new ElementNotInteractableException("You may only interact with visible elements");
+        }
+
+        if (!ignoreDisabled && !isEnabled()) {
+            throw new InvalidElementStateException("You may only interact with enabled elements");
+        }
     }
 
-    final Object scriptable = element.getScriptableObject();
-    if (scriptable instanceof Scriptable) {
-      final Object slotVal = ScriptableObject.getProperty((Scriptable) scriptable, name);
-      if (slotVal instanceof String) {
-        return (String) slotVal;
-      }
+    void switchFocusToThisIfNeeded() {
+        final HtmlUnitWebElement oldActiveElement = (HtmlUnitWebElement) driver_.switchTo().activeElement();
+
+        final boolean jsEnabled = driver_.isJavascriptEnabled();
+        final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
+        try {
+            final boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
+            if (jsEnabled && !oldActiveEqualsCurrent && !isBody) {
+                oldActiveElement.element_.blur();
+            }
+        }
+        catch (final StaleElementReferenceException ex) {
+            // old element has gone, do nothing
+        }
+        element_.focus();
     }
 
-    return null;
-  }
+    @Override
+    public void sendKeys(final CharSequence... value) {
+        if (value == null) {
+            throw new IllegalArgumentException("Keys to send should nor be null");
+        }
+        driver_.sendKeys(this, value);
+    }
 
-  @Override
-  public String getDomProperty(String name) {
-    assertElementNotStale();
+    @Override
+    public String getTagName() {
+        assertElementNotStale();
+        return element_.getNodeName();
+    }
 
-    final String lowerName = name.toLowerCase();
-    String value = element.getAttribute(lowerName);
-    if (ATTRIBUTE_NOT_DEFINED == value) {
+    @Override
+    public String getAttribute(final String name) {
+        assertElementNotStale();
+
+        final String lowerName = name.toLowerCase();
+
+        final String value = element_.getAttribute(name);
+
+        if (element_ instanceof HtmlInput && ("selected".equals(lowerName) || "checked".equals(lowerName))) {
+            return trueOrNull(((HtmlInput) element_).isChecked());
+        }
+
+        if ("href".equals(lowerName) || "src".equals(lowerName)) {
+            final String link = element_.getAttribute(name);
+            if (ATTRIBUTE_NOT_DEFINED == link) {
+                return null;
+            }
+            final HtmlPage page = (HtmlPage) element_.getPage();
+            try {
+                return page.getFullyQualifiedUrl(link.trim()).toString();
+            }
+            catch (final MalformedURLException e) {
+                return null;
+            }
+        }
+
+        if ("disabled".equals(lowerName)) {
+            if (element_ instanceof DisabledElement) {
+                return trueOrNull(((DisabledElement) element_).isDisabled());
+            }
+            return "true";
+        }
+
+        if ("multiple".equals(lowerName) && element_ instanceof HtmlSelect) {
+            final String multipleAttribute = ((HtmlSelect) element_).getMultipleAttribute();
+            if ("".equals(multipleAttribute)) {
+                return trueOrNull(element_.hasAttribute("multiple"));
+            }
+            return "true";
+        }
+
+        for (final String booleanAttribute : booleanAttributes) {
+            if (booleanAttribute.equals(lowerName)) {
+                return trueOrNull(element_.hasAttribute(lowerName));
+            }
+        }
+        if ("index".equals(lowerName) && element_ instanceof HtmlOption) {
+            final HtmlSelect select = ((HtmlOption) element_).getEnclosingSelect();
+            final List<HtmlOption> allOptions = select.getOptions();
+            for (int i = 0; i < allOptions.size(); i++) {
+                final HtmlOption option = select.getOption(i);
+                if (element_.equals(option)) {
+                    return String.valueOf(i);
+                }
+            }
+
+            return null;
+        }
+
+        if ("value".equals(lowerName)) {
+            if (element_ instanceof HtmlFileInput) {
+                return ((HTMLInputElement) element_.getScriptableObject()).getValue();
+            }
+            if (element_ instanceof HtmlTextArea) {
+                return ((HtmlTextArea) element_).getText();
+            }
+
+            // According to
+            // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+            // if the value attribute doesn't exist, getting the "value" attribute defers to
+            // the
+            // option's content.
+            if (element_ instanceof HtmlOption && !element_.hasAttribute("value")) {
+                return getText();
+            }
+
+            return value == null ? "" : value;
+        }
+
+        if (!value.isEmpty()) {
+            return value;
+        }
+
+        if (element_.hasAttribute(name)) {
+            return "";
+        }
+
+        final Object scriptable = element_.getScriptableObject();
+        if (scriptable instanceof Scriptable) {
+            final Object slotVal = ScriptableObject.getProperty((Scriptable) scriptable, name);
+            if (slotVal instanceof String) {
+                return (String) slotVal;
+            }
+        }
+
         return null;
     }
 
-    if ("disabled".equals(lowerName)) {
-        if (element instanceof DisabledElement) {
-            return trueOrNull(((DisabledElement) element).isDisabled());
+    @Override
+    public String getDomProperty(final String name) {
+        assertElementNotStale();
+
+        final String lowerName = name.toLowerCase();
+        final String value = element_.getAttribute(lowerName);
+        if (ATTRIBUTE_NOT_DEFINED == value) {
+            return null;
+        }
+
+        if ("disabled".equals(lowerName)) {
+            if (element_ instanceof DisabledElement) {
+                return trueOrNull(((DisabledElement) element_).isDisabled());
+            }
+        }
+
+        if (ATTRIBUTE_VALUE_EMPTY == value) {
+            return null;
+        }
+
+        return value;
+    }
+
+    @Override
+    public String getDomAttribute(final String name) {
+        assertElementNotStale();
+
+        final String lowerName = name.toLowerCase();
+        final String value = element_.getAttribute(lowerName);
+        if (ATTRIBUTE_NOT_DEFINED == value) {
+            return null;
+        }
+
+        if ("disabled".equals(lowerName)) {
+            if (element_ instanceof DisabledElement) {
+                return trueOrNull(((DisabledElement) element_).isDisabled());
+            }
+        }
+
+        return value;
+    }
+
+    private static String trueOrNull(final boolean condition) {
+        return condition ? "true" : null;
+    }
+
+    @Override
+    public boolean isSelected() {
+        assertElementNotStale();
+
+        if (element_ instanceof HtmlInput) {
+            return ((HtmlInput) element_).isChecked();
+        }
+        else if (element_ instanceof HtmlOption) {
+            return ((HtmlOption) element_).isSelected();
+        }
+
+        throw new UnsupportedOperationException(
+                "Unable to determine if element is selected. Tag name is: " + element_.getTagName());
+    }
+
+    @Override
+    public boolean isEnabled() {
+        assertElementNotStale();
+
+        if (element_ instanceof DisabledElement) {
+            return !((DisabledElement) element_).isDisabled();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isDisplayed() {
+        assertElementNotStale();
+
+        return element_.isDisplayed();
+    }
+
+    @Override
+    public Point getLocation() {
+        assertElementNotStale();
+
+        try {
+            return new Point(readAndRound("left"), readAndRound("top"));
+        }
+        catch (final Exception e) {
+            throw new WebDriverException("Cannot determine size of element", e);
         }
     }
 
-    if (ATTRIBUTE_VALUE_EMPTY == value) {
-        return null;
-    }
+    @Override
+    public Dimension getSize() {
+        assertElementNotStale();
 
-    return value;
-  }
-
-  @Override
-  public String getDomAttribute(String name) {
-    assertElementNotStale();
-
-    final String lowerName = name.toLowerCase();
-    String value = element.getAttribute(lowerName);
-    if (ATTRIBUTE_NOT_DEFINED == value) {
-        return null;
-    }
-
-    if ("disabled".equals(lowerName)) {
-        if (element instanceof DisabledElement) {
-            return trueOrNull(((DisabledElement) element).isDisabled());
+        try {
+            final int width = readAndRound("width");
+            final int height = readAndRound("height");
+            return new Dimension(width, height);
+        }
+        catch (final Exception e) {
+            throw new WebDriverException("Cannot determine size of element", e);
         }
     }
 
-    return value;
-  }
-
-  private static String trueOrNull(boolean condition) {
-    return condition ? "true" : null;
-  }
-
-  @Override
-  public boolean isSelected() {
-    assertElementNotStale();
-
-    if (element instanceof HtmlInput) {
-      return ((HtmlInput) element).isChecked();
-    } else if (element instanceof HtmlOption) {
-      return ((HtmlOption) element).isSelected();
+    @Override
+    public Rectangle getRect() {
+        return new Rectangle(getLocation(), getSize());
     }
 
-    throw new UnsupportedOperationException(
-        "Unable to determine if element is selected. Tag name is: " + element.getTagName());
-  }
-
-  @Override
-  public boolean isEnabled() {
-    assertElementNotStale();
-
-    if (element instanceof DisabledElement) {
-        return !((DisabledElement) element).isDisabled();
-    }
-    return true;
-  }
-
-  @Override
-  public boolean isDisplayed() {
-    assertElementNotStale();
-
-    return element.isDisplayed();
-  }
-
-  @Override
-  public Point getLocation() {
-    assertElementNotStale();
-
-    try {
-      return new Point(readAndRound("left"), readAndRound("top"));
-    } catch (Exception e) {
-      throw new WebDriverException("Cannot determine size of element", e);
-    }
-  }
-
-  @Override
-  public Dimension getSize() {
-    assertElementNotStale();
-
-    try {
-      final int width = readAndRound("width");
-      final int height = readAndRound("height");
-      return new Dimension(width, height);
-    } catch (Exception e) {
-      throw new WebDriverException("Cannot determine size of element", e);
-    }
-  }
-
-  @Override
-  public Rectangle getRect() {
-    return new Rectangle(getLocation(), getSize());
-  }
-
-  private int readAndRound(final String property) {
-    final String cssValue = getCssValue(property).replaceAll("[^0-9\\.]", "");
-    if (cssValue.isEmpty()) {
-      return 5; // wrong... but better than nothing
-    }
-    return Math.round(Float.parseFloat(cssValue));
-  }
-
-  @Override
-  public String getText() {
-    assertElementNotStale();
-    return element.getVisibleText();
-  }
-
-  protected HtmlUnitDriver getDriver() {
-    return driver;
-  }
-
-  public DomElement getElement() {
-    return element;
-  }
-
-  @Deprecated // It's not a part of WebDriver API
-  public List<WebElement> getElementsByTagName(String tagName) {
-    assertElementNotStale();
-
-    List<?> allChildren = element.getByXPath(".//" + tagName);
-    List<WebElement> elements = new ArrayList<>();
-    for (Object o : allChildren) {
-      if (!(o instanceof HtmlElement)) {
-        continue;
-      }
-
-      HtmlElement child = (HtmlElement) o;
-      elements.add(getDriver().toWebElement(child));
-    }
-    return elements;
-  }
-
-  @Override
-  public WebElement findElement(By by) {
-    driver.getAlert().ensureUnlocked();
-    return driver.implicitlyWaitFor(() -> {
-      assertElementNotStale();
-      return driver.findElement(this, by);
-    });
-  }
-
-  @Override
-  public List<WebElement> findElements(By by) {
-    driver.getAlert().ensureUnlocked();
-    return driver.implicitlyWaitFor(() -> {
-      assertElementNotStale();
-      return driver.findElements(this, by);
-    });
-  }
-
-  private HtmlUnitWebElement findParentForm() {
-    DomNode current = element;
-    while (!(current == null || current instanceof HtmlForm)) {
-      current = current.getParentNode();
-    }
-    return getDriver().toWebElement((HtmlForm) current);
-  }
-
-  @Override
-  public String toString() {
-    if (toString == null) {
-      StringBuilder sb = new StringBuilder();
-      sb.append('<').append(element.getTagName());
-      NamedNodeMap attributes = element.getAttributes();
-      int n = attributes.getLength();
-      for (int i = 0; i < n; ++i) {
-        Attr a = (Attr) attributes.item(i);
-        sb.append(' ').append(a.getName()).append("=\"")
-          .append(a.getValue().replace("\"", "&quot;")).append("\"");
-      }
-      if (element.hasChildNodes()) {
-        sb.append('>');
-      } else {
-        sb.append(" />");
-      }
-      toString = sb.toString();
-    }
-    return toString;
-  }
-
-  protected void assertElementNotStale() {
-    driver.assertElementNotStale(element);
-  }
-
-  @Override
-  public String getCssValue(String propertyName) {
-    assertElementNotStale();
-
-    final HTMLElement elem = element.getScriptableObject();
-
-    String style = elem.getWindow().getComputedStyle(elem, null).getPropertyValue(propertyName);
-
-    return getColor(style);
-  }
-
-  private static String getColor(String name) {
-    if ("null".equals(name)) {
-      return "transparent";
-    }
-    if (name.startsWith("rgb(")) {
-      return Color.fromString(name).asRgba();
+    private int readAndRound(final String property) {
+        final String cssValue = getCssValue(property).replaceAll("[^0-9\\.]", "");
+        if (cssValue.isEmpty()) {
+            return 5; // wrong... but better than nothing
+        }
+        return Math.round(Float.parseFloat(cssValue));
     }
 
-    Colors colors = getColorsOf(name);
-    if (colors != null) {
-      return colors.getColorValue().asRgba();
-    }
-    return name;
-  }
-
-  private static Colors getColorsOf(String name) {
-    name = name.toUpperCase();
-    for (Colors colors : Colors.values()) {
-      if (colors.name().equals(name)) {
-        return colors;
-      }
-    }
-    return null;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof WebElement)) {
-      return false;
+    @Override
+    public String getText() {
+        assertElementNotStale();
+        return element_.getVisibleText();
     }
 
-    WebElement other = (WebElement) obj;
-    if (other instanceof WrapsElement) {
-      other = ((WrapsElement) obj).getWrappedElement();
+    protected HtmlUnitDriver getDriver() {
+        return driver_;
     }
 
-    return other instanceof HtmlUnitWebElement &&
-            element.equals(((HtmlUnitWebElement) other).element);
-  }
+    public DomElement getElement() {
+        return element_;
+    }
 
-  @Override
-  public int hashCode() {
-    return element.hashCode();
-  }
+    @Deprecated // It's not a part of WebDriver API
+    public List<WebElement> getElementsByTagName(final String tagName) {
+        assertElementNotStale();
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see org.openqa.selenium.WrapsDriver#getContainingDriver()
-   */
-  @Override
-  public WebDriver getWrappedDriver() {
-    return driver;
-  }
+        final List<?> allChildren = element_.getByXPath(".//" + tagName);
+        final List<WebElement> elements = new ArrayList<>();
+        for (final Object o : allChildren) {
+            if (!(o instanceof HtmlElement)) {
+                continue;
+            }
 
+            final HtmlElement child = (HtmlElement) o;
+            elements.add(getDriver().toWebElement(child));
+        }
+        return elements;
+    }
 
-  public Coordinates getCoordinates() {
-    return this;
-  }
+    @Override
+    public WebElement findElement(final By by) {
+        driver_.getAlert().ensureUnlocked();
+        return driver_.implicitlyWaitFor(() -> {
+            assertElementNotStale();
+            return driver_.findElement(this, by);
+        });
+    }
 
+    @Override
+    public List<WebElement> findElements(final By by) {
+        driver_.getAlert().ensureUnlocked();
+        return driver_.implicitlyWaitFor(() -> {
+            assertElementNotStale();
+            return driver_.findElements(this, by);
+        });
+    }
 
-  public Point onScreen() {
-    throw new UnsupportedOperationException("Not displayed, no screen location.");
-  }
+    private HtmlUnitWebElement findParentForm() {
+        DomNode current = element_;
+        while (!(current == null || current instanceof HtmlForm)) {
+            current = current.getParentNode();
+        }
+        return getDriver().toWebElement((HtmlForm) current);
+    }
 
+    @Override
+    public String toString() {
+        if (toString == null) {
+            final StringBuilder sb = new StringBuilder();
+            sb.append('<').append(element_.getTagName());
+            final NamedNodeMap attributes = element_.getAttributes();
+            final int n = attributes.getLength();
+            for (int i = 0; i < n; ++i) {
+                final Attr a = (Attr) attributes.item(i);
+                sb.append(' ').append(a.getName()).append("=\"").append(a.getValue().replace("\"", "&quot;"))
+                        .append("\"");
+            }
+            if (element_.hasChildNodes()) {
+                sb.append('>');
+            }
+            else {
+                sb.append(" />");
+            }
+            toString = sb.toString();
+        }
+        return toString;
+    }
 
-  public Point inViewPort() {
-    return getLocation();
-  }
+    protected void assertElementNotStale() {
+        driver_.assertElementNotStale(element_);
+    }
 
+    @Override
+    public String getCssValue(final String propertyName) {
+        assertElementNotStale();
 
-  public Point onPage() {
-    return getLocation();
-  }
+        final HTMLElement elem = element_.getScriptableObject();
 
+        final String style = elem.getWindow().getComputedStyle(elem, null).getPropertyValue(propertyName);
 
-  public Object getAuxiliary() {
-    return element;
-  }
+        return getColor(style);
+    }
 
-  @Override
-  public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-    throw new UnsupportedOperationException(
-      "Screenshots are not enabled for HtmlUnitDriver");
-  }
+    private static String getColor(final String name) {
+        if ("null".equals(name)) {
+            return "transparent";
+        }
+        if (name.startsWith("rgb(")) {
+            return Color.fromString(name).asRgba();
+        }
 
-  public int getId() {
-    return id;
-  }
+        final Colors colors = getColorsOf(name);
+        if (colors != null) {
+            return colors.getColorValue().asRgba();
+        }
+        return name;
+    }
+
+    private static Colors getColorsOf(String name) {
+        name = name.toUpperCase();
+        for (final Colors colors : Colors.values()) {
+            if (colors.name().equals(name)) {
+                return colors;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof WebElement)) {
+            return false;
+        }
+
+        WebElement other = (WebElement) obj;
+        if (other instanceof WrapsElement) {
+            other = ((WrapsElement) obj).getWrappedElement();
+        }
+
+        return other instanceof HtmlUnitWebElement && element_.equals(((HtmlUnitWebElement) other).element_);
+    }
+
+    @Override
+    public int hashCode() {
+        return element_.hashCode();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openqa.selenium.WrapsDriver#getContainingDriver()
+     */
+    @Override
+    public WebDriver getWrappedDriver() {
+        return driver_;
+    }
+
+    public Coordinates getCoordinates() {
+        return this;
+    }
+
+    public Point onScreen() {
+        throw new UnsupportedOperationException("Not displayed, no screen location.");
+    }
+
+    public Point inViewPort() {
+        return getLocation();
+    }
+
+    public Point onPage() {
+        return getLocation();
+    }
+
+    public Object getAuxiliary() {
+        return element_;
+    }
+
+    @Override
+    public <X> X getScreenshotAs(final OutputType<X> outputType) throws WebDriverException {
+        throw new UnsupportedOperationException("Screenshots are not enabled for HtmlUnitDriver");
+    }
+
+    public int getId() {
+        return id_;
+    }
 
 }

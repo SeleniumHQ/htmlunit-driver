@@ -34,7 +34,7 @@ public class HtmlUnitTimeouts implements WebDriver.Timeouts {
     private WebClient webClient = null;
 
     public HtmlUnitTimeouts() {
-        //nop
+        // nop
     }
 
     public HtmlUnitTimeouts(WebClient webClient) {

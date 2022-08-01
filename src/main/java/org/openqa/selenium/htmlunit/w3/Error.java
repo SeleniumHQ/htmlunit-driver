@@ -20,16 +20,16 @@ package org.openqa.selenium.htmlunit.w3;
 import java.util.Map;
 
 /**
- * Errors are represented in the WebDriver protocol by an HTTP response with
- * an HTTP status in the 4xx or 5xx range, and a JSON body containing details
- * of the error. The body is a JSON Object and has a field named "value" whose
- * value is an object bearing three, and sometimes four, fields:
- *  - "error", containing a string indicating the error code.
- *  - "message", containing an implementation-defined string with a human readable
- *    description of the kind of error that occurred.
- *  - "stacktrace", containing an implementation-defined string with a
- *    stack trace report of the active stack frames at the time when the error occurred.
- * Optionally "data", which is a JSON Object with additional error data helpful in diagnosing the error.
+ * Errors are represented in the WebDriver protocol by an HTTP response with an
+ * HTTP status in the 4xx or 5xx range, and a JSON body containing details of
+ * the error. The body is a JSON Object and has a field named "value" whose
+ * value is an object bearing three, and sometimes four, fields: - "error",
+ * containing a string indicating the error code. - "message", containing an
+ * implementation-defined string with a human readable description of the kind
+ * of error that occurred. - "stacktrace", containing an implementation-defined
+ * string with a stack trace report of the active stack frames at the time when
+ * the error occurred. Optionally "data", which is a JSON Object with additional
+ * error data helpful in diagnosing the error.
  *
  * @see <a href="https://www.w3.org/TR/webdriver/#errors">Errors</a>
  *
@@ -45,7 +45,7 @@ public class Error {
     /**
      * Ctor.
      */
-    public Error(String error, String message, String stacktrace) {
+    public Error(final String error, final String message, final String stacktrace) {
         error_ = error;
         message_ = message;
         stacktrace_ = stacktrace;

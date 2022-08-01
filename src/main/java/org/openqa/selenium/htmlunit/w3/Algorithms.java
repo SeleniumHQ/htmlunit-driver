@@ -28,12 +28,12 @@ import org.openqa.selenium.htmlunit.HtmlUnitWebElement;
 import org.openqa.selenium.interactions.Sequence;
 
 /**
- * To follow the spec as close as possible we have this collection
- * of mehtods and no object oriented design.
+ * To follow the spec as close as possible we have this collection of mehtods
+ * and no object oriented design.
  *
  * @author Ronald Brill
  */
-public class Algorithms {
+public final class Algorithms {
 
     /**
      * Private ctor because this class offers only static functions.
@@ -42,26 +42,29 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-extract-an-action-sequence">extract an action sequence</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-extract-an-action-sequence">extract
+     *      an action sequence</a>
      */
-    public static List<List<Action>> extractActionSequence(Collection<Sequence> sequences /* InputState inputState, paramters */) {
+    public static List<List<Action>> extractActionSequence(
+            final Collection<Sequence> sequences /* InputState inputState, paramters */) {
 
         // Let actions by tick be an empty List.
-        List<List<Action>> actionsByTick = new ArrayList<>();
+        final List<List<Action>> actionsByTick = new ArrayList<>();
 
         // For each value action sequence corresponding to an indexed property in
         // actions:
         for (final Sequence sequence : sequences) {
-            Map<String, Object> actionSequence = sequence.encode();
+            final Map<String, Object> actionSequence = sequence.encode();
 
             // Let source actions be the result of trying to process an input source action
             // sequence given input state and action sequence.
-            ArrayList<Action> sourceActions = processInputSourceActionSequence(actionSequence);
+            final ArrayList<Action> sourceActions = processInputSourceActionSequence(actionSequence);
 
             // For each action in source actions:
             // Let i be the zero-based index of action in source actions.
             for (int i = 0; i < sourceActions.size(); i++) {
-                Action action = sourceActions.get(i);
+                final Action action = sourceActions.get(i);
 
                 // If the length of actions by tick is less than i + 1, append a new List to
                 // actions by tick.
@@ -79,64 +82,79 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-an-input-source-action-sequence">process an input source action sequence</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-an-input-source-action-sequence">process
+     *      an input source action sequence</a>
      */
-    private static ArrayList<Action> processInputSourceActionSequence(Map<String, Object> actionSequence) {
+    private static ArrayList<Action> processInputSourceActionSequence(final Map<String, Object> actionSequence) {
         // Let type be the result of getting a property named "type" from action
         // sequence.
-        String type = actionSequence.get("type").toString();
+        final String type = actionSequence.get("type").toString();
 
-        // If type is not "key", "pointer", "wheel", or "none", return an error with error code invalid argument.
+        // If type is not "key", "pointer", "wheel", or "none", return an error with
+        // error code invalid argument.
 
         // Let id be the result of getting the property "id" from action sequence.
-        Object id = actionSequence.get("id");
+        final Object id = actionSequence.get("id");
 
-        // If id is undefined or is not a String, return error with error code invalid argument.
+        // If id is undefined or is not a String, return error with error code invalid
+        // argument.
 
-        // If type is equal to "pointer", let parameters data be the result of getting the
+        // If type is equal to "pointer", let parameters data be the result of getting
+        // the
         // property "parameters" from action sequence.
-        // Then let parameters be the result of trying to process pointer parameters with argument parameters data.
+        // Then let parameters be the result of trying to process pointer parameters
+        // with argument parameters data.
         Map<String, Object> parameters = null;
         if ("pointer".equals(type)) {
-            Map<String, Object> parametersData = (Map<String, Object>) actionSequence.get("parameters");
+            final Map<String, Object> parametersData = (Map<String, Object>) actionSequence.get("parameters");
             parameters = processPointerParameters(parametersData);
         }
 
-        // Let source be the result of trying to get or create an input source given input state, type and id.
+        // Let source be the result of trying to get or create an input source given
+        // input state, type and id.
         // InputSource source = new InputSource(inputState, type, id);
 
-        // If parameters is not undefined, then if its pointerType property is not equal to
+        // If parameters is not undefined, then if its pointerType property is not equal
+        // to
         // source’s subtype property, return an error with error code invalid argument.
 
-        // Let action items be the result of getting a property named actions from action sequence.
-        List<Map<String, Object>> actionItems = (List<Map<String, Object>>) actionSequence.get("actions");
+        // Let action items be the result of getting a property named actions from
+        // action sequence.
+        final List<Map<String, Object>> actionItems = (List<Map<String, Object>>) actionSequence.get("actions");
 
-        // If action items is not an Array, return error with error code invalid argument.
+        // If action items is not an Array, return error with error code invalid
+        // argument.
 
         // Let actions be a new list.
-        ArrayList<Action> actions = new ArrayList<>();
+        final ArrayList<Action> actions = new ArrayList<>();
 
         // For each action item in action items:
-        for (Map<String, Object> actionItem : actionItems) {
-            // If action item is not an Object return error with error code invalid argument.
+        for (final Map<String, Object> actionItem : actionItems) {
+            // If action item is not an Object return error with error code invalid
+            // argument.
 
             Action action = null;
-            // If type is "none" let action be the result of trying to process a null action with parameters id, and action item.
+            // If type is "none" let action be the result of trying to process a null action
+            // with parameters id, and action item.
             if ("none".equals(type)) {
                 action = processNullAction(id.toString(), actionItem);
             }
 
-            // Otherwise, if type is "key" let action be the result of trying to process a key action with parameters id, and action item.
+            // Otherwise, if type is "key" let action be the result of trying to process a
+            // key action with parameters id, and action item.
             else if ("key".equals(type)) {
                 action = processKeyAction(id.toString(), actionItem);
             }
 
-            // Otherwise, if type is "pointer" let action be the result of trying to process a pointer action with parameters id, parameters, and action item.
+            // Otherwise, if type is "pointer" let action be the result of trying to process
+            // a pointer action with parameters id, parameters, and action item.
             else if ("pointer".equals(type)) {
                 action = processPointerAction(id.toString(), parameters, actionItem);
             }
 
-            // Otherwise, if type is "wheel" let action be the result of trying to process a wheel action with parameters id, and action item.
+            // Otherwise, if type is "wheel" let action be the result of trying to process a
+            // wheel action with parameters id, and action item.
             else if ("wheel".equals(type)) {
                 action = processWheelAction(id.toString(), actionItem);
             }
@@ -150,11 +168,13 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-pointer-parameters">process pointer parameters</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-pointer-parameters">process
+     *      pointer parameters</a>
      */
-    private static Map<String, Object> processPointerParameters(Map<String, Object> parametersData) {
+    private static Map<String, Object> processPointerParameters(final Map<String, Object> parametersData) {
         // Let parameters be the default pointer parameters.
-        Map<String, Object> parameters = new HashMap<>();
+        final Map<String, Object> parameters = new HashMap<>();
         parameters.put("pointerType", "mouse");
 
         // If parameters data is undefined, return success with data parameters.
@@ -162,14 +182,17 @@ public class Algorithms {
             return parameters;
         }
 
-        // If parameters data is not an Object, return error with error code invalid argument.
+        // If parameters data is not an Object, return error with error code invalid
+        // argument.
 
-        // Let pointer type be the result of getting a property named pointerType from parameters data.
-        Object pointerType = parametersData.get("pointerType");
+        // Let pointer type be the result of getting a property named pointerType from
+        // parameters data.
+        final Object pointerType = parametersData.get("pointerType");
 
         // If pointer type is not undefined:
         if (pointerType != null) {
-            // If pointer type does not have one of the values "mouse", "pen", or "touch", return error with error code invalid argument.
+            // If pointer type does not have one of the values "mouse", "pen", or "touch",
+            // return error with error code invalid argument.
 
             // Set the pointerType property of parameters to pointer type.
             parameters.put("pointerType", pointerType);
@@ -180,48 +203,59 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-null-action">process a null action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-null-action">process a
+     *      null action</a>
      */
-    private static Action processNullAction(String id, Map<String, Object> actionItem) {
-        // Let subtype be the result of getting a property named "type" from action item.
-        String subtype = actionItem.get("type").toString();
+    private static Action processNullAction(final String id, final Map<String, Object> actionItem) {
+        // Let subtype be the result of getting a property named "type" from action
+        // item.
+        final String subtype = actionItem.get("type").toString();
 
         // If subtype is not "pause", return error with error code invalid argument.
 
-        // Let action be an action object constructed with arguments id, "none", and subtype.
-        Action action = new Action(id, "none", subtype);
+        // Let action be an action object constructed with arguments id, "none", and
+        // subtype.
+        final Action action = new Action(id, "none", subtype);
 
-        // Let result be the result of trying to process a pause action with arguments action item and action.
-        Action result = processPauseAction(actionItem, action);
+        // Let result be the result of trying to process a pause action with arguments
+        // action item and action.
+        final Action result = processPauseAction(actionItem, action);
 
         // Return result.
         return result;
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-key-action">process a key action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-key-action">process a
+     *      key action</a>
      */
-    private static Action processKeyAction(String id, Map<String, Object> actionItem) {
-        // Let subtype be the result of getting a property named "type" from action item.
-        String subtype = actionItem.get("type").toString();
+    private static Action processKeyAction(final String id, final Map<String, Object> actionItem) {
+        // Let subtype be the result of getting a property named "type" from action
+        // item.
+        final String subtype = actionItem.get("type").toString();
 
         // If subtype is not one of the values "keyUp", "keyDown", or "pause",
         // return an error with error code invalid argument.
 
-        // Let action be an action object constructed with arguments id, "key", and subtype.
-        Action action = new Action(id, "key", subtype);
+        // Let action be an action object constructed with arguments id, "key", and
+        // subtype.
+        final Action action = new Action(id, "key", subtype);
 
         // If subtype is "pause", let result be the result of trying to
-        // process a pause action with arguments action item and action, and return result.
+        // process a pause action with arguments action item and action, and return
+        // result.
         if ("pause".equals(subtype)) {
-            Action result = processPauseAction(actionItem, action);
+            final Action result = processPauseAction(actionItem, action);
             return result;
         }
 
         // Let key be the result of getting a property named value from action item.
-        Object key = actionItem.get("value");
+        final Object key = actionItem.get("value");
 
-        // If key is not a String containing a single unicode code point or grapheme cluster? return error with error code invalid argument.
+        // If key is not a String containing a single unicode code point or grapheme
+        // cluster? return error with error code invalid argument.
 
         // Set the value property on action to key.
         action.setValue(key.toString());
@@ -231,35 +265,44 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-action">process a pointer action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-action">process
+     *      a pointer action</a>
      */
-    private static Action processPointerAction(String id, Map<String, Object> parameters, Map<String, Object> actionItem) {
-        // Let subtype be the result of getting a property named "type" from action item.
-        String subtype = actionItem.get("type").toString();
+    private static Action processPointerAction(final String id, final Map<String, Object> parameters,
+            final Map<String, Object> actionItem) {
+        // Let subtype be the result of getting a property named "type" from action
+        // item.
+        final String subtype = actionItem.get("type").toString();
 
-        // If subtype is not one of the values "pause", "pointerUp", "pointerDown", "pointerMove", or "pointerCancel",
+        // If subtype is not one of the values "pause", "pointerUp", "pointerDown",
+        // "pointerMove", or "pointerCancel",
         // return an error with error code invalid argument.
 
-        // Let action be an action object constructed with arguments id, "pointer", and subtype.
-        Action action = new Action(id, "pointer", subtype);
+        // Let action be an action object constructed with arguments id, "pointer", and
+        // subtype.
+        final Action action = new Action(id, "pointer", subtype);
 
         // If subtype is "pause", let result be the result of trying to
-        // process a pause action with arguments action item and action, and return result.
+        // process a pause action with arguments action item and action, and return
+        // result.
         if ("pause".equals(subtype)) {
-            Action result = processPauseAction(actionItem, action);
+            final Action result = processPauseAction(actionItem, action);
             return result;
         }
 
-        Object origin = actionItem.get("origin");
+        final Object origin = actionItem.get("origin");
         if (origin instanceof HtmlUnitWebElement) {
-            HtmlUnitWebElement webElement = (HtmlUnitWebElement) origin;
+            final HtmlUnitWebElement webElement = (HtmlUnitWebElement) origin;
             action.setDomElement(webElement.getElement());
         }
 
-        // Set the pointerType property of action equal to the pointerType property of parameters.
+        // Set the pointerType property of action equal to the pointerType property of
+        // parameters.
         action.setPointerType(parameters.get("pointerType").toString());
 
-        // If subtype is "pointerUp" or "pointerDown", process a pointer up or pointer down action
+        // If subtype is "pointerUp" or "pointerDown", process a pointer up or pointer
+        // down action
         // with arguments action item and action.
         // If doing so results in an error, return that error.
         if ("pointerUp".equals(subtype) || "pointerDown".equals(subtype)) {
@@ -273,7 +316,8 @@ public class Algorithms {
             processPointerMoveAction(actionItem, action);
         }
 
-        // If subtype is "pointerCancel" process a pointer cancel action. If doing so results in an error, return that error.
+        // If subtype is "pointerCancel" process a pointer cancel action. If doing so
+        // results in an error, return that error.
         if ("pointerCancel".equals(subtype)) {
             processPointerCancelAction(actionItem);
         }
@@ -283,25 +327,30 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-wheel-action">process a wheel action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-wheel-action">process a
+     *      wheel action</a>
      */
-    private static Action processWheelAction(String id, Map<String, Object> actionItem) {
+    private static Action processWheelAction(final String id, final Map<String, Object> actionItem) {
         return null;
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-up-or-pointer-down-action">process a pointer up or pointer down action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-up-or-pointer-down-action">process
+     *      a pointer up or pointer down action</a>
      */
-    private static void processPointerUpOrPointerDownAction(Map<String, Object> actionItem, Action action) {
+    private static void processPointerUpOrPointerDownAction(final Map<String, Object> actionItem, final Action action) {
         // Let button be the result of getting the property button from action item.
-        Object button = actionItem.get("button");
+        final Object button = actionItem.get("button");
 
-        // If button is not an Integer greater than or equal to 0 return error with error code invalid argument.
+        // If button is not an Integer greater than or equal to 0 return error with
+        // error code invalid argument.
         if (button == null) {
             // TODO
         }
         try {
-            int butt = Integer.parseInt(button.toString());
+            final int butt = Integer.parseInt(button.toString());
             if (butt < 0) {
                 // TODO
             }
@@ -309,94 +358,121 @@ public class Algorithms {
             // Set the button property of action to button.
             action.setButton(butt);
         }
-        catch (NumberFormatException e) {
+        catch (final NumberFormatException e) {
             // TODO
         }
 
-        //Let width be the result of getting the property width from action item.
+        // Let width be the result of getting the property width from action item.
         //
-        //If width is not undefined and width is not a Number greater than or equal to 0 return error with error code invalid argument.
+        // If width is not undefined and width is not a Number greater than or equal to
+        // 0 return error with error code invalid argument.
         //
-        //Set the width property of action to width.
+        // Set the width property of action to width.
         //
-        //Let height be the result of getting the property height from action item.
+        // Let height be the result of getting the property height from action item.
         //
-        //If height is not undefined and height is not a Number greater than or equal to 0 return error with error code invalid argument.
+        // If height is not undefined and height is not a Number greater than or equal
+        // to 0 return error with error code invalid argument.
         //
-        //Set the height property of action to height.
+        // Set the height property of action to height.
         //
-        //Let pressure be the result of getting the property pressure from action item.
+        // Let pressure be the result of getting the property pressure from action item.
         //
-        //If pressure is not undefined and pressure is not a Number greater than or equal to 0 and less than or equal to 1 return error with error code invalid argument.
+        // If pressure is not undefined and pressure is not a Number greater than or
+        // equal to 0 and less than or equal to 1 return error with error code invalid
+        // argument.
         //
-        //Set the pressure property of action to pressure.
+        // Set the pressure property of action to pressure.
         //
-        //Let tangentialPressure be the result of getting the property tangentialPressure from action item.
+        // Let tangentialPressure be the result of getting the property
+        // tangentialPressure from action item.
         //
-        //If tangentialPressure is not undefined and tangentialPressure is not a Number greater than or equal to -1 and less than or equal to 1 return error with error code invalid argument.
+        // If tangentialPressure is not undefined and tangentialPressure is not a Number
+        // greater than or equal to -1 and less than or equal to 1 return error with
+        // error code invalid argument.
         //
-        //Set the tangentialPressure property of action to tangentialPressure.
+        // Set the tangentialPressure property of action to tangentialPressure.
         //
-        //Let tiltX be the result of getting the property tiltX from action item.
+        // Let tiltX be the result of getting the property tiltX from action item.
         //
-        //If tiltX is not undefined and tiltX is not an Integer greater than or equal to -90 and less than or equal to 90 return error with error code invalid argument.
+        // If tiltX is not undefined and tiltX is not an Integer greater than or equal
+        // to -90 and less than or equal to 90 return error with error code invalid
+        // argument.
         //
-        //Set the tiltX property of action to tiltX.
+        // Set the tiltX property of action to tiltX.
         //
-        //Let tiltY be the result of getting the property tiltY from action item.
+        // Let tiltY be the result of getting the property tiltY from action item.
         //
-        //If tiltY is not undefined and tiltY is not an Integer greater than or equal to -90 and less than or equal to 90 return error with error code invalid argument.
+        // If tiltY is not undefined and tiltY is not an Integer greater than or equal
+        // to -90 and less than or equal to 90 return error with error code invalid
+        // argument.
         //
-        //Set the tiltY property of action to tiltY.
+        // Set the tiltY property of action to tiltY.
         //
-        //Let twist be the result of getting the property twist from action item.
+        // Let twist be the result of getting the property twist from action item.
         //
-        //If twist is not undefined and twist is not an Integer greater than or equal to 0 and less than or equal to 359 return error with error code invalid argument.
+        // If twist is not undefined and twist is not an Integer greater than or equal
+        // to 0 and less than or equal to 359 return error with error code invalid
+        // argument.
         //
-        //Set the twist property of action to twist.
+        // Set the twist property of action to twist.
         //
-        //Let altitudeAngle be the result of getting the property altitudeAngle from action item.
+        // Let altitudeAngle be the result of getting the property altitudeAngle from
+        // action item.
         //
-        //If altitudeAngle is not undefined and altitudeAngle is not a Number greater than or equal to 0 and less than or equal to π/2 return error with error code invalid argument.
+        // If altitudeAngle is not undefined and altitudeAngle is not a Number greater
+        // than or equal to 0 and less than or equal to π/2 return error with error code
+        // invalid argument.
         //
-        //Set the altitudeAngle property of action to altitudeAngle.
+        // Set the altitudeAngle property of action to altitudeAngle.
         //
-        //Let azimuthAngle be the result of getting the property azimuthAngle from action item.
+        // Let azimuthAngle be the result of getting the property azimuthAngle from
+        // action item.
         //
-        //If azimuthAngle is not undefined and azimuthAngle is not a Number greater than or equal to 0 and less than or equal to 2π return error with error code invalid argument.
+        // If azimuthAngle is not undefined and azimuthAngle is not a Number greater
+        // than or equal to 0 and less than or equal to 2π return error with error code
+        // invalid argument.
         //
-        //Set the azimuthAngle property of action to azimuthAngle.
+        // Set the azimuthAngle property of action to azimuthAngle.
         //
-        //Return success with data null.
+        // Return success with data null.
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-move-action">process a pointer move action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-move-action">process
+     *      a pointer move action</a>
      */
-    private static void processPointerMoveAction(Map<String, Object> actionItem, Action action) {
+    private static void processPointerMoveAction(final Map<String, Object> actionItem, final Action action) {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action">process a pointer cancel action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action">process
+     *      a pointer cancel action</a>
      */
-    private static Action processPointerCancelAction(Map<String, Object> actionItem) {
+    private static Action processPointerCancelAction(final Map<String, Object> actionItem) {
         return null;
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-process-a-pause-action">process a pause action</a>
+     * @see <a href=
+     *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pause-action">process a
+     *      pause action</a>
      */
-    private static Action processPauseAction(Map<String, Object> actionItem, Action action) {
-        // Let duration be the result of getting the property "duration" from action item.
-        Object duration = actionItem.get("duration");
+    private static Action processPauseAction(final Map<String, Object> actionItem, final Action action) {
+        // Let duration be the result of getting the property "duration" from action
+        // item.
+        final Object duration = actionItem.get("duration");
 
-        // If duration is not undefined and duration is not an Integer greater than or equal to 0,
+        // If duration is not undefined and duration is not an Integer greater than or
+        // equal to 0,
         // return error with error code invalid argument.
         if (duration == null) {
             // TODO
         }
         try {
-            int dur = Integer.parseInt(duration.toString());
+            final int dur = Integer.parseInt(duration.toString());
             if (dur < 0) {
                 // TODO
             }
@@ -404,7 +480,7 @@ public class Algorithms {
             // Set the duration property of action to duration.
             action.setDuration(dur);
         }
-        catch (NumberFormatException e) {
+        catch (final NumberFormatException e) {
             // TODO
         }
 
@@ -413,24 +489,31 @@ public class Algorithms {
     }
 
     /**
-     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-dispatch-actions">dispatch actions</a>
+     * @see <a href="https://www.w3.org/TR/webdriver/#dfn-dispatch-actions">dispatch
+     *      actions</a>
      */
-    public static void dispatchActions(List<List<Action>> actionsByTick, HtmlUnitInputProcessor inputProcessor) {
-        //        Let token be a new unique identifier.
-        //        Enqueue token in session's actions queue.
-        //        Wait for token to be the first item in input state's actions queue.
-        //        Note
-        //            This ensures that only one set of actions can be run at a time, and therefore different actions
-        //            commands using the same underlying state don't race. In a session that is only a HTTP session
-        //            only one command can run at a time, so this will never block. But other session types
-        //            can allow running multiple commands in parallel, in which case this is necessary to ensure sequential access.
-        //        Let actions result be the result of dispatch actions inner with input state, actions by tick, and browsing context
-        //        Dequeue input state's actions queue.
-        //        Assert: this returns token
-        //        Return actions result.
+    public static void dispatchActions(final List<List<Action>> actionsByTick,
+            final HtmlUnitInputProcessor inputProcessor) {
+        // Let token be a new unique identifier.
+        // Enqueue token in session's actions queue.
+        // Wait for token to be the first item in input state's actions queue.
+        // Note
+        // This ensures that only one set of actions can be run at a time, and therefore
+        // different actions
+        // commands using the same underlying state don't race. In a session that is
+        // only a HTTP session
+        // only one command can run at a time, so this will never block. But other
+        // session types
+        // can allow running multiple commands in parallel, in which case this is
+        // necessary to ensure sequential access.
+        // Let actions result be the result of dispatch actions inner with input state,
+        // actions by tick, and browsing context
+        // Dequeue input state's actions queue.
+        // Assert: this returns token
+        // Return actions result.
 
-        for (List<Action> actions : actionsByTick) {
-            for (Action action : actions) {
+        for (final List<Action> actions : actionsByTick) {
+            for (final Action action : actions) {
                 inputProcessor.enqueuAction(action);
             }
         }
