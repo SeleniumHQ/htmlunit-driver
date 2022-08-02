@@ -7,7 +7,7 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlun
 ##### News
 [<img src="http://htmlunit.sourceforge.net/images/logos/twitter.png" alt="Twitter" height="44" width="60">](https://twitter.com/HtmlUnit)
 
-[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver)](https://jenkins.wetator.org/job/HtmlUnitDriver/)
+[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
 
 ## Download and Installation
 
