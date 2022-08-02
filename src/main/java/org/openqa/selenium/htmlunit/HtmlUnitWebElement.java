@@ -87,9 +87,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
         "willvalidate"};
 
-    protected final HtmlUnitDriver driver_;
-    protected final int id_;
-    protected final DomElement element_;
+    private final HtmlUnitDriver driver_;
+    private final int id_;
+    private final DomElement element_;
 
     private String toString_;
 

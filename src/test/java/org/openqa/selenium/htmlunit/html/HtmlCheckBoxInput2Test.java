@@ -35,7 +35,7 @@ public class HtmlCheckBoxInput2Test extends WebDriverTestCase {
     @Alerts({"true", "null", "false", "", "false", "yes"})
     public void checkedAttribute() throws Exception {
         final String html =
-            HtmlPageTest.STANDARDS_MODE_PREFIX_
+            STANDARDS_MODE_PREFIX_
             + "<html><head><title>foo</title>\n"
             + "<script>\n"
             + "  function test() {\n"

@@ -97,7 +97,6 @@ import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.htmlunit.html.HtmlPageTest;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -159,6 +158,10 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
  * @author Frank Danek
  */
 public abstract class WebDriverTestCase extends WebTestCase {
+
+    /** The doctype prefix for standards mode. */
+    public static final String STANDARDS_MODE_PREFIX_
+        = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">\n";
 
     /**
      * Function used in many tests.
@@ -938,11 +941,11 @@ public abstract class WebDriverTestCase extends WebTestCase {
     protected final WebDriver loadPage2(String html, final URL url,
             final String contentType, final Charset charset, final Charset serverCharset) throws Exception {
         if (useStandards_ != null) {
-            if (html.startsWith(HtmlPageTest.STANDARDS_MODE_PREFIX_)) {
+            if (html.startsWith(STANDARDS_MODE_PREFIX_)) {
                 fail("HTML must not be prefixed with Standards Mode.");
             }
             if (useStandards_) {
-                html = HtmlPageTest.STANDARDS_MODE_PREFIX_ + html;
+                html = STANDARDS_MODE_PREFIX_ + html;
             }
         }
         final MockWebConnection mockWebConnection = getMockWebConnection();

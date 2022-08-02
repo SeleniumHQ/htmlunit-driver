@@ -48,7 +48,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
  * @author Ronald Brill
  */
 public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
-    protected final HtmlUnitDriver driver_;
+    private final HtmlUnitDriver driver_;
 
     public HtmlUnitTargetLocator(final HtmlUnitDriver driver) {
         driver_ = driver;

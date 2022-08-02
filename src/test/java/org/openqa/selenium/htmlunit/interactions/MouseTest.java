@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
-import org.openqa.selenium.htmlunit.html.HtmlPageTest;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.interactions.Actions;
@@ -42,7 +41,7 @@ public class MouseTest extends WebDriverTestCase {
     @Alerts("mouse over [btn]")
     public void mouseOver() throws Exception {
         final String html =
-            HtmlPageTest.STANDARDS_MODE_PREFIX_
+            STANDARDS_MODE_PREFIX_
             + "<html>\n"
             + "  <head>\n"
             + "    <title>Test</title>\n"
@@ -92,7 +91,7 @@ public class MouseTest extends WebDriverTestCase {
             FF_ESR = "Test:mouse over [disabledBtn]")
     public void mouseOverDiabled() throws Exception {
         final String html =
-            HtmlPageTest.STANDARDS_MODE_PREFIX_
+            STANDARDS_MODE_PREFIX_
             + "<html>\n"
             + "  <head>\n"
             + "    <title>Test:</title>\n"

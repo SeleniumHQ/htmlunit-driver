@@ -55,7 +55,7 @@ public class HtmlUnitKeyboard {
     void sendKeys(final HtmlUnitWebElement htmlElem, final boolean releaseAllAtEnd, final CharSequence... value) {
         htmlElem.verifyCanInteractWithElement(false);
 
-        final HtmlElement element = (HtmlElement) htmlElem.element_;
+        final HtmlElement element = (HtmlElement) htmlElem.getElement();
         final boolean inputElementInsideForm = element instanceof HtmlInput && element.getEnclosingForm() != null;
         final InputKeysContainer keysContainer = new InputKeysContainer(inputElementInsideForm, value);
 
@@ -132,7 +132,7 @@ public class HtmlUnitKeyboard {
 
     public void pressKey(final CharSequence keyToPress) {
         final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();
-        final HtmlElement element = (HtmlElement) htmlElement.element_;
+        final HtmlElement element = (HtmlElement) htmlElement.getElement();
         try {
             element.type(asHtmlUnitKeyboard(lastElement_ != element, keyToPress, true));
         }
@@ -147,7 +147,7 @@ public class HtmlUnitKeyboard {
 
     public void releaseKey(final CharSequence keyToRelease) {
         final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();
-        final HtmlElement element = (HtmlElement) htmlElement.element_;
+        final HtmlElement element = (HtmlElement) htmlElement.getElement();
         try {
             element.type(asHtmlUnitKeyboard(lastElement_ != element, keyToRelease, false));
         }
