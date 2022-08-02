@@ -139,18 +139,26 @@ public class HtmlUnitAlert implements Alert {
     @Override
     public void dismiss() {
         lock_.lock();
-        condition_.signal();
-        holder_ = null;
-        lock_.unlock();
+        try {
+            condition_.signal();
+        }
+        finally {
+            lock_.unlock();
+            holder_ = null;
+        }
     }
 
     @Override
     public void accept() {
         lock_.lock();
-        holder_.accept();
-        condition_.signal();
-        holder_ = null;
-        lock_.unlock();
+        try {
+            holder_.accept();
+            condition_.signal();
+        }
+        finally {
+            lock_.unlock();
+            holder_ = null;
+        }
     }
 
     @Override
@@ -176,10 +184,14 @@ public class HtmlUnitAlert implements Alert {
      */
     void close() {
         lock_.lock();
-        condition_.signal();
-        setAutoAccept(true);
-        lock_.unlock();
-        holder_ = null;
+        try {
+            condition_.signal();
+            setAutoAccept(true);
+        }
+        finally {
+            lock_.unlock();
+            holder_ = null;
+        }
     }
 
     boolean isLocked() {

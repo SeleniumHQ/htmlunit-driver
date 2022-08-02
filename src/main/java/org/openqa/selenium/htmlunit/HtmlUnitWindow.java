@@ -31,8 +31,8 @@ import com.gargoylesoftware.htmlunit.WebWindow;
  */
 public class HtmlUnitWindow implements WebDriver.Window {
 
-    private final int SCROLLBAR_WIDTH = 8;
-    private final int HEADER_HEIGHT = 150;
+    private static final int SCROLLBAR_WIDTH = 8;
+    private static final int HEADER_HEIGHT = 150;
 
     private final WebWindow webWindow_;
     private final Dimension initialWindowDimension_;
