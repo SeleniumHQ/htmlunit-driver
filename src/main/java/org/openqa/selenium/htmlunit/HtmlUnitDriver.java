@@ -327,8 +327,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return false;
         }
         conditionLock_.lock();
-        mainCondition_.signal();
-        conditionLock_.unlock();
+        try {
+            mainCondition_.signal();
+        }
+        finally {
+            conditionLock_.unlock();
+        }
         return true;
     }
 
@@ -358,9 +362,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             }
             finally {
                 conditionLock_.lock();
-                runAsyncRunning_ = false;
-                mainCondition_.signal();
-                conditionLock_.unlock();
+                try {
+                    runAsyncRunning_ = false;
+                    mainCondition_.signal();
+                }
+                finally {
+                    conditionLock_.unlock();
+                }
             }
         };
         executor_.execute(wrapped);

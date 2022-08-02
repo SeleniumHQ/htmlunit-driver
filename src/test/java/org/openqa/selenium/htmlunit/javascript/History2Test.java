@@ -97,25 +97,25 @@ public class History2Test extends WebDriverTestCase {
 
         driver.navigate().back();
         assertEquals(URL_FIRST + "bar.html", driver.getCurrentUrl());
-        verifyAlerts(DEFAULT_WAIT_TIME * 2, driver, expectedAlerts[i++], expectedAlerts[i++]);
+        verifyAlerts(driver, expectedAlerts[i++], expectedAlerts[i++]);
         assertEquals("a", ((JavascriptExecutor) driver).executeScript("return window.name"));
         assertEquals(start + 2, ((JavascriptExecutor) driver).executeScript("return window.history.length"));
 
         driver.navigate().back();
         assertEquals(URL_FIRST.toString(), driver.getCurrentUrl());
-        verifyAlerts(DEFAULT_WAIT_TIME * 2, driver, expectedAlerts[i++], expectedAlerts[i++]);
+        verifyAlerts(driver, expectedAlerts[i++], expectedAlerts[i++]);
         assertEquals("a", ((JavascriptExecutor) driver).executeScript("return window.name"));
         assertEquals(start + 2, ((JavascriptExecutor) driver).executeScript("return window.history.length"));
 
         driver.navigate().forward();
         assertEquals(URL_FIRST + "bar.html", driver.getCurrentUrl());
-        verifyAlerts(DEFAULT_WAIT_TIME * 2, driver, expectedAlerts[i++], expectedAlerts[i++]);
+        verifyAlerts(driver, expectedAlerts[i++], expectedAlerts[i++]);
         assertEquals("a", ((JavascriptExecutor) driver).executeScript("return window.name"));
         assertEquals(start + 2, ((JavascriptExecutor) driver).executeScript("return window.history.length"));
 
         driver.navigate().forward();
         assertEquals(URL_FIRST + "bar2.html", driver.getCurrentUrl());
-        verifyAlerts(DEFAULT_WAIT_TIME * 2, driver, expectedAlerts[i++], expectedAlerts[i++]);
+        verifyAlerts(driver, expectedAlerts[i++], expectedAlerts[i++]);
         assertEquals("a", ((JavascriptExecutor) driver).executeScript("return window.name"));
         assertEquals(start + 2, ((JavascriptExecutor) driver).executeScript("return window.history.length"));
 

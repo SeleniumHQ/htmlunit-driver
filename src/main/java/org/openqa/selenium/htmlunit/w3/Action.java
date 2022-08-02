@@ -146,14 +146,18 @@ public class Action {
     @Override
     public String toString() {
         String toString = "Action: id=" + id_ + " type=" + type_ + " subtype=" + subtype_;
+
         if (duration_ != null) {
             toString += " duration=" + duration_;
         }
         if (value_ != null) {
             toString += " value=" + value_;
         }
-        if (value_ != pointerType_) {
+        if (pointerType_ != null) {
             toString += " pointerType=" + pointerType_;
+        }
+        if (button_ != null) {
+            toString += " button=" + button_;
         }
         return toString;
     }
