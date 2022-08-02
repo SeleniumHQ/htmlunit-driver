@@ -50,7 +50,7 @@ public class HtmlUnitLogs implements Logs {
      */
     @Override
     public LogEntries get(final String logType) {
-        if (logType == LogType.BROWSER) {
+        if (LogType.BROWSER.equals(logType)) {
             return new LogEntries(logger_.getContentAndFlush());
         }
 
