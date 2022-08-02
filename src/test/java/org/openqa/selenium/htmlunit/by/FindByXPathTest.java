@@ -29,6 +29,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 /**
  * Tests for By.xpath.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByXPathTest extends WebDriverTestCase {

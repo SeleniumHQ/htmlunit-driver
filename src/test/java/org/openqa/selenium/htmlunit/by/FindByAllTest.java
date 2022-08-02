@@ -28,6 +28,8 @@ import org.openqa.selenium.support.pagefactory.ByAll;
 
 /**
  * Tests for ByAll.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByAllTest extends WebDriverTestCase {

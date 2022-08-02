@@ -29,6 +29,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 /**
  * Tests for By.partialLinkText.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByPartialLinkTextTest extends WebDriverTestCase {

@@ -28,6 +28,8 @@ import org.openqa.selenium.support.pagefactory.ByChained;
 
 /**
  * Tests for ByChained.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByChainedTest extends WebDriverTestCase {

@@ -32,6 +32,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * Tests for By.className.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByClassNameTest extends WebDriverTestCase {

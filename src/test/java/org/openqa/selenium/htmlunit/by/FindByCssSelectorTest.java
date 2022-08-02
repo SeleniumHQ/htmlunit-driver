@@ -29,6 +29,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 /**
  * Tests for By.cssSelector.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class FindByCssSelectorTest extends WebDriverTestCase {
