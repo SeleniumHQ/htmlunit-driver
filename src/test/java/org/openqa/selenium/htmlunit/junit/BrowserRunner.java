@@ -61,6 +61,11 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  *     }
  * }
  * </pre>
+ *
+ * @author Ahmed Ashour
+ * @author Frank Danek
+ * @author Ronald Brill
+ * @author cd alexndr
  */
 public class BrowserRunner extends Suite {
 

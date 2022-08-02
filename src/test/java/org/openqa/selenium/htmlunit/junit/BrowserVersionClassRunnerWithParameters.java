@@ -41,6 +41,8 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * A {@link BrowserVersionClassRunner} which is also parameterized.
+ *
+ * @author Ahmed Ashour
  */
 public class BrowserVersionClassRunnerWithParameters extends BrowserVersionClassRunner {
 

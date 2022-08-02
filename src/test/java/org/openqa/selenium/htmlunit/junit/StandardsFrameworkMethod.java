@@ -24,6 +24,8 @@ import org.openqa.selenium.htmlunit.WebDriverTestCase;
 
 /**
  * A method of a class annotated with {@link org.openqa.selenium.htmlunit.annotations.annotations.StandardsMode}.
+ *
+ * @author Ahmed Ashour
  */
 public class StandardsFrameworkMethod extends FrameworkMethod {
 

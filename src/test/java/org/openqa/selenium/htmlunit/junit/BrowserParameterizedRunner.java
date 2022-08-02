@@ -101,6 +101,7 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
    }
    </pre>
  *
+ * @author Ahmed Ashour
  */
 public class BrowserParameterizedRunner extends Suite {
 

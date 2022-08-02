@@ -44,6 +44,10 @@ public class Error {
 
     /**
      * Ctor.
+     *
+     * @param error the error text
+     * @param message the message text
+     * @param stacktrace the stack trace
      */
     public Error(final String error, final String message, final String stacktrace) {
         error_ = error;

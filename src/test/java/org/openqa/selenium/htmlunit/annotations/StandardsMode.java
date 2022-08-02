@@ -56,6 +56,8 @@ import java.lang.annotation.Target;
  * }
  * </pre>
  * </p>
+ *
+ * @author Ahmed Ashour
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

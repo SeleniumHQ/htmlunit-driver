@@ -31,6 +31,9 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * The Browser Statement.
+ *
+ * @author Ahmed Ashour
+ * @author Ronald Brill
  */
 class BrowserStatement extends Statement {
 

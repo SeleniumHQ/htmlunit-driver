@@ -51,6 +51,11 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * The runner for test methods that run with a specific browser ({@link BrowserRunner.TestedBrowser}).
+ *
+ * @author Ahmed Ashour
+ * @author Frank Danek
+ * @author Ronald Brill
+ * @author cd alexndr
  */
 public class BrowserVersionClassRunner extends BlockJUnit4ClassRunner {
 

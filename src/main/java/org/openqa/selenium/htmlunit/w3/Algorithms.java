@@ -45,6 +45,9 @@ public final class Algorithms {
      * @see <a href=
      *      "https://www.w3.org/TR/webdriver/#dfn-extract-an-action-sequence">extract
      *      an action sequence</a>
+     *
+     * @param sequences the sequences
+     * @return actions by tick
      */
     public static List<List<Action>> extractActionSequence(
             final Collection<Sequence> sequences /* InputState inputState, paramters */) {
@@ -451,8 +454,7 @@ public final class Algorithms {
      *      "https://www.w3.org/TR/webdriver/#dfn-process-a-pointer-cancel-action">process
      *      a pointer cancel action</a>
      */
-    private static Action processPointerCancelAction(final Map<String, Object> actionItem) {
-        return null;
+    private static void processPointerCancelAction(final Map<String, Object> actionItem) {
     }
 
     /**
@@ -491,6 +493,8 @@ public final class Algorithms {
     /**
      * @see <a href="https://www.w3.org/TR/webdriver/#dfn-dispatch-actions">dispatch
      *      actions</a>
+     * @param actionsByTick actions by tick
+     * @param inputProcessor the HtmlUnitInputProcessor
      */
     public static void dispatchActions(final List<List<Action>> actionsByTick,
             final HtmlUnitInputProcessor inputProcessor) {
