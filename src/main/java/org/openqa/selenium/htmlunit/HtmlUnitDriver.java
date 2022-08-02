@@ -145,8 +145,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     private final HtmlUnitElementFinder elementFinder_;
     private HtmlUnitInputProcessor inputProcessor_ = new HtmlUnitInputProcessor(this);
 
+    /** BROWSER_LANGUAGE_CAPABILITY = "browserLanguage". */
     public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+
+    /** DOWNLOAD_IMAGES_CAPABILITY = "downloadImages". */
     public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+
+    /** JAVASCRIPT_ENABLED = "javascriptEnabled". */
     public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
     /**
@@ -937,8 +942,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         else if (arg instanceof Map<?, ?>) {
             final Map<?, ?> argmap = (Map<?, ?>) arg;
             final Scriptable map = Context.getCurrentContext().newObject(scope);
-            for (final Object key : argmap.keySet()) {
-                map.put((String) key, map, parseArgumentIntoJavascriptParameter(scope, argmap.get(key)));
+            for (final Map.Entry<?, ?> entry : argmap.entrySet()) {
+                map.put((String) entry.getKey(), map, parseArgumentIntoJavascriptParameter(scope, entry.getValue()));
             }
             return map;
 
@@ -1282,16 +1287,16 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     protected static class ElementsMap {
-        private final Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> elementsMap;
+        private final Map<SgmlPage, Map<DomElement, HtmlUnitWebElement>> elementsMapByPage_;
         private int idCounter_;
 
         public ElementsMap() {
-            elementsMap = new WeakHashMap<>();
+            elementsMapByPage_ = new WeakHashMap<>();
             idCounter_ = 0;
         }
 
         public HtmlUnitWebElement addIfAbsent(final HtmlUnitDriver driver, final DomElement element) {
-            final Map<DomElement, HtmlUnitWebElement> pageMap = elementsMap.computeIfAbsent(element.getPage(),
+            final Map<DomElement, HtmlUnitWebElement> pageMap = elementsMapByPage_.computeIfAbsent(element.getPage(),
                     k -> new HashMap<>());
 
             HtmlUnitWebElement e = pageMap.get(element);
@@ -1304,7 +1309,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         public void remove(final Page page) {
-            elementsMap.remove(page);
+            elementsMapByPage_.remove(page);
         }
     }
 
