@@ -30,6 +30,13 @@ import com.gargoylesoftware.htmlunit.html.Keyboard;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Simon Stewart
+ * @author Glib Briia
+ * @author Ronald Brill
+ * @author Martin Bartoš
  */
 public class HtmlUnitKeyboard {
     private final KeyboardModifiersState modifiersState_ = new KeyboardModifiersState();

@@ -24,8 +24,13 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Determine browser and its version.
+ *
+ * @author Martin Bartoš
+ * @author Ronald Brill
  */
 public class BrowserVersionDeterminer {
+
+    private static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
 
     /**
      * Determine browser by its capabilities.
@@ -100,7 +105,7 @@ public class BrowserVersionDeterminer {
             browserVersionObject = BrowserVersion.getDefault();
         }
 
-        final Object rawLanguage = capabilities.getCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY);
+        final Object rawLanguage = capabilities.getCapability(BROWSER_LANGUAGE_CAPABILITY);
         if (rawLanguage instanceof String) {
             return new BrowserVersion.BrowserVersionBuilder(browserVersionObject)
                     .setBrowserLanguage((String) rawLanguage).build();

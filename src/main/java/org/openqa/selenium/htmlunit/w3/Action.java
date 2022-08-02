@@ -32,8 +32,8 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
  * subtype. Specific action objects have further properties added by other
  * algorithms in this specification.
  *
- * @see <a href="https://www.w3.org/TR/webdriver/#dfn-action-object">action
- *      object</a>
+ * @see <a href="https://www.w3.org/TR/webdriver/#dfn-action-object">action object</a>
+ *
  * @author Ronald Brill
  */
 public class Action {

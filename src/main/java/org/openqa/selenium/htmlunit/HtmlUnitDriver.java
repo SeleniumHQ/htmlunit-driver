@@ -145,12 +145,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     private final HtmlUnitElementFinder elementFinder_;
     private HtmlUnitInputProcessor inputProcessor_ = new HtmlUnitInputProcessor(this);
 
-    public static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
-    public static final String INVALIDSELECTIONERROR = "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
-
-    public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
-    public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
-    public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
+    private static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+    private static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
     /**
      * The Lock for the {@link #mainCondition_}, which waits at the end of
@@ -898,8 +894,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             arg = ((WrapsElement) arg).getWrappedElement();
         }
 
-        if (!(arg instanceof HtmlUnitWebElement || arg instanceof HtmlElement || // special case the underlying type
-                arg instanceof Number || arg instanceof String || arg instanceof Boolean || arg.getClass().isArray()
+        if (!(arg instanceof HtmlUnitWebElement
+                || arg instanceof HtmlElement
+                || arg instanceof Number // special case the underlying type
+                || arg instanceof String
+                || arg instanceof Boolean
+                || arg.getClass().isArray()
                 || arg instanceof Collection<?> || arg instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                     "Argument must be a string, number, boolean or WebElement: " + arg + " (" + arg.getClass() + ")");

@@ -24,6 +24,11 @@ import org.openqa.selenium.WebDriver;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebWindow;
 
+/**
+ *
+ * @author Martin Bartoš
+ * @author Ronald Brill
+ */
 public class HtmlUnitWindow implements WebDriver.Window {
 
     private final int SCROLLBAR_WIDTH = 8;

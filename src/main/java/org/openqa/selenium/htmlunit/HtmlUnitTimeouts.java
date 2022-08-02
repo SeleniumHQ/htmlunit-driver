@@ -25,7 +25,10 @@ import org.openqa.selenium.WebDriver;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 /**
- * Class for timeouts managing
+ * Class for timeouts managing.
+ *
+ * @author Martin Bartoš
+ * @author Ronald Brill
  */
 public class HtmlUnitTimeouts implements WebDriver.Timeouts {
     private long implicitWait_ = 0;

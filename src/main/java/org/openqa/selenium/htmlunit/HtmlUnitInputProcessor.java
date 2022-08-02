@@ -28,6 +28,8 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 /**
  * A state machine to handle web diver input sequences. We have to analyze the
  * sequences and construct valid HtmlUnit actions out of them.
+ *
+ * @author Ronald Brill
  */
 public class HtmlUnitInputProcessor {
     private final HtmlUnitDriver driver_;

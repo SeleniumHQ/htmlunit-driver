@@ -17,9 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDSELECTIONERROR;
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.INVALIDXPATHERROR;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,7 +40,15 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
+/**
+ * @author Martin Bartoš
+ * @author Ronald Brill
+ */
 public class HtmlUnitElementFinder {
+
+    private static final String INVALIDXPATHERROR = "The xpath expression '%s' cannot be evaluated";
+    private static final String INVALIDSELECTIONERROR =
+            "The xpath expression '%s' selected an object of type '%s' instead of a WebElement";
 
     private final Map<Class<? extends By>, HtmlUnitElementLocator> finders_ = new HashMap<>();
 
@@ -472,7 +477,7 @@ public class HtmlUnitElementFinder {
             }
             catch (final Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
-                throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
+                throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, value), ex);
             }
 
             if (node == null) {
@@ -485,7 +490,7 @@ public class HtmlUnitElementFinder {
             // selector is therefore
             // invalid
             throw new InvalidSelectorException(
-                    String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, value, node.getClass().toString()));
+                    String.format(INVALIDSELECTIONERROR, value, node.getClass().toString()));
         }
 
         @Override
@@ -499,7 +504,7 @@ public class HtmlUnitElementFinder {
             }
             catch (final Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
-                throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
+                throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, value), ex);
             }
 
             for (final Object e : domElements) {
@@ -511,7 +516,7 @@ public class HtmlUnitElementFinder {
                     // selector is
                     // therefore invalid
                     throw new InvalidSelectorException(
-                            String.format(HtmlUnitDriver.INVALIDSELECTIONERROR, value, e.getClass().toString()));
+                            String.format(INVALIDSELECTIONERROR, value, e.getClass().toString()));
                 }
             }
             return toReturn;

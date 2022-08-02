@@ -24,6 +24,10 @@ import org.openqa.selenium.Keys;
 
 /**
  * Holds the state of the modifier keys (Shift, ctrl, alt).
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Ronald Brill
  */
 class KeyboardModifiersState {
     private Set<Character> set_ = new HashSet<>();

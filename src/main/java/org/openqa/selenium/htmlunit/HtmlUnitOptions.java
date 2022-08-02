@@ -39,7 +39,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 /**
- * Manages driver options
+ * Manages driver options.
+ *
+ * @author Martin Bartoš
+ * @author Ronald Brill
  */
 public class HtmlUnitOptions implements WebDriver.Options {
     private final HtmlUnitLogs logs_;

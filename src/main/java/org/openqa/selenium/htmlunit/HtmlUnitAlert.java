@@ -37,6 +37,10 @@ import com.gargoylesoftware.htmlunit.WebWindow;
 
 /**
  * Implementation of {@link Alert}.
+ *
+ * @author Ahmed Ashour
+ * @author Aaftakhov
+ * @author Ronald Brill
  */
 public class HtmlUnitAlert implements Alert {
 

@@ -35,6 +35,11 @@ import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
  * Injects an asynchronous script into the current page for execution. The
  * script should signal that it is finished by invoking the callback function,
  * which will always be the last argument passed to the injected script.
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Simon Stewart
+ * @author Ronald Brill
  */
 class AsyncScriptExecutor {
 

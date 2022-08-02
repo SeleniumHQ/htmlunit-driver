@@ -34,6 +34,8 @@ import com.gargoylesoftware.htmlunit.WebConsole.Logger;
 /**
  * An implementation of the {@link Logs} interface for HtmlUnit. At the moment
  * this is empty.
+ *
+ * @author Ronald Brill
  */
 public class HtmlUnitLogs implements Logs {
     private final HtmlUnitDriverLogger logger_;

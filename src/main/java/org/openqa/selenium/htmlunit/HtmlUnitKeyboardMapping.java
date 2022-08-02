@@ -26,6 +26,10 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 
 /**
  * Maps {@link Keys} to their {@link KeyboardEvent} constant.
+ *
+ * @author Ahmed Ashour
+ * @author Luke Inman-Semerau
+ * @author Ronald Brill
  */
 public final class HtmlUnitKeyboardMapping {
 

@@ -69,19 +69,29 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLInputElement;
 import net.sourceforge.htmlunit.corejs.javascript.Scriptable;
 import net.sourceforge.htmlunit.corejs.javascript.ScriptableObject;
 
+/**
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Javier Neira
+ * @author Ronald Brill
+ * @author Andrei Solntsev
+ * @author Martin Bartoš
+ */
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
+
+    private static final String[] booleanAttributes = {"async", "autofocus", "autoplay", "checked", "compact",
+        "complete", "controls", "declare", "defaultchecked", "defaultselected", "defer", "disabled", "draggable",
+        "ended", "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope", "loop",
+        "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open", "paused", "pubdate",
+        "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
+        "willvalidate"};
 
     protected final HtmlUnitDriver driver_;
     protected final int id_;
     protected final DomElement element_;
-    private static final String[] booleanAttributes = {"async", "autofocus", "autoplay", "checked", "compact",
-            "complete", "controls", "declare", "defaultchecked", "defaultselected", "defer", "disabled", "draggable",
-            "ended", "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope", "loop",
-            "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open", "paused", "pubdate",
-            "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
-            "willvalidate"};
 
-    private String toString;
+    private String toString_;
 
     public HtmlUnitWebElement(final HtmlUnitDriver driver, final int id, final DomElement element) {
         driver_ = driver;
@@ -541,7 +551,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     @Override
     public String toString() {
-        if (toString == null) {
+        if (toString_ == null) {
             final StringBuilder sb = new StringBuilder();
             sb.append('<').append(element_.getTagName());
             final NamedNodeMap attributes = element_.getAttributes();
@@ -557,9 +567,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             else {
                 sb.append(" />");
             }
-            toString = sb.toString();
+            toString_ = sb.toString();
         }
-        return toString;
+        return toString_;
     }
 
     protected void assertElementNotStale() {
