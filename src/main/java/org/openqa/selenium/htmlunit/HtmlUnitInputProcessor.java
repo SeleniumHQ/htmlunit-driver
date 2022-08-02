@@ -227,6 +227,35 @@ public class HtmlUnitInputProcessor {
         }
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
+            if (previousAction instanceof KeyDownHtmlUnitAction) {
+                final KeyDownHtmlUnitAction keyDownHtmlUnitAction = (KeyDownHtmlUnitAction) previousAction;
+                // todo null check
+                if (value_.equals(keyDownHtmlUnitAction.value_)) {
+                    return new KeySendHtmlUnitAction(value_);
+                }
+            }
+
+            return this;
+        }
+    }
+
+    public static final class KeySendHtmlUnitAction implements HtmlUnitAction {
+        private final String value_;
+
+        public KeySendHtmlUnitAction(final String value) {
+            value_ = value;
+        }
+
+        public void process(final HtmlUnitDriver driver) {
+            driver.getKeyboard().sendKeys(value_);
+        }
+
+        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
+            if (previousAction instanceof KeySendHtmlUnitAction) {
+                final KeySendHtmlUnitAction keySendHtmlUnitAction = (KeySendHtmlUnitAction) previousAction;
+                return new KeySendHtmlUnitAction(keySendHtmlUnitAction.value_ + value_);
+            }
+
             return this;
         }
     }
