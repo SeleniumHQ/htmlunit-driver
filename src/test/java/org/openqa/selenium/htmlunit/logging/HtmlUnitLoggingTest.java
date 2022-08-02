@@ -30,6 +30,9 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
+/**
+ * @author Ronald Brill
+ */
 @RunWith(BrowserRunner.class)
 public class HtmlUnitLoggingTest extends WebDriverTestCase {
 

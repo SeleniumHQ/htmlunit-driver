@@ -145,8 +145,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     private final HtmlUnitElementFinder elementFinder_;
     private HtmlUnitInputProcessor inputProcessor_ = new HtmlUnitInputProcessor(this);
 
-    private static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
-    private static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
+    public static final String BROWSER_LANGUAGE_CAPABILITY = "browserLanguage";
+    public static final String DOWNLOAD_IMAGES_CAPABILITY = "downloadImages";
+    public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
     /**
      * The Lock for the {@link #mainCondition_}, which waits at the end of

@@ -39,12 +39,12 @@ import com.gargoylesoftware.htmlunit.WebWindow;
  * Implementation of {@link Alert}.
  *
  * @author Ahmed Ashour
- * @author Aaftakhov
+ * @author A aftakhov
  * @author Ronald Brill
  */
 public class HtmlUnitAlert implements Alert {
 
-    HtmlUnitDriver driver_;
+    private HtmlUnitDriver driver_;
     private AlertHolder holder_;
     private boolean quitting_;
     private Lock lock_ = new ReentrantLock();
