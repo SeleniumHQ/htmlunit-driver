@@ -152,6 +152,11 @@ import com.gargoylesoftware.htmlunit.util.NameValuePair;
  *   <li>autofix (optional): if {@code true}, try to automatically fix the real browser expectations,
  *   or add/remove {@code @NotYetImplemented} annotations, use with caution!</li>
  * </ul>
+ *
+ * @author Marc Guillemot
+ * @author Ahmed Ashour
+ * @author Ronald Brill
+ * @author Frank Danek
  */
 public abstract class WebDriverTestCase extends WebTestCase {
 
@@ -159,7 +164,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
      * Function used in many tests.
      */
     public static final String LOG_TITLE_FUNCTION =
-            "  function log(msg) { window.document.title += msg + '§';}\n";
+            "  function log(msg) { window.document.title += msg + '$';}\n";
 
     /**
      * Function used in many tests.
@@ -171,7 +176,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                     + "msg = msg.replace(/\\n/g, '\\\\n'); "
                     + "msg = msg.replace(/\\r/g, '\\\\r'); "
                     + "msg = msg.replace(/\\t/g, '\\\\t'); "
-                    + "window.document.title += msg + '§';}\n";
+                    + "window.document.title += msg + '$';}\n";
 
     /**
      * Function used in many tests.
@@ -180,13 +185,13 @@ public abstract class WebDriverTestCase extends WebTestCase {
             + "msg = ('' + msg).replace(/\\t/g, '\\\\t');"
             + "msg = msg.replace(/\\r/g, '\\\\r');"
             + "msg = msg.replace(/\\n/g, '\\\\n');"
-            + "window.document.title += msg + '§';}\n";
+            + "window.document.title += msg + '$';}\n";
 
     /**
      * Function used in many tests.
      */
     public static final String LOG_TEXTAREA_FUNCTION = "  function log(msg) { "
-            + "document.getElementById('myLog').value += msg + '§';}\n";
+            + "document.getElementById('myLog').value += msg + '$';}\n";
 
     /**
      * HtmlSniped to insert text area used for logging.
@@ -1087,7 +1092,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
         else {
             final StringBuilder expected = new StringBuilder();
             for (int i = 0; i < expectedAlerts.length; i++) {
-                expected.append(expectedAlerts[i]).append('§');
+                expected.append(expectedAlerts[i]).append('$');
             }
 
             final String title = driver.getTitle();
@@ -1129,7 +1134,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                 && expectedAlerts.length == 1
                 && expectedAlerts[0].startsWith("data:image/png;base64,")) {
             String value = textArea.getAttribute("value");
-            if (value.endsWith("§")) {
+            if (value.endsWith("$")) {
                 value = value.substring(0, value.length() - 1);
             }
             compareImages(expectedAlerts[0], value);
@@ -1139,7 +1144,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
         final StringBuilder expected = new StringBuilder();
         for (int i = 0; i < expectedAlerts.length; i++) {
-            expected.append(expectedAlerts[i]).append('§');
+            expected.append(expectedAlerts[i]).append('$');
         }
         assertEquals(expected.toString(), textArea.getAttribute("value"));
 

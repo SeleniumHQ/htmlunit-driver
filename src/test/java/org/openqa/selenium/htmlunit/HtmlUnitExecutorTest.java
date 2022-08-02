@@ -19,6 +19,12 @@ package org.openqa.selenium.htmlunit;
 
 import org.junit.Test;
 
+/**
+ * Executor tests.
+ *
+ * @author Rob Winch
+ * @author Ronald Brill
+ */
 public class HtmlUnitExecutorTest {
 
     /*

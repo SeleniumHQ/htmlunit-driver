@@ -35,6 +35,11 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
 
 /**
  * Test the proxy setting.
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Ronald Brill
+ * @author Martin Bartoš
  */
 public class HtmlUnitProxyTest {
 

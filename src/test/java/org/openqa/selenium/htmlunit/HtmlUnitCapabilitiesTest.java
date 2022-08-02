@@ -37,6 +37,13 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
 
 /**
  * Test the determineBrowserVersion method.
+ *
+ * @author Alexei Barantsev
+ * @author Ahmed Ashour
+ * @author Rafael Jimenez
+ * @author Luke Inman-Semerau
+ * @author Ronald Brill
+ * @author Martin Bartoš
  */
 public class HtmlUnitCapabilitiesTest {
 

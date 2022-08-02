@@ -28,6 +28,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * Separate test class for the HtmlUnitWebElement.getDomProperty(String) method.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {

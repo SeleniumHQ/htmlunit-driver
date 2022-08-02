@@ -24,6 +24,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
+/**
+ * Test class for the HtmlUnitWebElement.
+ *
+ * @author Ahmed Ashour
+ * @author Ronald Brill
+ */
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementTest extends WebDriverTestCase {
 

@@ -26,6 +26,8 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
 /**
  * Separate test class for the HtmlUnitWebElement.getAttribute(String) method.
+ *
+ * @author Ronald Brill
  */
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {

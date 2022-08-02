@@ -32,6 +32,12 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.WebClient;
 
+/**
+ * General tests for the HtmlUnitDriver.
+ *
+ * @author Ronald Brill
+ * @author Martin Bartoš
+ */
 public class HtmlUnitDriverTest {
 
     @Test

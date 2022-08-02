@@ -56,6 +56,15 @@ import com.gargoylesoftware.htmlunit.MockWebConnection;
 
 /**
  * Common superclass for HtmlUnit tests.
+ *
+ * @author <a href="mailto:mbowler@GargoyleSoftware.com">Mike Bowler</a>
+ * @author David D. Kilzer
+ * @author Marc Guillemot
+ * @author Chris Erskine
+ * @author Michael Ottati
+ * @author Daniel Gredler
+ * @author Ahmed Ashour
+ * @author Ronald Brill
  */
 public abstract class WebTestCase {
 
