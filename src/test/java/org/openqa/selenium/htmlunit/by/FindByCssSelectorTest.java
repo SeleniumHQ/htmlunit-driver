@@ -35,7 +35,7 @@ public class FindByCssSelectorTest extends WebDriverTestCase {
 
     @Test
     public void elementByCssSelector() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -50,7 +50,7 @@ public class FindByCssSelectorTest extends WebDriverTestCase {
 
     @Test
     public void elementsByCssSelector() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -66,7 +66,7 @@ public class FindByCssSelectorTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementByCssSelector() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -85,7 +85,7 @@ public class FindByCssSelectorTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementsByCssSelector() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

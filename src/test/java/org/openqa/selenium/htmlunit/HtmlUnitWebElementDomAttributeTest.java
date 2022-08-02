@@ -32,10 +32,9 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 @RunWith(BrowserRunner.class)
 public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
-
     @Test
     public void domAttribute() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -44,7 +43,7 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals("testDivId", elem.getDomAttribute("id"));
         assertNull(elem.getDomAttribute("unknown"));
         assertEquals("", elem.getDomAttribute("name"));
@@ -59,7 +58,7 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
             EDGE = "",
             IE = "")
     public void unsupportedAttribute() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -68,13 +67,13 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("disabled"));
     }
 
     @Test
     public void disabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -85,13 +84,13 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("chkBx"));
+        final WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getDomAttribute("disabled"));
     }
 
     @Test
     public void notDisabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -102,7 +101,7 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("chkBx"));
+        final WebElement elem = driver.findElement(By.id("chkBx"));
         assertNull(elem.getDomAttribute("disabled"));
     }
 }

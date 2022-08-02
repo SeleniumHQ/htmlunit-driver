@@ -38,33 +38,33 @@ public class KeyboardEventTest extends WebDriverTestCase {
   /**
    * @throws Exception if the test fails
    */
-  @Test
-  @Alerts(DEFAULT = {"keydown:16,0,16",
-                  "keydown:65,0,65",
-                  "keypress:65,65,65",
-                  "keyup:65,0,65",
-                  "keyup:16,0,16",
-                  "keydown:65,0,65",
-                  "keypress:97,97,97",
-                  "keyup:65,0,65",
-                  "keydown:190,0,190",
-                  "keypress:46,46,46",
-                  "keyup:190,0,190",
-                  "keydown:13,0,13",
-                  "keypress:13,13,13",
-                  "keyup:13,0,13"},
-          FF = {  "keydown:65,0,65",
-                  "keypress:65,65,65",
-                  "keyup:65,0,65",
-                  "keydown:65,0,65",
-                  "keypress:97,97,97",
-                  "keyup:65,0,65",
-                  "keydown:190,0,190",
-                  "keypress:46,46,46",
-                  "keyup:190,0,190",
-                  "keydown:13,0,13",
-                  "keypress:13,13,13",
-                  "keyup:13,0,13"},
+    @Test
+    @Alerts(DEFAULT = {"keydown:16,0,16",
+                       "keydown:65,0,65",
+                       "keypress:65,65,65",
+                       "keyup:65,0,65",
+                       "keyup:16,0,16",
+                       "keydown:65,0,65",
+                       "keypress:97,97,97",
+                       "keyup:65,0,65",
+                       "keydown:190,0,190",
+                       "keypress:46,46,46",
+                       "keyup:190,0,190",
+                       "keydown:13,0,13",
+                       "keypress:13,13,13",
+                       "keyup:13,0,13"},
+          FF = {"keydown:65,0,65",
+                "keypress:65,65,65",
+                "keyup:65,0,65",
+                "keydown:65,0,65",
+                "keypress:97,97,97",
+                "keyup:65,0,65",
+                "keydown:190,0,190",
+                "keypress:46,46,46",
+                "keyup:190,0,190",
+                "keydown:13,0,13",
+                "keypress:13,13,13",
+                "keyup:13,0,13"},
           FF_ESR = {"keydown:65,0,65",
                     "keypress:65,65,65",
                     "keyup:65,0,65",
@@ -77,29 +77,29 @@ public class KeyboardEventTest extends WebDriverTestCase {
                     "keydown:13,0,13",
                     "keypress:13,13,13",
                     "keyup:13,0,13"})
-  @NotYetImplemented({FF, FF_ESR})
-  public void which() throws Exception {
-      final String html
-          = "<html><head></head><body>\n"
-          + "<input type='text' id='keyId'>\n"
-          + "<script>\n"
-          + "function handler(e) {\n"
-          + "  e = e ? e : window.event;\n"
-          + "  document.getElementById('myTextarea').value "
-          + "+= e.type + ':' + e.keyCode + ',' + e.charCode + ',' + e.which + '\\n';\n"
-          + "}\n"
-          + "document.getElementById('keyId').onkeyup = handler;\n"
-          + "document.getElementById('keyId').onkeydown = handler;\n"
-          + "document.getElementById('keyId').onkeypress = handler;\n"
-          + "</script>\n"
-          + "<textarea id='myTextarea' cols=80 rows=20></textarea>\n"
-          + "</body></html>";
-      final String keysToSend = "Aa." + Keys.RETURN;
-      final WebDriver driver = loadPage2(html);
-      driver.findElement(By.id("keyId")).sendKeys(keysToSend);
+    @NotYetImplemented({FF, FF_ESR})
+    public void which() throws Exception {
+        final String html
+            = "<html><head></head><body>\n"
+            + "<input type='text' id='keyId'>\n"
+            + "<script>\n"
+            + "function handler(e) {\n"
+            + "  e = e ? e : window.event;\n"
+            + "  document.getElementById('myTextarea').value "
+            + "+= e.type + ':' + e.keyCode + ',' + e.charCode + ',' + e.which + '\\n';\n"
+            + "}\n"
+            + "document.getElementById('keyId').onkeyup = handler;\n"
+            + "document.getElementById('keyId').onkeydown = handler;\n"
+            + "document.getElementById('keyId').onkeypress = handler;\n"
+            + "</script>\n"
+            + "<textarea id='myTextarea' cols=80 rows=20></textarea>\n"
+            + "</body></html>";
+        final String keysToSend = "Aa." + Keys.RETURN;
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("keyId")).sendKeys(keysToSend);
 
-      final String[] actual = driver.findElement(By.id("myTextarea")).getAttribute("value").split("\r\n|\n");
-      assertEquals(Arrays.asList(getExpectedAlerts()).toString(), Arrays.asList(actual).toString());
-  }
+        final String[] actual = driver.findElement(By.id("myTextarea")).getAttribute("value").split("\r\n|\n");
+        assertEquals(Arrays.asList(getExpectedAlerts()).toString(), Arrays.asList(actual).toString());
+    }
 
 }

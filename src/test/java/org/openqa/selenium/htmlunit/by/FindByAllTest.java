@@ -34,7 +34,7 @@ public class FindByAllTest extends WebDriverTestCase {
 
     @Test
     public void byAllOneId() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -49,7 +49,7 @@ public class FindByAllTest extends WebDriverTestCase {
 
     @Test
     public void byAllTwoIds() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

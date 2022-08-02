@@ -31,56 +31,56 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
  */
 public class HtmlUnitInputProcessor {
     private final HtmlUnitDriver driver_;
-    private final List<HtmlUnitAction> htmlUnitActions = new ArrayList<>();
+    private final List<HtmlUnitAction> htmlUnitActions_ = new ArrayList<>();
 
-    public HtmlUnitInputProcessor(HtmlUnitDriver driver) {
+    public HtmlUnitInputProcessor(final HtmlUnitDriver driver) {
         driver_ = driver;
     }
 
     public void performActions() {
-        for (HtmlUnitAction htmlUnitAction : htmlUnitActions) {
+        for (final HtmlUnitAction htmlUnitAction : htmlUnitActions_) {
             htmlUnitAction.process(driver_);
         }
-        htmlUnitActions.clear();
+        htmlUnitActions_.clear();
     }
 
-    public void enqueuAction(Action action) {
-        HtmlUnitAction htmlUnitAction = action.buildHtmlUnitAction();
+    public void enqueuAction(final Action action) {
+        final HtmlUnitAction htmlUnitAction = action.buildHtmlUnitAction();
         if (htmlUnitAction != null) {
             enqueuHtmlUnitAction(htmlUnitAction);
         }
     }
 
-    private void enqueuHtmlUnitAction(HtmlUnitAction action) {
-        htmlUnitActions.add(action);
+    private void enqueuHtmlUnitAction(final HtmlUnitAction action) {
+        htmlUnitActions_.add(action);
 
-        while (htmlUnitActions.size() > 1) {
-            int lastPos = htmlUnitActions.size() - 1;
-            int secondLastPos = lastPos - 1;
+        while (htmlUnitActions_.size() > 1) {
+            final int lastPos = htmlUnitActions_.size() - 1;
+            final int secondLastPos = lastPos - 1;
 
-            HtmlUnitAction lastAction = htmlUnitActions.get(lastPos);
-            HtmlUnitAction joinedAction = lastAction.join(htmlUnitActions.get(secondLastPos));
+            final HtmlUnitAction lastAction = htmlUnitActions_.get(lastPos);
+            final HtmlUnitAction joinedAction = lastAction.join(htmlUnitActions_.get(secondLastPos));
             if (joinedAction == lastAction) {
                 return;
             }
 
-            htmlUnitActions.set(secondLastPos, joinedAction);
-            htmlUnitActions.remove(lastPos);
+            htmlUnitActions_.set(secondLastPos, joinedAction);
+            htmlUnitActions_.remove(lastPos);
         }
 
     }
 
-    public static interface HtmlUnitAction {
+    public interface HtmlUnitAction {
 
-        void process(final HtmlUnitDriver driver);
+        void process(HtmlUnitDriver driver);
 
-        HtmlUnitAction join(final HtmlUnitAction previousAction);
+        HtmlUnitAction join(HtmlUnitAction previousAction);
     }
 
-    private static abstract class DomElementHtmlUnitAction implements HtmlUnitAction {
+    private abstract static class DomElementHtmlUnitAction implements HtmlUnitAction {
         private DomElement domElement_;
 
-        public DomElementHtmlUnitAction(DomElement domElement) {
+        DomElementHtmlUnitAction(final DomElement domElement) {
             domElement_ = domElement;
         }
 
@@ -91,7 +91,7 @@ public class HtmlUnitInputProcessor {
 
     public static final class PointerMoveHtmlUnitAction extends DomElementHtmlUnitAction {
 
-        public PointerMoveHtmlUnitAction(DomElement domElement) {
+        public PointerMoveHtmlUnitAction(final DomElement domElement) {
             super(domElement);
         }
 
@@ -104,10 +104,10 @@ public class HtmlUnitInputProcessor {
         }
     }
 
-    public static abstract class PointerHtmlUnitAction extends DomElementHtmlUnitAction {
+    public abstract static class PointerHtmlUnitAction extends DomElementHtmlUnitAction {
         private final int button_;
 
-        public PointerHtmlUnitAction(DomElement domElement, int button) {
+        public PointerHtmlUnitAction(final DomElement domElement, final int button) {
             super(domElement);
             button_ = button;
         }
@@ -119,7 +119,7 @@ public class HtmlUnitInputProcessor {
 
     public static final class PointerDownHtmlUnitAction extends PointerHtmlUnitAction {
 
-        public PointerDownHtmlUnitAction(DomElement domElement, int button) {
+        public PointerDownHtmlUnitAction(final DomElement domElement, final int button) {
             super(domElement, button);
         }
 
@@ -134,7 +134,7 @@ public class HtmlUnitInputProcessor {
 
     public static final class PointerUpHtmlUnitAction extends PointerHtmlUnitAction {
 
-        public PointerUpHtmlUnitAction(DomElement domElement, int button) {
+        public PointerUpHtmlUnitAction(final DomElement domElement, final int button) {
             super(domElement, button);
         }
 
@@ -144,7 +144,7 @@ public class HtmlUnitInputProcessor {
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof PointerDownHtmlUnitAction) {
-                PointerDownHtmlUnitAction pointerDownAction = (PointerDownHtmlUnitAction) previousAction;
+                final PointerDownHtmlUnitAction pointerDownAction = (PointerDownHtmlUnitAction) previousAction;
                 if (pointerDownAction.getDomElement() == getDomElement()
                         && pointerDownAction.getButton() == getButton()) {
                     return new PointerClickHtmlUnitAction(getDomElement(), getButton());
@@ -157,7 +157,7 @@ public class HtmlUnitInputProcessor {
 
     private static final class PointerClickHtmlUnitAction extends PointerHtmlUnitAction {
 
-        public PointerClickHtmlUnitAction(DomElement domElement, int button) {
+        PointerClickHtmlUnitAction(final DomElement domElement, final int button) {
             super(domElement, button);
         }
 
@@ -172,7 +172,7 @@ public class HtmlUnitInputProcessor {
 
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof PointerClickHtmlUnitAction) {
-                PointerClickHtmlUnitAction pointerClickAction = (PointerClickHtmlUnitAction) previousAction;
+                final PointerClickHtmlUnitAction pointerClickAction = (PointerClickHtmlUnitAction) previousAction;
                 if (pointerClickAction.getDomElement() == getDomElement()) {
                     return new PointerDblClickHtmlUnitAction(getDomElement());
                 }
@@ -184,7 +184,7 @@ public class HtmlUnitInputProcessor {
 
     private static final class PointerDblClickHtmlUnitAction extends DomElementHtmlUnitAction {
 
-        public PointerDblClickHtmlUnitAction(DomElement domElement) {
+        PointerDblClickHtmlUnitAction(final DomElement domElement) {
             super(domElement);
         }
 
@@ -200,7 +200,7 @@ public class HtmlUnitInputProcessor {
     public static final class KeyDownHtmlUnitAction implements HtmlUnitAction {
         private final String value_;
 
-        public KeyDownHtmlUnitAction(String value) {
+        public KeyDownHtmlUnitAction(final String value) {
             value_ = value;
         }
 
@@ -216,7 +216,7 @@ public class HtmlUnitInputProcessor {
     public static final class KeyUpHtmlUnitAction implements HtmlUnitAction {
         private final String value_;
 
-        public KeyUpHtmlUnitAction(String value) {
+        public KeyUpHtmlUnitAction(final String value) {
             value_ = value;
         }
 

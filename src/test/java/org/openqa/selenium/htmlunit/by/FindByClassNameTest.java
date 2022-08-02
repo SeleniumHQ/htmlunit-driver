@@ -38,7 +38,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
 
     @Test
     public void elementByClassName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -53,7 +53,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
 
     @Test
     public void elementsByClassName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -69,7 +69,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementByClassName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -88,7 +88,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementsByClassName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -110,7 +110,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
     @Alerts("testId")
     @HtmlUnitNYI(CHROME = "", EDGE = "", FF = "", FF_ESR = "", IE = "")
     public void caseInsensitiveByClassName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -122,7 +122,8 @@ public class FindByClassNameTest extends WebDriverTestCase {
         try {
             final WebElement element = driver.findElement(By.className("Testclass"));
             assertEquals(getExpectedAlerts()[0], element.getAttribute("id"));
-        } catch (NoSuchElementException e) {
+        }
+        catch (final NoSuchElementException e) {
             assertEquals(getExpectedAlerts()[0], "");
         }
     }

@@ -35,7 +35,7 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
     @Test
     public void elementByPartialLinkText() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -48,10 +48,9 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
         assertEquals("testId", element.getAttribute("id"));
     }
 
-
     @Test
     public void elementsByPartialLinkText() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -67,7 +66,7 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementByPartialLinkText() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -84,10 +83,9 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
         assertEquals("testId2", element.getAttribute("id"));
     }
 
-
     @Test
     public void relativeElementsByPartialLinkText() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -108,7 +106,7 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
     @Test
     public void normalization() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -120,7 +118,7 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        WebElement body = driver.findElement(By.tagName("body"));
+        final WebElement body = driver.findElement(By.tagName("body"));
 
         WebElement elem = body.findElement(By.partialLinkText("Link 1"));
         assertEquals("Link 1", elem.getText());
@@ -134,7 +132,7 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
     @Test
     public void queryWithLeadingBlank() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -144,15 +142,15 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        WebElement body = driver.findElement(By.tagName("body"));
+        final WebElement body = driver.findElement(By.tagName("body"));
 
-        List<WebElement> elements = body.findElements(By.partialLinkText(" Link 1"));
+        final List<WebElement> elements = body.findElements(By.partialLinkText(" Link 1"));
         assertEquals(0, elements.size());
     }
 
     @Test
     public void queryWithTrailingBlank() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -162,15 +160,15 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        WebElement body = driver.findElement(By.tagName("body"));
+        final WebElement body = driver.findElement(By.tagName("body"));
 
-        List<WebElement> elements = body.findElements(By.partialLinkText("Link 1 "));
+        final List<WebElement> elements = body.findElements(By.partialLinkText("Link 1 "));
         assertEquals(0, elements.size());
     }
 
     @Test
     public void missingHref() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -180,9 +178,9 @@ public class FindByPartialLinkTextTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        WebElement body = driver.findElement(By.tagName("body"));
+        final WebElement body = driver.findElement(By.tagName("body"));
 
-        WebElement elem = body.findElement(By.partialLinkText("Link 1"));
+        final WebElement elem = body.findElement(By.partialLinkText("Link 1"));
         assertEquals("Link 1", elem.getText());
     }
 }

@@ -60,7 +60,7 @@ public class HtmlUnitWebElementTextTest extends WebDriverTestCase {
             + "</body></html>";
 
         final WebDriver driver = loadPage2(html);
-        WebElement element = driver.findElement(By.id("tester"));
+        final WebElement element = driver.findElement(By.id("tester"));
         assertNotNull(element);
 
         assertEquals(getExpectedAlerts()[0], element.getText());

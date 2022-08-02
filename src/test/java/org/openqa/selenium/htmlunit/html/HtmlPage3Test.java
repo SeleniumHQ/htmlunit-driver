@@ -26,25 +26,24 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 @RunWith(BrowserRunner.class)
 public class HtmlPage3Test extends WebDriverTestCase {
 
-  /**
-   * @exception Exception If the test fails
-   */
-  @Test
-  public void constructor() throws Exception {
-      final String html = "<html>\n"
-          + "<head><title>foo</title></head>\n"
-          + "<body>\n"
-          + "<p>hello world</p>\n"
-          + "<form id='form1' action='/formSubmit' method='post'>\n"
-          + "  <input type='text' NAME='textInput1' value='textInput1'/>\n"
-          + "  <input type='text' name='textInput2' value='textInput2'/>\n"
-          + "  <input type='hidden' name='hidden1' value='hidden1'/>\n"
-          + "  <input type='submit' name='submitInput1' value='push me'/>\n"
-          + "</form>\n"
-          + "</body></html>";
+    /**
+     * @exception Exception If the test fails
+     */
+    @Test
+    public void constructor() throws Exception {
+        final String html = "<html>\n"
+            + "<head><title>foo</title></head>\n"
+            + "<body>\n"
+            + "<p>hello world</p>\n"
+            + "<form id='form1' action='/formSubmit' method='post'>\n"
+            + "  <input type='text' NAME='textInput1' value='textInput1'/>\n"
+            + "  <input type='text' name='textInput2' value='textInput2'/>\n"
+            + "  <input type='hidden' name='hidden1' value='hidden1'/>\n"
+            + "  <input type='submit' name='submitInput1' value='push me'/>\n"
+            + "</form>\n"
+            + "</body></html>";
 
-      final WebDriver driver = loadPage2(html);
-      assertEquals("foo", driver.getTitle());
-  }
-
+        final WebDriver driver = loadPage2(html);
+        assertEquals("foo", driver.getTitle());
+    }
 }

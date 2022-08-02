@@ -35,7 +35,7 @@ public class FindByXPathTest extends WebDriverTestCase {
 
     @Test
     public void elementByXPath() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -50,7 +50,7 @@ public class FindByXPathTest extends WebDriverTestCase {
 
     @Test
     public void elementsByXPath() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -66,7 +66,7 @@ public class FindByXPathTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementByXPath() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -85,7 +85,7 @@ public class FindByXPathTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementsByXPath() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

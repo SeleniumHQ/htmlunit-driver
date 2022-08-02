@@ -100,7 +100,7 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
 
     @Test
     public void tagName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

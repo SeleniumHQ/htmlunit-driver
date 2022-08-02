@@ -45,21 +45,21 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class HtmlUnitElementFinder {
 
-    private final Map<Class<? extends By>, HtmlUnitElementLocator> finders = new HashMap<>();
+    private final Map<Class<? extends By>, HtmlUnitElementLocator> finders_ = new HashMap<>();
 
     HtmlUnitElementFinder() {
-        finders.put(By.id("a").getClass(), new FindByID());
-        finders.put(By.name("a").getClass(), new FindByName());
-        finders.put(By.linkText("a").getClass(), new FindByLinkText());
-        finders.put(By.partialLinkText("a").getClass(), new FindByPartialLinkText());
-        finders.put(By.className("a").getClass(), new FindByClassName());
-        finders.put(By.cssSelector("a").getClass(), new FindByCssSelector());
-        finders.put(By.tagName("a").getClass(), new FindByTagName());
-        finders.put(By.xpath("//a").getClass(), new FindByXPath());
+        finders_.put(By.id("a").getClass(), new FindByID());
+        finders_.put(By.name("a").getClass(), new FindByName());
+        finders_.put(By.linkText("a").getClass(), new FindByLinkText());
+        finders_.put(By.partialLinkText("a").getClass(), new FindByPartialLinkText());
+        finders_.put(By.className("a").getClass(), new FindByClassName());
+        finders_.put(By.cssSelector("a").getClass(), new FindByCssSelector());
+        finders_.put(By.tagName("a").getClass(), new FindByTagName());
+        finders_.put(By.xpath("//a").getClass(), new FindByXPath());
     }
 
-    public WebElement findElement(HtmlUnitDriver driver, By locator) {
-        HtmlUnitElementLocator elementLocator = finders.get(locator.getClass());
+    public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
+        final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElement(driver);
         }
@@ -67,8 +67,8 @@ public class HtmlUnitElementFinder {
         return elementLocator.findElement(driver, locator);
     }
 
-    public List<WebElement> findElements(HtmlUnitDriver driver, By locator) {
-        HtmlUnitElementLocator elementLocator = finders.get(locator.getClass());
+    public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
+        final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElements(driver);
         }
@@ -76,8 +76,8 @@ public class HtmlUnitElementFinder {
         return elementLocator.findElements(driver, locator);
     }
 
-    public WebElement findElement(HtmlUnitWebElement element, By locator) {
-        HtmlUnitElementLocator elementLocator = finders.get(locator.getClass());
+    public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
+        final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElement(element);
         }
@@ -85,8 +85,8 @@ public class HtmlUnitElementFinder {
         return elementLocator.findElement(element, locator);
     }
 
-    public List<WebElement> findElements(HtmlUnitWebElement element, By locator) {
-        HtmlUnitElementLocator elementLocator = finders.get(locator.getClass());
+    public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
+        final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElements(element);
         }
@@ -98,13 +98,13 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage = getLastPage(driver);
+            final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
                 throw new IllegalStateException("Cannot find elements by id for " + lastPage);
             }
 
-            String id = getValue(locator);
-            DomElement element = ((HtmlPage) lastPage).getElementById(id);
+            final String id = getValue(locator);
+            final DomElement element = ((HtmlPage) lastPage).getElementById(id);
 
             if (element == null) {
                 throw new NoSuchElementException("Unable to locate element with ID: '" + id + "'");
@@ -114,7 +114,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage = getLastPage(driver);
+            final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
                 throw new IllegalStateException("Cannot find elements by id for " + lastPage);
             }
@@ -125,13 +125,13 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            String id = getValue(locator);
+            final String id = getValue(locator);
             return new FindByXPath().findElement(element, By.xpath(".//*[@id = '" + id + "']"));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            String id = getValue(locator);
+            final String id = getValue(locator);
             return new FindByXPath().findElements(element, By.xpath(".//*[@id = '" + id + "']"));
         }
     }
@@ -140,7 +140,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage = getLastPage(driver);
+            final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
                 throw new IllegalStateException("Cannot find elements by id for " + lastPage);
             }
@@ -151,7 +151,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            String name = getValue(locator);
+            final String name = getValue(locator);
             return new FindByXPath().findElements(element, By.xpath(".//*[@name = '" + name + "']"));
         }
     }
@@ -160,16 +160,16 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage = getLastPage(driver);
+            final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
                 throw new IllegalStateException("Cannot find links for " + lastPage);
             }
 
-            String expectedText = getValue(locator);
-            List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
+            final String expectedText = getValue(locator);
+            final List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
 
-            List<WebElement> toReturn = new ArrayList<>();
-            for (HtmlAnchor anchor : anchors) {
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final HtmlAnchor anchor : anchors) {
                 if (expectedText.equals(anchor.asNormalizedText())) {
                     toReturn.add(driver.toWebElement(anchor));
                 }
@@ -179,11 +179,11 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            String expectedText = getValue(locator);
-            List<? extends HtmlElement> htmlElements = element.getElement().getElementsByTagName("a");
+            final String expectedText = getValue(locator);
+            final List<? extends HtmlElement> htmlElements = element.getElement().getElementsByTagName("a");
 
-            List<WebElement> toReturn = new ArrayList<>();
-            for (DomElement e : htmlElements) {
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final DomElement e : htmlElements) {
                 if (expectedText.equals(e.asNormalizedText())) {
                     toReturn.add(element.getDriver().toWebElement(e));
                 }
@@ -196,15 +196,15 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage = getLastPage(driver);
+            final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
                 throw new IllegalStateException("Cannot find links for " + lastPage);
             }
 
-            String expectedText = getValue(locator);
-            List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
-            List<WebElement> toReturn = new ArrayList<>();
-            for (HtmlAnchor anchor : anchors) {
+            final String expectedText = getValue(locator);
+            final List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final HtmlAnchor anchor : anchors) {
                 if (anchor.asNormalizedText().contains(expectedText)) {
                     toReturn.add(driver.toWebElement(anchor));
                 }
@@ -214,11 +214,11 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            String expectedText = getValue(locator);
-            DomNodeList<HtmlElement> anchors = element.getElement().getElementsByTagName("a");
+            final String expectedText = getValue(locator);
+            final DomNodeList<HtmlElement> anchors = element.getElement().getElementsByTagName("a");
 
-            List<WebElement> toReturn = new ArrayList<>();
-            for (HtmlElement anchor : anchors) {
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final HtmlElement anchor : anchors) {
                 if (anchor.asNormalizedText().contains(expectedText)) {
                     toReturn.add(element.getDriver().toWebElement(anchor));
                 }
@@ -229,8 +229,8 @@ public class HtmlUnitElementFinder {
 
     public static class FindByClassName extends HtmlUnitElementLocator {
 
-        private String checkValue(By locator) {
-            String value = getValue(locator);
+        private String checkValue(final By locator) {
+            final String value = getValue(locator);
 
             if (value.indexOf(' ') != -1) {
                 throw new NoSuchElementException("Compound class names not permitted");
@@ -253,11 +253,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            DomNode node;
+            final DomNode node;
 
             try {
                 node = getLastPage(driver).querySelector(getValue(locator));
-            } catch (CSSException ex) {
+            }
+            catch (final CSSException ex) {
                 throw new NoSuchElementException("Unable to locate element using css", ex);
             }
 
@@ -270,20 +271,22 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            DomNodeList<DomNode> allNodes;
+            final DomNodeList<DomNode> allNodes;
 
             try {
                 allNodes = getLastPage(driver).querySelectorAll(getValue(locator));
-            } catch (CSSException ex) {
+            }
+            catch (final CSSException ex) {
                 throw new NoSuchElementException("Unable to locate element using css", ex);
             }
 
-            List<WebElement> toReturn = new ArrayList<>();
+            final List<WebElement> toReturn = new ArrayList<>();
 
-            for (DomNode node : allNodes) {
+            for (final DomNode node : allNodes) {
                 if (node instanceof DomElement) {
                     toReturn.add(driver.toWebElement((DomElement) node));
-                } else {
+                }
+                else {
                     throw new NoSuchElementException("Returned node was not a DOM element");
                 }
             }
@@ -293,20 +296,22 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            DomNodeList<DomNode> allNodes;
+            final DomNodeList<DomNode> allNodes;
 
             try {
                 allNodes = element.getElement().querySelectorAll(getValue(locator));
-            } catch (CSSException ex) {
+            }
+            catch (final CSSException ex) {
                 throw new NoSuchElementException("Unable to locate element using css", ex);
             }
 
-            List<WebElement> toReturn = new ArrayList<>();
+            final List<WebElement> toReturn = new ArrayList<>();
 
-            for (DomNode node : allNodes) {
+            for (final DomNode node : allNodes) {
                 if (node instanceof DomElement) {
                     toReturn.add(element.getDriver().toWebElement((DomElement) node));
-                } else {
+                }
+                else {
                     throw new NoSuchElementException("Returned node was not a DOM element");
                 }
             }
@@ -316,11 +321,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            DomNode node;
+            final DomNode node;
 
             try {
                 node = element.getElement().querySelector(getValue(locator));
-            } catch (CSSException ex) {
+            }
+            catch (final CSSException ex) {
                 throw new NoSuchElementException("Unable to locate element using css", ex);
             }
 
@@ -336,7 +342,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            NodeList allElements = getLastPage(driver).getElementsByTagName(getValue(locator));
+            final NodeList allElements = getLastPage(driver).getElementsByTagName(getValue(locator));
             if (allElements.getLength() > 0) {
                 return driver.toWebElement((HtmlElement) allElements.item(0));
             }
@@ -351,17 +357,18 @@ public class HtmlUnitElementFinder {
                 throw new InvalidSelectorException("Unable to locate element by xpath for " + getLastPage(driver));
             }
 
-            SgmlPage lastPage;
+            final SgmlPage lastPage;
             try {
                 lastPage = getLastPage(driver);
-            } catch (IllegalStateException e) {
+            }
+            catch (final IllegalStateException e) {
                 return Collections.emptyList();
             }
 
-            NodeList allElements = lastPage.getElementsByTagName(name);
-            List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
+            final NodeList allElements = lastPage.getElementsByTagName(name);
+            final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
-                Node item = allElements.item(i);
+                final Node item = allElements.item(i);
                 if (item instanceof DomElement) {
                     toReturn.add(driver.toWebElement((DomElement) item));
                 }
@@ -371,7 +378,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
             if (allElements.getLength() > 0) {
                 return element.getDriver().toWebElement((HtmlElement) allElements.item(0));
             }
@@ -381,10 +388,10 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
-            List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
+            final NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
-                Node item = allElements.item(i);
+                final Node item = allElements.item(i);
                 if (item instanceof DomElement) {
                     toReturn.add(element.getDriver().toWebElement((DomElement) item));
                 }
@@ -397,13 +404,14 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            Object node;
+            final Object node;
             final SgmlPage lastPage = getLastPage(driver);
             final String value = getValue(locator);
 
             try {
                 node = lastPage.getFirstByXPath(value);
-            } catch (Exception ex) {
+            }
+            catch (final Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
                 throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, value), ex);
             }
@@ -421,10 +429,11 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            SgmlPage lastPage;
+            final SgmlPage lastPage;
             try {
                 lastPage = getLastPage(driver);
-            } catch (IllegalStateException e) {
+            }
+            catch (final IllegalStateException e) {
                 return Collections.emptyList();
             }
 
@@ -432,13 +441,14 @@ public class HtmlUnitElementFinder {
             final List<?> nodes;
             try {
                 nodes = lastPage.getByXPath(value);
-            } catch (RuntimeException ex) {
+            }
+            catch (final RuntimeException ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
                 throw new InvalidSelectorException(String.format(INVALIDXPATHERROR, value), ex);
             }
 
-            List<WebElement> toReturn = new ArrayList<>(nodes.size());
-            for (Object node : nodes) {
+            final List<WebElement> toReturn = new ArrayList<>(nodes.size());
+            for (final Object node : nodes) {
                 // There exist elements in the nodes list which could not be converted to
                 // WebElements.
                 // A valid xpath selector should only select WebElements.
@@ -455,11 +465,12 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            String value = getValue(locator);
-            Object node;
+            final String value = getValue(locator);
+            final Object node;
             try {
                 node = element.getElement().getFirstByXPath(value);
-            } catch (Exception ex) {
+            }
+            catch (final Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
                 throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
             }
@@ -480,20 +491,22 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
             final String value = getValue(locator);
-            List<WebElement> toReturn = new ArrayList<>();
+            final List<WebElement> toReturn = new ArrayList<>();
 
-            List<?> domElements;
+            final List<?> domElements;
             try {
                 domElements = element.getElement().getByXPath(value);
-            } catch (Exception ex) {
+            }
+            catch (final Exception ex) {
                 // The xpath expression cannot be evaluated, so the expression is invalid
                 throw new InvalidSelectorException(String.format(HtmlUnitDriver.INVALIDXPATHERROR, value), ex);
             }
 
-            for (Object e : domElements) {
+            for (final Object e : domElements) {
                 if (e instanceof DomElement) {
                     toReturn.add(element.getDriver().toWebElement((DomElement) e));
-                } else {
+                }
+                else {
                     // The xpath selector selected something different than a WebElement. The
                     // selector is
                     // therefore invalid
@@ -508,26 +521,26 @@ public class HtmlUnitElementFinder {
     public abstract static class HtmlUnitElementLocator {
 
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            List<WebElement> toReturn = findElements(driver, locator);
+            final List<WebElement> toReturn = findElements(driver, locator);
             if (!toReturn.isEmpty()) {
                 return toReturn.get(0);
             }
             throw new NoSuchElementException("Unable to locate element");
         }
 
-        abstract public List<WebElement> findElements(final HtmlUnitDriver driver, By locator);
+        public abstract List<WebElement> findElements(HtmlUnitDriver driver, By locator);
 
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            List<WebElement> toReturn = findElements(element, locator);
+            final List<WebElement> toReturn = findElements(element, locator);
             if (!toReturn.isEmpty()) {
                 return toReturn.get(0);
             }
             throw new NoSuchElementException("Unable to locate element");
         }
 
-        abstract public List<WebElement> findElements(final HtmlUnitWebElement element, By locator);
+        public abstract List<WebElement> findElements(HtmlUnitWebElement element, By locator);
 
-        protected static By.Remotable getRemotable(By locator) {
+        protected static By.Remotable getRemotable(final By locator) {
             if (!(locator instanceof By.Remotable)) {
                 throw new IllegalStateException("Cannot convert locator to Remotable");
             }
@@ -535,23 +548,24 @@ public class HtmlUnitElementFinder {
         }
 
         protected SgmlPage getLastPage(final HtmlUnitDriver driver) {
-            Page lastPage = driver.getCurrentWindow().lastPage();
+            final Page lastPage = driver.getCurrentWindow().lastPage();
             if (!(lastPage instanceof SgmlPage)) {
                 throw new IllegalStateException("Current page is not a SgmlPage");
             }
             return (SgmlPage) lastPage;
         }
 
-        protected static String getValue(By locator) {
-            By.Remotable remote = getRemotable(locator);
+        protected static String getValue(final By locator) {
+            final By.Remotable remote = getRemotable(locator);
             return (String) remote.getRemoteParameters().value();
         }
     }
 
-    private static List<WebElement> convertRawDomElementsToWebElements(HtmlUnitDriver driver, List<DomElement> nodes) {
-        List<WebElement> toReturn = new ArrayList<>(nodes.size());
+    private static List<WebElement> convertRawDomElementsToWebElements(
+            final HtmlUnitDriver driver, final List<DomElement> nodes) {
+        final List<WebElement> toReturn = new ArrayList<>(nodes.size());
 
-        for (DomElement node : nodes) {
+        for (final DomElement node : nodes) {
             toReturn.add(driver.toWebElement(node));
         }
 

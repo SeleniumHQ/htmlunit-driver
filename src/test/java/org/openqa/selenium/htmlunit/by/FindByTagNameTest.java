@@ -35,7 +35,7 @@ public class FindByTagNameTest extends WebDriverTestCase {
 
     @Test
     public void elementByTagName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -50,10 +50,9 @@ public class FindByTagNameTest extends WebDriverTestCase {
         assertEquals("testId", element.getAttribute("id"));
     }
 
-
     @Test
     public void elementsByTagName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -71,7 +70,7 @@ public class FindByTagNameTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementByTagName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -90,10 +89,9 @@ public class FindByTagNameTest extends WebDriverTestCase {
         assertEquals("testId2", element.getAttribute("id"));
     }
 
-
     @Test
     public void relativeElementsByName() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

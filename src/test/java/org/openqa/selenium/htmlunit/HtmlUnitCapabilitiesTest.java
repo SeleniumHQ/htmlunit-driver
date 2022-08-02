@@ -40,85 +40,88 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  */
 public class HtmlUnitCapabilitiesTest {
 
-  @Test
-  public void configurationViaDirectCapabilities() {
-    DesiredCapabilities ieCapabilities =
-            new DesiredCapabilities(Browser.IE.browserName(), "", Platform.ANY);
+    @Test
+    public void configurationViaDirectCapabilities() {
+        final DesiredCapabilities ieCapabilities = new DesiredCapabilities(Browser.IE.browserName(), "", Platform.ANY);
 
-    try {
-        BrowserVersionDeterminer.determine(ieCapabilities);
-        fail("IllegalArgumentException expected");
+        try {
+            BrowserVersionDeterminer.determine(ieCapabilities);
+            fail("IllegalArgumentException expected");
+        }
+        catch (final IllegalArgumentException e) {
+            assertEquals("When building an HtmlUntDriver, the capability browser name "
+                    + "must be set to 'htmlunit' but was 'internet explorer'.", e.getMessage());
+        }
     }
-    catch (IllegalArgumentException e) {
-        assertEquals("When building an HtmlUntDriver, the capability browser name "
-                        + "must be set to 'htmlunit' but was 'internet explorer'.", e.getMessage());
+
+    @Test
+    public void configurationOfFirefoxDefaultViaRemote() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox",
+                Platform.ANY);
+        assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
     }
-  }
 
-  @Test
-  public void configurationOfFirefoxDefaultViaRemote() {
-    DesiredCapabilities firefoxCapabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox", Platform.ANY);
-    assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
-  }
+    @Test
+    public void configurationOfFirefox78ViaRemote() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-78",
+                Platform.ANY);
+        assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
 
-  @Test
-  public void configurationOfFirefox78ViaRemote() {
-    DesiredCapabilities firefoxCapabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-78", Platform.ANY);
-    assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
-  }
+    @Test
+    public void configurationOfFirefox91ViaRemote() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-91",
+                Platform.ANY);
+        assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
 
-  @Test
-  public void configurationOfFirefox91ViaRemote() {
-    DesiredCapabilities firefoxCapabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-91", Platform.ANY);
-    assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
-  }
+    @Test
+    public void configurationOfFirefoxEsrViaRemote() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr",
+                Platform.ANY);
+        assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
 
-  @Test
-  public void configurationOfFirefoxEsrViaRemote() {
-    DesiredCapabilities firefoxCapabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr", Platform.ANY);
-    assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
-  }
+    @Test
+    public void configurationOfIEViaRemote() {
+        final DesiredCapabilities ieCapabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(),
+                "internet explorer", Platform.ANY);
+        assertEquals(INTERNET_EXPLORER, BrowserVersionDeterminer.determine(ieCapabilities));
+    }
 
-  @Test
-  public void configurationOfIEViaRemote() {
-    DesiredCapabilities ieCapabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "internet explorer", Platform.ANY);
-    assertEquals(INTERNET_EXPLORER, BrowserVersionDeterminer.determine(ieCapabilities));
-  }
+    @Test
+    public void tetsDefautlBrowserVersion() {
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
 
-  @Test
-  public void tetsDefautlBrowserVersion() {
-    DesiredCapabilities capabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
+        assertEquals(BrowserVersion.getDefault(), BrowserVersionDeterminer.determine(capabilities));
+    }
 
-    assertEquals(BrowserVersion.getDefault(), BrowserVersionDeterminer.determine(capabilities));
-  }
+    @Test
+    public void htmlUnitReportsCapabilities() {
+        HtmlUnitDriver driver = new HtmlUnitDriver(true);
+        final Capabilities jsEnabled = driver.getCapabilities();
+        driver.quit();
 
-  @Test
-  public void htmlUnitReportsCapabilities() {
-    HtmlUnitDriver driver = new HtmlUnitDriver(true);
-    Capabilities jsEnabled = driver.getCapabilities();
-    driver.quit();
+        driver = new HtmlUnitDriver(false);
+        final Capabilities jsDisabled = driver.getCapabilities();
+        assertTrue(jsEnabled.is(JAVASCRIPT_ENABLED));
+        assertFalse(jsDisabled.is(JAVASCRIPT_ENABLED));
+    }
 
-    driver = new HtmlUnitDriver(false);
-    Capabilities jsDisabled = driver.getCapabilities();
-    assertTrue(jsEnabled.is(JAVASCRIPT_ENABLED));
-    assertFalse(jsDisabled.is(JAVASCRIPT_ENABLED));
-  }
+    @Test
+    public void configurationOfBrowserLanguage() {
+        final String browserLanguage = "es-ES";
 
-  @Test
-  public void configurationOfBrowserLanguage() {
-    String browserLanguage = "es-ES";
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
+        capabilities.setCapability(BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
 
-    DesiredCapabilities capabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-    capabilities.setCapability(BROWSER_LANGUAGE_CAPABILITY, browserLanguage);
-
-    assertEquals(browserLanguage, BrowserVersionDeterminer.determine(capabilities).getBrowserLanguage());
-  }
+        assertEquals(browserLanguage, BrowserVersionDeterminer.determine(capabilities).getBrowserLanguage());
+    }
 
 }

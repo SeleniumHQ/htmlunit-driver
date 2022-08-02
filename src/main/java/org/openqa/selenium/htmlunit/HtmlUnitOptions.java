@@ -46,7 +46,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
     private final HtmlUnitDriver driver_;
     private final HtmlUnitTimeouts timeouts_;
 
-    public HtmlUnitOptions(HtmlUnitDriver driver) {
+    public HtmlUnitOptions(final HtmlUnitDriver driver) {
         driver_ = driver;
         logs_ = new HtmlUnitLogs(getWebClient());
         timeouts_ = new HtmlUnitTimeouts(getWebClient());
@@ -58,20 +58,20 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public void addCookie(Cookie cookie) {
-        Page page = window().lastPage();
+    public void addCookie(final Cookie cookie) {
+        final Page page = window().lastPage();
         if (!(page instanceof HtmlPage)) {
             throw new UnableToSetCookieException("You may not set cookies on a page that is not HTML");
         }
 
-        String domain = getDomainForCookie();
+        final String domain = getDomainForCookie();
         verifyDomain(cookie, domain);
 
         getWebClient().getCookieManager().addCookie(new com.gargoylesoftware.htmlunit.util.Cookie(domain,
                 cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
     }
 
-    private void verifyDomain(Cookie cookie, String expectedDomain) {
+    private void verifyDomain(final Cookie cookie, String expectedDomain) {
         String domain = cookie.getDomain();
         if (domain == null) {
             return;
@@ -97,9 +97,9 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public Cookie getCookieNamed(String name) {
-        Set<Cookie> allCookies = getCookies();
-        for (Cookie cookie : allCookies) {
+    public Cookie getCookieNamed(final String name) {
+        final Set<Cookie> allCookies = getCookies();
+        for (final Cookie cookie : allCookies) {
             if (name.equals(cookie.getName())) {
                 return cookie;
             }
@@ -109,12 +109,12 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public void deleteCookieNamed(String name) {
-        CookieManager cookieManager = getWebClient().getCookieManager();
+    public void deleteCookieNamed(final String name) {
+        final CookieManager cookieManager = getWebClient().getCookieManager();
 
-        URL url = getRawUrl();
-        Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
-        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
+        final URL url = getRawUrl();
+        final Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
+        for (final com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
             if (name.equals(cookie.getName())) {
                 cookieManager.removeCookie(cookie);
             }
@@ -122,24 +122,24 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public void deleteCookie(Cookie cookie) {
+    public void deleteCookie(final Cookie cookie) {
         getWebClient().getCookieManager().removeCookie(convertSeleniumCookieToHtmlUnit(cookie));
     }
 
     @Override
     public void deleteAllCookies() {
-        CookieManager cookieManager = getWebClient().getCookieManager();
+        final CookieManager cookieManager = getWebClient().getCookieManager();
 
-        URL url = getRawUrl();
-        Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
-        for (com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
+        final URL url = getRawUrl();
+        final Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
+        for (final com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
             cookieManager.removeCookie(cookie);
         }
     }
 
     @Override
     public Set<Cookie> getCookies() {
-        URL url = getRawUrl();
+        final URL url = getRawUrl();
 
         // The about:blank URL (the default in case no navigation took place)
         // does not have a valid 'hostname' part and cannot be used for creating
@@ -150,20 +150,22 @@ public class HtmlUnitOptions implements WebDriver.Options {
         }
 
         return ImmutableSet.copyOf(Collections2.transform(getWebClient().getCookies(url),
-                htmlUnitCookieToSeleniumCookieTransformer::apply));
+                htmlUnitCookieToSeleniumCookieTransformer_::apply));
     }
 
-    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(Cookie cookie) {
+    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
         return new com.gargoylesoftware.htmlunit.util.Cookie(cookie.getDomain(), cookie.getName(), cookie.getValue(),
                 cookie.getPath(), cookie.getExpiry(), cookie.isSecure(), cookie.isHttpOnly());
     }
 
-    private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie> htmlUnitCookieToSeleniumCookieTransformer = (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c -> new Cookie.Builder(
+    private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie>
+        htmlUnitCookieToSeleniumCookieTransformer_ =
+            (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c -> new Cookie.Builder(
             c.getName(), c.getValue()).domain(c.getDomain()).path(c.getPath()).expiresOn(c.getExpires())
                     .isSecure(c.isSecure()).isHttpOnly(c.isHttpOnly()).build();
 
     private String getDomainForCookie() {
-        URL current = getRawUrl();
+        final URL current = getRawUrl();
         return current.getHost();
     }
 

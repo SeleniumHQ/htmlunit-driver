@@ -46,12 +46,12 @@ public class HtmlUnitMouse {
     private final HtmlUnitKeyboard keyboard_;
     private DomElement currentActiveElement_;
 
-    public HtmlUnitMouse(HtmlUnitDriver parent, HtmlUnitKeyboard keyboard) {
+    public HtmlUnitMouse(final HtmlUnitDriver parent, final HtmlUnitKeyboard keyboard) {
         this.parent_ = parent;
         this.keyboard_ = keyboard;
     }
 
-    private DomElement getElementForOperation(Coordinates potentialCoordinates) {
+    private DomElement getElementForOperation(final Coordinates potentialCoordinates) {
         if (potentialCoordinates != null) {
             return (DomElement) potentialCoordinates.getAuxiliary();
         }
@@ -64,8 +64,8 @@ public class HtmlUnitMouse {
         return currentActiveElement_;
     }
 
-    public void click(Coordinates elementCoordinates) {
-        DomElement element = getElementForOperation(elementCoordinates);
+    public void click(final Coordinates elementCoordinates) {
+        final DomElement element = getElementForOperation(elementCoordinates);
         parent_.click(element, false);
     }
 
@@ -73,7 +73,7 @@ public class HtmlUnitMouse {
      * @param directClick {@code true} for {@link WebElement#click()} or
      *                    {@code false} for {@link Actions#click()}
      */
-    void click(DomElement element, boolean directClick) {
+    void click(final DomElement element, final boolean directClick) {
         if (!element.isDisplayed()) {
             throw new ElementNotInteractableException("You may only interact with visible elements");
         }
@@ -88,14 +88,17 @@ public class HtmlUnitMouse {
                     keyboard_.isCtrlPressed() || (directClick && element instanceof HtmlOption),
                     keyboard_.isAltPressed());
             updateActiveElement(element);
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             throw new WebDriverException(e);
-        } catch (ScriptException e) {
+        }
+        catch (final ScriptException e) {
             // TODO(simon): This isn't good enough.
             System.out.println(e.getMessage());
             // Press on regardless
-        } catch (RuntimeException e) {
-            Throwable cause = e.getCause();
+        }
+        catch (final RuntimeException e) {
+            final Throwable cause = e.getCause();
             if (cause instanceof SocketTimeoutException) {
                 throw new TimeoutException(cause);
             }
@@ -103,9 +106,9 @@ public class HtmlUnitMouse {
         }
     }
 
-    private void moveOutIfNeeded(DomElement element) {
+    private void moveOutIfNeeded(final DomElement element) {
         try {
-            if ((currentActiveElement_ != element)) {
+            if (currentActiveElement_ != element) {
                 if (currentActiveElement_ != null) {
                     currentActiveElement_.mouseOver(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(),
                             keyboard_.isAltPressed(), MouseEvent.BUTTON_LEFT);
@@ -121,23 +124,24 @@ public class HtmlUnitMouse {
                             MouseEvent.BUTTON_LEFT);
                 }
             }
-        } catch (ScriptException ignored) {
+        }
+        catch (final ScriptException ignored) {
             System.out.println(ignored.getMessage());
         }
     }
 
-    private void updateActiveElement(DomElement element) {
+    private void updateActiveElement(final DomElement element) {
         if (element != null) {
             currentActiveElement_ = element;
         }
     }
 
-    public void doubleClick(Coordinates elementCoordinates) {
-        DomElement element = getElementForOperation(elementCoordinates);
+    public void doubleClick(final Coordinates elementCoordinates) {
+        final DomElement element = getElementForOperation(elementCoordinates);
         parent_.doubleClick(element);
     }
 
-    void doubleClick(DomElement element) {
+    void doubleClick(final DomElement element) {
 
         moveOutIfNeeded(element);
 
@@ -145,14 +149,15 @@ public class HtmlUnitMouse {
         try {
             element.dblClick(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed());
             updateActiveElement(element);
-        } catch (IOException e) {
+        }
+        catch (final IOException e) {
             // TODO(eran.mes): What should we do in case of error?
             e.printStackTrace();
         }
     }
 
-    public void contextClick(Coordinates elementCoordinates) {
-        DomElement element = getElementForOperation(elementCoordinates);
+    public void contextClick(final Coordinates elementCoordinates) {
+        final DomElement element = getElementForOperation(elementCoordinates);
 
         moveOutIfNeeded(element);
 
@@ -161,12 +166,12 @@ public class HtmlUnitMouse {
         updateActiveElement(element);
     }
 
-    public void mouseDown(Coordinates elementCoordinates) {
-        DomElement element = getElementForOperation(elementCoordinates);
+    public void mouseDown(final Coordinates elementCoordinates) {
+        final DomElement element = getElementForOperation(elementCoordinates);
         parent_.mouseDown(element);
     }
 
-    void mouseDown(DomElement element) {
+    void mouseDown(final DomElement element) {
         moveOutIfNeeded(element);
 
         element.mouseDown(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
@@ -175,12 +180,12 @@ public class HtmlUnitMouse {
         updateActiveElement(element);
     }
 
-    public void mouseUp(Coordinates elementCoordinates) {
-        DomElement element = getElementForOperation(elementCoordinates);
+    public void mouseUp(final Coordinates elementCoordinates) {
+        final DomElement element = getElementForOperation(elementCoordinates);
         parent_.mouseUp(element);
     }
 
-    void mouseUp(DomElement element) {
+    void mouseUp(final DomElement element) {
         moveOutIfNeeded(element);
 
         element.mouseUp(keyboard_.isShiftPressed(), keyboard_.isCtrlPressed(), keyboard_.isAltPressed(),
@@ -189,18 +194,18 @@ public class HtmlUnitMouse {
         updateActiveElement(element);
     }
 
-    public void mouseMove(Coordinates elementCoordinates) {
-        DomElement element = (DomElement) elementCoordinates.getAuxiliary();
+    public void mouseMove(final Coordinates elementCoordinates) {
+        final DomElement element = (DomElement) elementCoordinates.getAuxiliary();
         parent_.mouseMove(element);
     }
 
-    void mouseMove(DomElement element) {
+    void mouseMove(final DomElement element) {
         moveOutIfNeeded(element);
 
         updateActiveElement(element);
     }
 
-    public void mouseMove(Coordinates where, long xOffset, long yOffset) {
+    public void mouseMove(final Coordinates where, final long xOffset, final long yOffset) {
         throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
     }
 }

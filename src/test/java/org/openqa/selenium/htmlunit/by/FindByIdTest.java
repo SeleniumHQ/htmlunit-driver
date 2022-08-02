@@ -35,7 +35,7 @@ public class FindByIdTest extends WebDriverTestCase {
 
     @Test
     public void elementById() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -48,10 +48,9 @@ public class FindByIdTest extends WebDriverTestCase {
         assertEquals("TestDiv", element.getText());
     }
 
-
     @Test
     public void elementsById() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -67,7 +66,7 @@ public class FindByIdTest extends WebDriverTestCase {
 
     @Test
     public void relativeElementById() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -84,10 +83,9 @@ public class FindByIdTest extends WebDriverTestCase {
         assertEquals("TestDiv", element.getText());
     }
 
-
     @Test
     public void relativeElementsById() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

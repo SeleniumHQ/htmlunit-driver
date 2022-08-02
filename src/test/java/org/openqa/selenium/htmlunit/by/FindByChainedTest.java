@@ -34,7 +34,7 @@ public class FindByChainedTest extends WebDriverTestCase {
 
     @Test
     public void byByChainedOne() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -49,7 +49,7 @@ public class FindByChainedTest extends WebDriverTestCase {
 
     @Test
     public void byByChained() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

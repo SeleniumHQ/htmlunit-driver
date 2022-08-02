@@ -44,7 +44,7 @@ public class ApplicationCacheTest extends WebDriverTestCase {
             FF_ESR = "ApplicationCache not supported",
             IE = "ApplicationCache not supported")
     public void applicationCache() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -53,10 +53,11 @@ public class ApplicationCacheTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        List<String> collectedAlerts = getCollectedAlerts(driver);
+        final List<String> collectedAlerts = getCollectedAlerts(driver);
         if (driver instanceof ApplicationCache) {
             collectedAlerts.add("ApplicationCache supported");
-        } else {
+        }
+        else {
             collectedAlerts.add("ApplicationCache not supported");
         }
 

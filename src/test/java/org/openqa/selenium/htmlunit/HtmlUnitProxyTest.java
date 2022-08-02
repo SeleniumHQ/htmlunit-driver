@@ -38,180 +38,172 @@ import com.gargoylesoftware.htmlunit.ProxyConfig;
  */
 public class HtmlUnitProxyTest {
 
-  @Test
-  public void testProxyAsCapability() {
-    DesiredCapabilities capabilities =
-            new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-    Proxy proxy = new Proxy().setHttpProxy("http.proxy");
-    capabilities.setCapability(PROXY, proxy);
+    @Test
+    public void testProxyAsCapability() {
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
+        final Proxy proxy = new Proxy().setHttpProxy("http.proxy");
+        capabilities.setCapability(PROXY, proxy);
 
-    HtmlUnitDriver driver = new HtmlUnitDriver(capabilities);
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        final HtmlUnitDriver driver = new HtmlUnitDriver(capabilities);
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    assertEquals("http.proxy", config.getProxyHost());
+        assertEquals("http.proxy", config.getProxyHost());
 
-    driver.quit();
-  }
+        driver.quit();
+    }
 
-  @Test
-  public void testManualHttpProxy() {
-    Proxy proxy = new Proxy().setHttpProxy("http.proxy:1234");
+    @Test
+    public void testManualHttpProxy() {
+        final Proxy proxy = new Proxy().setHttpProxy("http.proxy:1234");
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxySettings(proxy);
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxySettings(proxy);
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    assertEquals("http.proxy", config.getProxyHost());
-    assertEquals(1234, config.getProxyPort());
-    assertFalse(config.isSocksProxy());
+        assertEquals("http.proxy", config.getProxyHost());
+        assertEquals(1234, config.getProxyPort());
+        assertFalse(config.isSocksProxy());
 
-    driver.quit();
-  }
+        driver.quit();
+    }
 
-  @Test
-  public void testManualHttpProxyDirectly() {
+    @Test
+    public void testManualHttpProxyDirectly() {
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxy("http.proxy", 1234);
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxy("http.proxy", 1234);
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    assertEquals("http.proxy", config.getProxyHost());
-    assertEquals(1234, config.getProxyPort());
-    assertFalse(config.isSocksProxy());
+        assertEquals("http.proxy", config.getProxyHost());
+        assertEquals(1234, config.getProxyPort());
+        assertFalse(config.isSocksProxy());
 
-    driver.quit();
-  }
+        driver.quit();
+    }
 
+    @Test
+    public void testManualHttpProxyWithNoProxy() {
+        final Proxy proxy = new Proxy().setHttpProxy("http.proxy").setNoProxy("localhost, 127.0.0.1");
 
-  @Test
-  public void testManualHttpProxyWithNoProxy() {
-    Proxy proxy = new Proxy().setHttpProxy("http.proxy").
-        setNoProxy("localhost, 127.0.0.1");
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxySettings(proxy);
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxySettings(proxy);
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        assertEquals("http.proxy", config.getProxyHost());
+        assertEquals(0, config.getProxyPort());
+        assertFalse(config.isSocksProxy());
 
-    assertEquals("http.proxy", config.getProxyHost());
-    assertEquals(0, config.getProxyPort());
-    assertFalse(config.isSocksProxy());
+        driver.quit();
+    }
 
-    driver.quit();
-  }
+    @Test
+    public void testManualHttpProxyWithNoProxyDirectly() {
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
 
-  @Test
-  public void testManualHttpProxyWithNoProxyDirectly() {
+        final List<String> noProxy = new ArrayList<>();
+        noProxy.add("localhost");
+        noProxy.add("127.0.0.1");
+        driver.setHTTPProxy("http.proxy", 0, noProxy);
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    List<String> noProxy = new ArrayList<>();
-    noProxy.add("localhost");
-    noProxy.add("127.0.0.1");
-    driver.setHTTPProxy("http.proxy", 0, noProxy);
+        assertEquals("http.proxy", config.getProxyHost());
+        assertEquals(0, config.getProxyPort());
+        assertFalse(config.isSocksProxy());
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        driver.quit();
+    }
 
-    assertEquals("http.proxy", config.getProxyHost());
-    assertEquals(0, config.getProxyPort());
-    assertFalse(config.isSocksProxy());
+    @Test
+    public void testManualSocksProxy() {
+        final Proxy proxy = new Proxy().setSocksProxy("socks.proxy:1234");
 
-    driver.quit();
-  }
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxySettings(proxy);
 
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-  @Test
-  public void testManualSocksProxy() {
-    Proxy proxy = new Proxy().setSocksProxy("socks.proxy:1234");
+        assertEquals("socks.proxy", config.getProxyHost());
+        assertEquals(1234, config.getProxyPort());
+        assertTrue(config.isSocksProxy());
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxySettings(proxy);
+        driver.quit();
+    }
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+    @Test
+    public void testManualSocksProxyDirectly() {
 
-    assertEquals("socks.proxy", config.getProxyHost());
-    assertEquals(1234, config.getProxyPort());
-    assertTrue(config.isSocksProxy());
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setSocksProxy("socks.proxy", 1234);
 
-    driver.quit();
-  }
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-  @Test
-  public void testManualSocksProxyDirectly() {
+        assertEquals("socks.proxy", config.getProxyHost());
+        assertEquals(1234, config.getProxyPort());
+        assertTrue(config.isSocksProxy());
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setSocksProxy("socks.proxy", 1234);
+        driver.quit();
+    }
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+    @Test
+    public void testManualSocksProxyWithNoProxy() {
+        final Proxy proxy = new Proxy().setSocksProxy("socks.proxy").setNoProxy("localhost");
 
-    assertEquals("socks.proxy", config.getProxyHost());
-    assertEquals(1234, config.getProxyPort());
-    assertTrue(config.isSocksProxy());
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxySettings(proxy);
 
-    driver.quit();
-  }
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
+        assertEquals("socks.proxy", config.getProxyHost());
+        assertEquals(0, config.getProxyPort());
+        assertTrue(config.isSocksProxy());
 
-  @Test
-  public void testManualSocksProxyWithNoProxy() {
-    Proxy proxy = new Proxy().setSocksProxy("socks.proxy").
-        setNoProxy("localhost");
+        driver.quit();
+    }
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxySettings(proxy);
+    @Test
+    public void testManualSocksProxyWithNoProxyDirectly() {
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        final List<String> noProxy = new ArrayList<>();
+        noProxy.add("localhost");
+        driver.setSocksProxy("socks.proxy", 0, noProxy);
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    assertEquals("socks.proxy", config.getProxyHost());
-    assertEquals(0, config.getProxyPort());
-    assertTrue(config.isSocksProxy());
+        assertEquals("socks.proxy", config.getProxyHost());
+        assertEquals(0, config.getProxyPort());
+        assertTrue(config.isSocksProxy());
 
-    driver.quit();
-  }
+        driver.quit();
+    }
 
-  @Test
-  public void testManualSocksProxyWithNoProxyDirectly() {
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    List<String> noProxy = new ArrayList<>();
-    noProxy.add("localhost");
-    driver.setSocksProxy("socks.proxy", 0, noProxy);
+    @Test
+    public void testPACProxy() {
+        final Proxy proxy = new Proxy().setProxyAutoconfigUrl("http://aaa/bb.pac");
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setProxySettings(proxy);
 
-    assertEquals("socks.proxy", config.getProxyHost());
-    assertEquals(0, config.getProxyPort());
-    assertTrue(config.isSocksProxy());
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    driver.quit();
-  }
+        assertEquals("http://aaa/bb.pac", config.getProxyAutoConfigUrl());
 
+        driver.quit();
+    }
 
-  @Test
-  public void testPACProxy() {
-    Proxy proxy = new Proxy().setProxyAutoconfigUrl("http://aaa/bb.pac");
+    @Test
+    public void testPACProxyDirectly() {
+        final HtmlUnitDriver driver = new HtmlUnitDriver();
+        driver.setAutoProxy("http://aaa/bb.pac");
 
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setProxySettings(proxy);
+        final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
+        assertEquals("http://aaa/bb.pac", config.getProxyAutoConfigUrl());
 
-    assertEquals("http://aaa/bb.pac", config.getProxyAutoConfigUrl());
-
-    driver.quit();
-  }
-
-  @Test
-  public void testPACProxyDirectly() {
-    HtmlUnitDriver driver = new HtmlUnitDriver();
-    driver.setAutoProxy("http://aaa/bb.pac");
-
-    ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
-
-    assertEquals("http://aaa/bb.pac", config.getProxyAutoConfigUrl());
-
-    driver.quit();
-  }
-
+        driver.quit();
+    }
 }

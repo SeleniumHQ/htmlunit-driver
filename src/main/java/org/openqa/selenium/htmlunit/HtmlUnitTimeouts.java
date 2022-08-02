@@ -28,75 +28,75 @@ import com.gargoylesoftware.htmlunit.WebClient;
  * Class for timeouts managing
  */
 public class HtmlUnitTimeouts implements WebDriver.Timeouts {
-    private long implicitWait = 0;
-    private long scriptTimeout = 0;
-    private long pageLoadTimeout = 0;
-    private WebClient webClient = null;
+    private long implicitWait_ = 0;
+    private long scriptTimeout_ = 0;
+    private long pageLoadTimeout_ = 0;
+    private WebClient webClient_ = null;
 
     public HtmlUnitTimeouts() {
         // nop
     }
 
-    public HtmlUnitTimeouts(WebClient webClient) {
-        this.webClient = webClient;
+    public HtmlUnitTimeouts(final WebClient webClient) {
+        this.webClient_ = webClient;
     }
 
     @Override
     public Duration getImplicitWaitTimeout() {
-        return Duration.ofMillis(implicitWait);
+        return Duration.ofMillis(implicitWait_);
     }
 
     @Deprecated
     @Override
-    public WebDriver.Timeouts implicitlyWait(long time, TimeUnit unit) {
+    public WebDriver.Timeouts implicitlyWait(final long time, final TimeUnit unit) {
         implicitlyWait(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
     }
 
     @Override
-    public WebDriver.Timeouts implicitlyWait(Duration duration) {
-        this.implicitWait = Math.max(0, duration.toMillis());
+    public WebDriver.Timeouts implicitlyWait(final Duration duration) {
+        this.implicitWait_ = Math.max(0, duration.toMillis());
         return this;
     }
 
     @Override
-    public WebDriver.Timeouts scriptTimeout(Duration duration) {
-        this.scriptTimeout = duration.toMillis();
+    public WebDriver.Timeouts scriptTimeout(final Duration duration) {
+        this.scriptTimeout_ = duration.toMillis();
         return this;
     }
 
     @Deprecated
     @Override
-    public WebDriver.Timeouts setScriptTimeout(long time, TimeUnit unit) {
+    public WebDriver.Timeouts setScriptTimeout(final long time, final TimeUnit unit) {
         scriptTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
     }
 
     @Override
     public Duration getScriptTimeout() {
-        return Duration.ofMillis(scriptTimeout);
+        return Duration.ofMillis(scriptTimeout_);
     }
 
     @Deprecated
     @Override
-    public WebDriver.Timeouts pageLoadTimeout(long time, TimeUnit unit) {
+    public WebDriver.Timeouts pageLoadTimeout(final long time, final TimeUnit unit) {
         pageLoadTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
         return this;
     }
 
     @Override
-    public WebDriver.Timeouts pageLoadTimeout(Duration duration) {
-        this.pageLoadTimeout = duration.toMillis();
-        setPageLoadTimeoutForWebClient(webClient, pageLoadTimeout);
+    public WebDriver.Timeouts pageLoadTimeout(final Duration duration) {
+        this.pageLoadTimeout_ = duration.toMillis();
+        setPageLoadTimeoutForWebClient(webClient_, pageLoadTimeout_);
         return this;
     }
 
     @Override
     public Duration getPageLoadTimeout() {
-        return Duration.ofMillis(pageLoadTimeout);
+        return Duration.ofMillis(pageLoadTimeout_);
     }
 
-    private static void setPageLoadTimeoutForWebClient(WebClient webClient, long timeout) {
+    private static void setPageLoadTimeoutForWebClient(final WebClient webClient, final long timeout) {
         if (webClient != null) {
             webClient.getOptions().setTimeout(Math.max((int) timeout, 0));
         }

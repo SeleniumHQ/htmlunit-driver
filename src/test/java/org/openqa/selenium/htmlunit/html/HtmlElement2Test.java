@@ -28,19 +28,19 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 @RunWith(BrowserRunner.class)
 public class HtmlElement2Test extends WebDriverTestCase {
 
-  /**
-   * @throws Exception on test failure
-   */
-  @Test
-  @Alerts("press")
-  public void keyUpEventWhenPreventsDefault() throws Exception {
-    final String html = "<html>\n"
-        + "<body>\n"
-        + "  <input id='suppress' onkeydown='event.preventDefault()' onkeyup='alert(\"press\")'>\n"
-        + "</body></html>";
+    /**
+     * @throws Exception on test failure
+     */
+    @Test
+    @Alerts("press")
+    public void keyUpEventWhenPreventsDefault() throws Exception {
+        final String html = "<html>\n"
+            + "<body>\n"
+            + "  <input id='suppress' onkeydown='event.preventDefault()' onkeyup='alert(\"press\")'>\n"
+            + "</body></html>";
 
-    final WebDriver driver = loadPage2(html);
-    driver.findElement(By.id("suppress")).sendKeys("s");
-    verifyAlerts(driver, getExpectedAlerts());
-  }
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("suppress")).sendKeys("s");
+        verifyAlerts(driver, getExpectedAlerts());
+    }
 }

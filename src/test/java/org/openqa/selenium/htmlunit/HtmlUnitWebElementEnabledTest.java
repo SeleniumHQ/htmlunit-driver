@@ -32,7 +32,7 @@ public class HtmlUnitWebElementEnabledTest extends WebDriverTestCase {
 
     @Test
     public void div() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -41,13 +41,13 @@ public class HtmlUnitWebElementEnabledTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertTrue(elem.isEnabled());
     }
 
     @Test
     public void divDisabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -56,13 +56,13 @@ public class HtmlUnitWebElementEnabledTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertTrue(elem.isEnabled());
     }
 
     @Test
     public void checkboxDisabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -73,7 +73,7 @@ public class HtmlUnitWebElementEnabledTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("chkBx"));
+        final WebElement elem = driver.findElement(By.id("chkBx"));
         assertFalse(elem.isEnabled());
     }
 }

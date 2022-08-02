@@ -29,35 +29,34 @@ public class Window2Test extends WebDriverTestCase {
   /**
    * @throws Exception if the test fails
    */
-  @Test
-  @Alerts({"false", "false", "test2 alert"})
-  public void objectCallOnFrameWindow() throws Exception {
-    final String firstContent = "<html><head>\n"
-        + "<script>\n"
-        + "  function test1() {\n"
-        + "    alert(window.frames[0].test2 === undefined);\n"
-        + "    Object(window.frames[0]);\n"
-        + "  }\n"
-        + "</script>\n"
-        + "</head>\n"
-        + "<body>\n"
-        + "  <iframe src='" + URL_SECOND + "'></iframe>\n"
-        + "</body></html>\n";
-    final String secondContent = "<html><head>\n"
-        + "<script>\n"
-        + "  function test2() {\n"
-        + "    alert('test2 alert');\n"
-        + "  }\n"
-        + "  window.top.test1();\n"
-        + "  alert(test2 === undefined);\n"
-        + "</script>\n"
-        + "</head>\n"
-        + "<body onload='test2()'>\n"
-        + "</body></html>\n";
+    @Test
+    @Alerts({"false", "false", "test2 alert"})
+    public void objectCallOnFrameWindow() throws Exception {
+        final String firstContent = "<html><head>\n"
+            + "<script>\n"
+            + "  function test1() {\n"
+            + "    alert(window.frames[0].test2 === undefined);\n"
+            + "    Object(window.frames[0]);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "  <iframe src='" + URL_SECOND + "'></iframe>\n"
+            + "</body></html>\n";
+        final String secondContent = "<html><head>\n"
+            + "<script>\n"
+            + "  function test2() {\n"
+            + "    alert('test2 alert');\n"
+            + "  }\n"
+            + "  window.top.test1();\n"
+            + "  alert(test2 === undefined);\n"
+            + "</script>\n"
+            + "</head>\n"
+            + "<body onload='test2()'>\n"
+            + "</body></html>\n";
 
-    getMockWebConnection().setResponse(URL_SECOND, secondContent);
+        getMockWebConnection().setResponse(URL_SECOND, secondContent);
 
-    loadPageWithAlerts2(firstContent);
-  }
-
+        loadPageWithAlerts2(firstContent);
+    }
 }

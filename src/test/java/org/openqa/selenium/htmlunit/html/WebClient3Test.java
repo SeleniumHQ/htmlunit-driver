@@ -31,55 +31,53 @@ import com.gargoylesoftware.htmlunit.MockWebConnection;
 @RunWith(BrowserRunner.class)
 public class WebClient3Test extends WebDriverTestCase {
 
-  /**
-   * @throws Exception if something goes wrong
-   */
-  @Test
-  @Alerts("executed")
-  public void javascriptContentDetectorWithoutContentMixedCase() throws Exception {
-    final MockWebConnection conn = getMockWebConnection();
-    conn.setDefaultResponse("<scRIPt>alert('executed')</scRIPt>", 200, "OK", null);
-    loadPageWithAlerts2(URL_FIRST);
-  }
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Alerts("executed")
+    public void javascriptContentDetectorWithoutContentMixedCase() throws Exception {
+        final MockWebConnection conn = getMockWebConnection();
+        conn.setDefaultResponse("<scRIPt>alert('executed')</scRIPt>", 200, "OK", null);
+        loadPageWithAlerts2(URL_FIRST);
+    }
 
-  /**
-   * @throws Exception if test fails
-   */
-  @Test
-  public void getPageAboutProtocol() throws Exception {
-    final String html = "<html><body>DataUrl Test</body></html>";
+    /**
+     * @throws Exception if test fails
+     */
+    @Test
+    public void getPageAboutProtocol() throws Exception {
+        final String html = "<html><body>DataUrl Test</body></html>";
 
-    final WebDriver driver = getWebDriver();
-    driver.get("about:blank");
+        final WebDriver driver = getWebDriver();
+        driver.get("about:blank");
 
-    WebElement body = driver.findElement(By.tagName("body"));
-    assertEquals("", body.getText());
-  }
+        final WebElement body = driver.findElement(By.tagName("body"));
+        assertEquals("", body.getText());
+    }
 
-  /**
-   * @throws Exception if test fails
-   */
-  @Test
-  public void getPageDataProtocol() throws Exception {
-    final String html = "<html><body>DataUrl Test</body></html>";
+    /**
+     * @throws Exception if test fails
+     */
+    @Test
+    public void getPageDataProtocol() throws Exception {
+        final String html = "<html><body>DataUrl Test</body></html>";
 
-    final WebDriver driver = getWebDriver();
-    driver.get("data:text/html;charset=utf-8," + html);
+        final WebDriver driver = getWebDriver();
+        driver.get("data:text/html;charset=utf-8," + html);
 
-    WebElement body = driver.findElement(By.tagName("body"));
-    assertEquals("DataUrl Test", body.getText());
-  }
+        final WebElement body = driver.findElement(By.tagName("body"));
+        assertEquals("DataUrl Test", body.getText());
+    }
 
+    /**
+     * @throws Exception if test fails
+     */
+    @Test
+    public void getPageJavascriptProtocol() throws Exception {
+        final WebDriver driver = getWebDriver();
+        driver.get("javascript:void(document.title='Hello')");
 
-  /**
-   * @throws Exception if test fails
-   */
-  @Test
-  public void getPageJavascriptProtocol() throws Exception {
-
-    final WebDriver driver = getWebDriver();
-    driver.get("javascript:void(document.title='Hello')");
-
-    assertEquals("Hello", driver.getTitle());
-  }
+        assertEquals("Hello", driver.getTitle());
+    }
 }

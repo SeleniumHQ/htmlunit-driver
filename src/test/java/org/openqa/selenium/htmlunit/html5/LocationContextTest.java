@@ -44,7 +44,7 @@ public class LocationContextTest extends WebDriverTestCase {
     @HtmlUnitNYI(CHROME = "LocationContext not supported",
             EDGE = "LocationContext not supported")
     public void locationContext() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -53,10 +53,11 @@ public class LocationContextTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        List<String> collectedAlerts = getCollectedAlerts(driver);
+        final List<String> collectedAlerts = getCollectedAlerts(driver);
         if (driver instanceof LocationContext) {
             collectedAlerts.add("LocationContext supported");
-        } else {
+        }
+        else {
             collectedAlerts.add("LocationContext not supported");
         }
 

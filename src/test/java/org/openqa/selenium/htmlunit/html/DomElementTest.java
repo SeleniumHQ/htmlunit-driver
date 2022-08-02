@@ -28,18 +28,18 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 @RunWith(BrowserRunner.class)
 public class DomElementTest extends WebDriverTestCase {
 
-  /**
-   * @throws Exception on test failure
-   */
-  @Test(expected = ElementNotInteractableException.class)
-  public void clickInvisible() throws Exception {
-    final String html = "<html>\n"
-        + "<body>\n"
-        + "  <a id='link' style='display: none'>Click me</a>\n"
-        + "</body></html>";
+    /**
+     * @throws Exception on test failure
+     */
+    @Test(expected = ElementNotInteractableException.class)
+    public void clickInvisible() throws Exception {
+        final String html = "<html>\n"
+            + "<body>\n"
+            + "  <a id='link' style='display: none'>Click me</a>\n"
+            + "</body></html>";
 
-    final WebDriver driver = loadPage2(html);
-    driver.findElement(By.id("link")).click();
-  }
-
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("link")).click();
+    }
 }
+

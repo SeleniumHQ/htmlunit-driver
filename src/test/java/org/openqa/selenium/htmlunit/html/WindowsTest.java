@@ -49,10 +49,10 @@ public class WindowsTest extends WebDriverTestCase {
     public void getWindowHandleWithoutContent() throws Exception {
         final WebDriver driver = getWebDriver();
 
-        String windowHandle = driver.getWindowHandle();
+        final String windowHandle = driver.getWindowHandle();
         assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
 
-        Set<String> windowHandles = driver.getWindowHandles();
+        final Set<String> windowHandles = driver.getWindowHandles();
         assertEquals(1, windowHandles.size());
 
         assertTrue(windowHandles.contains(windowHandle));
@@ -67,10 +67,10 @@ public class WindowsTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        String windowHandle = driver.getWindowHandle();
+        final String windowHandle = driver.getWindowHandle();
         assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
 
-        Set<String> windowHandles = driver.getWindowHandles();
+        final Set<String> windowHandles = driver.getWindowHandles();
         assertEquals(1, windowHandles.size());
 
         assertTrue(windowHandles.contains(windowHandle));
@@ -85,7 +85,7 @@ public class WindowsTest extends WebDriverTestCase {
                 "<html>\n"
                 + "<head><title>First</title></head>\n"
                 + "<body>\n"
-                + "<a id='a' target='_blank' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "<a id='a' target='_blank' href='" + URL_SECOND + "'>Foo</a>\n"
                 + "</body></html>\n";
 
         final String secondHtml = "<html>\n"
@@ -97,7 +97,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("First", driver.getTitle());
 
-        String windowHandle = driver.getWindowHandle();
+        final String windowHandle = driver.getWindowHandle();
         assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
 
         Set<String> windowHandles = driver.getWindowHandles();
@@ -108,7 +108,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("First", driver.getTitle());
 
-        String windowHandleAfterClick = driver.getWindowHandle();
+        final String windowHandleAfterClick = driver.getWindowHandle();
         assertEquals(windowHandle, windowHandleAfterClick);
 
         windowHandles = driver.getWindowHandles();
@@ -127,7 +127,7 @@ public class WindowsTest extends WebDriverTestCase {
                 "<html>\n"
                 + "<head><title>foo</title></head>\n"
                 + "<body>\n"
-                + "<a id='a' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "<a id='a' href='" + URL_SECOND + "'>Foo</a>\n"
                 + "</body></html>\n";
 
         final String secondHtml = "<html>\n"
@@ -139,7 +139,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("foo", driver.getTitle());
 
-        String windowHandle = driver.getWindowHandle();
+        final String windowHandle = driver.getWindowHandle();
         assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
 
         Set<String> windowHandles = driver.getWindowHandles();
@@ -156,7 +156,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("foo", driver.getTitle());
 
-        String windowHandleAfterClick = driver.getWindowHandle();
+        final String windowHandleAfterClick = driver.getWindowHandle();
         assertEquals(windowHandle, windowHandleAfterClick);
 
         windowHandles = driver.getWindowHandles();
@@ -174,7 +174,7 @@ public class WindowsTest extends WebDriverTestCase {
                 "<html>\n"
                 + "<head><title>First</title></head>\n"
                 + "<body>\n"
-                + "<a id='a' target='_blank' href='"+ URL_SECOND + "'>Foo</a>\n"
+                + "<a id='a' target='_blank' href='" + URL_SECOND + "'>Foo</a>\n"
                 + "</body></html>\n";
 
         final String secondHtml = "<html>\n"
@@ -186,7 +186,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("First", driver.getTitle());
 
-        String windowHandle = driver.getWindowHandle();
+        final String windowHandle = driver.getWindowHandle();
         assertTrue("invalid windowHandle + '" + windowHandle + "'", windowHandle.length() > 4);
 
         Set<String> windowHandles = driver.getWindowHandles();

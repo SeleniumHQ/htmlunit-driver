@@ -34,7 +34,6 @@ import org.openqa.selenium.interactions.Actions;
 @RunWith(BrowserRunner.class)
 public class DoubleClickTest extends WebDriverTestCase {
 
-
     /**
      * @throws Exception if the test fails
      */

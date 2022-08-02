@@ -27,7 +27,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
 /**
  * Maps {@link Keys} to their {@link KeyboardEvent} constant.
  */
-public class HtmlUnitKeyboardMapping {
+public final class HtmlUnitKeyboardMapping {
 
     private static final Map<Character, Integer> specialKeysMap = new HashMap<>();
 
@@ -102,22 +102,25 @@ public class HtmlUnitKeyboardMapping {
         // No match for Keys.ZENKAKU_HANKAKU
     }
 
-    private static void addMapping(Keys keys, int value) {
+    private static void addMapping(final Keys keys, final int value) {
         specialKeysMap.put(keys.charAt(0), value);
     }
 
-    static boolean isSpecialKey(char ch) {
+    static boolean isSpecialKey(final char ch) {
         return ch >= '\uE000' && ch <= '\uF8FF';
     }
 
     /**
      * Returns the equivalent constant in {@link KeyboardEvent}.
      */
-    static int getKeysMapping(char ch) {
-        Integer i = specialKeysMap.get(ch);
+    static int getKeysMapping(final char ch) {
+        final Integer i = specialKeysMap.get(ch);
         if (i == null) {
             return 0;
         }
         return i;
+    }
+
+    private HtmlUnitKeyboardMapping() {
     }
 }

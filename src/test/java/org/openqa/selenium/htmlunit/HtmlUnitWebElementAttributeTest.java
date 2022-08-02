@@ -32,7 +32,7 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
 
     @Test
     public void attribute() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -41,7 +41,7 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals("testDivId", elem.getAttribute("id"));
         assertNull(elem.getAttribute("unknown"));
         assertEquals("", elem.getAttribute("name"));
@@ -50,7 +50,7 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
 
     @Test
     public void unsupportedAttribute() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -59,13 +59,13 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals("true", elem.getAttribute("disabled"));
     }
 
     @Test
     public void disabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -76,13 +76,13 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("chkBx"));
+        final WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getAttribute("disabled"));
     }
 
     @Test
     public void valueOption() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"

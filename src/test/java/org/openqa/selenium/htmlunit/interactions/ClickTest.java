@@ -42,7 +42,7 @@ public class ClickTest extends WebDriverTestCase {
      */
     @Test
     public void click() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -53,7 +53,7 @@ public class ClickTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement element = driver.findElement(By.id("tester"));
 
-        Action click = new Actions(driver).click(element).build();
+        final Action click = new Actions(driver).click(element).build();
         click.perform();
 
         assertEquals("clicked", driver.getTitle());
@@ -65,29 +65,29 @@ public class ClickTest extends WebDriverTestCase {
     @Test
     @Alerts({"focus-start", "blur-start", "focus-target"})
     public void clickTriggerBlurEvent() throws Exception {
-      final String html = "<html>\n"
-              + "  <head>\n"
-              + "    <script>\n"
-              + "      function log(x) {\n"
-              + "        document.title += x + ';';\n"
-              + "      }\n"
-              + "    </script>\n"
-              + "  </head>\n"
-              + "<body>\n"
-              + "  <input id='start' onfocus='log(\"focus-start\");' onblur='log(\"blur-start\");'>\n"
-              + "  <input id='target' onfocus='log(\"focus-target\");' onblur='log(\"blur-target\");'>\n"
-              + "</body></html>";
+        final String html = "<html>\n"
+                + "  <head>\n"
+                + "    <script>\n"
+                + "      function log(x) {\n"
+                + "        document.title += x + ';';\n"
+                + "      }\n"
+                + "    </script>\n"
+                + "  </head>\n"
+                + "<body>\n"
+                + "  <input id='start' onfocus='log(\"focus-start\");' onblur='log(\"blur-start\");'>\n"
+                + "  <input id='target' onfocus='log(\"focus-target\");' onblur='log(\"blur-target\");'>\n"
+                + "</body></html>";
 
-      final WebDriver driver = loadPage2(html);
-      final WebElement start = driver.findElement(By.id("start"));
-      final WebElement target = driver.findElement(By.id("target"));
+        final WebDriver driver = loadPage2(html);
+        final WebElement start = driver.findElement(By.id("start"));
+        final WebElement target = driver.findElement(By.id("target"));
 
-      final Actions actions = new Actions(driver);
-      actions.click(start);
-      actions.click(target);
-      actions.perform();
+        final Actions actions = new Actions(driver);
+        actions.click(start);
+        actions.click(target);
+        actions.perform();
 
-      assertEquals(String.join(";", getExpectedAlerts()) + ";", driver.getTitle());
+        assertEquals(String.join(";", getExpectedAlerts()) + ";", driver.getTitle());
     }
 
     /**
@@ -96,29 +96,29 @@ public class ClickTest extends WebDriverTestCase {
     @Test
     @Alerts("focus-start")
     public void mouseMoveDoesNotTriggerBlurEvent() throws Exception {
-      final String html = "<html>\n"
-              + "  <head>\n"
-              + "    <script>\n"
-              + "      function log(x) {\n"
-              + "        document.title += x + ';';\n"
-              + "      }\n"
-              + "    </script>\n"
-              + "  </head>\n"
-              + "<body>\n"
-              + "  <input id='start' onfocus='log(\"focus-start\");' onblur='log(\"blur-start\");'>\n"
-              + "  <input id='target' onfocus='log(\"focus-target\");' onblur='log(\"blur-target\");'>\n"
-              + "</body></html>";
+        final String html = "<html>\n"
+                + "  <head>\n"
+                + "    <script>\n"
+                + "      function log(x) {\n"
+                + "        document.title += x + ';';\n"
+                + "      }\n"
+                + "    </script>\n"
+                + "  </head>\n"
+                + "<body>\n"
+                  + "  <input id='start' onfocus='log(\"focus-start\");' onblur='log(\"blur-start\");'>\n"
+                + "  <input id='target' onfocus='log(\"focus-target\");' onblur='log(\"blur-target\");'>\n"
+                + "</body></html>";
 
-      final WebDriver driver = loadPage2(html);
-      final WebElement start = driver.findElement(By.id("start"));
-      final WebElement target = driver.findElement(By.id("target"));
+        final WebDriver driver = loadPage2(html);
+        final WebElement start = driver.findElement(By.id("start"));
+        final WebElement target = driver.findElement(By.id("target"));
 
-      final Actions actions = new Actions(driver);
-      actions.click(start);
-      actions.moveToElement(target);
-      actions.perform();
+        final Actions actions = new Actions(driver);
+        actions.click(start);
+        actions.moveToElement(target);
+        actions.perform();
 
-      assertEquals(String.join(";", getExpectedAlerts()) + ";", driver.getTitle());
+        assertEquals(String.join(";", getExpectedAlerts()) + ";", driver.getTitle());
     }
 
     /**

@@ -26,57 +26,60 @@ import org.openqa.selenium.Keys;
  * Holds the state of the modifier keys (Shift, ctrl, alt).
  */
 class KeyboardModifiersState {
-    private Set<Character> set = new HashSet<>();
-    private boolean shiftPressed;
-    private boolean ctrlPressed;
-    private boolean altPressed;
+    private Set<Character> set_ = new HashSet<>();
+    private boolean shiftPressed_;
+    private boolean ctrlPressed_;
+    private boolean altPressed_;
 
     public boolean isShiftPressed() {
-        return shiftPressed;
+        return shiftPressed_;
     }
 
     public boolean isCtrlPressed() {
-        return ctrlPressed;
+        return ctrlPressed_;
     }
 
     public boolean isAltPressed() {
-        return altPressed;
+        return altPressed_;
     }
 
-    public void storeKeyDown(char key) {
+    public void storeKeyDown(final char key) {
         storeIfEqualsShift(key, true);
         storeIfEqualsCtrl(key, true);
         storeIfEqualsAlt(key, true);
-        set.add(key);
+        set_.add(key);
     }
 
-    public void storeKeyUp(char key) {
+    public void storeKeyUp(final char key) {
         storeIfEqualsShift(key, false);
         storeIfEqualsCtrl(key, false);
         storeIfEqualsAlt(key, false);
-        set.remove(key);
+        set_.remove(key);
     }
 
-    private void storeIfEqualsShift(char key, boolean keyState) {
-        if (key == Keys.SHIFT.charAt(0))
-            shiftPressed = keyState;
+    private void storeIfEqualsShift(final char key, final boolean keyState) {
+        if (key == Keys.SHIFT.charAt(0)) {
+            shiftPressed_ = keyState;
+        }
     }
 
-    private void storeIfEqualsCtrl(char key, boolean keyState) {
-        if (key == Keys.CONTROL.charAt(0))
-            ctrlPressed = keyState;
+    private void storeIfEqualsCtrl(final char key, final boolean keyState) {
+        if (key == Keys.CONTROL.charAt(0)) {
+            ctrlPressed_ = keyState;
+        }
     }
 
-    private void storeIfEqualsAlt(char key, boolean keyState) {
-        if (key == Keys.ALT.charAt(0))
-            altPressed = keyState;
+    private void storeIfEqualsAlt(final char key, final boolean keyState) {
+        if (key == Keys.ALT.charAt(0)) {
+            altPressed_ = keyState;
+        }
     }
 
-    boolean isPressed(Keys keys) {
+    boolean isPressed(final Keys keys) {
         return isPressed(keys.charAt(0));
     }
 
-    boolean isPressed(char ch) {
-        return set.contains(ch);
+    boolean isPressed(final char ch) {
+        return set_.contains(ch);
     }
 }

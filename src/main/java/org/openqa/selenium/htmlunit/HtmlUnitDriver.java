@@ -198,7 +198,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * @param version          the browser version to use
      * @param enableJavascript whether to enable JavaScript support or not
      */
-    public HtmlUnitDriver(BrowserVersion version, boolean enableJavascript) {
+    public HtmlUnitDriver(final BrowserVersion version, final boolean enableJavascript) {
         this(version, enableJavascript, null);
 
         modifyWebClient(webClient_);
@@ -213,7 +213,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * @param capabilities desired capabilities requested for the htmlunit driver
      *                     session
      */
-    public HtmlUnitDriver(Capabilities capabilities) {
+    public HtmlUnitDriver(final Capabilities capabilities) {
         this(BrowserVersionDeterminer.determine(capabilities),
                 capabilities.getCapability(JAVASCRIPT_ENABLED) == null || capabilities.is(JAVASCRIPT_ENABLED),
                 Proxy.extractFrom(capabilities));
@@ -278,12 +278,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         webClient_.addWebWindowListener(new WebWindowListener() {
             @Override
-            public void webWindowOpened(WebWindowEvent webWindowEvent) {
+            public void webWindowOpened(final WebWindowEvent webWindowEvent) {
                 // Ignore
             }
 
             @Override
-            public void webWindowContentChanged(WebWindowEvent event) {
+            public void webWindowContentChanged(final WebWindowEvent event) {
                 elementsMap_.remove(event.getOldPage());
                 if (event.getWebWindow() != currentWindow_.getWebWindow()) {
                     return;
@@ -294,7 +294,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             }
 
             @Override
-            public void webWindowClosed(WebWindowEvent event) {
+            public void webWindowClosed(final WebWindowEvent event) {
                 elementsMap_.remove(event.getOldPage());
                 // Check if the event window refers to us or one of our parent windows
                 // setup the currentWindow appropriately if necessary
@@ -306,7 +306,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                         return;
                     }
                     curr = curr.getParentWindow();
-                } while (curr != currentWindow_.getWebWindow().getTopWindow());
+                }
+                while (curr != currentWindow_.getWebWindow().getTopWindow());
             }
         });
 
@@ -318,7 +319,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      */
     boolean isProcessAlert() {
         if (asyncScriptExecutor_ != null) {
-            String text = alert_.getText();
+            final String text = alert_.getText();
             alert_.dismiss();
             asyncScriptExecutor_.alertTriggered(text);
             return false;
@@ -329,14 +330,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return true;
     }
 
-    protected void runAsync(Runnable r) {
-        boolean loadStrategyWait = pageLoadStrategy_ != PageLoadStrategy.NONE;
+    protected void runAsync(final Runnable r) {
+        final boolean loadStrategyWait = pageLoadStrategy_ != PageLoadStrategy.NONE;
 
         if (loadStrategyWait) {
             while (runAsyncRunning_) {
                 try {
                     Thread.sleep(10);
-                } catch (InterruptedException e) {
+                }
+                catch (final InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -345,12 +347,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         exception_ = null;
-        Runnable wrapped = () -> {
+        final Runnable wrapped = () -> {
             try {
                 r.run();
-            } catch (RuntimeException e) {
+            }
+            catch (final RuntimeException e) {
                 exception_ = e;
-            } finally {
+            }
+            finally {
                 conditionLock_.lock();
                 runAsyncRunning_ = false;
                 mainCondition_.signal();
@@ -412,7 +416,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * @param version Which browser to emulate
      * @return a new instance of WebClient.
      */
-    protected WebClient newWebClient(BrowserVersion version) {
+    protected WebClient newWebClient(final BrowserVersion version) {
         return new WebClient(version);
     }
 
@@ -423,7 +427,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * @param client The client to modify
      * @return The modified client
      */
-    protected WebClient modifyWebClient(WebClient client) {
+    protected WebClient modifyWebClient(final WebClient client) {
         // Does nothing here to be overridden.
         return client;
     }
@@ -436,7 +440,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return elementsMap_;
     }
 
-    public void setCurrentWindow(WebWindow window) {
+    public void setCurrentWindow(final WebWindow window) {
         if (currentWindow_.getWebWindow() != window) {
             currentWindow_ = new HtmlUnitWindow(window);
         }
@@ -447,92 +451,92 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *
      * @param proxy The proxy preferences.
      */
-    public void setProxySettings(Proxy proxy) {
+    public void setProxySettings(final Proxy proxy) {
         if (proxy == null || proxy.getProxyType() == Proxy.ProxyType.UNSPECIFIED) {
             return;
         }
 
         switch (proxy.getProxyType()) {
-        case MANUAL:
-            List<String> noProxyHosts = new ArrayList<>();
-            String noProxy = proxy.getNoProxy();
-            if (noProxy != null && !noProxy.isEmpty()) {
-                String[] hosts = noProxy.split(",");
-                for (String host : hosts) {
-                    if (host.trim().length() > 0) {
-                        noProxyHosts.add(host.trim());
+            case MANUAL:
+                final List<String> noProxyHosts = new ArrayList<>();
+                final String noProxy = proxy.getNoProxy();
+                if (noProxy != null && !noProxy.isEmpty()) {
+                    final String[] hosts = noProxy.split(",");
+                    for (final String host : hosts) {
+                        if (host.trim().length() > 0) {
+                            noProxyHosts.add(host.trim());
+                        }
                     }
                 }
-            }
 
-            String httpProxy = proxy.getHttpProxy();
-            if (httpProxy != null && !httpProxy.isEmpty()) {
-                String host = httpProxy;
-                int port = 0;
+                final String httpProxy = proxy.getHttpProxy();
+                if (httpProxy != null && !httpProxy.isEmpty()) {
+                    String host = httpProxy;
+                    int port = 0;
 
-                int index = httpProxy.indexOf(":");
-                if (index != -1) {
-                    host = httpProxy.substring(0, index);
-                    port = Integer.parseInt(httpProxy.substring(index + 1));
+                    final int index = httpProxy.indexOf(":");
+                    if (index != -1) {
+                        host = httpProxy.substring(0, index);
+                        port = Integer.parseInt(httpProxy.substring(index + 1));
+                    }
+
+                    setHTTPProxy(host, port, noProxyHosts);
                 }
 
-                setHTTPProxy(host, port, noProxyHosts);
-            }
+                final String socksProxy = proxy.getSocksProxy();
+                if (socksProxy != null && !socksProxy.isEmpty()) {
+                    String host = socksProxy;
+                    int port = 0;
 
-            String socksProxy = proxy.getSocksProxy();
-            if (socksProxy != null && !socksProxy.isEmpty()) {
-                String host = socksProxy;
-                int port = 0;
+                    final int index = socksProxy.indexOf(":");
+                    if (index != -1) {
+                        host = socksProxy.substring(0, index);
+                        port = Integer.parseInt(socksProxy.substring(index + 1));
+                    }
 
-                int index = socksProxy.indexOf(":");
-                if (index != -1) {
-                    host = socksProxy.substring(0, index);
-                    port = Integer.parseInt(socksProxy.substring(index + 1));
+                    setSocksProxy(host, port, noProxyHosts);
                 }
 
-                setSocksProxy(host, port, noProxyHosts);
-            }
+                // sslProxy is not supported/implemented
+                // ftpProxy is not supported/implemented
 
-            // sslProxy is not supported/implemented
-            // ftpProxy is not supported/implemented
+                break;
 
-            break;
+            case PAC:
+                final String pac = proxy.getProxyAutoconfigUrl();
+                if (pac != null && !pac.isEmpty()) {
+                    setAutoProxy(pac);
+                }
+                break;
 
-        case PAC:
-            String pac = proxy.getProxyAutoconfigUrl();
-            if (pac != null && !pac.isEmpty()) {
-                setAutoProxy(pac);
-            }
-            break;
-
-        default:
-            break;
+            default:
+                break;
         }
     }
 
     /**
-     * Sets HTTP proxy for WebClient
+     * Sets HTTP proxy for WebClient.
      *
      * @param host The hostname of HTTP proxy
      * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
      */
-    public void setProxy(String host, int port) {
+    public void setProxy(final String host, final int port) {
         setHTTPProxy(host, port, null);
     }
 
     /**
-     * Sets HTTP proxy for WebClient with bypass proxy hosts
+     * Sets HTTP proxy for WebClient with bypass proxy hosts.
      *
      * @param host         The hostname of HTTP proxy
      * @param port         The port of HTTP proxy, 0 means HTTP proxy w/o port
      * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
      */
-    public void setHTTPProxy(String host, int port, List<String> noProxyHosts) {
-        ProxyConfig proxyConfig = new ProxyConfig();
+    public void setHTTPProxy(final String host, final int port, final List<String> noProxyHosts) {
+        final ProxyConfig proxyConfig = new ProxyConfig();
         proxyConfig.setProxyHost(host);
         proxyConfig.setProxyPort(port);
         if (noProxyHosts != null && noProxyHosts.size() > 0) {
-            for (String noProxyHost : noProxyHosts) {
+            for (final String noProxyHost : noProxyHosts) {
                 proxyConfig.addHostsToProxyBypass(noProxyHost);
             }
         }
@@ -540,29 +544,29 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     /**
-     * Sets SOCKS proxy for WebClient
+     * Sets SOCKS proxy for WebClient.
      *
      * @param host The hostname of SOCKS proxy
      * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
      */
-    public void setSocksProxy(String host, int port) {
+    public void setSocksProxy(final String host, final int port) {
         setSocksProxy(host, port, null);
     }
 
     /**
-     * Sets SOCKS proxy for WebClient with bypass proxy hosts
+     * Sets SOCKS proxy for WebClient with bypass proxy hosts.
      *
      * @param host         The hostname of SOCKS proxy
      * @param port         The port of SOCKS proxy, 0 means HTTP proxy w/o port
      * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
      */
-    public void setSocksProxy(String host, int port, List<String> noProxyHosts) {
-        ProxyConfig proxyConfig = new ProxyConfig();
+    public void setSocksProxy(final String host, final int port, final List<String> noProxyHosts) {
+        final ProxyConfig proxyConfig = new ProxyConfig();
         proxyConfig.setProxyHost(host);
         proxyConfig.setProxyPort(port);
         proxyConfig.setSocksProxy(true);
         if (noProxyHosts != null && noProxyHosts.size() > 0) {
-            for (String noProxyHost : noProxyHosts) {
+            for (final String noProxyHost : noProxyHosts) {
                 proxyConfig.addHostsToProxyBypass(noProxyHost);
             }
         }
@@ -575,7 +579,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *
      * @param executor the {@link Executor} to use
      */
-    public void setExecutor(Executor executor) {
+    public void setExecutor(final Executor executor) {
         if (executor == null) {
             throw new IllegalArgumentException("executor cannot be null");
         }
@@ -583,19 +587,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     /**
-     * Sets Proxy Autoconfiguration URL for WebClient
+     * Sets Proxy Autoconfiguration URL for WebClient.
      *
      * @param autoProxyUrl The Proxy Autoconfiguration URL
      */
-    public void setAutoProxy(String autoProxyUrl) {
-        ProxyConfig proxyConfig = new ProxyConfig();
+    public void setAutoProxy(final String autoProxyUrl) {
+        final ProxyConfig proxyConfig = new ProxyConfig();
         proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
         getWebClient().getOptions().setProxyConfig(proxyConfig);
     }
 
     @Override
     public Capabilities getCapabilities() {
-        DesiredCapabilities capabilities = new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
+        final DesiredCapabilities capabilities = new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
 
         capabilities.setPlatform(Platform.getCurrent());
         capabilities.setJavascriptEnabled(isJavascriptEnabled());
@@ -604,12 +608,13 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     @Override
-    public void get(String url) {
-        URL fullUrl;
+    public void get(final String url) {
+        final URL fullUrl;
         try {
             // this takes care of data: and about:
             fullUrl = UrlUtils.toUrlUnsafe(url);
-        } catch (Exception e) {
+        }
+        catch (final Exception e) {
             throw new WebDriverException(e);
         }
 
@@ -622,7 +627,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *
      * @param fullUrl The URL to visit
      */
-    protected void get(URL fullUrl) {
+    protected void get(final URL fullUrl) {
         getAlert().close();
         getAlert().setAutoAccept(false);
         try {
@@ -637,20 +642,26 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
             // A "get" works over the entire page
             setCurrentWindow(getCurrentWindow().getWebWindow().getTopWindow());
-        } catch (UnknownHostException e) {
+        }
+        catch (final UnknownHostException e) {
             final WebWindow currentTopWebWindow = getCurrentWindow().getWebWindow().getTopWindow();
             final UnexpectedPage unexpectedPage = new UnexpectedPage(new StringWebResponse("Unknown host", fullUrl),
                     currentTopWebWindow);
             currentTopWebWindow.setEnclosedPage(unexpectedPage);
-        } catch (ConnectException e) {
+        }
+        catch (final ConnectException e) {
             // This might be expected
-        } catch (SocketTimeoutException e) {
+        }
+        catch (final SocketTimeoutException e) {
             throw new TimeoutException(e);
-        } catch (NoSuchSessionException e) {
+        }
+        catch (final NoSuchSessionException e) {
             throw e;
-        } catch (SSLHandshakeException e) {
+        }
+        catch (final SSLHandshakeException e) {
             return;
-        } catch (Exception e) {
+        }
+        catch (final Exception e) {
             throw new WebDriverException(e);
         }
 
@@ -692,19 +703,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     @Override
-    public WebElement findElement(By by) {
+    public WebElement findElement(final By by) {
         alert_.ensureUnlocked();
         return implicitlyWaitFor(() -> elementFinder_.findElement(this, by));
     }
 
     @Override
-    public List<WebElement> findElements(By by) {
-        long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
+    public List<WebElement> findElements(final By by) {
+        final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
         if (implicitWait < sleepTime) {
             return elementFinder_.findElements(this, by);
         }
 
-        long end = System.currentTimeMillis() + implicitWait;
+        final long end = System.currentTimeMillis() + implicitWait;
         List<WebElement> found;
         do {
             found = elementFinder_.findElements(this, by);
@@ -712,23 +723,24 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 return found;
             }
             sleepQuietly(sleepTime);
-        } while (System.currentTimeMillis() < end);
+        }
+        while (System.currentTimeMillis() < end);
 
         return found;
     }
 
-    public WebElement findElement(HtmlUnitWebElement element, By by) {
+    public WebElement findElement(final HtmlUnitWebElement element, final By by) {
         alert_.ensureUnlocked();
         return implicitlyWaitFor(() -> elementFinder_.findElement(element, by));
     }
 
-    public List<WebElement> findElements(HtmlUnitWebElement element, By by) {
-        long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
+    public List<WebElement> findElements(final HtmlUnitWebElement element, final By by) {
+        final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
         if (implicitWait < sleepTime) {
             return elementFinder_.findElements(element, by);
         }
 
-        long end = System.currentTimeMillis() + implicitWait;
+        final long end = System.currentTimeMillis() + implicitWait;
         List<WebElement> found;
         do {
             found = elementFinder_.findElements(element, by);
@@ -736,14 +748,15 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 return found;
             }
             sleepQuietly(sleepTime);
-        } while (System.currentTimeMillis() < end);
+        }
+        while (System.currentTimeMillis() < end);
 
         return found;
     }
 
     @Override
     public String getPageSource() {
-        Page page = getCurrentWindow().lastPage();
+        final Page page = getCurrentWindow().lastPage();
         if (page == null) {
             return null;
         }
@@ -751,7 +764,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (page instanceof SgmlPage) {
             return ((SgmlPage) page).asXml();
         }
-        WebResponse response = page.getWebResponse();
+        final WebResponse response = page.getWebResponse();
         return response.getContentAsString();
     }
 
@@ -761,8 +774,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (getWebClient().getWebWindows().size() == 1) {
             // closing the last window is equivalent to quit
             quit();
-        } else {
-            WebWindow thisWindow = getCurrentWindow().getWebWindow(); // check that the current window is active
+        }
+        else {
+            final WebWindow thisWindow = getCurrentWindow().getWebWindow(); // check that the current window is active
             if (thisWindow != null) {
                 alert_.close();
                 ((TopLevelWindow) thisWindow.getTopWindow()).close();
@@ -795,7 +809,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public String getWindowHandle() {
-        WebWindow topWindow = getCurrentWindow().getWebWindow().getTopWindow();
+        final WebWindow topWindow = getCurrentWindow().getWebWindow().getTopWindow();
         if (topWindow.isClosed()) {
             throw new NoSuchWindowException("Window is closed");
         }
@@ -804,41 +818,43 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public Object executeScript(String script, final Object... args) {
-        HtmlPage page = getPageToInjectScriptInto();
+        final HtmlPage page = getPageToInjectScriptInto();
 
         script = "function() {" + script + "\n};";
         ScriptResult result = page.executeJavaScript(script);
-        Object function = result.getJavaScriptResult();
+        final Object function = result.getJavaScriptResult();
 
-        Object[] parameters = convertScriptArgs(page, args);
+        final Object[] parameters = convertScriptArgs(page, args);
 
         try {
             result = page.executeJavaScriptFunction(function, getCurrentWindow().getWebWindow().getScriptableObject(),
                     parameters, page.getDocumentElement());
 
             return parseNativeJavascriptResult(result);
-        } catch (Throwable ex) {
+        }
+        catch (final Throwable ex) {
             throw new WebDriverException(ex);
         }
     }
 
     @Override
-    public Object executeAsyncScript(String script, Object... args) {
-        HtmlPage page = getPageToInjectScriptInto();
+    public Object executeAsyncScript(final String script, Object... args) {
+        final HtmlPage page = getPageToInjectScriptInto();
         args = convertScriptArgs(page, args);
 
         asyncScriptExecutor_ = new AsyncScriptExecutor(page, options_.timeouts().getScriptTimeout().toMillis());
         try {
-            Object result = asyncScriptExecutor_.execute(script, args);
+            final Object result = asyncScriptExecutor_.execute(script, args);
 
             alert_.ensureUnlocked();
             return parseNativeJavascriptResult(result);
-        } finally {
+        }
+        finally {
             asyncScriptExecutor_ = null;
         }
     }
 
-    private Object[] convertScriptArgs(HtmlPage page, final Object[] args) {
+    private Object[] convertScriptArgs(final HtmlPage page, final Object[] args) {
         final Object scope = page.getEnclosingWindow().getScriptableObject();
 
         if (!(scope instanceof Scriptable)) {
@@ -851,7 +867,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             for (int i = 0; i < args.length; i++) {
                 parameters[i] = parseArgumentIntoJavascriptParameter((Scriptable) scope, args[i]);
             }
-        } finally {
+        }
+        finally {
             Context.exit();
         }
         return parameters;
@@ -865,7 +882,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         final Page lastPage = getCurrentWindow().lastPage();
         if (!(lastPage instanceof HtmlPage)) {
             throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
-        } else if (!gotPage_) {
+        }
+        else if (!gotPage_) {
             // just to make
             // ExecutingJavascriptTest.testShouldThrowExceptionIfExecutingOnNoPage happy
             // but does this limitation make sense?
@@ -875,7 +893,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return (HtmlPage) lastPage;
     }
 
-    private Object parseArgumentIntoJavascriptParameter(Scriptable scope, Object arg) {
+    private Object parseArgumentIntoJavascriptParameter(final Scriptable scope, Object arg) {
         while (arg instanceof WrapsElement) {
             arg = ((WrapsElement) arg).getWrappedElement();
         }
@@ -888,45 +906,50 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         if (arg instanceof HtmlUnitWebElement) {
-            HtmlUnitWebElement webElement = (HtmlUnitWebElement) arg;
+            final HtmlUnitWebElement webElement = (HtmlUnitWebElement) arg;
             assertElementNotStale(webElement.getElement());
             return webElement.getElement().getScriptableObject();
 
-        } else if (arg instanceof HtmlElement) {
-            HtmlElement element = (HtmlElement) arg;
+        }
+        else if (arg instanceof HtmlElement) {
+            final HtmlElement element = (HtmlElement) arg;
             assertElementNotStale(element);
             return element.getScriptableObject();
 
-        } else if (arg instanceof Collection<?>) {
-            List<Object> list = new ArrayList<>();
-            for (Object o : (Collection<?>) arg) {
+        }
+        else if (arg instanceof Collection<?>) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (Collection<?>) arg) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
 
-        } else if (arg.getClass().isArray()) {
-            List<Object> list = new ArrayList<>();
-            for (Object o : (Object[]) arg) {
+        }
+        else if (arg.getClass().isArray()) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (Object[]) arg) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
 
-        } else if (arg instanceof Map<?, ?>) {
-            Map<?, ?> argmap = (Map<?, ?>) arg;
-            Scriptable map = Context.getCurrentContext().newObject(scope);
-            for (Object key : argmap.keySet()) {
+        }
+        else if (arg instanceof Map<?, ?>) {
+            final Map<?, ?> argmap = (Map<?, ?>) arg;
+            final Scriptable map = Context.getCurrentContext().newObject(scope);
+            for (final Object key : argmap.keySet()) {
                 map.put((String) key, map, parseArgumentIntoJavascriptParameter(scope, argmap.get(key)));
             }
             return map;
 
-        } else {
+        }
+        else {
             return arg;
         }
     }
 
-    protected void assertElementNotStale(DomElement element) {
-        SgmlPage elementPage = element.getPage();
-        Page lastPage = getCurrentWindow().lastPage();
+    protected void assertElementNotStale(final DomElement element) {
+        final SgmlPage elementPage = element.getPage();
+        final Page lastPage = getCurrentWindow().lastPage();
 
         if (!lastPage.equals(elementPage)) {
             throw new StaleElementReferenceException(
@@ -1005,14 +1028,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (value instanceof NativeArray) {
             final NativeArray array = (NativeArray) value;
 
-            JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+            final JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
                 @Override
                 public int getLength() {
                     return (int) array.getLength();
                 }
 
                 @Override
-                public Object item(int index) {
+                public Object item(final int index) {
                     return array.get(index);
                 }
             };
@@ -1023,7 +1046,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (value instanceof HTMLCollection) {
             final HTMLCollection array = (HTMLCollection) value;
 
-            JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
+            final JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
 
                 @Override
                 public int getLength() {
@@ -1031,7 +1054,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 }
 
                 @Override
-                public Object item(int index) {
+                public Object item(final int index) {
                     return array.get(index);
                 }
             };
@@ -1041,7 +1064,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         if (value instanceof IdScriptableObject && value.getClass().getSimpleName().equals("NativeDate")) {
 
-            long l = ((Number) getPrivateField(value, "date")).longValue();
+            final long l = ((Number) getPrivateField(value, "date")).longValue();
             return Instant.ofEpochMilli(l).toString();
         }
 
@@ -1052,18 +1075,19 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return value;
     }
 
-    private static Object getPrivateField(Object o, String fieldName) {
+    private static Object getPrivateField(final Object o, final String fieldName) {
         try {
             final Field field = o.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
             return field.get(o);
-        } catch (Exception e) {
+        }
+        catch (final Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static Map<String, Object> convertLocationToMap(Location location) {
-        Map<String, Object> map = Maps.newHashMap();
+    private static Map<String, Object> convertLocationToMap(final Location location) {
+        final Map<String, Object> map = Maps.newHashMap();
         map.put("href", location.getHref());
         map.put("protocol", location.getProtocol());
         map.put("host", location.getHost());
@@ -1076,8 +1100,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return map;
     }
 
-    private List<Object> parseJavascriptResultsList(JavaScriptResultsCollection array) {
-        List<Object> list = new ArrayList<>(array.getLength());
+    private List<Object> parseJavascriptResultsList(final JavaScriptResultsCollection array) {
+        final List<Object> list = new ArrayList<>(array.getLength());
         for (int i = 0; i < array.getLength(); ++i) {
             list.add(parseNativeJavascriptResult(array.item(i)));
         }
@@ -1094,7 +1118,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return new HtmlUnitNavigation();
     }
 
-    protected HtmlUnitWebElement toWebElement(DomElement element) {
+    protected HtmlUnitWebElement toWebElement(final DomElement element) {
         return getElementsMap().addIfAbsent(this, element);
     }
 
@@ -1102,7 +1126,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return getWebClient().getOptions().isJavaScriptEnabled();
     }
 
-    public void setJavascriptEnabled(boolean enableJavascript) {
+    public void setJavascriptEnabled(final boolean enableJavascript) {
         getWebClient().getOptions().setJavaScriptEnabled(enableJavascript);
     }
 
@@ -1110,11 +1134,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return getWebClient().getOptions().isDownloadImages();
     }
 
-    public void setDownloadImages(boolean downloadImages) {
+    public void setDownloadImages(final boolean downloadImages) {
         getWebClient().getOptions().setDownloadImages(downloadImages);
     }
 
-    public void setAcceptSslCertificates(boolean accept) {
+    public void setAcceptSslCertificates(final boolean accept) {
         getWebClient().getOptions().setUseInsecureSSL(accept);
     }
 
@@ -1122,27 +1146,30 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return getWebClient().getOptions().isUseInsecureSSL();
     }
 
-    protected <X> X implicitlyWaitFor(Callable<X> condition) {
-        long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
+    protected <X> X implicitlyWaitFor(final Callable<X> condition) {
+        final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
 
         if (implicitWait < sleepTime) {
             try {
                 return condition.call();
-            } catch (RuntimeException e) {
+            }
+            catch (final RuntimeException e) {
                 throw e;
-            } catch (Exception e) {
+            }
+            catch (final Exception e) {
                 throw new WebDriverException(e);
             }
         }
 
-        long end = System.currentTimeMillis() + implicitWait;
+        final long end = System.currentTimeMillis() + implicitWait;
         Exception lastException = null;
 
         do {
             X toReturn = null;
             try {
                 toReturn = condition.call();
-            } catch (Exception e) {
+            }
+            catch (final Exception e) {
                 lastException = e;
             }
 
@@ -1155,7 +1182,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             }
 
             sleepQuietly(sleepTime);
-        } while (System.currentTimeMillis() < end);
+        }
+        while (System.currentTimeMillis() < end);
 
         if (lastException != null) {
             if (lastException instanceof RuntimeException) {
@@ -1188,7 +1216,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             runAsync(() -> {
                 try {
                     getCurrentWindow().getWebWindow().getHistory().back();
-                } catch (IOException e) {
+                }
+                catch (final IOException e) {
                     throw new WebDriverException(e);
                 }
             });
@@ -1199,7 +1228,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             runAsync(() -> {
                 try {
                     getCurrentWindow().getWebWindow().getHistory().forward();
-                } catch (IOException e) {
+                }
+                catch (final IOException e) {
                     throw new WebDriverException(e);
                 }
             });
@@ -1242,12 +1272,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         try {
             Thread.sleep(ms);
         }
-        catch (InterruptedException ignored) {
+        catch (final InterruptedException ignored) {
         }
     }
 
     private enum PageLoadStrategy {
-        NORMAL, EAGER, NONE;
+        NORMAL, EAGER, NONE
     }
 
     protected static class ElementsMap {

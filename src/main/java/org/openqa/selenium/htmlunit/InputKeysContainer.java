@@ -24,34 +24,34 @@ import static org.openqa.selenium.Keys.RETURN;
  * Converts a group of character sequences to a string to be sent by sendKeys.
  */
 public class InputKeysContainer {
-    private final StringBuilder builder = new StringBuilder();
-    private final boolean submitKeyFound;
-    private boolean capitalize = false;
+    private final StringBuilder builder_ = new StringBuilder();
+    private final boolean submitKeyFound_;
+    private boolean capitalize_ = false;
 
-    public InputKeysContainer(CharSequence... sequences) {
+    public InputKeysContainer(final CharSequence... sequences) {
         this(false, sequences);
     }
 
-    public InputKeysContainer(boolean trimPastEnterKey, CharSequence... sequences) {
-        for (CharSequence seq : sequences) {
-            builder.append(seq);
+    public InputKeysContainer(final boolean trimPastEnterKey, final CharSequence... sequences) {
+        for (final CharSequence seq : sequences) {
+            builder_.append(seq);
         }
 
-        int indexOfSubmitKey = indexOfSubmitKey();
-        submitKeyFound = (indexOfSubmitKey != -1);
+        final int indexOfSubmitKey = indexOfSubmitKey();
+        submitKeyFound_ = indexOfSubmitKey != -1;
 
         // If inputting keys to an input element, and the string contains one of
         // ENTER or RETURN, break the string at that point and submit the form
         if (trimPastEnterKey && (indexOfSubmitKey != -1)) {
-            builder.delete(indexOfSubmitKey, builder.length());
+            builder_.delete(indexOfSubmitKey, builder_.length());
         }
     }
 
     private int indexOfSubmitKey() {
-        CharSequence[] terminators = { "\n", ENTER, RETURN };
-        for (CharSequence terminator : terminators) {
-            String needle = String.valueOf(terminator);
-            int index = builder.indexOf(needle);
+        final CharSequence[] terminators = {"\n", ENTER, RETURN};
+        for (final CharSequence terminator : terminators) {
+            final String needle = String.valueOf(terminator);
+            final int index = builder_.indexOf(needle);
             if (index != -1) {
                 return index;
             }
@@ -62,20 +62,20 @@ public class InputKeysContainer {
 
     @Override
     public String toString() {
-        String toReturn = builder.toString();
+        String toReturn = builder_.toString();
         toReturn = toReturn.replaceAll(ENTER.toString(), "\r");
         toReturn = toReturn.replaceAll(RETURN.toString(), "\r");
-        if (capitalize) {
+        if (capitalize_) {
             return toReturn.toUpperCase();
         }
         return toReturn;
     }
 
     public boolean wasSubmitKeyFound() {
-        return submitKeyFound;
+        return submitKeyFound_;
     }
 
-    public void setCapitalization(boolean capitalize) {
-        this.capitalize = capitalize;
+    public void setCapitalization(final boolean capitalize) {
+        this.capitalize_ = capitalize;
     }
 }

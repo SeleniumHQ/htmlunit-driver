@@ -34,7 +34,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
 
     @Test
     public void domProperty() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -43,7 +43,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals("testDivId", elem.getDomProperty("id"));
         assertNull(elem.getDomProperty("unknown"));
         assertNull(elem.getDomProperty("name"));
@@ -55,7 +55,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
             IE = "true")
     @HtmlUnitNYI(IE = "null")
     public void unsupportedAttribute() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -64,13 +64,13 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("testDivId"));
+        final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals(getExpectedAlerts()[0], "" + elem.getDomProperty("disabled"));
     }
 
     @Test
     public void disabled() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -81,7 +81,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        WebElement elem = driver.findElement(By.id("chkBx"));
+        final WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getDomProperty("disabled"));
     }
 }

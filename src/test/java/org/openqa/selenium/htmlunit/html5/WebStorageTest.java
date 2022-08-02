@@ -44,7 +44,7 @@ public class WebStorageTest extends WebDriverTestCase {
             FF = "WebStorage not supported",
             FF_ESR = "WebStorage not supported")
     public void webStorage() throws Exception {
-        String html = "<html>\n"
+        final String html = "<html>\n"
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
@@ -53,10 +53,11 @@ public class WebStorageTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
 
-        List<String> collectedAlerts = getCollectedAlerts(driver);
+        final List<String> collectedAlerts = getCollectedAlerts(driver);
         if (driver instanceof WebStorage) {
             collectedAlerts.add("WebStorage supported");
-        } else {
+        }
+        else {
             collectedAlerts.add("WebStorage not supported");
         }
 
