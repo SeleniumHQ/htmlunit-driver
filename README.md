@@ -28,6 +28,15 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 </dependency>
 ```
 
+| selenium | htmlunit-driver |
+|----------|-----------------|
+|    4.3.0 |          3.63.0 |
+|    4.2.1 |          3.62.0 |
+|    4.1.3 |          3.61.0 |
+|    4.1.0 | 3.56.0 - 3.60.0 |
+|    4.0.0 |          3.55.0 |
+
+
 ### Version 2.xx
 This version is compatible with Selenium 3.141.59 - again xx points to the matching HtmlUnit version.
 
@@ -42,7 +51,6 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
     <version>2.63.0</version>
 </dependency>
 ```
-
 
 ## Usage
 
