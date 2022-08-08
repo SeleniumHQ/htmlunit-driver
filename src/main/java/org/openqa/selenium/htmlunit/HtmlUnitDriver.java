@@ -1216,7 +1216,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return webClient_;
     }
 
-    protected HtmlUnitWindow getCurrentWindow() {
+    public HtmlUnitWindow getCurrentWindow() {
         if (currentWindow_ == null || currentWindow_.getWebWindow().isClosed()) {
             throw new NoSuchWindowException("Window is closed");
         }

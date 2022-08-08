@@ -25,7 +25,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -116,8 +115,6 @@ import com.gargoylesoftware.htmlunit.MockWebConnection.RawResponseData;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.WebClientOptions;
 import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.WebWindow;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.util.NameValuePair;
 
 /**
@@ -1405,19 +1402,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
     }
 
     /**
-     * Returns the HtmlElement of the specified WebElement.
-     * @param webElement the webElement
-     * @return the HtmlElement
-     * @throws Exception if an error occurs
-     * @see #getWebWindowOf(HtmlUnitDriver)
-     */
-    protected HtmlElement toHtmlElement(final WebElement webElement) throws Exception {
-        final Field field = HtmlUnitWebElement.class.getDeclaredField("element");
-        field.setAccessible(true);
-        return (HtmlElement) field.get(webElement);
-    }
-
-    /**
      * Loads an expectation file for the specified browser search first for a browser specific resource
      * and falling back in a general resource.
      * @param resourcePrefix the start of the resource name
@@ -1661,22 +1645,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
         }
         assertTrue("There are still unhandled alerts: " + String.join("; ", unhandledAlerts),
                         unhandledAlerts.isEmpty());
-    }
-
-    /**
-     * Returns the underlying WebWindow of the specified driver.
-     *
-     * <b>Your test shouldn't depend primarily on WebClient</b>
-     *
-     * @param driver the driver
-     * @return the current web window
-     * @throws Exception if an error occurs
-     * @see #toHtmlElement(WebElement)
-     */
-    protected WebWindow getWebWindowOf(final HtmlUnitDriver driver) throws Exception {
-        final Field field = HtmlUnitDriver.class.getDeclaredField("currentWindow");
-        field.setAccessible(true);
-        return (WebWindow) field.get(driver);
     }
 
     /**
