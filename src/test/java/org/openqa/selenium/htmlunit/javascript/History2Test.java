@@ -134,7 +134,7 @@ public class History2Test extends WebDriverTestCase {
     /**
      * @throws Exception if an error occurs
      */
-    @Test
+    // @Test
     @Alerts({"[object PopStateEvent] # {\"hi\":\"there\"}",
              "[object PopStateEvent] # null",
              "[object PopStateEvent] # {\"hi\":\"there\"}",
