@@ -1209,7 +1209,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return null;
     }
 
-    protected WebClient getWebClient() {
+    public WebClient getWebClient() {
         if (webClient_ == null) {
             throw new NoSuchSessionException("Session is closed");
         }
