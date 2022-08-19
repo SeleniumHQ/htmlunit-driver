@@ -172,24 +172,6 @@ public class HtmlUnitDriverTest {
     }
 
     @Test
-    public void ctorWebClientBrowserVersionFirefox78() {
-        new HtmlUnitDriver(BrowserVersion.FIREFOX_78) {
-            @Override
-            protected WebClient modifyWebClient(final WebClient client) {
-
-                assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
-
-                assertFalse("client.getOptions().isJavaScriptEnabled() is true",
-                        client.getOptions().isJavaScriptEnabled());
-                assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
-
-                return client;
-            }
-        };
-    }
-
-    @Test
     public void ctorWebClientBrowserVersionFirefoxEsr() {
         new HtmlUnitDriver(BrowserVersion.FIREFOX_ESR) {
             @Override
@@ -236,24 +218,6 @@ public class HtmlUnitDriverTest {
                 assertFalse("client.getOptions().isJavaScriptEnabled() is true",
                         client.getOptions().isJavaScriptEnabled());
                 assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
-
-                return client;
-            }
-        };
-    }
-
-    @Test
-    public void ctorWebClientBrowserVersionFirefox78JsTrue() {
-        new HtmlUnitDriver(BrowserVersion.FIREFOX_78, true) {
-            @Override
-            protected WebClient modifyWebClient(final WebClient client) {
-
-                assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
-
-                assertTrue("client.getOptions().isJavaScriptEnabled() is false",
-                        client.getOptions().isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
                 assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
 
                 return client;
