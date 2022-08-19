@@ -17,9 +17,14 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static junit.framework.Assert.fail;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 
@@ -128,5 +133,88 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
             assertEquals("1\n2\n3\t4\n5\n\n6", driver.switchTo().alert().getText());
         }
         driver.switchTo().alert().dismiss();
+    }
+
+    @Test(expected = UnhandledAlertException.class)
+    public void unhandledAlerts() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <script>alert('test');</script>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        assertEquals("should throw", driver.getTitle());
+    }
+
+    @Test
+    public void unhandledAlerts2() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <script>alert('test');alert('second');</script>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        try {
+            driver.getTitle();
+            fail("should throw");
+        }
+        catch (final UnhandledAlertException e)  {
+            // expected
+        }
+
+        final Alert alert = driver.switchTo().alert();
+        assertEquals("second", alert.getText());
+//         driver.switchTo().alert().accept();
+
+        try {
+            driver.getTitle();
+            fail("should throw");
+        }
+        catch (final UnhandledAlertException e)  {
+            // expected
+        }
+
+        assertEquals("", driver.getTitle());
+    }
+
+    @Test
+    public void testCanQuitWhenAnAlertIsPresent() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <script>alert('test');</script>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        assertEquals("test", driver.switchTo().alert().getText());
+        driver.quit();
+    }
+
+    @Test(expected = ElementNotInteractableException.class)
+    public void testSettingTheValueOfAnAlertThrows() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <script>alert('test');</script>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        try {
+            driver.switchTo().alert().sendKeys("test");
+        }
+        finally {
+            driver.switchTo().alert().accept();
+        }
     }
 }
