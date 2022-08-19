@@ -478,7 +478,7 @@ public class HtmlUnitWebElement implements WrapsDriver,
     return parent;
   }
 
-  protected DomElement getElement() {
+  public DomElement getElement() {
     return element;
   }
 
