@@ -1712,14 +1712,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor,
     return null;
   }
 
-  protected WebClient getWebClient() {
+  public WebClient getWebClient() {
     if (webClient == null) {
       throw new NoSuchSessionException("Session is closed");
     }
     return webClient;
   }
 
-  protected WebWindow getCurrentWindow() {
+  public WebWindow getCurrentWindow() {
     if (currentWindow == null || currentWindow.isClosed()) {
       throw new NoSuchWindowException("Window is closed");
     }
