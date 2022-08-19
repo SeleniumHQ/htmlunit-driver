@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.64.0-SNAPSHOT</version>
+    <version>3.64.0</version>
 
     <name>htmlunit-driver</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -19,7 +19,7 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <selenium.version>4.4.0</selenium.version>
-        <htmlunit.version>2.63.0</htmlunit.version>
+        <htmlunit.version>2.64.0</htmlunit.version>
 
         <jetty.version>9.4.48.v20220622</jetty.version>
 
@@ -276,7 +276,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <goals>

@@ -24,12 +24,13 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.63.0</version>
+    <version>3.64.0</version>
 </dependency>
 ```
 
 | selenium | htmlunit-driver |
 |----------|-----------------|
+|    4.4.0 |          3.64.0 |
 |    4.3.0 |          3.63.0 |
 |    4.2.1 |          3.62.0 |
 |    4.1.3 |          3.61.0 |
@@ -48,7 +49,7 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.63.0</version>
+    <version>2.64.0</version>
 </dependency>
 ```
 
