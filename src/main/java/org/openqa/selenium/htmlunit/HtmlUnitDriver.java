@@ -893,12 +893,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (!(lastPage instanceof HtmlPage)) {
             throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
         }
-        else if (!gotPage_) {
-            // just to make
-            // ExecutingJavascriptTest.testShouldThrowExceptionIfExecutingOnNoPage happy
-            // but does this limitation make sense?
-            throw new WebDriverException("Can't execute JavaScript before a page has been loaded!");
-        }
 
         return (HtmlPage) lastPage;
     }

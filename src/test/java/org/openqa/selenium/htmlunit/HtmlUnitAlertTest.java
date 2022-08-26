@@ -17,7 +17,7 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static junit.framework.Assert.fail;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -171,7 +171,6 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
 
         final Alert alert = driver.switchTo().alert();
         assertEquals("second", alert.getText());
-//         driver.switchTo().alert().accept();
 
         try {
             driver.getTitle();
@@ -215,6 +214,31 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         }
         finally {
             driver.switchTo().alert().accept();
+        }
+    }
+
+    @Test
+    public void testIncludesAlertTextInUnhandledAlertException() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <button id='clickMe' onClick='alert(\"HtmlUnit is great\")'>do it</button>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("clickMe")).click();
+
+        final Alert alert = driver.switchTo().alert();
+        assertEquals("HtmlUnit is great", alert.getText());
+
+        try {
+            driver.getTitle();
+            fail("should throw");
+        }
+        catch (final UnhandledAlertException e)  {
+            assertTrue(e.getMessage(), e.getMessage().startsWith("Alert found: HtmlUnit is great"));
         }
     }
 }
