@@ -36,7 +36,7 @@ import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.
  *
- * @author Alexei Barantsev
+ * @author Simon Stewart
  * @author Ahmed Ashour
  * @author Ronald Brill
  * @author Martin Bartoš

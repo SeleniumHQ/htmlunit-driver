@@ -221,6 +221,9 @@ public class HtmlUnitAlert implements Alert {
 
                 case IGNORE:
                     break;
+
+                default:
+                    break;
             }
             throw new UnhandledAlertException("Alert found", text);
         }
