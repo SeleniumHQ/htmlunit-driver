@@ -72,7 +72,8 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         assertEquals(message, driver.switchTo().alert().getText());
         driver.switchTo().alert().accept();
 
-        Thread.sleep(2000);
+        // sometimes the page is slow
+        Thread.sleep(4 * DEFAULT_WAIT_TIME);
 
         assertTrue("Title was '" + driver.getTitle() + "'",
                 driver.getTitle().contains("Welcome to HtmlUnit"));
@@ -106,7 +107,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         assertEquals(message, driver.switchTo().alert().getText());
         driver.switchTo().alert().dismiss();
 
-        Thread.sleep(1000);
+        Thread.sleep(DEFAULT_WAIT_TIME);
 
         assertEquals("False", driver.findElement(By.id("message")).getText());
         assertEquals("ConfirmWithoutRedirect", driver.getTitle());
