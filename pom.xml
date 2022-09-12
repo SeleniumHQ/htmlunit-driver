@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.64.0</version>
+    <version>3.65.0-SNAPSHOT</version>
 
     <name>htmlunit-driver</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -24,7 +24,7 @@
         <jetty.version>9.4.48.v20220622</jetty.version>
 
         <checkstyle.version>9.3</checkstyle.version>
-        <spotbugs.version>4.7.1</spotbugs.version>
+        <spotbugs.version>4.7.2</spotbugs.version>
     </properties>
 
     <licenses>
@@ -230,7 +230,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
                     <suppressionsLocation>checkstyle_suppressions.xml</suppressionsLocation>
@@ -247,7 +247,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.1.1</version>
+                <version>4.7.2.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>
