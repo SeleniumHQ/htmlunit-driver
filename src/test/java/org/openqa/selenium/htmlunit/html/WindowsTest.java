@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.interactions.Actions;
@@ -204,5 +205,59 @@ public class WindowsTest extends WebDriverTestCase {
         driver.switchTo().window(windowHandles.iterator().next());
 
         assertEquals("Second", driver.getTitle());
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void switchToNewWindow() throws Exception {
+        final String html =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "</body></html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        assertEquals("First", driver.getTitle());
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.switchTo().newWindow(WindowType.WINDOW);
+
+        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        assertEquals(2, windowHandles.size());
+
+        assertEquals("", driver.getTitle());
+        assertEquals("about:blank", driver.getCurrentUrl());
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void switchToNewTab() throws Exception {
+        final String html =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "</body></html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        assertEquals("First", driver.getTitle());
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.switchTo().newWindow(WindowType.TAB);
+
+        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        assertEquals(2, windowHandles.size());
+
+        assertEquals("", driver.getTitle());
+        assertEquals("about:blank", driver.getCurrentUrl());
     }
 }

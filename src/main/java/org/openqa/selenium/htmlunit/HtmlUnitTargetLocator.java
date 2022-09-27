@@ -56,7 +56,9 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
     @Override
     public WebDriver newWindow(final WindowType typeHint) {
-        return null;
+        // there is no difference between window and tab in htmlunit
+        driver_.openNewWindow();
+        return driver_;
     }
 
     @Override

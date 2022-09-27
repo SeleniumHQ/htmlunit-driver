@@ -1350,4 +1350,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             setCurrentWindow(page.getEnclosingWindow());
         }
     }
+
+    public void openNewWindow() {
+        final WebWindow newWindow = webClient_.openWindow(UrlUtils.URL_ABOUT_BLANK, "");
+        currentWindow_ = new HtmlUnitWindow(newWindow);
+    }
 }
