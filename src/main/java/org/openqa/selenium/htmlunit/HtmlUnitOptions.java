@@ -182,11 +182,6 @@ public class HtmlUnitOptions implements WebDriver.Options {
     }
 
     @Override
-    public WebDriver.ImeHandler ime() {
-        throw new UnsupportedOperationException("Cannot input IME using HtmlUnit.");
-    }
-
-    @Override
     public HtmlUnitWindow window() {
         return driver_.getCurrentWindow();
     }

@@ -65,7 +65,6 @@ import org.openqa.selenium.htmlunit.w3.Action;
 import org.openqa.selenium.htmlunit.w3.Algorithms;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
