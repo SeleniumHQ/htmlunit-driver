@@ -65,6 +65,7 @@ import org.openqa.selenium.htmlunit.w3.Action;
 import org.openqa.selenium.htmlunit.w3.Algorithms;
 import org.openqa.selenium.interactions.Interactive;
 import org.openqa.selenium.interactions.Sequence;
+import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -206,9 +207,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     /**
-     * The browserName is {@link BrowserType#HTMLUNIT} "htmlunit" and the
+     * The browserName is {@link Browser#HTMLUNIT} "htmlunit" and the
      * browserVersion denotes the required browser AND its version. For example
-     * "chrome" for Chrome, "firefox-45" for Firefox 45 or "internet explorer" for
+     * "chrome" for Chrome, "firefox-100" for Firefox 100 or "internet explorer" for
      * IE.
      *
      * @param capabilities desired capabilities requested for the htmlunit driver
