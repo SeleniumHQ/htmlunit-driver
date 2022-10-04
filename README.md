@@ -13,8 +13,29 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlun
 
 There are two versions available
 
-### Version 3.xx
-This version is compatible with Selenium 4 - xx points to the matching HtmlUnit version.
+### Selenium compatibility
+Starting with Selenium 4.5 we use the same version numbers for the driver - means HtmlUnit-Driver 4.5
+is for Selenium 4.5.
+For older version and Selenium 3 plese chck the following table.
+
+| selenium | htmlunit-driver |    htmlunit     |
+|----------|-----------------|-----------------|
+|    4.5.0 |           4.5.0 |          2.65.1 |
+|          |                 |                 |
+|    4.4.0 |          3.64.0 |          2.64.0 |
+|    4.3.0 |          3.63.0 |          2.63.0 |
+|    4.2.1 |          3.62.0 |          2.62.0 |
+|    4.1.3 |          3.61.0 |          2.61.0 |
+|    4.1.0 | 3.56.0 - 3.60.0 | 2.56.0 - 2.60.0 |
+|    4.0.0 |          3.55.0 |          3.55.0 |
+|          |                 |                 |
+| 3.141.59 |          2.65.0 |          2.65.1 |
+| 3.141.59 |          2.64.0 |          2.64.0 |
+| 3.141.59 |          2.63.0 |          2.63.0 |
+| 3.141.59 |          2.62.0 |          2.62.0 |
+| 3.141.59 |          2.61.0 |          2.61.0 |
+| 3.141.59 |          2.60.0 |          2.60.0 |
+
 
 **Maven/Gradle/...**
 
@@ -24,34 +45,30 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>3.64.0</version>
+    <version>4.5.0</version>
 </dependency>
 ```
-
-| selenium | htmlunit-driver |
-|----------|-----------------|
-|    4.4.0 |          3.64.0 |
-|    4.3.0 |          3.63.0 |
-|    4.2.1 |          3.62.0 |
-|    4.1.3 |          3.61.0 |
-|    4.1.0 | 3.56.0 - 3.60.0 |
-|    4.0.0 |          3.55.0 |
-
-
-### Version 2.xx
-This version is compatible with Selenium 3.141.59 - again xx points to the matching HtmlUnit version.
 
 **Maven/Gradle/...**
 
 Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
 
+Add to your `pom.xml`:
+
 ```xml
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>2.64.0</version>
+    <version>2.65.0</version>
 </dependency>
 ```
+
+Add to your `build.gradle`:
+
+```groovy
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '2.65.0'
+```
+
 
 ## Usage
 
