@@ -82,7 +82,7 @@ public final class BrowserVersionDeterminer {
             else {
                 try {
                     final int version = Integer.parseInt(browserVersion);
-                    if (version == 78) {
+                    if (version == 78 || version == 91) {
                         browserVersionObject = BrowserVersion.FIREFOX_ESR;
                     }
                     else if (version == BrowserVersion.FIREFOX_ESR.getBrowserVersionNumeric()) {

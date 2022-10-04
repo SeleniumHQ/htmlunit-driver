@@ -225,7 +225,7 @@ public class HtmlUnitAlert implements Alert {
                 default:
                     break;
             }
-            throw new UnhandledAlertException("Alert found", text);
+            throw new UnhandledAlertException("Unexpected alert found", text);
         }
     }
 

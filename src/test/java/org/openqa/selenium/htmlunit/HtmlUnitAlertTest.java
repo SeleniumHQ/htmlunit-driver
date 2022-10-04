@@ -24,9 +24,13 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.BuggyWebDriver;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
 
 /**
  * Alert tests.
@@ -219,6 +223,11 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     }
 
     @Test
+    @Alerts("Unexpected alert found: HtmlUnit is great")
+    @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
+            FF = "Dismissed user prompt dialog: HtmlUnit is great",
+            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great",
+            IE = "Modal dialog present with text: HtmlUnit is great")
     public void testIncludesAlertTextInUnhandledAlertException() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
@@ -239,7 +248,40 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
             fail("should throw");
         }
         catch (final UnhandledAlertException e)  {
-            assertTrue(e.getMessage(), e.getMessage().startsWith("Alert found: HtmlUnit is great"));
+            assertTrue(e.getMessage(), e.getMessage().startsWith(getExpectedAlerts()[0]));
+        }
+    }
+
+    @Test
+    @Alerts("Unexpected alert found: HtmlUnit is great")
+    @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
+            FF = "Dismissed user prompt dialog: HtmlUnit is great",
+            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great",
+            IE = "Modal dialog present with text: HtmlUnit is great")
+    @NotYetImplemented
+    public void testIncludesAlertTextInUnhandledAlertExceptionFromnAsyncScript() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final Object res = ((JavascriptExecutor) driver)
+                            .executeAsyncScript("alert(\"HtmlUnit is great\");arguments[0]('done');");
+
+        assertNull(res);
+
+        final Alert alert = driver.switchTo().alert();
+        assertEquals("HtmlUnit is great", alert.getText());
+
+        try {
+            driver.getTitle();
+            fail("should throw");
+        }
+        catch (final UnhandledAlertException e)  {
+            assertTrue(e.getMessage(), e.getMessage().startsWith(getExpectedAlerts()[0]));
         }
     }
 }

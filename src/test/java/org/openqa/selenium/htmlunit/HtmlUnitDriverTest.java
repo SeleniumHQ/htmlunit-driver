@@ -343,6 +343,17 @@ public class HtmlUnitDriverTest {
             }
         };
 
+        capabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-102", Platform.ANY);
+
+        new HtmlUnitDriver(capabilities) {
+            @Override
+            protected WebClient modifyWebClient(final WebClient client) {
+                assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+                return client;
+            }
+        };
+
         capabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr", Platform.ANY);
 
         new HtmlUnitDriver(capabilities) {
@@ -405,6 +416,17 @@ public class HtmlUnitDriverTest {
         };
 
         capabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-91", Platform.ANY);
+
+        new HtmlUnitDriver(capabilities) {
+            @Override
+            protected WebClient modifyWebClient(final WebClient client) {
+                assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+                return client;
+            }
+        };
+
+        capabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-102", Platform.ANY);
 
         new HtmlUnitDriver(capabilities) {
             @Override
