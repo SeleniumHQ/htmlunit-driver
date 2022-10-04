@@ -42,6 +42,8 @@ For older versions and Selenium 3 please check the following table:
 
 Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
 
+Add to your `pom.xml`:
+
 ```xml
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
@@ -50,24 +52,10 @@ Simply add a dependency on the latest `htmlunit-driver` version available in the
 </dependency>
 ```
 
-**Maven/Gradle/...**
-
-Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
-
-Add to your `pom.xml`:
-
-```xml
-<dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>htmlunit-driver</artifactId>
-    <version>2.65.0</version>
-</dependency>
-```
-
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '2.65.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '4.5.0'
 ```
 
 
