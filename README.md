@@ -14,9 +14,10 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlun
 There are two versions available
 
 ### Selenium compatibility
-Starting with Selenium 4.5 we use the same version numbers for the driver - means HtmlUnit-Driver 4.5
+
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.5
 is for Selenium 4.5.
-For older version and Selenium 3 plese chck the following table.
+For older versions and Selenium 3 please check the following table:
 
 | selenium | htmlunit-driver |    htmlunit     |
 |----------|-----------------|-----------------|
