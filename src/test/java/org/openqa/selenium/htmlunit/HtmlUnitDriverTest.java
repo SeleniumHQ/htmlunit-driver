@@ -327,6 +327,18 @@ public class HtmlUnitDriverTest {
     };
 
     capabilities = DesiredCapabilities.htmlUnit();
+    capabilities.setVersion("firefox-102");
+
+    new HtmlUnitDriver(capabilities){
+      @Override
+      protected WebClient modifyWebClient(WebClient client){
+        assertEquals(BrowserVersion.FIREFOX_ESR, client.getBrowserVersion());
+
+        return client;
+      }
+    };
+
+    capabilities = DesiredCapabilities.htmlUnit();
     capabilities.setVersion("firefox-esr");
 
     new HtmlUnitDriver(capabilities){
