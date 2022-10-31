@@ -283,8 +283,6 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
         final String lowerName = name.toLowerCase();
 
-        final String value = element_.getAttribute(name);
-
         if (element_ instanceof HtmlInput && ("selected".equals(lowerName) || "checked".equals(lowerName))) {
             return trueOrNull(((HtmlInput) element_).isChecked());
         }
@@ -303,6 +301,30 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
         }
 
+        if ("value".equals(lowerName)) {
+            if (element_ instanceof HtmlFileInput) {
+                return ((HTMLInputElement) element_.getScriptableObject()).getValue();
+            }
+            if (element_ instanceof HtmlInput) {
+                return ((HtmlInput) element_).getValue();
+            }
+            if (element_ instanceof HtmlTextArea) {
+                return ((HtmlTextArea) element_).getText();
+            }
+
+            // According to
+            // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+            // if the value attribute doesn't exist, getting the "value" attribute defers to
+            // the
+            // option's content.
+            if (element_ instanceof HtmlOption && !element_.hasAttribute("value")) {
+                return getText();
+            }
+
+            final String attributeValue = element_.getAttribute(name);
+            return attributeValue == null ? "" : attributeValue;
+        }
+
         if ("disabled".equals(lowerName)) {
             if (element_ instanceof DisabledElement) {
                 return trueOrNull(((DisabledElement) element_).isDisabled());
@@ -318,11 +340,6 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return "true";
         }
 
-        for (final String booleanAttribute : booleanAttributes) {
-            if (booleanAttribute.equals(lowerName)) {
-                return trueOrNull(element_.hasAttribute(lowerName));
-            }
-        }
         if ("index".equals(lowerName) && element_ instanceof HtmlOption) {
             final HtmlSelect select = ((HtmlOption) element_).getEnclosingSelect();
             final List<HtmlOption> allOptions = select.getOptions();
@@ -336,28 +353,15 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return null;
         }
 
-        if ("value".equals(lowerName)) {
-            if (element_ instanceof HtmlFileInput) {
-                return ((HTMLInputElement) element_.getScriptableObject()).getValue();
+        for (final String booleanAttribute : booleanAttributes) {
+            if (booleanAttribute.equals(lowerName)) {
+                return trueOrNull(element_.hasAttribute(lowerName));
             }
-            if (element_ instanceof HtmlTextArea) {
-                return ((HtmlTextArea) element_).getText();
-            }
-
-            // According to
-            // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-            // if the value attribute doesn't exist, getting the "value" attribute defers to
-            // the
-            // option's content.
-            if (element_ instanceof HtmlOption && !element_.hasAttribute("value")) {
-                return getText();
-            }
-
-            return value == null ? "" : value;
         }
 
-        if (!value.isEmpty()) {
-            return value;
+        final String attributeValue = element_.getAttribute(name);
+        if (!attributeValue.isEmpty()) {
+            return attributeValue;
         }
 
         if (element_.hasAttribute(name)) {
