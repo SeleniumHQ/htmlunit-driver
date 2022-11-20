@@ -70,8 +70,16 @@ public class HtmlUnitOptions implements WebDriver.Options {
         final String domain = getDomainForCookie();
         verifyDomain(cookie, domain);
 
-        getWebClient().getCookieManager().addCookie(new com.gargoylesoftware.htmlunit.util.Cookie(domain,
-                cookie.getName(), cookie.getValue(), cookie.getPath(), cookie.getExpiry(), cookie.isSecure()));
+        getWebClient().getCookieManager().addCookie(
+                new com.gargoylesoftware.htmlunit.util.Cookie(
+                        domain,
+                        cookie.getName(),
+                        cookie.getValue(),
+                        cookie.getPath(),
+                        cookie.getExpiry(),
+                        cookie.isSecure(),
+                        cookie.isHttpOnly(),
+                        cookie.getSameSite()));
     }
 
     private void verifyDomain(final Cookie cookie, String expectedDomain) {
@@ -163,9 +171,15 @@ public class HtmlUnitOptions implements WebDriver.Options {
 
     private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie>
         htmlUnitCookieToSeleniumCookieTransformer_ =
-            (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c -> new Cookie.Builder(
-            c.getName(), c.getValue()).domain(c.getDomain()).path(c.getPath()).expiresOn(c.getExpires())
-                    .isSecure(c.isSecure()).isHttpOnly(c.isHttpOnly()).build();
+            (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c ->
+                new Cookie.Builder(c.getName(), c.getValue())
+                    .domain(c.getDomain())
+                    .path(c.getPath())
+                    .expiresOn(c.getExpires())
+                    .isSecure(c.isSecure())
+                    .isHttpOnly(c.isHttpOnly())
+                    .sameSite(c.getSameSite())
+                    .build();
 
     private String getDomainForCookie() {
         final URL current = getRawUrl();
