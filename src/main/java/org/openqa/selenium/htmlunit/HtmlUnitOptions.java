@@ -18,10 +18,11 @@
 package org.openqa.selenium.htmlunit;
 
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.UnableToSetCookieException;
@@ -33,10 +34,6 @@ import com.gargoylesoftware.htmlunit.CookieManager;
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 /**
  * Manages driver options.
@@ -157,29 +154,36 @@ public class HtmlUnitOptions implements WebDriver.Options {
         // cookies based on it - return an empty set.
 
         if (!url.toString().startsWith("http")) {
-            return Sets.newHashSet();
+            return Collections.emptySet();
         }
 
-        return ImmutableSet.copyOf(Collections2.transform(getWebClient().getCookies(url),
-                htmlUnitCookieToSeleniumCookieTransformer_::apply));
-    }
-
-    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
-        return new com.gargoylesoftware.htmlunit.util.Cookie(cookie.getDomain(), cookie.getName(), cookie.getValue(),
-                cookie.getPath(), cookie.getExpiry(), cookie.isSecure(), cookie.isHttpOnly());
-    }
-
-    private final java.util.function.Function<? super com.gargoylesoftware.htmlunit.util.Cookie, @Nullable Cookie>
-        htmlUnitCookieToSeleniumCookieTransformer_ =
-            (Function<com.gargoylesoftware.htmlunit.util.Cookie, Cookie>) c ->
-                new Cookie.Builder(c.getName(), c.getValue())
+        final Set<Cookie> result = new HashSet<>();
+        for (final com.gargoylesoftware.htmlunit.util.Cookie c : getWebClient().getCookies(url)) {
+            result .add(
+                    new Cookie.Builder(c.getName(), c.getValue())
                     .domain(c.getDomain())
                     .path(c.getPath())
                     .expiresOn(c.getExpires())
                     .isSecure(c.isSecure())
                     .isHttpOnly(c.isHttpOnly())
                     .sameSite(c.getSameSite())
-                    .build();
+                    .build());
+        }
+
+        return Collections.unmodifiableSet(result);
+    }
+
+    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
+        return new com.gargoylesoftware.htmlunit.util.Cookie(
+                cookie.getDomain(),
+                cookie.getName(),
+                cookie.getValue(),
+                cookie.getPath(),
+                cookie.getExpiry(),
+                cookie.isSecure(),
+                cookie.isHttpOnly(),
+                cookie.getSameSite());
+    }
 
     private String getDomainForCookie() {
         final URL current = getRawUrl();

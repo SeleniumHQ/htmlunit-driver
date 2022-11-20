@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>4.6.0</version>
+    <version>4.6.1-SNAPSHOT</version>
 
     <name>htmlunit-driver</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -19,12 +19,13 @@
         <maven.compiler.target>8</maven.compiler.target>
 
         <selenium.version>4.6.0</selenium.version>
-        <htmlunit.version>2.66.0</htmlunit.version>
+        <htmlunit.version>2.67.0-SNAPSHOT</htmlunit.version>
 
         <jetty.version>9.4.49.v20220914</jetty.version>
 
         <checkstyle.version>9.3</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
+        <archunit.version>1.0.0</archunit.version>
     </properties>
 
     <licenses>
@@ -188,6 +189,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.tngtech.archunit</groupId>
+            <artifactId>archunit-junit4</artifactId>
+            <version>${archunit.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.eclipse.mylyn.github</groupId>
             <artifactId>org.eclipse.egit.github.core</artifactId>
             <version>2.1.5</version>
@@ -247,7 +260,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.2.0</version>
+                <version>4.7.3.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>

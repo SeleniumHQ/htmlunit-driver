@@ -32,6 +32,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -97,8 +98,6 @@ import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLCollection;
 import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement;
 import com.gargoylesoftware.htmlunit.platform.AwtClipboardHandler;
 import com.gargoylesoftware.htmlunit.util.UrlUtils;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import net.sourceforge.htmlunit.corejs.javascript.Context;
 import net.sourceforge.htmlunit.corejs.javascript.IdScriptableObject;
@@ -809,7 +808,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public Set<String> getWindowHandles() {
-        final Set<String> allHandles = Sets.newHashSet();
+        final Set<String> allHandles = new HashSet<>();
         for (final WebWindow window : getWebClient().getTopLevelWindows()) {
             allHandles.add(String.valueOf(System.identityHashCode(window)));
         }
@@ -1022,7 +1021,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         if (value instanceof NativeObject) {
             @SuppressWarnings("unchecked")
-            final Map<String, Object> map = Maps.newHashMap((NativeObject) value);
+            final Map<String, Object> map = new HashMap<>((NativeObject) value);
             for (final Entry<String, Object> e : map.entrySet()) {
                 e.setValue(parseNativeJavascriptResult(e.getValue()));
             }
@@ -1095,7 +1094,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     private static Map<String, Object> convertLocationToMap(final Location location) {
-        final Map<String, Object> map = Maps.newHashMap();
+        final Map<String, Object> map = new HashMap<>();
         map.put("href", location.getHref());
         map.put("protocol", location.getProtocol());
         map.put("host", location.getHost());
