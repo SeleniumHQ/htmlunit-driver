@@ -18,7 +18,7 @@
 package org.openqa.selenium.htmlunit;
 
 import static org.openqa.selenium.remote.Browser.HTMLUNIT;
-import static org.openqa.selenium.remote.CapabilityType.ACCEPT_SSL_CERTS;
+import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
 import java.io.IOException;
@@ -134,7 +134,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     private HtmlUnitWindow currentWindow_;
     private HtmlUnitKeyboard keyboard_;
     private HtmlUnitMouse mouse_;
-    private boolean gotPage_;
     private final TargetLocator targetLocator_;
     private AsyncScriptExecutor asyncScriptExecutor_;
     private PageLoadStrategy pageLoadStrategy_ = PageLoadStrategy.NORMAL;
@@ -225,11 +224,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             alert_.handleBrowserCapabilities(capabilities);
         }
 
-        Boolean acceptSslCerts = (Boolean) capabilities.getCapability(ACCEPT_SSL_CERTS);
-        if (acceptSslCerts == null) {
-            acceptSslCerts = true;
+        Boolean acceptInsecureCerts = (Boolean) capabilities.getCapability(ACCEPT_INSECURE_CERTS);
+        if (acceptInsecureCerts == null) {
+            acceptInsecureCerts = true;
         }
-        setAcceptSslCertificates(acceptSslCerts);
+        setAcceptInsecureCerts(acceptInsecureCerts);
 
         final String pageLoadStrategyString = (String) capabilities.getCapability(PAGE_LOAD_STRATEGY);
         if ("none".equals(pageLoadStrategyString)) {
@@ -272,7 +271,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         // Now put us on the home page, like a real browser
         get(clientOptions.getHomePage());
-        gotPage_ = false;
 
         options_ = new HtmlUnitOptions(this);
         targetLocator_ = new HtmlUnitTargetLocator(this);
@@ -674,7 +672,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             throw new WebDriverException(e);
         }
 
-        gotPage_ = true;
         resetKeyboardAndMouseState();
     }
 
@@ -1145,11 +1142,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         getWebClient().getOptions().setDownloadImages(downloadImages);
     }
 
-    public void setAcceptSslCertificates(final boolean accept) {
+    public void setAcceptInsecureCerts(final boolean accept) {
         getWebClient().getOptions().setUseInsecureSSL(accept);
     }
 
-    public boolean isAcceptSslCertificates() {
+    public boolean isAcceptInsecureCerts() {
         return getWebClient().getOptions().isUseInsecureSSL();
     }
 
