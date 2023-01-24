@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>4.7.2</version>
+    <version>4.8.0-SNAPSHOT</version>
 
     <name>htmlunit-driver</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -18,14 +18,15 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
 
-        <selenium.version>4.7.2</selenium.version>
-        <htmlunit.version>2.67.0</htmlunit.version>
+        <selenium.version>4.8.0</selenium.version>
+        <htmlunit.version>2.70.0</htmlunit.version>
 
-        <jetty.version>9.4.49.v20220914</jetty.version>
+        <jetty.version>9.4.50.v20221201</jetty.version>
 
         <checkstyle.version>9.3</checkstyle.version>
         <spotbugs.version>4.7.3</spotbugs.version>
-        <archunit.version>1.0.0</archunit.version>
+        <archunit.version>1.0.1</archunit.version>
+        <dependencycheck.version>8.0.1</dependencycheck.version>
     </properties>
 
     <licenses>
@@ -316,12 +317,28 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependencycheck.version}</version>
+                <configuration>
+                    <suppressionFiles>owasp-suppressions.xml</suppressionFiles>
+                    <failBuildOnCVSS>0</failBuildOnCVSS>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -347,13 +364,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.4.1</version>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>enforce</id>
                         <configuration>
                             <fail>false</fail>
                             <rules>
+                                <requireMavenVersion>
+                                    <version>3.6.3</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>1.8.0</version>
+                                </requireJavaVersion>
                                 <dependencyConvergence />
                             </rules>
                         </configuration>
