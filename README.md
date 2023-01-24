@@ -22,6 +22,8 @@ For older versions and Selenium 3 please check the following table:
 
 | selenium | htmlunit-driver |    htmlunit     |
 |----------|-----------------|-----------------|
+|    4.8.0 |           4.8.0 |          2.70.0 |
+|          |                 |                 |
 |    4.7.2 |           4.7.2 |          2.67.0 |
 |    4.7.0 |           4.7.0 |          2.67.0 |
 |    4.6.0 |           4.6.0 |          2.66.0 |
@@ -56,14 +58,14 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit-driver</artifactId>
-    <version>4.7.2</version>
+    <version>4.8.0</version>
 </dependency>
 ```
 
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '4.7.2'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '4.8.0'
 ```
 
 
