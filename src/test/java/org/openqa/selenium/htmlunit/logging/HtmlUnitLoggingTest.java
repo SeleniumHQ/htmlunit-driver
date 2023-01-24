@@ -81,10 +81,10 @@ public class HtmlUnitLoggingTest extends WebDriverTestCase {
         assertEquals(1000, logEntryList.size());
 
         LogEntry logEntry = logEntryList.get(0);
-        assertEquals("\"test log 0\"", logEntry.getMessage());
+        assertEquals("test log 0", logEntry.getMessage());
 
         logEntry = logEntryList.get(999);
-        assertEquals("\"test log 999\"", logEntry.getMessage());
+        assertEquals("test log 999", logEntry.getMessage());
     }
 
     @Test
@@ -106,10 +106,10 @@ public class HtmlUnitLoggingTest extends WebDriverTestCase {
         assertEquals(1000, logEntryList.size());
 
         LogEntry logEntry = logEntryList.get(0);
-        assertEquals("\"test log 1\"", logEntry.getMessage());
+        assertEquals("test log 1", logEntry.getMessage());
 
         logEntry = logEntryList.get(999);
-        assertEquals("\"test log 1000\"", logEntry.getMessage());
+        assertEquals("test log 1000", logEntry.getMessage());
     }
 
     @Test
@@ -131,10 +131,10 @@ public class HtmlUnitLoggingTest extends WebDriverTestCase {
         assertEquals(1000, logEntryList.size());
 
         LogEntry logEntry = logEntryList.get(0);
-        assertEquals("\"test log 11345\"", logEntry.getMessage());
+        assertEquals("test log 11345", logEntry.getMessage());
 
         logEntry = logEntryList.get(999);
-        assertEquals("\"test log 12344\"", logEntry.getMessage());
+        assertEquals("test log 12344", logEntry.getMessage());
     }
 
     /**
