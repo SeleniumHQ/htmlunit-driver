@@ -24,7 +24,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerDownHtmlUnitAc
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerMoveHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerUpHtmlUnitAction;
 
-import com.gargoylesoftware.htmlunit.html.DomElement;
+import org.htmlunit.html.DomElement;
 
 /**
  * An action object constructed with arguments id, type, and subtype is an

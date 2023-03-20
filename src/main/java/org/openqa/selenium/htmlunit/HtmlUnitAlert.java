@@ -31,9 +31,9 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
 
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebWindow;
+import org.htmlunit.Page;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebWindow;
 
 /**
  * Implementation of {@link Alert}.

@@ -43,7 +43,7 @@ import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
 import org.openqa.selenium.htmlunit.annotations.StandardsMode;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * The custom runner <code>BrowserRunner</code> implements browser parameterized
@@ -205,7 +205,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface Alerts {
+    public @interface Alerts {
 
         /**
          * Alerts that is used for all browsers (if defined, the other values are ignored).
@@ -257,7 +257,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface AlertsStandards {
+    public @interface AlertsStandards {
 
         /**
          * Alerts that is used for all browsers (if defined, the other values are ignored).
@@ -321,7 +321,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface NotYetImplemented {
+    public @interface NotYetImplemented {
 
         /**
          * The browsers with which the case is not yet implemented.
@@ -344,7 +344,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface BuggyWebDriver {
+    public @interface BuggyWebDriver {
         /**
          * Alerts that is used for all browsers (if defined, the other values are ignored).
          * @return the alerts
@@ -394,7 +394,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface HtmlUnitNYI {
+    public @interface HtmlUnitNYI {
         /**
          * Alerts that is used for all browsers (if defined, the other values are ignored).
          * @return the alerts
@@ -438,7 +438,7 @@ public class BrowserRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface Tries {
+    public @interface Tries {
 
         /**
          * The value.

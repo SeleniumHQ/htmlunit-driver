@@ -27,7 +27,7 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.AlertsStandards;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * The Browser Statement.

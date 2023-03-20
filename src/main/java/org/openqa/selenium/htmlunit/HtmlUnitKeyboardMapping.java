@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.openqa.selenium.Keys;
 
-import com.gargoylesoftware.htmlunit.javascript.host.event.KeyboardEvent;
+import org.htmlunit.javascript.host.event.KeyboardEvent;
 
 /**
  * Maps {@link Keys} to their {@link KeyboardEvent} constant.

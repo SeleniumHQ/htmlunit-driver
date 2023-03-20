@@ -51,12 +51,12 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.openqa.selenium.htmlunit.WebDriverTestCase.MockWebConnectionServlet;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.CollectingAlertHandler;
-import com.gargoylesoftware.htmlunit.MockWebConnection;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.util.MimeType;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.CollectingAlertHandler;
+import org.htmlunit.MockWebConnection;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.util.MimeType;
 
 /**
  * A WebTestCase which starts a local server, and doens't use WebDriver.

@@ -28,8 +28,8 @@ import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebConsole.Logger;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebConsole.Logger;
 
 /**
  * An implementation of the {@link Logs} interface for HtmlUnit. At the moment

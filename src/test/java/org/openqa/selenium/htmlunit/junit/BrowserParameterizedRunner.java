@@ -40,7 +40,7 @@ import org.junit.runners.parameterized.TestWithParameters;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.WebTestCase;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * The custom runner <code>BrowserParameterizedRunner</code> combines the behavior of both
@@ -110,7 +110,7 @@ public class BrowserParameterizedRunner extends Suite {
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
-    public static @interface Default {
+    public @interface Default {
     }
 
     private final ArrayList<Runner> runners_ = new ArrayList<>();

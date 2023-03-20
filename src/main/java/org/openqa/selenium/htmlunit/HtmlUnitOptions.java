@@ -30,10 +30,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.logging.Logs;
 
-import com.gargoylesoftware.htmlunit.CookieManager;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.CookieManager;
+import org.htmlunit.Page;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
 
 /**
  * Manages driver options.
@@ -68,7 +68,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
         verifyDomain(cookie, domain);
 
         getWebClient().getCookieManager().addCookie(
-                new com.gargoylesoftware.htmlunit.util.Cookie(
+                new org.htmlunit.util.Cookie(
                         domain,
                         cookie.getName(),
                         cookie.getValue(),
@@ -121,8 +121,8 @@ public class HtmlUnitOptions implements WebDriver.Options {
         final CookieManager cookieManager = getWebClient().getCookieManager();
 
         final URL url = getRawUrl();
-        final Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
-        for (final com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
+        final Set<org.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
+        for (final org.htmlunit.util.Cookie cookie : rawCookies) {
             if (name.equals(cookie.getName())) {
                 cookieManager.removeCookie(cookie);
             }
@@ -139,8 +139,8 @@ public class HtmlUnitOptions implements WebDriver.Options {
         final CookieManager cookieManager = getWebClient().getCookieManager();
 
         final URL url = getRawUrl();
-        final Set<com.gargoylesoftware.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
-        for (final com.gargoylesoftware.htmlunit.util.Cookie cookie : rawCookies) {
+        final Set<org.htmlunit.util.Cookie> rawCookies = getWebClient().getCookies(url);
+        for (final org.htmlunit.util.Cookie cookie : rawCookies) {
             cookieManager.removeCookie(cookie);
         }
     }
@@ -158,7 +158,7 @@ public class HtmlUnitOptions implements WebDriver.Options {
         }
 
         final Set<Cookie> result = new HashSet<>();
-        for (final com.gargoylesoftware.htmlunit.util.Cookie c : getWebClient().getCookies(url)) {
+        for (final org.htmlunit.util.Cookie c : getWebClient().getCookies(url)) {
             result .add(
                     new Cookie.Builder(c.getName(), c.getValue())
                     .domain(c.getDomain())
@@ -173,8 +173,8 @@ public class HtmlUnitOptions implements WebDriver.Options {
         return Collections.unmodifiableSet(result);
     }
 
-    private com.gargoylesoftware.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
-        return new com.gargoylesoftware.htmlunit.util.Cookie(
+    private org.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
+        return new org.htmlunit.util.Cookie(
                 cookie.getDomain(),
                 cookie.getName(),
                 cookie.getValue(),

@@ -51,8 +51,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.MockWebConnection;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.MockWebConnection;
 
 /**
  * Common superclass for HtmlUnit tests.
@@ -140,7 +140,7 @@ public abstract class WebTestCase {
      * {@link #createTestPageForRealBrowserIfNeeded(String,List)}.
      */
     public static final String PROPERTY_GENERATE_TESTPAGES =
-            "com.gargoylesoftware.htmlunit.WebTestCase.GenerateTestpages";
+            "org.htmlunit.WebTestCase.GenerateTestpages";
 
     private BrowserVersion browserVersion_;
 

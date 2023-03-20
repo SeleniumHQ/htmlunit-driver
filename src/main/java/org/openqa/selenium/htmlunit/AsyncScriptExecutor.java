@@ -24,12 +24,12 @@ import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
 
-import com.gargoylesoftware.htmlunit.ScriptException;
-import com.gargoylesoftware.htmlunit.ScriptResult;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.ScriptException;
+import org.htmlunit.ScriptResult;
+import org.htmlunit.html.HtmlPage;
 
-import net.sourceforge.htmlunit.corejs.javascript.Function;
-import net.sourceforge.htmlunit.corejs.javascript.NativeJavaObject;
+import org.htmlunit.corejs.javascript.Function;
+import org.htmlunit.corejs.javascript.NativeJavaObject;
 
 /**
  * Injects an asynchronous script into the current page for execution. The

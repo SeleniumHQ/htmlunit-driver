@@ -28,10 +28,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Coordinates;
 
-import com.gargoylesoftware.htmlunit.ScriptException;
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlOption;
-import com.gargoylesoftware.htmlunit.javascript.host.event.MouseEvent;
+import org.htmlunit.ScriptException;
+import org.htmlunit.html.DomElement;
+import org.htmlunit.html.HtmlOption;
+import org.htmlunit.javascript.host.event.MouseEvent;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.

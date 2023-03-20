@@ -47,7 +47,7 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.OS;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Tries;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * The runner for test methods that run with a specific browser ({@link BrowserRunner.TestedBrowser}).

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX;
-import static com.gargoylesoftware.htmlunit.BrowserVersion.FIREFOX_ESR;
-import static com.gargoylesoftware.htmlunit.BrowserVersion.INTERNET_EXPLORER;
+import static org.htmlunit.BrowserVersion.FIREFOX;
+import static org.htmlunit.BrowserVersion.FIREFOX_ESR;
+import static org.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +33,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * Test the determineBrowserVersion method.

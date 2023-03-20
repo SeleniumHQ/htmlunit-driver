@@ -26,7 +26,7 @@ import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 
-import com.gargoylesoftware.htmlunit.MockWebConnection;
+import org.htmlunit.MockWebConnection;
 
 @RunWith(BrowserRunner.class)
 public class WebClient3Test extends WebDriverTestCase {

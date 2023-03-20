@@ -37,7 +37,7 @@ import org.junit.runners.parameterized.TestWithParameters;
 import org.openqa.selenium.htmlunit.WebTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserParameterizedRunner.Default;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * A {@link BrowserVersionClassRunner} which is also parameterized.

@@ -20,7 +20,7 @@ package org.openqa.selenium.htmlunit;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Browser;
 
-import com.gargoylesoftware.htmlunit.BrowserVersion;
+import org.htmlunit.BrowserVersion;
 
 /**
  * Determine browser and its version.

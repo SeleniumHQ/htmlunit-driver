@@ -31,7 +31,7 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import com.gargoylesoftware.htmlunit.ProxyConfig;
+import org.htmlunit.ProxyConfig;
 
 /**
  * Test the proxy setting.
