@@ -2,7 +2,7 @@
 
 HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](http://htmlunit.sourceforge.net/) headless browser.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit-driver)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver)
 
 ##### News
 [<img src="http://htmlunit.sourceforge.net/images/logos/twitter.png" alt="Twitter" height="44" width="60">](https://twitter.com/HtmlUnit)
@@ -18,11 +18,11 @@ There are two versions available
 Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.8.1
 is for Selenium 4.8.1.
 
-Because there are so many tools on top this, we now maintain two version (artifact id's).
+Because there are so many tools working on top HtmlUnitDriver, we now maintain two version (artifact id's).
 
 **htmlunit3-driver** uses the (latest) version of HtmlUnit 3.x and is therefore not backward compatible.
 
-**htmlunit-driver** is backward compatible but it still is based on Htmlunit 2.70.
+**htmlunit-driver** is backward compatible but it still is based on HtmlUnit 2.70.
 
 For an overview please check the following table:
 
@@ -61,14 +61,14 @@ For an overview please check the following table:
 
 **Maven/Gradle/...**
 
-Simply add a dependency on the latest `htmlunit-driver` version available in the Maven Central.
+Simply add a dependency on the latest `htmlunit3-driver` version available in the Maven Central.
 
 Add to your `pom.xml`:
 
 ```xml
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>htmlunit-driver</artifactId>
+    <artifactId>htmlunit3-driver</artifactId>
     <version>4.8.1</version>
 </dependency>
 ```
@@ -76,7 +76,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit-driver', version: '4.8.1'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.8.1'
 ```
 
 
