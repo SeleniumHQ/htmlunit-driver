@@ -40,4 +40,9 @@
         <cve>CVE-2022-41881</cve>
         <cve>CVE-2021-21409</cve>
     </suppress>
+    
+    <suppress>
+        <filePath regex="true">.*guava-31\.1-jre\.jar</filePath>
+        <cve>CVE-2020-8908</cve>
+    </suppress>
 </suppressions>
