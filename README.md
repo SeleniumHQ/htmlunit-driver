@@ -18,36 +18,45 @@ There are two versions available
 Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.8.1
 is for Selenium 4.8.1.
 
-For older versions and Selenium 3 please check the following table:
+Because there are so many tools on top this, we now maintain two version (artifact id's).
 
-| selenium | htmlunit-driver |    htmlunit     |
-|----------|-----------------|-----------------|
-|    4.8.1 |           4.8.1 |          3.0.0  |
-|    4.8.0 |           4.8.0 |          2.70.0 |
-|          |                 |                 |
-|    4.7.2 |           4.7.2 |          2.67.0 |
-|    4.7.0 |           4.7.0 |          2.67.0 |
-|    4.6.0 |           4.6.0 |          2.66.0 |
-|          |                 |                 |
-|    4.5.2 |           4.5.2 |          2.66.0 |
-|    4.5.0 |           4.5.0 |          2.65.1 |
-|          |                 |                 |
-|    4.4.0 |          3.64.0 |          2.64.0 |
-|    4.3.0 |          3.63.0 |          2.63.0 |
-|    4.2.1 |          3.62.0 |          2.62.0 |
-|    4.1.3 |          3.61.0 |          2.61.0 |
-|    4.1.0 | 3.56.0 - 3.60.0 | 2.56.0 - 2.60.0 |
-|    4.0.0 |          3.55.0 |          3.55.0 |
-|          |                 |                 |
-| 3.141.59 |          2.70.0 |          2.70.0 |
-| 3.141.59 |          2.67.0 |          2.67.0 |
-| 3.141.59 |          2.66.0 |          2.66.0 |
-| 3.141.59 |          2.65.0 |          2.65.1 |
-| 3.141.59 |          2.64.0 |          2.64.0 |
-| 3.141.59 |          2.63.0 |          2.63.0 |
-| 3.141.59 |          2.62.0 |          2.62.0 |
-| 3.141.59 |          2.61.0 |          2.61.0 |
-| 3.141.59 |          2.60.0 |          2.60.0 |
+**htmlunit3-driver** uses the (latest) version of HtmlUnit 3.x and is therefore not backward compatible.
+
+**htmlunit-driver** is backward compatible but it still is based on Htmlunit 2.70.
+
+For an overview please check the following table:
+
+| selenium | htmlunit-driver |    htmlunit     |    artifactId    |
+|----------|-----------------|-----------------|------------------|
+|    4.8.1 |       **4.8.1** |          3.0.0  | htmlunit3-driver |
+|          |                 |                 |                  |
+|    4.8.1 |     **4.8.1.1** |          2.70.0 |  htmlunit-driver |
+|    4.8.1 |           4.8.1 |          3.0.0  |  htmlunit-driver |
+|    4.8.0 |           4.8.0 |          2.70.0 |  htmlunit-driver |
+|          |                 |                 |                  |
+|    4.7.2 |           4.7.2 |          2.67.0 |  htmlunit-driver |
+|    4.7.0 |           4.7.0 |          2.67.0 |  htmlunit-driver |
+|    4.6.0 |           4.6.0 |          2.66.0 |  htmlunit-driver |
+|          |                 |                 |                  |
+|    4.5.2 |           4.5.2 |          2.66.0 |  htmlunit-driver |
+|    4.5.0 |           4.5.0 |          2.65.1 |  htmlunit-driver |
+|          |                 |                 |                  |
+|    4.4.0 |          3.64.0 |          2.64.0 |  htmlunit-driver |
+|    4.3.0 |          3.63.0 |          2.63.0 |  htmlunit-driver |
+|    4.2.1 |          3.62.0 |          2.62.0 |  htmlunit-driver |
+|    4.1.3 |          3.61.0 |          2.61.0 |  htmlunit-driver |
+|    4.1.0 | 3.56.0 - 3.60.0 | 2.56.0 - 2.60.0 |  htmlunit-driver |
+|    4.0.0 |          3.55.0 |          3.55.0 |  htmlunit-driver |
+|          |                 |                 |                  |
+| 3.141.59 |      **2.70.0** |          2.70.0 |  htmlunit-driver |
+| 3.141.59 |          2.67.0 |          2.67.0 |  htmlunit-driver |
+| 3.141.59 |          2.66.0 |          2.66.0 |  htmlunit-driver |
+| 3.141.59 |          2.65.0 |          2.65.1 |  htmlunit-driver |
+| 3.141.59 |          2.64.0 |          2.64.0 |  htmlunit-driver |
+| 3.141.59 |          2.63.0 |          2.63.0 |  htmlunit-driver |
+| 3.141.59 |          2.62.0 |          2.62.0 |  htmlunit-driver |
+| 3.141.59 |          2.61.0 |          2.61.0 |  htmlunit-driver |
+| 3.141.59 |          2.60.0 |          2.60.0 |  htmlunit-driver |
 
 
 **Maven/Gradle/...**
