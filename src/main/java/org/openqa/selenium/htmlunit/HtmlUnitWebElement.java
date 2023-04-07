@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.htmlunit.ScriptResult;
+import org.htmlunit.corejs.javascript.ScriptRuntime;
 import org.htmlunit.corejs.javascript.Scriptable;
 import org.htmlunit.corejs.javascript.ScriptableObject;
 import org.htmlunit.html.DisabledElement;
@@ -46,6 +47,7 @@ import org.htmlunit.html.HtmlSelect;
 import org.htmlunit.html.HtmlSubmitInput;
 import org.htmlunit.html.HtmlTextArea;
 import org.htmlunit.html.impl.SelectableTextInput;
+import org.htmlunit.javascript.HtmlUnitScriptable;
 import org.htmlunit.javascript.host.html.HTMLElement;
 import org.htmlunit.javascript.host.html.HTMLInputElement;
 import org.openqa.selenium.By;
@@ -384,8 +386,16 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         assertElementNotStale();
 
         final String lowerName = name.toLowerCase();
-        final String value = element_.getAttribute(lowerName);
 
+        final HtmlUnitScriptable scriptable = element_.getScriptableObject();
+        if (scriptable != null) {
+            if (!ScriptableObject.hasProperty(scriptable, lowerName)) {
+                return null;
+            }
+            return ScriptRuntime.toCharSequence(ScriptableObject.getProperty(scriptable, lowerName)).toString();
+        }
+
+        // js disabled, fallback to some hacks
         if ("disabled".equals(lowerName)) {
             if (element_ instanceof DisabledElement) {
                 return trueOrFalse(((DisabledElement) element_).isDisabled());
@@ -401,6 +411,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
         }
 
+        final String value = element_.getAttribute(lowerName);
         if (ATTRIBUTE_NOT_DEFINED == value) {
             return null;
         }

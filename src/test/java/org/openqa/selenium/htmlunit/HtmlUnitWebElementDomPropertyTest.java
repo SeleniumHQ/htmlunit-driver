@@ -24,7 +24,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
-import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * Separate test class for the HtmlUnitWebElement.getDomProperty(String) method.
@@ -55,7 +54,6 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
     @Test
     @Alerts(DEFAULT = "null",
             IE = "true")
-    @HtmlUnitNYI(IE = "null")
     public void unsupportedAttribute() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
@@ -177,5 +175,47 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
         assertEquals("false", elem.getDomProperty("checked"));
         elem.click();
         assertEquals("true", elem.getDomProperty("checked"));
+    }
+
+    @Test
+    public void inputTextValue() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='text' id='textBx' name='text' value='world'/>\n"
+                        + "    <input type='text' id='textBx2' name='text'/>\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("textBx"));
+        assertEquals("world", elem.getDomProperty("value"));
+
+        elem = driver.findElement(By.id("textBx2"));
+        assertEquals("", elem.getDomProperty("value"));
+    }
+
+    @Test
+    public void inputTextValueTyped() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='text' id='textBx' name='text' value='world'/>\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement elem = driver.findElement(By.id("textBx"));
+        assertEquals("world", elem.getDomProperty("value"));
+        elem.sendKeys("hello");
+        assertEquals("worldhello", elem.getDomProperty("value"));
     }
 }

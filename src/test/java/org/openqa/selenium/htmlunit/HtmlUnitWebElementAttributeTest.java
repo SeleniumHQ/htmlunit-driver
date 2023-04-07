@@ -201,4 +201,46 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
         elem.click();
         assertEquals("true", elem.getAttribute("checked"));
     }
+
+    @Test
+    public void inputTextValue() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='text' id='textBx' name='text' value='world'/>\n"
+                        + "    <input type='text' id='textBx2' name='text'/>\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("textBx"));
+        assertEquals("world", elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("textBx2"));
+        assertEquals("", elem.getAttribute("value"));
+    }
+
+    @Test
+    public void inputTextValueTyped() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='text' id='textBx' name='text' value='world'/>\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement elem = driver.findElement(By.id("textBx"));
+        assertEquals("world", elem.getAttribute("value"));
+        elem.sendKeys("hello");
+        assertEquals("worldhello", elem.getAttribute("value"));
+    }
 }
