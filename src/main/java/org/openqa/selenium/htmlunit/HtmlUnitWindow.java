@@ -17,12 +17,11 @@
 
 package org.openqa.selenium.htmlunit;
 
+import org.htmlunit.Page;
+import org.htmlunit.WebWindow;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
-
-import org.htmlunit.Page;
-import org.htmlunit.WebWindow;
 
 /**
  *

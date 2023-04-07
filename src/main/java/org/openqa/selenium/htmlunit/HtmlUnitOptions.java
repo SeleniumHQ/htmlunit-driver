@@ -23,17 +23,16 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.htmlunit.CookieManager;
+import org.htmlunit.Page;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlPage;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.InvalidCookieDomainException;
 import org.openqa.selenium.UnableToSetCookieException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
 import org.openqa.selenium.logging.Logs;
-
-import org.htmlunit.CookieManager;
-import org.htmlunit.Page;
-import org.htmlunit.WebClient;
-import org.htmlunit.html.HtmlPage;
 
 /**
  * Manages driver options.

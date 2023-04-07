@@ -20,10 +20,9 @@ package org.openqa.selenium.htmlunit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.htmlunit.html.DomElement;
 import org.openqa.selenium.htmlunit.w3.Action;
 import org.openqa.selenium.interactions.Coordinates;
-
-import org.htmlunit.html.DomElement;
 
 /**
  * A state machine to handle web diver input sequences. We have to analyze the

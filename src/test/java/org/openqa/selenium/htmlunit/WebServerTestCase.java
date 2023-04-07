@@ -48,15 +48,14 @@ import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.After;
-import org.openqa.selenium.htmlunit.WebDriverTestCase.MockWebConnectionServlet;
-
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.CollectingAlertHandler;
 import org.htmlunit.MockWebConnection;
 import org.htmlunit.WebClient;
 import org.htmlunit.html.HtmlPage;
 import org.htmlunit.util.MimeType;
+import org.junit.After;
+import org.openqa.selenium.htmlunit.WebDriverTestCase.MockWebConnectionServlet;
 
 /**
  * A WebTestCase which starts a local server, and doens't use WebDriver.

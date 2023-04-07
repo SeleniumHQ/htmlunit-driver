@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.internal.runners.statements.Fail;
@@ -46,8 +47,6 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.NotYetImplemented;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.OS;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Tries;
-
-import org.htmlunit.BrowserVersion;
 
 /**
  * The runner for test methods that run with a specific browser ({@link BrowserRunner.TestedBrowser}).

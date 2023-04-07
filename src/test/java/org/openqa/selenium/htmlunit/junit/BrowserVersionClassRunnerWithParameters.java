@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.htmlunit.BrowserVersion;
 import org.junit.runner.Description;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Parameterized.Parameter;
@@ -36,8 +37,6 @@ import org.junit.runners.model.Statement;
 import org.junit.runners.parameterized.TestWithParameters;
 import org.openqa.selenium.htmlunit.WebTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserParameterizedRunner.Default;
-
-import org.htmlunit.BrowserVersion;
 
 /**
  * A {@link BrowserVersionClassRunner} which is also parameterized.

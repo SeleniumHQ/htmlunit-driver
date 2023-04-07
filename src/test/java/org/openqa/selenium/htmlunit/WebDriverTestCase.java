@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -72,6 +72,16 @@ import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.util.security.Constraint;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.FormEncodingType;
+import org.htmlunit.HttpHeader;
+import org.htmlunit.HttpMethod;
+import org.htmlunit.MockWebConnection;
+import org.htmlunit.MockWebConnection.RawResponseData;
+import org.htmlunit.WebClient;
+import org.htmlunit.WebClientOptions;
+import org.htmlunit.WebRequest;
+import org.htmlunit.util.NameValuePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -101,17 +111,6 @@ import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.UnreachableBrowserException;
-
-import org.htmlunit.BrowserVersion;
-import org.htmlunit.FormEncodingType;
-import org.htmlunit.HttpHeader;
-import org.htmlunit.HttpMethod;
-import org.htmlunit.MockWebConnection;
-import org.htmlunit.MockWebConnection.RawResponseData;
-import org.htmlunit.WebClient;
-import org.htmlunit.WebClientOptions;
-import org.htmlunit.WebRequest;
-import org.htmlunit.util.NameValuePair;
 
 /**
  * Base class for tests using WebDriver.

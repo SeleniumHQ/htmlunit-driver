@@ -20,6 +20,10 @@ package org.openqa.selenium.htmlunit;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
+import org.htmlunit.ScriptException;
+import org.htmlunit.html.DomElement;
+import org.htmlunit.html.HtmlOption;
+import org.htmlunit.javascript.host.event.MouseEvent;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
@@ -27,11 +31,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.Coordinates;
-
-import org.htmlunit.ScriptException;
-import org.htmlunit.html.DomElement;
-import org.htmlunit.html.HtmlOption;
-import org.htmlunit.javascript.host.event.MouseEvent;
 
 /**
  * Implements mouse operations using the HtmlUnit WebDriver.

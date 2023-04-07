@@ -27,13 +27,12 @@ import static org.junit.Assert.fail;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
 
+import org.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.htmlunit.BrowserVersion;
 
 /**
  * Test the determineBrowserVersion method.

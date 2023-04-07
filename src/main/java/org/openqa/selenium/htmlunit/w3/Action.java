@@ -17,14 +17,13 @@
 
 package org.openqa.selenium.htmlunit.w3;
 
+import org.htmlunit.html.DomElement;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.HtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyDownHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyUpHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerDownHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerMoveHtmlUnitAction;
 import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerUpHtmlUnitAction;
-
-import org.htmlunit.html.DomElement;
 
 /**
  * An action object constructed with arguments id, type, and subtype is an

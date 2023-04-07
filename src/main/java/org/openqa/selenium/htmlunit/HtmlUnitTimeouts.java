@@ -20,9 +20,8 @@ package org.openqa.selenium.htmlunit;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
-import org.openqa.selenium.WebDriver;
-
 import org.htmlunit.WebClient;
+import org.openqa.selenium.WebDriver;
 
 /**
  * Class for timeouts managing.

@@ -20,9 +20,8 @@ package org.openqa.selenium.htmlunit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openqa.selenium.Keys;
-
 import org.htmlunit.javascript.host.event.KeyboardEvent;
+import org.openqa.selenium.Keys;
 
 /**
  * Maps {@link Keys} to their {@link KeyboardEvent} constant.

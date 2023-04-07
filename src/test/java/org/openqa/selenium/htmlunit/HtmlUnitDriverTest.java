@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.WebClient;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
@@ -28,9 +30,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.htmlunit.BrowserVersion;
-import org.htmlunit.WebClient;
 
 /**
  * General tests for the HtmlUnitDriver.

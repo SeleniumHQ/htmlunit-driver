@@ -21,13 +21,12 @@ import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
 
+import org.htmlunit.BrowserVersion;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.AlertsStandards;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
-
-import org.htmlunit.BrowserVersion;
 
 /**
  * The Browser Statement.

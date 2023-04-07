@@ -25,13 +25,12 @@ import static org.openqa.selenium.remote.CapabilityType.PROXY;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.htmlunit.ProxyConfig;
 import org.junit.Test;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import org.htmlunit.ProxyConfig;
 
 /**
  * Test the proxy setting.

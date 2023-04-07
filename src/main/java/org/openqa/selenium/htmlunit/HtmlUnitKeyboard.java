@@ -19,14 +19,13 @@ package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
 
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriverException;
-
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlFileInput;
 import org.htmlunit.html.HtmlInput;
 import org.htmlunit.html.HtmlNumberInput;
 import org.htmlunit.html.Keyboard;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriverException;
 
 /**
  * Implements keyboard operations using the HtmlUnit WebDriver.

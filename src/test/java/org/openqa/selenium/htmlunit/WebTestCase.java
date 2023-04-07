@@ -45,14 +45,13 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.htmlunit.BrowserVersion;
+import org.htmlunit.MockWebConnection;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import org.htmlunit.BrowserVersion;
-import org.htmlunit.MockWebConnection;
 
 /**
  * Common superclass for HtmlUnit tests.

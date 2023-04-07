@@ -17,10 +17,9 @@
 
 package org.openqa.selenium.htmlunit;
 
+import org.htmlunit.BrowserVersion;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Browser;
-
-import org.htmlunit.BrowserVersion;
 
 /**
  * Determine browser and its version.
