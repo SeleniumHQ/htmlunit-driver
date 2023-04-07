@@ -26,6 +26,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.htmlunit.ScriptResult;
+import org.htmlunit.corejs.javascript.Scriptable;
+import org.htmlunit.corejs.javascript.ScriptableObject;
+import org.htmlunit.html.DisabledElement;
+import org.htmlunit.html.DomElement;
+import org.htmlunit.html.DomNode;
+import org.htmlunit.html.HtmlButton;
+import org.htmlunit.html.HtmlCheckBoxInput;
+import org.htmlunit.html.HtmlElement;
+import org.htmlunit.html.HtmlFileInput;
+import org.htmlunit.html.HtmlForm;
+import org.htmlunit.html.HtmlImageInput;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlOption;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlRadioButtonInput;
+import org.htmlunit.html.HtmlSelect;
+import org.htmlunit.html.HtmlSubmitInput;
+import org.htmlunit.html.HtmlTextArea;
+import org.htmlunit.html.impl.SelectableTextInput;
+import org.htmlunit.javascript.host.html.HTMLElement;
+import org.htmlunit.javascript.host.html.HTMLInputElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -46,28 +68,6 @@ import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
-
-import org.htmlunit.ScriptResult;
-import org.htmlunit.html.DisabledElement;
-import org.htmlunit.html.DomElement;
-import org.htmlunit.html.DomNode;
-import org.htmlunit.html.HtmlButton;
-import org.htmlunit.html.HtmlElement;
-import org.htmlunit.html.HtmlFileInput;
-import org.htmlunit.html.HtmlForm;
-import org.htmlunit.html.HtmlImageInput;
-import org.htmlunit.html.HtmlInput;
-import org.htmlunit.html.HtmlOption;
-import org.htmlunit.html.HtmlPage;
-import org.htmlunit.html.HtmlSelect;
-import org.htmlunit.html.HtmlSubmitInput;
-import org.htmlunit.html.HtmlTextArea;
-import org.htmlunit.html.impl.SelectableTextInput;
-import org.htmlunit.javascript.host.html.HTMLElement;
-import org.htmlunit.javascript.host.html.HTMLInputElement;
-
-import org.htmlunit.corejs.javascript.Scriptable;
-import org.htmlunit.corejs.javascript.ScriptableObject;
 
 /**
  *
@@ -385,14 +385,24 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
         final String lowerName = name.toLowerCase();
         final String value = element_.getAttribute(lowerName);
-        if (ATTRIBUTE_NOT_DEFINED == value) {
-            return null;
-        }
 
         if ("disabled".equals(lowerName)) {
             if (element_ instanceof DisabledElement) {
-                return trueOrNull(((DisabledElement) element_).isDisabled());
+                return trueOrFalse(((DisabledElement) element_).isDisabled());
             }
+        }
+
+        if ("checked".equals(lowerName)) {
+            if (element_ instanceof HtmlCheckBoxInput) {
+                return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());
+            }
+            else if (element_ instanceof HtmlRadioButtonInput) {
+                return trueOrFalse(((HtmlRadioButtonInput) element_).isChecked());
+            }
+        }
+
+        if (ATTRIBUTE_NOT_DEFINED == value) {
+            return null;
         }
 
         if (ATTRIBUTE_VALUE_EMPTY == value) {
@@ -418,11 +428,24 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
         }
 
+        if ("checked".equals(lowerName)) {
+            if (element_ instanceof HtmlCheckBoxInput) {
+                return trueOrNull(((HtmlCheckBoxInput) element_).isChecked());
+            }
+            else if (element_ instanceof HtmlRadioButtonInput) {
+                return trueOrNull(((HtmlRadioButtonInput) element_).isChecked());
+            }
+        }
+
         return value;
     }
 
     private static String trueOrNull(final boolean condition) {
         return condition ? "true" : null;
+    }
+
+    private static String trueOrFalse(final boolean condition) {
+        return condition ? "true" : "false";
     }
 
     @Override

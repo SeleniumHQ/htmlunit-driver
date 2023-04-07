@@ -109,4 +109,96 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
         elem = driver.findElement(By.id("o3"));
         assertEquals("option three second line", elem.getAttribute("value"));
     }
+
+    @Test
+    public void checkbox() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='checkbox' id='chkBx' name='chbox' value='dis' checked='checked' />checked"
+                        + "    <input type='checkbox' id='chkBx2' name='chbox2' value='dis'/> not checked"
+                        + "    <input type='checkbox' id='chkBx3' name='chbox3' value='dis' checked='false' />\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("chkBx"));
+        assertEquals("true", elem.getAttribute("checked"));
+
+        elem = driver.findElement(By.id("chkBx2"));
+        assertNull(elem.getAttribute("checked"));
+
+        elem = driver.findElement(By.id("chkBx3"));
+        assertEquals("true", elem.getAttribute("checked"));
+    }
+
+    @Test
+    public void checkboxClicked() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='checkbox' id='chkBx' name='chbox' value='dis' />\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement elem = driver.findElement(By.id("chkBx"));
+        assertNull(elem.getAttribute("checked"));
+        elem.click();
+        assertEquals("true", elem.getAttribute("checked"));
+    }
+
+    @Test
+    public void radio() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='radio' id='radioBx' name='radio' value='dis' checked='checked' />checked"
+                        + "    <input type='radio' id='radioBx2' name='radio2' value='dis'/> not checked"
+                        + "    <input type='radio' id='radioBx3' name='radio3' value='dis' checked='false' />\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("radioBx"));
+        assertEquals("true", elem.getAttribute("checked"));
+
+        elem = driver.findElement(By.id("radioBx2"));
+        assertNull(elem.getAttribute("checked"));
+
+        elem = driver.findElement(By.id("radioBx3"));
+        assertEquals("true", elem.getAttribute("checked"));
+    }
+
+    @Test
+    public void radioClicked() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='radio' id='radioBx' name='radio' value='dis' />\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement elem = driver.findElement(By.id("radioBx"));
+        assertNull(elem.getAttribute("checked"));
+        elem.click();
+        assertEquals("true", elem.getAttribute("checked"));
+    }
 }
