@@ -79,7 +79,7 @@ public class HtmlUnitInputProcessor {
     }
 
     private abstract static class DomElementHtmlUnitAction implements HtmlUnitAction {
-        private DomElement domElement_;
+        private final DomElement domElement_;
 
         DomElementHtmlUnitAction(final DomElement domElement) {
             domElement_ = domElement;

@@ -35,7 +35,7 @@ public class HtmlUnitWindow implements WebDriver.Window {
 
     private final WebWindow webWindow_;
     private final Dimension initialWindowDimension_;
-    private Point windowPosition_ = getBasePoint();
+    private Point windowPosition_;
 
     public HtmlUnitWindow(final WebWindow webWindow) {
         webWindow_ = webWindow;

@@ -30,7 +30,7 @@ import org.openqa.selenium.Keys;
  * @author Ronald Brill
  */
 class KeyboardModifiersState {
-    private Set<Character> set_ = new HashSet<>();
+    private final Set<Character> set_ = new HashSet<>();
     private boolean shiftPressed_;
     private boolean ctrlPressed_;
     private boolean altPressed_;

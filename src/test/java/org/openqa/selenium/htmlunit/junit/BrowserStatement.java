@@ -36,7 +36,7 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
  */
 class BrowserStatement extends Statement {
 
-    private Statement next_;
+    private final Statement next_;
     private final boolean notYetImplemented_;
     private final FrameworkMethod method_;
     private final boolean realBrowser_;

@@ -61,13 +61,13 @@ public class HtmlUnitLogs implements Logs {
      */
     @Override
     public Set<String> getAvailableLogTypes() {
-        return Collections.<String>emptySet();
+        return Collections.emptySet();
     }
 
     private static class HtmlUnitDriverLogger implements Logger {
         private static final int BUFFER_SIZE = 1000;
 
-        private LogEntry[] buffer_ = new LogEntry[BUFFER_SIZE];
+        private final LogEntry[] buffer_ = new LogEntry[BUFFER_SIZE];
         private int insertPos_ = 0;
         private boolean isFull_ = false;
 

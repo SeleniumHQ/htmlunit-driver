@@ -70,7 +70,7 @@ public class StandardsFrameworkMethod extends FrameworkMethod {
 
     @Override
     public boolean equals(final Object obj) {
-        if (!FrameworkMethod.class.isInstance(obj)) {
+        if (!(obj instanceof FrameworkMethod)) {
             return false;
         }
         return ((FrameworkMethod) obj).getMethod().equals(getMethod())

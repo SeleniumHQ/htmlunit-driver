@@ -43,11 +43,11 @@ import org.openqa.selenium.UnhandledAlertException;
  */
 public class HtmlUnitAlert implements Alert {
 
-    private HtmlUnitDriver driver_;
+    private final HtmlUnitDriver driver_;
     private AlertHolder holder_;
     private boolean quitting_;
-    private Lock lock_ = new ReentrantLock();
-    private Condition condition_ = lock_.newCondition();
+    private final Lock lock_ = new ReentrantLock();
+    private final Condition condition_ = lock_.newCondition();
     private WebWindow webWindow_;
     private UnexpectedAlertBehaviour unexpectedAlertBehaviour_ = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
 
@@ -229,7 +229,7 @@ public class HtmlUnitAlert implements Alert {
     }
 
     private static class AlertHolder {
-        private String message_;
+        private final String message_;
         private boolean accepted_;
 
         AlertHolder(final String message) {

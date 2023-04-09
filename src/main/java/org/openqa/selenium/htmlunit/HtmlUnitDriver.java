@@ -1090,7 +1090,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     private static Map<String, Object> convertLocationToMap(final Location location) {
         final Map<String, Object> map = new HashMap<>();
-        map.put("href", location.getHref());
         map.put("protocol", location.getProtocol());
         map.put("host", location.getHost());
         map.put("hostname", location.getHostname());

@@ -201,7 +201,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
     /**
      * All browsers supported.
      */
-    private static List<BrowserVersion> ALL_BROWSERS_ = Collections.unmodifiableList(
+    private static final List<BrowserVersion> ALL_BROWSERS_ = Collections.unmodifiableList(
             Arrays.asList(BrowserVersion.CHROME,
                     BrowserVersion.EDGE,
                     BrowserVersion.FIREFOX,
@@ -211,7 +211,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
     /**
      * Browsers which run by default.
      */
-    private static BrowserVersion[] DEFAULT_RUNNING_BROWSERS_ =
+    private static final BrowserVersion[] DEFAULT_RUNNING_BROWSERS_ =
         {BrowserVersion.CHROME,
             BrowserVersion.EDGE,
             BrowserVersion.FIREFOX,
@@ -1076,8 +1076,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
         }
         else {
             final StringBuilder expected = new StringBuilder();
-            for (int i = 0; i < expectedAlerts.length; i++) {
-                expected.append(expectedAlerts[i]).append('$');
+            for (final String expectedAlert : expectedAlerts) {
+                expected.append(expectedAlert).append('$');
             }
 
             final String title = driver.getTitle();
@@ -1128,8 +1128,8 @@ public abstract class WebDriverTestCase extends WebTestCase {
         */
 
         final StringBuilder expected = new StringBuilder();
-        for (int i = 0; i < expectedAlerts.length; i++) {
-            expected.append(expectedAlerts[i]).append('$');
+        for (final String expectedAlert : expectedAlerts) {
+            expected.append(expectedAlert).append('$');
         }
         assertEquals(expected.toString(), textArea.getAttribute("value"));
 

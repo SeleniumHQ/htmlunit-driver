@@ -198,7 +198,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("First", driver.getTitle());
 
-        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        windowHandles = new HashSet<>(driver.getWindowHandles());
         assertEquals(2, windowHandles.size());
 
         windowHandles.remove(windowHandle);
@@ -227,7 +227,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         driver.switchTo().newWindow(WindowType.WINDOW);
 
-        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        windowHandles = new HashSet<>(driver.getWindowHandles());
         assertEquals(2, windowHandles.size());
 
         assertEquals("", driver.getTitle());
@@ -254,7 +254,7 @@ public class WindowsTest extends WebDriverTestCase {
 
         driver.switchTo().newWindow(WindowType.TAB);
 
-        windowHandles = new HashSet<String>(driver.getWindowHandles());
+        windowHandles = new HashSet<>(driver.getWindowHandles());
         assertEquals(2, windowHandles.size());
 
         assertEquals("", driver.getTitle());
