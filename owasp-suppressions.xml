@@ -45,4 +45,21 @@
         <filePath regex="true">.*guava-31\.1-jre\.jar</filePath>
         <cve>CVE-2020-8908</cve>
     </suppress>
+
+    <suppress>
+        <filePath regex="true">.*htmlunit-2\.70\.0\.jar</filePath>
+        <cve>CVE-2023-26119</cve>
+    </suppress>
+    <suppress>
+        <filePath regex="true">.*htmlunit-core-js-2\.70\.0\.jar</filePath>
+        <cve>CVE-2023-26119</cve>
+    </suppress>
+    <suppress>
+        <filePath regex="true">.*neko-htmlunit-2\.70\.0\.jar</filePath>
+        <cve>CVE-2023-26119</cve>
+    </suppress>
+    <suppress>
+        <filePath regex="true">.*htmlunit-xpath-2\.70\.0\.jar</filePath>
+        <cve>CVE-2023-26119</cve>
+    </suppress>
 </suppressions>
