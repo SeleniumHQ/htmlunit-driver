@@ -47,6 +47,11 @@
     </suppress>
 
     <suppress>
+        <filePath regex="true">.*jetty-.*-9\.4\.50\.v20221201\.jar</filePath>
+        <cve>CVE-2023-26048</cve>
+    </suppress>
+
+    <suppress>
         <filePath regex="true">.*htmlunit-2\.70\.0\.jar</filePath>
         <cve>CVE-2023-26119</cve>
     </suppress>
