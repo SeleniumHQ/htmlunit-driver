@@ -46,8 +46,6 @@ public class WebClient3Test extends WebDriverTestCase {
      */
     @Test
     public void getPageAboutProtocol() throws Exception {
-        final String html = "<html><body>DataUrl Test</body></html>";
-
         final WebDriver driver = getWebDriver();
         driver.get("about:blank");
 

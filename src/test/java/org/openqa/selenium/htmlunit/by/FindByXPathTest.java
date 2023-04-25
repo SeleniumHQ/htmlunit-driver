@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -103,5 +104,110 @@ public class FindByXPathTest extends WebDriverTestCase {
         final List<WebElement> elements = ctx.findElements(By.xpath(".//*[@class = 'testClass']"));
         assertEquals(1, elements.size());
         assertEquals("testId2", elements.get(0).getAttribute("id"));
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void elementsByXPathEmpty() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        ctx.findElements(By.xpath(""));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elementsByXPathNull() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        ctx.findElements(By.xpath(null));
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void elementsByXPathBlank() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        ctx.findElements(By.xpath("  \t "));
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void elementByXPathEmpty() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.xpath(""));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void elementByXPathNull() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.xpath(null));
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void elementByXPathBlank() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testId' class='other'></div>\n"
+                        + "    <div id='testId2' class='testClass'></div>\n"
+                        + "  </div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.xpath("  \t "));
     }
 }
