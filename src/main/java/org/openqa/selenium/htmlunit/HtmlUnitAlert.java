@@ -17,8 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.remote.CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR;
-
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -33,6 +31,7 @@ import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.UnexpectedAlertBehaviour;
 import org.openqa.selenium.UnhandledAlertException;
+import org.openqa.selenium.remote.CapabilityType;
 
 /**
  * Implementation of {@link Alert}.
@@ -129,7 +128,7 @@ public class HtmlUnitAlert implements Alert {
 
     public void handleBrowserCapabilities(final Capabilities capabilities) {
         final UnexpectedAlertBehaviour behaviour = (UnexpectedAlertBehaviour) capabilities
-                .getCapability(UNEXPECTED_ALERT_BEHAVIOUR);
+                .getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);
         if (behaviour != null) {
             this.unexpectedAlertBehaviour_ = behaviour;
         }
