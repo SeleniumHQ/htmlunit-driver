@@ -609,8 +609,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         final DesiredCapabilities capabilities = new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
 
         capabilities.setPlatform(Platform.getCurrent());
-        capabilities.setJavascriptEnabled(isJavascriptEnabled());
         capabilities.setVersion(Version.getProductVersion());
+
+        capabilities.setCapability(HtmlUnitDriver.JAVASCRIPT_ENABLED, isJavascriptEnabled());
         return capabilities;
     }
 

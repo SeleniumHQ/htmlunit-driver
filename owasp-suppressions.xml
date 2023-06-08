@@ -45,6 +45,7 @@
     <suppress>
         <filePath regex="true">.*guava-31\.1-jre\.jar</filePath>
         <cve>CVE-2020-8908</cve>
+        <cve>CVE-2023-2976</cve>
     </suppress>
 
     <suppress>
