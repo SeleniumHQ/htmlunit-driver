@@ -243,48 +243,6 @@ public class HtmlUnitDriverTest {
     }
 
     @Test
-    public void ctorWebClientCapabilitiesJsTrue() {
-        final DesiredCapabilities capabilities =
-                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-        capabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, true);
-
-        new HtmlUnitDriver(capabilities) {
-            @Override
-            protected WebClient modifyWebClient(final WebClient client) {
-                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
-
-                assertTrue("client.getOptions().isJavaScriptEnabled() is false",
-                        client.getOptions().isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
-
-                return client;
-            }
-        };
-    }
-
-    @Test
-    public void ctorWebClientCapabilitiesJsFalse() {
-        final DesiredCapabilities capabilities =
-                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-        capabilities.setCapability(CapabilityType.SUPPORTS_JAVASCRIPT, false);
-
-        new HtmlUnitDriver(capabilities) {
-            @Override
-            protected WebClient modifyWebClient(final WebClient client) {
-                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
-
-                assertFalse("client.getOptions().isJavaScriptEnabled() is true",
-                        client.getOptions().isJavaScriptEnabled());
-                assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
-
-                return client;
-            }
-        };
-    }
-
-    @Test
     public void ctorWebClientCapabilitiesVersionString() {
         DesiredCapabilities capabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox",
                 Platform.ANY);
@@ -449,45 +407,46 @@ public class HtmlUnitDriverTest {
     }
 
     @Test
-    public void ctorWebClientCapabilitiesJsEnabledTrue() {
+    public void ctorWebClientJsEnabledTrue() {
         final DesiredCapabilities capabilities =
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-        capabilities.setJavascriptEnabled(true);
 
-        new HtmlUnitDriver(capabilities) {
-            @Override
-            protected WebClient modifyWebClient(final WebClient client) {
-                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
+        final HtmlUnitDriver driver = new HtmlUnitDriver(capabilities);
+        assertTrue("client.getOptions().isJavaScriptEnabled() is false", driver.isJavascriptEnabled());
+        assertTrue("client.getOptions().isJavaScriptEnabled() is true",
+                driver.getWebClient().getOptions().isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEnabled() is true", driver.getWebClient().isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEngineEnabled() is false", driver.getWebClient().isJavaScriptEngineEnabled());
 
-                assertTrue("client.getOptions().isJavaScriptEnabled() is false",
-                        client.getOptions().isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
-
-                return client;
-            }
-        };
+        driver.setJavascriptEnabled(false);
+        assertFalse("client.getOptions().isJavaScriptEnabled() is true", driver.isJavascriptEnabled());
+        assertFalse("client.getOptions().isJavaScriptEnabled() is true",
+                driver.getWebClient().getOptions().isJavaScriptEnabled());
+        assertFalse("client.isJavaScriptEnabled() is true", driver.getWebClient().isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEngineEnabled() is false", driver.getWebClient().isJavaScriptEngineEnabled());
     }
 
     @Test
-    public void ctorWebClientCapabilitiesJsEnabledFalse() {
+    public void ctorWebClientJsEnabledFalse() {
         final DesiredCapabilities capabilities =
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
-        capabilities.setJavascriptEnabled(false);
 
-        new HtmlUnitDriver(capabilities) {
+        final HtmlUnitDriver driver = new HtmlUnitDriver(capabilities) {
             @Override
             protected WebClient modifyWebClient(final WebClient client) {
                 assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
 
-                assertFalse("client.getOptions().isJavaScriptEnabled() is true",
-                        client.getOptions().isJavaScriptEnabled());
-                assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
-                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
+                client.getOptions().setJavaScriptEnabled(false);
 
                 return client;
             }
         };
+
+        assertFalse("client.getOptions().isJavaScriptEnabled() is true", driver.isJavascriptEnabled());
+        assertFalse("client.getOptions().isJavaScriptEnabled() is true",
+                driver.getWebClient().getOptions().isJavaScriptEnabled());
+        assertFalse("client.isJavaScriptEnabled() is true", driver.getWebClient().isJavaScriptEnabled());
+        assertTrue("client.isJavaScriptEngineEnabled() is false", driver.getWebClient().isJavaScriptEngineEnabled());
     }
 
     @Test
@@ -511,6 +470,48 @@ public class HtmlUnitDriverTest {
 
                 assertEquals("hostname", client.getOptions().getProxyConfig().getProxyHost());
                 assertEquals(1234, client.getOptions().getProxyConfig().getProxyPort());
+
+                return client;
+            }
+        };
+    }
+
+    @Test
+    public void ctorWebClientCapabilitiesJsTrue() {
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
+        capabilities.setCapability(HtmlUnitDriver.JAVASCRIPT_ENABLED, true);
+
+        new HtmlUnitDriver(capabilities) {
+            @Override
+            protected WebClient modifyWebClient(final WebClient client) {
+                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
+
+                assertTrue("client.getOptions().isJavaScriptEnabled() is false",
+                        client.getOptions().isJavaScriptEnabled());
+                assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
+                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
+
+                return client;
+            }
+        };
+    }
+
+    @Test
+    public void ctorWebClientCapabilitiesJsFalse() {
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
+        capabilities.setCapability(HtmlUnitDriver.JAVASCRIPT_ENABLED, false);
+
+        new HtmlUnitDriver(capabilities) {
+            @Override
+            protected WebClient modifyWebClient(final WebClient client) {
+                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
+
+                assertFalse("client.getOptions().isJavaScriptEnabled() is true",
+                        client.getOptions().isJavaScriptEnabled());
+                assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
+                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
 
                 return client;
             }
