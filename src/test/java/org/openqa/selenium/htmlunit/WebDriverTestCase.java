@@ -102,9 +102,12 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverService;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerDriverService;
 import org.openqa.selenium.ie.InternetExplorerOptions;
@@ -523,19 +526,39 @@ public abstract class WebDriverTestCase extends WebTestCase {
 
             if (BrowserVersion.EDGE == getBrowserVersion()) {
                 if (EDGE_BIN_ != null) {
-                    System.setProperty(EdgeDriverService.EDGE_DRIVER_EXE_PROPERTY, EDGE_BIN_);
+                    final EdgeDriverService service = new EdgeDriverService.Builder()
+                            .withLogOutput(System.out)
+                            .usingDriverExecutable(new File(EDGE_BIN_))
+
+                            .withAppendLog(true)
+                            .withReadableTimestamp(true)
+
+                            .build();
+
+                    final EdgeOptions options = new EdgeOptions();
+                    // options.addArguments("--lang=en-US");
+                    // options.addArguments("--remote-allow-origins=*");
+
+                    return new EdgeDriver(service, options);
                 }
                 return new EdgeDriver();
             }
 
             if (BrowserVersion.CHROME == getBrowserVersion()) {
-                if (CHROME_BIN_ != null) {
-                    System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, CHROME_BIN_);
-                }
+                final ChromeDriverService service = new ChromeDriverService.Builder()
+                        .withLogOutput(System.out)
+                        .usingDriverExecutable(new File(CHROME_BIN_))
+
+                        .withAppendLog(true)
+                        .withReadableTimestamp(true)
+
+                        .build();
+
                 final ChromeOptions options = new ChromeOptions();
                 options.addArguments("--lang=en-US");
+                options.addArguments("--remote-allow-origins=*");
 
-                return new ChromeDriver(options);
+                return new ChromeDriver(service, options);
             }
 
             if (BrowserVersion.FIREFOX == getBrowserVersion()) {
@@ -573,23 +596,19 @@ public abstract class WebDriverTestCase extends WebTestCase {
     }
 
     private static FirefoxDriver createFirefoxDriver(final String geckodriverBinary, final String binary) {
-        if (geckodriverBinary != null
-                && !geckodriverBinary.equals(System.getProperty("webdriver.gecko.driver"))) {
-            System.setProperty("webdriver.gecko.driver", geckodriverBinary);
-        }
+        final FirefoxDriverService service = new GeckoDriverService.Builder()
+                .withLogOutput(System.out)
+                .usingDriverExecutable(new File(geckodriverBinary))
+                .build();
 
-        if (binary != null) {
-            final FirefoxOptions options = new FirefoxOptions();
-            options.setBinary(binary);
+        final FirefoxOptions options = new FirefoxOptions();
+        options.setCapability("webSocketUrl", true);
+        options.setBinary(binary);
 
-            // at least FF79 is not stable when using a profile
-            final FirefoxProfile profile = new FirefoxProfile();
-            profile.setPreference("intl.accept_languages", "en-US");
-            options.setProfile(profile);
-            return new FirefoxDriver(options);
-        }
-
-        return new FirefoxDriver();
+        final FirefoxProfile profile = new FirefoxProfile();
+        profile.setPreference("intl.accept_languages", "en-US,en");
+        options.setProfile(profile);
+        return new FirefoxDriver(service, options);
     }
 
     private static String getBrowserName(final BrowserVersion browserVersion) {
