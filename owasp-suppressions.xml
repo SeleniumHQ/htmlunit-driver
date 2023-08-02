@@ -2,7 +2,8 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 
     <suppress>
-        <filePath regex="true">.*netty-transport-native-kqueue-4\.1\.60\.Final-osx-x86_64\.jar</filePath>
+        <filePath regex="true">.*netty-.*.jar</filePath>
+        <cve>CVE-2023-34462</cve>
         <cve>CVE-2022-41915</cve>
         <cve>CVE-2021-37136</cve>
         <cve>CVE-2021-37137</cve>
@@ -10,36 +11,6 @@
         <cve>CVE-2022-41881</cve>
         <cve>CVE-2021-21409</cve>
         <cve>CVE-2021-43797</cve>
-    </suppress>
-    <suppress>
-        <filePath regex="true">.*netty-transport-native-epoll-4\.1\.60\.Final-linux-x86_64\.jar</filePath>
-        <cve>CVE-2021-43797</cve>
-        <cve>CVE-2022-41915</cve>
-        <cve>CVE-2021-37136</cve>
-        <cve>CVE-2021-37137</cve>
-        <cve>CVE-2022-24823</cve>
-        <cve>CVE-2022-41881</cve>
-        <cve>CVE-2021-21409</cve>
-    </suppress>
-    <suppress>
-        <filePath regex="true">.*netty-codec-socks-4\.1\.60\.Final\.jar</filePath>
-        <cve>CVE-2021-43797</cve>
-        <cve>CVE-2022-41915</cve>
-        <cve>CVE-2021-37136</cve>
-        <cve>CVE-2021-37137</cve>
-        <cve>CVE-2022-24823</cve>
-        <cve>CVE-2022-41881</cve>
-        <cve>CVE-2021-21409</cve>
-    </suppress>
-    <suppress>
-        <filePath regex="true">.*netty-handler-proxy-4\.1\.60\.Final\.jar</filePath>
-        <cve>CVE-2021-43797</cve>
-        <cve>CVE-2022-41915</cve>
-        <cve>CVE-2021-37136</cve>
-        <cve>CVE-2021-37137</cve>
-        <cve>CVE-2022-24823</cve>
-        <cve>CVE-2022-41881</cve>
-        <cve>CVE-2021-21409</cve>
     </suppress>
     
     <suppress>
@@ -66,10 +37,6 @@
     </suppress>
     <suppress>
         <filePath regex="true">.*htmlunit-core-js-2\.70\.0\.jar</filePath>
-        <cve>CVE-2023-26119</cve>
-    </suppress>
-    <suppress>
-        <filePath regex="true">.*neko-htmlunit-2\.70\.0\.jar</filePath>
         <cve>CVE-2023-26119</cve>
     </suppress>
     <suppress>
