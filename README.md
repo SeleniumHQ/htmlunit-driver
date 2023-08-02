@@ -15,8 +15,8 @@ There are two versions available
 
 ### Selenium compatibility
 
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.10.0
-is for Selenium 4.10.0.
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.11.0
+is for Selenium 4.11.0.
 
 Because there are so many tools working on top HtmlUnitDriver, we now maintain two version (artifact id's).
 
@@ -30,7 +30,8 @@ For an overview please check the following tables:
 
 | selenium | htmlunit-driver |    htmlunit     |    artifactId    |
 |----------|-----------------|-----------------|------------------|
-|   4.10.0 |      **4.10.0** |          3.3.0  | htmlunit3-driver |
+|   4.11.0 |      **4.11.0** |          3.4.0  | htmlunit3-driver |
+|   4.10.0 |          4.10.0 |          3.3.0  | htmlunit3-driver |
 |    4.9.1 |           4.9.1 |          3.2.0  | htmlunit3-driver |
 |    4.9.0 |           4.9.0 |          3.1.0  | htmlunit3-driver |
 |    4.8.3 |           4.8.3 |          3.1.0  | htmlunit3-driver |
@@ -41,7 +42,8 @@ For an overview please check the following tables:
 
 | selenium | htmlunit-driver |    htmlunit     |    artifactId    |
 |----------|-----------------|-----------------|------------------|
-|   4.10.0 |      **4.10.0** |          2.70.0 |  htmlunit-driver |
+|   4.11.0 |      **4.11.0** |          2.70.0 |  htmlunit-driver |
+|   4.10.0 |          4.10.0 |          2.70.0 |  htmlunit-driver |
 |    4.9.1 |           4.9.1 |          2.70.0 |  htmlunit-driver |
 |    4.9.0 |           4.9.0 |          2.70.0 |  htmlunit-driver |
 |          |                 |                 |                  |
@@ -85,14 +87,14 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.10.0</version>
+    <version>4.11.0</version>
 </dependency>
 ```
 
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.10.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.11.0'
 ```
 
 
