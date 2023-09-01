@@ -106,7 +106,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * An implementation of {@link WebDriver} that drives
- * <a href="http://htmlunit.sourceforge.net/">HtmlUnit</a>, which is a headless
+ * <a href="https://www.htmlunit.org">HtmlUnit</a>, which is a headless
  * (GUI-less) browser simulator.
  * <p>
  * The main supported browsers are Chrome, Edge, Firefox and Internet Explorer.

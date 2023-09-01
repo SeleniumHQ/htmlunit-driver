@@ -10,6 +10,7 @@
         <cve>CVE-2022-41881</cve>
         <cve>CVE-2021-21409</cve>
         <cve>CVE-2021-43797</cve>
+        <cve>CVE-2023-4586</cve>
     </suppress>
     
     <suppress>
