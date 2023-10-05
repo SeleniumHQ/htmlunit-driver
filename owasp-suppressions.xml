@@ -24,12 +24,18 @@
         <filePath regex="true">.*jetty-.*-9\.4\.50\.v20221201\.jar</filePath>
         <cve>CVE-2023-26048</cve>
         <cve>CVE-2023-26049</cve>
+        <cve>CVE-2023-36479</cve>
+        <cve>CVE-2023-40167</cve>
+        <cve>CVE-2023-41900</cve>
     </suppress>
 
     <suppress>
         <filePath regex="true">.*websocket-.*-9\.4\.50\.v20221201\.jar</filePath>
         <cve>CVE-2023-26048</cve>
         <cve>CVE-2023-26049</cve>
+        <cve>CVE-2023-36479</cve>
+        <cve>CVE-2023-40167</cve>
+        <cve>CVE-2023-41900</cve>
     </suppress>
 
     <suppress>
