@@ -18,4 +18,9 @@
         <cve>CVE-2020-8908</cve>
         <cve>CVE-2023-2976</cve>
     </suppress>
+
+    <suppress>
+        <filePath regex="true">.*jetty-.*\.jar</filePath>
+        <cve>CVE-2023-44487</cve>
+    </suppress>
 </suppressions>
