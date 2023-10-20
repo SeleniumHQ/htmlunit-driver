@@ -20,10 +20,13 @@ package org.openqa.selenium.htmlunit.html;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchSessionException;
+import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
@@ -259,5 +262,86 @@ public class WindowsTest extends WebDriverTestCase {
 
         assertEquals("", driver.getTitle());
         assertEquals("about:blank", driver.getCurrentUrl());
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void closeCurrentWindow() throws Exception {
+        final String htmlFirst =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "</body></html>\n";
+
+        final WebDriver driver = loadPage2(htmlFirst);
+
+        assertEquals("First", driver.getTitle());
+
+        Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.switchTo().newWindow(WindowType.TAB);
+
+        windowHandles = new HashSet<>(driver.getWindowHandles());
+        assertEquals(2, windowHandles.size());
+
+        assertEquals("", driver.getTitle());
+        assertEquals("about:blank", driver.getCurrentUrl());
+
+        final String htmlSecond =
+                "<html>\n"
+                + "<head><title>Second</title></head>\n"
+                + "<body>\n"
+                + "</body></html>\n";
+        loadPage2(htmlSecond);
+
+        windowHandles = new HashSet<>(driver.getWindowHandles());
+        assertEquals(2, windowHandles.size());
+
+        assertEquals("Second", driver.getTitle());
+
+        driver.close();
+
+        windowHandles = new HashSet<>(driver.getWindowHandles());
+        assertEquals(1, windowHandles.size());
+
+        try {
+            driver.getTitle();
+            Assert.fail("NoSuchWindowException expected");
+        }
+        catch (final NoSuchWindowException e) {
+            // expected
+        }
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    public void closeLastWindow() throws Exception {
+        final String htmlFirst =
+                "<html>\n"
+                + "<head><title>First</title></head>\n"
+                + "<body>\n"
+                + "</body></html>\n";
+
+        final WebDriver driver = loadPage2(htmlFirst);
+
+        assertEquals("First", driver.getTitle());
+
+        final Set<String> windowHandles = driver.getWindowHandles();
+        assertEquals(1, windowHandles.size());
+
+        driver.close();
+
+        try {
+            driver.getWindowHandle();
+            Assert.fail("NoSuchSessionException expected");
+        }
+        catch (final NoSuchSessionException e) {
+            // expected
+        }
     }
 }

@@ -276,7 +276,12 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         webClient_.addWebWindowListener(new WebWindowListener() {
             @Override
             public void webWindowOpened(final WebWindowEvent webWindowEvent) {
-                // Ignore
+                if (webWindowEvent.getWebWindow() instanceof TopLevelWindow) {
+                    // use the first top level window we are getting aware of
+                    if (currentWindow_ == null && webClient_.getTopLevelWindows().size() == 1) {
+                        currentWindow_ = new HtmlUnitWindow(webClient_.getTopLevelWindows().get(0));
+                    }
+                }
             }
 
             @Override
@@ -293,18 +298,26 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             @Override
             public void webWindowClosed(final WebWindowEvent event) {
                 elementsMap_.remove(event.getOldPage());
+
+                // the last window is gone
+                if (getWebClient().getTopLevelWindows().size() == 0) {
+                    currentWindow_ = null;
+                    return;
+                }
+
                 // Check if the event window refers to us or one of our parent windows
                 // setup the currentWindow appropriately if necessary
-                WebWindow curr = currentWindow_.getWebWindow();
+                WebWindow ourCurrentWindow = currentWindow_.getWebWindow();
+                final WebWindow ourCurrentTopWindow = currentWindow_.getWebWindow().getTopWindow();
                 do {
                     // Instance equality is okay in this case
-                    if (curr == event.getWebWindow()) {
-                        setCurrentWindow(currentWindow_.getWebWindow().getTopWindow());
+                    if (ourCurrentWindow == event.getWebWindow()) {
+                        setCurrentWindow(ourCurrentTopWindow);
                         return;
                     }
-                    curr = curr.getParentWindow();
+                    ourCurrentWindow = ourCurrentWindow.getParentWindow();
                 }
-                while (curr != currentWindow_.getWebWindow().getTopWindow());
+                while (ourCurrentWindow != ourCurrentTopWindow);
             }
         });
 
@@ -638,8 +651,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         getAlert().setAutoAccept(false);
         try {
             // we can't use webClient.getPage(url) here because selenium has a different
-            // idea
-            // of the current window and we like to load into to selenium current one
+            // idea of the current window and we like to load into to selenium current one
             final BrowserVersion browser = getBrowserVersion();
             final WebRequest request = new WebRequest(fullUrl, browser.getHtmlAcceptHeader(),
                     browser.getAcceptEncodingHeader());
@@ -662,6 +674,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             throw new TimeoutException(e);
         }
         catch (final NoSuchSessionException e) {
+            throw e;
+        }
+        catch (final NoSuchWindowException e) {
             throw e;
         }
         catch (final SSLHandshakeException e) {
@@ -1205,7 +1220,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     public HtmlUnitWindow getCurrentWindow() {
-        if (currentWindow_ == null || currentWindow_.getWebWindow().isClosed()) {
+        if (webClient_ == null || currentWindow_ == null) {
+            throw new NoSuchSessionException("Session is closed");
+        }
+        if (currentWindow_.getWebWindow().isClosed()) {
             throw new NoSuchWindowException("Window is closed");
         }
         return currentWindow_;

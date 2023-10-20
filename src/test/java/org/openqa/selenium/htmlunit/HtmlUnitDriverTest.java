@@ -517,4 +517,14 @@ public class HtmlUnitDriverTest {
             }
         };
     }
+
+    @Test
+    public void resetWebClient() {
+        final HtmlUnitDriver webDriver = new HtmlUnitDriver();
+
+        webDriver.get("https://www.htmlunit.org");
+        webDriver.getWebClient().reset();
+
+        webDriver.get("https://www.htmlunit.org");
+    }
 }
