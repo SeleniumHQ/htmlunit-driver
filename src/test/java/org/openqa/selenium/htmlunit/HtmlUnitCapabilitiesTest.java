@@ -93,6 +93,14 @@ public class HtmlUnitCapabilitiesTest {
     }
 
     @Test
+    public void configurationOfFirefox115ViaRemote() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-115",
+                Platform.ANY);
+        assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
+
+    @Test
     public void configurationOfFirefoxEsrViaRemote() {
         final DesiredCapabilities firefoxCapabilities =
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr",
