@@ -54,7 +54,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.InvalidElementStateException;
-import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
@@ -123,14 +122,16 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             else if (element_ instanceof HtmlInput) {
                 final HtmlForm form = ((HtmlElement) element_).getEnclosingForm();
                 if (form == null) {
-                    throw new JavascriptException("Unable to find the containing form");
+                    throw new UnsupportedOperationException(
+                            "To submit an element, it must be nested inside a form element");
                 }
                 submitForm(form);
             }
             else {
                 final HtmlUnitWebElement form = findParentForm();
                 if (form == null) {
-                    throw new JavascriptException("Unable to find the containing form");
+                    throw new UnsupportedOperationException(
+                            "To submit an element, it must be nested inside a form element");
                 }
                 form.submitImpl();
             }

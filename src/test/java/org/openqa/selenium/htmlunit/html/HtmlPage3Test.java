@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit.html;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
@@ -45,5 +46,23 @@ public class HtmlPage3Test extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
         assertEquals("foo", driver.getTitle());
+    }
+
+    /**
+     * @throws Exception if the test fails
+     */
+    @Test(expected = UnsupportedOperationException.class)
+    public void submitWithoutForm() throws Exception {
+        final String html =
+            "<html>\n"
+            + "<body>\n"
+            + "  <input id='t' type='text' value='abcd'>\n"
+            + "</body>\n"
+            + "</html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).submit();
+
+        assertEquals(1, getMockWebConnection().getRequestCount());
     }
 }
