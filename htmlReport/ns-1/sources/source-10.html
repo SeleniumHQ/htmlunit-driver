@@ -1,0 +1,205 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > KeyboardModifiersState</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: KeyboardModifiersState (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyboardModifiersState</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    81.8%
+  </span>
+  <span class="absValue">
+    (9/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83.3%
+  </span>
+  <span class="absValue">
+    (5/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    85.7%
+  </span>
+  <span class="absValue">
+    (18/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;import org.openqa.selenium.Keys;
+&nbsp;
+&nbsp;/**
+&nbsp; * Holds the state of the modifier keys (Shift, ctrl, alt).
+&nbsp; *
+&nbsp; * @author Alexei Barantsev
+&nbsp; * @author Ahmed Ashour
+&nbsp; * @author Ronald Brill
+&nbsp; */
+<b class="fc">&nbsp;class KeyboardModifiersState {</b>
+<b class="fc">&nbsp;    private final Set&lt;Character&gt; set_ = new HashSet&lt;&gt;();</b>
+&nbsp;    private boolean shiftPressed_;
+&nbsp;    private boolean ctrlPressed_;
+&nbsp;    private boolean altPressed_;
+&nbsp;
+&nbsp;    public boolean isShiftPressed() {
+<b class="fc">&nbsp;        return shiftPressed_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isCtrlPressed() {
+<b class="fc">&nbsp;        return ctrlPressed_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isAltPressed() {
+<b class="fc">&nbsp;        return altPressed_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void storeKeyDown(final char key) {
+<b class="fc">&nbsp;        storeIfEqualsShift(key, true);</b>
+<b class="fc">&nbsp;        storeIfEqualsCtrl(key, true);</b>
+<b class="fc">&nbsp;        storeIfEqualsAlt(key, true);</b>
+<b class="fc">&nbsp;        set_.add(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void storeKeyUp(final char key) {
+<b class="fc">&nbsp;        storeIfEqualsShift(key, false);</b>
+<b class="fc">&nbsp;        storeIfEqualsCtrl(key, false);</b>
+<b class="fc">&nbsp;        storeIfEqualsAlt(key, false);</b>
+<b class="fc">&nbsp;        set_.remove(key);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void storeIfEqualsShift(final char key, final boolean keyState) {
+<b class="fc">&nbsp;        if (key == Keys.SHIFT.charAt(0)) {</b>
+<b class="fc">&nbsp;            shiftPressed_ = keyState;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void storeIfEqualsCtrl(final char key, final boolean keyState) {
+<b class="fc">&nbsp;        if (key == Keys.CONTROL.charAt(0)) {</b>
+<b class="fc">&nbsp;            ctrlPressed_ = keyState;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void storeIfEqualsAlt(final char key, final boolean keyState) {
+<b class="pc">&nbsp;        if (key == Keys.ALT.charAt(0)) {</b>
+<b class="nc">&nbsp;            altPressed_ = keyState;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean isPressed(final Keys keys) {
+<b class="nc">&nbsp;        return isPressed(keys.charAt(0));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean isPressed(final char ch) {
+<b class="nc">&nbsp;        return set_.contains(ch);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

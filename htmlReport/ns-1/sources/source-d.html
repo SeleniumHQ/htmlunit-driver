@@ -1,0 +1,862 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitWebElement</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitWebElement (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitWebElement</td>
+<td class="coverageStat">
+  <span class="percent">
+    60.4%
+  </span>
+  <span class="absValue">
+    (29/48)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.1%
+  </span>
+  <span class="absValue">
+    (90/204)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.7%
+  </span>
+  <span class="absValue">
+    (146/300)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HtmlUnitWebElement$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    62%
+  </span>
+  <span class="absValue">
+    (31/50)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.1%
+  </span>
+  <span class="absValue">
+    (90/204)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    49%
+  </span>
+  <span class="absValue">
+    (148/302)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import static org.htmlunit.html.DomElement.ATTRIBUTE_NOT_DEFINED;
+&nbsp;import static org.htmlunit.html.DomElement.ATTRIBUTE_VALUE_EMPTY;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.net.MalformedURLException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.concurrent.Callable;
+&nbsp;
+&nbsp;import org.htmlunit.ScriptResult;
+&nbsp;import org.htmlunit.corejs.javascript.ScriptRuntime;
+&nbsp;import org.htmlunit.corejs.javascript.Scriptable;
+&nbsp;import org.htmlunit.corejs.javascript.ScriptableObject;
+&nbsp;import org.htmlunit.html.DisabledElement;
+&nbsp;import org.htmlunit.html.DomElement;
+&nbsp;import org.htmlunit.html.DomNode;
+&nbsp;import org.htmlunit.html.HtmlButton;
+&nbsp;import org.htmlunit.html.HtmlCheckBoxInput;
+&nbsp;import org.htmlunit.html.HtmlElement;
+&nbsp;import org.htmlunit.html.HtmlFileInput;
+&nbsp;import org.htmlunit.html.HtmlForm;
+&nbsp;import org.htmlunit.html.HtmlImageInput;
+&nbsp;import org.htmlunit.html.HtmlInput;
+&nbsp;import org.htmlunit.html.HtmlOption;
+&nbsp;import org.htmlunit.html.HtmlPage;
+&nbsp;import org.htmlunit.html.HtmlRadioButtonInput;
+&nbsp;import org.htmlunit.html.HtmlSelect;
+&nbsp;import org.htmlunit.html.HtmlSubmitInput;
+&nbsp;import org.htmlunit.html.HtmlTextArea;
+&nbsp;import org.htmlunit.html.impl.SelectableTextInput;
+&nbsp;import org.htmlunit.javascript.HtmlUnitScriptable;
+&nbsp;import org.htmlunit.javascript.host.html.HTMLElement;
+&nbsp;import org.htmlunit.javascript.host.html.HTMLInputElement;
+&nbsp;import org.openqa.selenium.By;
+&nbsp;import org.openqa.selenium.Dimension;
+&nbsp;import org.openqa.selenium.ElementNotInteractableException;
+&nbsp;import org.openqa.selenium.InvalidElementStateException;
+&nbsp;import org.openqa.selenium.OutputType;
+&nbsp;import org.openqa.selenium.Point;
+&nbsp;import org.openqa.selenium.Rectangle;
+&nbsp;import org.openqa.selenium.StaleElementReferenceException;
+&nbsp;import org.openqa.selenium.WebDriver;
+&nbsp;import org.openqa.selenium.WebDriverException;
+&nbsp;import org.openqa.selenium.WebElement;
+&nbsp;import org.openqa.selenium.WrapsDriver;
+&nbsp;import org.openqa.selenium.WrapsElement;
+&nbsp;import org.openqa.selenium.interactions.Coordinates;
+&nbsp;import org.openqa.selenium.interactions.Locatable;
+&nbsp;import org.openqa.selenium.support.Color;
+&nbsp;import org.openqa.selenium.support.Colors;
+&nbsp;import org.w3c.dom.Attr;
+&nbsp;import org.w3c.dom.NamedNodeMap;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * @author Alexei Barantsev
+&nbsp; * @author Ahmed Ashour
+&nbsp; * @author Javier Neira
+&nbsp; * @author Ronald Brill
+&nbsp; * @author Andrei Solntsev
+&nbsp; * @author Martin Bartoš
+&nbsp; */
+&nbsp;public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
+&nbsp;
+<b class="fc">&nbsp;    private static final String[] booleanAttributes = {&quot;async&quot;, &quot;autofocus&quot;, &quot;autoplay&quot;, &quot;checked&quot;, &quot;compact&quot;,</b>
+<b class="fc">&nbsp;        &quot;complete&quot;, &quot;controls&quot;, &quot;declare&quot;, &quot;defaultchecked&quot;, &quot;defaultselected&quot;, &quot;defer&quot;, &quot;disabled&quot;, &quot;draggable&quot;,</b>
+<b class="fc">&nbsp;        &quot;ended&quot;, &quot;formnovalidate&quot;, &quot;hidden&quot;, &quot;indeterminate&quot;, &quot;iscontenteditable&quot;, &quot;ismap&quot;, &quot;itemscope&quot;, &quot;loop&quot;,</b>
+<b class="fc">&nbsp;        &quot;multiple&quot;, &quot;muted&quot;, &quot;nohref&quot;, &quot;noresize&quot;, &quot;noshade&quot;, &quot;novalidate&quot;, &quot;nowrap&quot;, &quot;open&quot;, &quot;paused&quot;, &quot;pubdate&quot;,</b>
+<b class="fc">&nbsp;        &quot;readonly&quot;, &quot;required&quot;, &quot;reversed&quot;, &quot;scoped&quot;, &quot;seamless&quot;, &quot;seeking&quot;, &quot;selected&quot;, &quot;spellcheck&quot;, &quot;truespeed&quot;,</b>
+<b class="fc">&nbsp;        &quot;willvalidate&quot;};</b>
+&nbsp;
+&nbsp;    private final HtmlUnitDriver driver_;
+&nbsp;    private final int id_;
+&nbsp;    private final DomElement element_;
+&nbsp;
+&nbsp;    private String toString_;
+&nbsp;
+<b class="fc">&nbsp;    public HtmlUnitWebElement(final HtmlUnitDriver driver, final int id, final DomElement element) {</b>
+<b class="fc">&nbsp;        driver_ = driver;</b>
+<b class="fc">&nbsp;        id_ = id;</b>
+<b class="fc">&nbsp;        element_ = element;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void click() {
+<b class="fc">&nbsp;        verifyCanInteractWithElement(true);</b>
+<b class="fc">&nbsp;        driver_.click(element_, true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void submit() {
+<b class="fc">&nbsp;        driver_.submit(this);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void submitImpl() {
+&nbsp;        try {
+<b class="pc">&nbsp;            if (element_ instanceof HtmlForm) {</b>
+<b class="nc">&nbsp;                submitForm((HtmlForm) element_);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="pc">&nbsp;            else if ((element_ instanceof HtmlSubmitInput) || (element_ instanceof HtmlImageInput)) {</b>
+<b class="nc">&nbsp;                element_.click();</b>
+<b class="nc">&nbsp;            }</b>
+<b class="pc">&nbsp;            else if (element_ instanceof HtmlInput) {</b>
+<b class="fc">&nbsp;                final HtmlForm form = ((HtmlElement) element_).getEnclosingForm();</b>
+<b class="pc">&nbsp;                if (form == null) {</b>
+<b class="fc">&nbsp;                    throw new UnsupportedOperationException(</b>
+<b class="fc">&nbsp;                            &quot;To submit an element, it must be nested inside a form element&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                submitForm(form);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            else {
+<b class="nc">&nbsp;                final HtmlUnitWebElement form = findParentForm();</b>
+<b class="nc">&nbsp;                if (form == null) {</b>
+<b class="nc">&nbsp;                    throw new UnsupportedOperationException(</b>
+<b class="nc">&nbsp;                            &quot;To submit an element, it must be nested inside a form element&quot;);</b>
+&nbsp;                }
+<b class="nc">&nbsp;                form.submitImpl();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final IOException e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void submitForm(final HtmlForm form) {
+<b class="nc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="nc">&nbsp;        final List&lt;HtmlElement&gt; allElements = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        allElements.addAll(form.getElementsByTagName(&quot;input&quot;));</b>
+<b class="nc">&nbsp;        allElements.addAll(form.getElementsByTagName(&quot;button&quot;));</b>
+&nbsp;
+<b class="nc">&nbsp;        HtmlElement submit = null;</b>
+<b class="nc">&nbsp;        for (final HtmlElement e : allElements) {</b>
+<b class="nc">&nbsp;            if (!isSubmitElement(e)) {</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            if (submit == null) {</b>
+<b class="nc">&nbsp;                submit = e;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (submit == null) {</b>
+<b class="nc">&nbsp;            if (driver_.isJavascriptEnabled()) {</b>
+<b class="nc">&nbsp;                final ScriptResult eventResult = form.fireEvent(&quot;submit&quot;);</b>
+<b class="nc">&nbsp;                if (!ScriptResult.isFalse(eventResult)) {</b>
+<b class="nc">&nbsp;                    driver_.executeScript(&quot;arguments[0].submit()&quot;, form);</b>
+&nbsp;                }
+&nbsp;                return;
+&nbsp;            }
+<b class="nc">&nbsp;            throw new WebDriverException(&quot;Cannot locate element used to submit form&quot;);</b>
+&nbsp;        }
+&nbsp;        try {
+&nbsp;            // this has to ignore the visibility like browsers are doing
+<b class="nc">&nbsp;            submit.click(false, false, false, true, true, true, false);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final IOException e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private static boolean isSubmitElement(final HtmlElement element) {
+<b class="nc">&nbsp;        HtmlElement candidate = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (element instanceof HtmlSubmitInput &amp;&amp; !((HtmlSubmitInput) element).isDisabled()) {</b>
+<b class="nc">&nbsp;            candidate = element;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (element instanceof HtmlImageInput &amp;&amp; !((HtmlImageInput) element).isDisabled()) {</b>
+<b class="nc">&nbsp;            candidate = element;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (element instanceof HtmlButton) {</b>
+<b class="nc">&nbsp;            final HtmlButton button = (HtmlButton) element;</b>
+<b class="nc">&nbsp;            if (&quot;submit&quot;.equalsIgnoreCase(button.getTypeAttribute()) &amp;&amp; !button.isDisabled()) {</b>
+<b class="nc">&nbsp;                candidate = element;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return candidate != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void clear() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="pc">&nbsp;        if (element_ instanceof HtmlInput) {</b>
+<b class="fc">&nbsp;            final HtmlInput htmlInput = (HtmlInput) element_;</b>
+<b class="pc">&nbsp;            if (htmlInput.isReadOnly()) {</b>
+<b class="nc">&nbsp;                throw new InvalidElementStateException(&quot;You may only edit editable elements&quot;);</b>
+&nbsp;            }
+<b class="pc">&nbsp;            if (htmlInput.isDisabled()) {</b>
+<b class="nc">&nbsp;                throw new InvalidElementStateException(&quot;You may only interact with enabled elements&quot;);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            htmlInput.setValue(&quot;&quot;);</b>
+<b class="pc">&nbsp;            if (htmlInput instanceof SelectableTextInput) {</b>
+<b class="fc">&nbsp;                ((SelectableTextInput) htmlInput).setSelectionEnd(0);</b>
+&nbsp;            }
+<b class="fc">&nbsp;            htmlInput.fireEvent(&quot;change&quot;);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (element_ instanceof HtmlTextArea) {</b>
+<b class="nc">&nbsp;            final HtmlTextArea htmlTextArea = (HtmlTextArea) element_;</b>
+<b class="nc">&nbsp;            if (htmlTextArea.isReadOnly()) {</b>
+<b class="nc">&nbsp;                throw new InvalidElementStateException(&quot;You may only edit editable elements&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (htmlTextArea.isDisabled()) {</b>
+<b class="nc">&nbsp;                throw new InvalidElementStateException(&quot;You may only interact with enabled elements&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            htmlTextArea.setText(&quot;&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        else if (!element_.getAttribute(&quot;contenteditable&quot;).equals(ATTRIBUTE_NOT_DEFINED)) {</b>
+<b class="nc">&nbsp;            element_.setTextContent(&quot;&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    void verifyCanInteractWithElement(final boolean ignoreDisabled) {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        final Boolean displayed = driver_.implicitlyWaitFor(new Callable&lt;Boolean&gt;() {</b>
+&nbsp;            @Override
+&nbsp;            public Boolean call() throws Exception {
+<b class="fc">&nbsp;                return isDisplayed();</b>
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+<b class="pc">&nbsp;        if (displayed == null || !displayed) {</b>
+<b class="fc">&nbsp;            throw new ElementNotInteractableException(&quot;You may only interact with visible elements&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (!ignoreDisabled &amp;&amp; !isEnabled()) {</b>
+<b class="nc">&nbsp;            throw new InvalidElementStateException(&quot;You may only interact with enabled elements&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    void switchFocusToThisIfNeeded() {
+<b class="fc">&nbsp;        final HtmlUnitWebElement oldActiveElement = (HtmlUnitWebElement) driver_.switchTo().activeElement();</b>
+&nbsp;
+<b class="fc">&nbsp;        final boolean jsEnabled = driver_.isJavascriptEnabled();</b>
+<b class="fc">&nbsp;        final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            final boolean isBody = oldActiveElement.getTagName().toLowerCase().equals(&quot;body&quot;);</b>
+<b class="pc">&nbsp;            if (jsEnabled &amp;&amp; !oldActiveEqualsCurrent &amp;&amp; !isBody) {</b>
+<b class="nc">&nbsp;                oldActiveElement.element_.blur();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final StaleElementReferenceException ex) {</b>
+&nbsp;            // old element has gone, do nothing
+&nbsp;        }
+<b class="fc">&nbsp;        element_.focus();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void sendKeys(final CharSequence... value) {
+<b class="pc">&nbsp;        if (value == null) {</b>
+<b class="nc">&nbsp;            throw new IllegalArgumentException(&quot;Keys to send should nor be null&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        driver_.sendKeys(this, value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getTagName() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+<b class="fc">&nbsp;        return element_.getNodeName();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getAttribute(final String name) {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        final String lowerName = name.toLowerCase();</b>
+&nbsp;
+<b class="pc">&nbsp;        if (element_ instanceof HtmlInput &amp;&amp; (&quot;selected&quot;.equals(lowerName) || &quot;checked&quot;.equals(lowerName))) {</b>
+<b class="fc">&nbsp;            return trueOrNull(((HtmlInput) element_).isChecked());</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (&quot;href&quot;.equals(lowerName) || &quot;src&quot;.equals(lowerName)) {</b>
+<b class="fc">&nbsp;            final String link = element_.getAttribute(name);</b>
+<b class="fc">&nbsp;            if (ATTRIBUTE_NOT_DEFINED == link) {</b>
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            final HtmlPage page = (HtmlPage) element_.getPage();</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                return page.getFullyQualifiedUrl(link.trim()).toString();</b>
+&nbsp;            }
+<b class="nc">&nbsp;            catch (final MalformedURLException e) {</b>
+<b class="nc">&nbsp;                return null;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (&quot;value&quot;.equals(lowerName)) {</b>
+<b class="pc">&nbsp;            if (element_ instanceof HtmlFileInput) {</b>
+<b class="nc">&nbsp;                return ((HTMLInputElement) element_.getScriptableObject()).getValue();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (element_ instanceof HtmlInput) {</b>
+<b class="fc">&nbsp;                return ((HtmlInput) element_).getValue();</b>
+&nbsp;            }
+<b class="fc">&nbsp;            if (element_ instanceof HtmlTextArea) {</b>
+<b class="fc">&nbsp;                return ((HtmlTextArea) element_).getText();</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // According to
+&nbsp;            // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+&nbsp;            // if the value attribute doesn&#39;t exist, getting the &quot;value&quot; attribute defers to
+&nbsp;            // the
+&nbsp;            // option&#39;s content.
+<b class="pc">&nbsp;            if (element_ instanceof HtmlOption &amp;&amp; !element_.hasAttribute(&quot;value&quot;)) {</b>
+<b class="fc">&nbsp;                return getText();</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            final String attributeValue = element_.getAttribute(name);</b>
+<b class="pc">&nbsp;            return attributeValue == null ? &quot;&quot; : attributeValue;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (&quot;disabled&quot;.equals(lowerName)) {</b>
+<b class="fc">&nbsp;            if (element_ instanceof DisabledElement) {</b>
+<b class="fc">&nbsp;                return trueOrNull(((DisabledElement) element_).isDisabled());</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return &quot;true&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (&quot;multiple&quot;.equals(lowerName) &amp;&amp; element_ instanceof HtmlSelect) {</b>
+<b class="nc">&nbsp;            final String multipleAttribute = ((HtmlSelect) element_).getMultipleAttribute();</b>
+<b class="nc">&nbsp;            if (&quot;&quot;.equals(multipleAttribute)) {</b>
+<b class="nc">&nbsp;                return trueOrNull(element_.hasAttribute(&quot;multiple&quot;));</b>
+&nbsp;            }
+<b class="nc">&nbsp;            return &quot;true&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (&quot;index&quot;.equals(lowerName) &amp;&amp; element_ instanceof HtmlOption) {</b>
+<b class="nc">&nbsp;            final HtmlSelect select = ((HtmlOption) element_).getEnclosingSelect();</b>
+<b class="nc">&nbsp;            final List&lt;HtmlOption&gt; allOptions = select.getOptions();</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; allOptions.size(); i++) {</b>
+<b class="nc">&nbsp;                final HtmlOption option = select.getOption(i);</b>
+<b class="nc">&nbsp;                if (element_.equals(option)) {</b>
+<b class="nc">&nbsp;                    return String.valueOf(i);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        for (final String booleanAttribute : booleanAttributes) {</b>
+<b class="pc">&nbsp;            if (booleanAttribute.equals(lowerName)) {</b>
+<b class="nc">&nbsp;                return trueOrNull(element_.hasAttribute(lowerName));</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        final String attributeValue = element_.getAttribute(name);</b>
+<b class="fc">&nbsp;        if (!attributeValue.isEmpty()) {</b>
+<b class="fc">&nbsp;            return attributeValue;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (element_.hasAttribute(name)) {</b>
+<b class="fc">&nbsp;            return &quot;&quot;;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        final Object scriptable = element_.getScriptableObject();</b>
+<b class="pc">&nbsp;        if (scriptable instanceof Scriptable) {</b>
+<b class="fc">&nbsp;            final Object slotVal = ScriptableObject.getProperty((Scriptable) scriptable, name);</b>
+<b class="fc">&nbsp;            if (slotVal instanceof String) {</b>
+<b class="fc">&nbsp;                return (String) slotVal;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getDomProperty(final String name) {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        final String lowerName = name.toLowerCase();</b>
+&nbsp;
+<b class="fc">&nbsp;        final HtmlUnitScriptable scriptable = element_.getScriptableObject();</b>
+<b class="pc">&nbsp;        if (scriptable != null) {</b>
+<b class="fc">&nbsp;            if (!ScriptableObject.hasProperty(scriptable, lowerName)) {</b>
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;            }
+<b class="fc">&nbsp;            return ScriptRuntime.toCharSequence(ScriptableObject.getProperty(scriptable, lowerName)).toString();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // js disabled, fallback to some hacks
+<b class="nc">&nbsp;        if (&quot;disabled&quot;.equals(lowerName)) {</b>
+<b class="nc">&nbsp;            if (element_ instanceof DisabledElement) {</b>
+<b class="nc">&nbsp;                return trueOrFalse(((DisabledElement) element_).isDisabled());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (&quot;checked&quot;.equals(lowerName)) {</b>
+<b class="nc">&nbsp;            if (element_ instanceof HtmlCheckBoxInput) {</b>
+<b class="nc">&nbsp;                return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());</b>
+&nbsp;            }
+<b class="nc">&nbsp;            else if (element_ instanceof HtmlRadioButtonInput) {</b>
+<b class="nc">&nbsp;                return trueOrFalse(((HtmlRadioButtonInput) element_).isChecked());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        final String value = element_.getAttribute(lowerName);</b>
+<b class="nc">&nbsp;        if (ATTRIBUTE_NOT_DEFINED == value) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (ATTRIBUTE_VALUE_EMPTY == value) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getDomAttribute(final String name) {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        final String lowerName = name.toLowerCase();</b>
+<b class="fc">&nbsp;        final String value = element_.getAttribute(lowerName);</b>
+<b class="fc">&nbsp;        if (ATTRIBUTE_NOT_DEFINED == value) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (&quot;disabled&quot;.equals(lowerName)) {</b>
+<b class="fc">&nbsp;            if (element_ instanceof DisabledElement) {</b>
+<b class="fc">&nbsp;                return trueOrNull(((DisabledElement) element_).isDisabled());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (&quot;checked&quot;.equals(lowerName)) {</b>
+<b class="fc">&nbsp;            if (element_ instanceof HtmlCheckBoxInput) {</b>
+<b class="fc">&nbsp;                return trueOrNull(((HtmlCheckBoxInput) element_).isChecked());</b>
+&nbsp;            }
+<b class="pc">&nbsp;            else if (element_ instanceof HtmlRadioButtonInput) {</b>
+<b class="fc">&nbsp;                return trueOrNull(((HtmlRadioButtonInput) element_).isChecked());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static String trueOrNull(final boolean condition) {
+<b class="fc">&nbsp;        return condition ? &quot;true&quot; : null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static String trueOrFalse(final boolean condition) {
+<b class="nc">&nbsp;        return condition ? &quot;true&quot; : &quot;false&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isSelected() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="pc">&nbsp;        if (element_ instanceof HtmlInput) {</b>
+<b class="fc">&nbsp;            return ((HtmlInput) element_).isChecked();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        else if (element_ instanceof HtmlOption) {</b>
+<b class="nc">&nbsp;            return ((HtmlOption) element_).isSelected();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(</b>
+<b class="nc">&nbsp;                &quot;Unable to determine if element is selected. Tag name is: &quot; + element_.getTagName());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isEnabled() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        if (element_ instanceof DisabledElement) {</b>
+<b class="fc">&nbsp;            return !((DisabledElement) element_).isDisabled();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean isDisplayed() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        return element_.isDisplayed();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Point getLocation() {
+<b class="nc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            return new Point(readAndRound(&quot;left&quot;), readAndRound(&quot;top&quot;));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (final Exception e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(&quot;Cannot determine size of element&quot;, e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Dimension getSize() {
+<b class="nc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            final int width = readAndRound(&quot;width&quot;);</b>
+<b class="nc">&nbsp;            final int height = readAndRound(&quot;height&quot;);</b>
+<b class="nc">&nbsp;            return new Dimension(width, height);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (final Exception e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(&quot;Cannot determine size of element&quot;, e);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Rectangle getRect() {
+<b class="nc">&nbsp;        return new Rectangle(getLocation(), getSize());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private int readAndRound(final String property) {
+<b class="nc">&nbsp;        final String cssValue = getCssValue(property).replaceAll(&quot;[^0-9\\.]&quot;, &quot;&quot;);</b>
+<b class="nc">&nbsp;        if (cssValue.isEmpty()) {</b>
+<b class="nc">&nbsp;            return 5; // wrong... but better than nothing</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return Math.round(Float.parseFloat(cssValue));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getText() {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+<b class="fc">&nbsp;        return element_.getVisibleText();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    protected HtmlUnitDriver getDriver() {
+<b class="fc">&nbsp;        return driver_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DomElement getElement() {
+<b class="fc">&nbsp;        return element_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Deprecated // It&#39;s not a part of WebDriver API
+&nbsp;    public List&lt;WebElement&gt; getElementsByTagName(final String tagName) {
+<b class="nc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="nc">&nbsp;        final List&lt;?&gt; allChildren = element_.getByXPath(&quot;.//&quot; + tagName);</b>
+<b class="nc">&nbsp;        final List&lt;WebElement&gt; elements = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (final Object o : allChildren) {</b>
+<b class="nc">&nbsp;            if (!(o instanceof HtmlElement)) {</b>
+<b class="nc">&nbsp;                continue;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            final HtmlElement child = (HtmlElement) o;</b>
+<b class="nc">&nbsp;            elements.add(getDriver().toWebElement(child));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return elements;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public WebElement findElement(final By by) {
+<b class="fc">&nbsp;        driver_.getAlert().ensureUnlocked();</b>
+<b class="fc">&nbsp;        return driver_.implicitlyWaitFor(() -&gt; {</b>
+<b class="fc">&nbsp;            assertElementNotStale();</b>
+<b class="fc">&nbsp;            return driver_.findElement(this, by);</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public List&lt;WebElement&gt; findElements(final By by) {
+<b class="fc">&nbsp;        driver_.getAlert().ensureUnlocked();</b>
+<b class="fc">&nbsp;        return driver_.implicitlyWaitFor(() -&gt; {</b>
+<b class="fc">&nbsp;            assertElementNotStale();</b>
+<b class="fc">&nbsp;            return driver_.findElements(this, by);</b>
+&nbsp;        });
+&nbsp;    }
+&nbsp;
+&nbsp;    private HtmlUnitWebElement findParentForm() {
+<b class="nc">&nbsp;        DomNode current = element_;</b>
+<b class="nc">&nbsp;        while (!(current == null || current instanceof HtmlForm)) {</b>
+<b class="nc">&nbsp;            current = current.getParentNode();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return getDriver().toWebElement((HtmlForm) current);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        if (toString_ == null) {</b>
+<b class="nc">&nbsp;            final StringBuilder sb = new StringBuilder();</b>
+<b class="nc">&nbsp;            sb.append(&#39;&lt;&#39;).append(element_.getTagName());</b>
+<b class="nc">&nbsp;            final NamedNodeMap attributes = element_.getAttributes();</b>
+<b class="nc">&nbsp;            final int n = attributes.getLength();</b>
+<b class="nc">&nbsp;            for (int i = 0; i &lt; n; ++i) {</b>
+<b class="nc">&nbsp;                final Attr a = (Attr) attributes.item(i);</b>
+<b class="nc">&nbsp;                sb.append(&#39; &#39;).append(a.getName()).append(&quot;=\&quot;&quot;).append(a.getValue().replace(&quot;\&quot;&quot;, &quot;&amp;quot;&quot;))</b>
+<b class="nc">&nbsp;                        .append(&quot;\&quot;&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            if (element_.hasChildNodes()) {</b>
+<b class="nc">&nbsp;                sb.append(&#39;&gt;&#39;);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;            else {
+<b class="nc">&nbsp;                sb.append(&quot; /&gt;&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            toString_ = sb.toString();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return toString_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    protected void assertElementNotStale() {
+<b class="fc">&nbsp;        driver_.assertElementNotStale(element_);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getCssValue(final String propertyName) {
+<b class="fc">&nbsp;        assertElementNotStale();</b>
+&nbsp;
+<b class="fc">&nbsp;        final HTMLElement elem = element_.getScriptableObject();</b>
+&nbsp;
+<b class="fc">&nbsp;        final String style = elem.getWindow().getComputedStyle(elem, null).getPropertyValue(propertyName);</b>
+&nbsp;
+<b class="fc">&nbsp;        return getColor(style);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static String getColor(final String name) {
+<b class="pc">&nbsp;        if (&quot;null&quot;.equals(name)) {</b>
+<b class="nc">&nbsp;            return &quot;transparent&quot;;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (name.startsWith(&quot;rgb(&quot;)) {</b>
+<b class="fc">&nbsp;            return Color.fromString(name).asRgba();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        final Colors colors = getColorsOf(name);</b>
+<b class="pc">&nbsp;        if (colors != null) {</b>
+<b class="nc">&nbsp;            return colors.getColorValue().asRgba();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static Colors getColorsOf(String name) {
+<b class="fc">&nbsp;        name = name.toUpperCase();</b>
+<b class="fc">&nbsp;        for (final Colors colors : Colors.values()) {</b>
+<b class="pc">&nbsp;            if (colors.name().equals(name)) {</b>
+<b class="nc">&nbsp;                return colors;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean equals(final Object obj) {
+<b class="pc">&nbsp;        if (!(obj instanceof WebElement)) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        WebElement other = (WebElement) obj;</b>
+<b class="pc">&nbsp;        if (other instanceof WrapsElement) {</b>
+<b class="nc">&nbsp;            other = ((WrapsElement) obj).getWrappedElement();</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        return other instanceof HtmlUnitWebElement &amp;&amp; element_.equals(((HtmlUnitWebElement) other).element_);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        return element_.hashCode();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /*
+&nbsp;     * (non-Javadoc)
+&nbsp;     *
+&nbsp;     * @see org.openqa.selenium.WrapsDriver#getContainingDriver()
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public WebDriver getWrappedDriver() {
+<b class="nc">&nbsp;        return driver_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Coordinates getCoordinates() {
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Point onScreen() {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;Not displayed, no screen location.&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Point inViewPort() {
+<b class="nc">&nbsp;        return getLocation();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Point onPage() {
+<b class="nc">&nbsp;        return getLocation();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Object getAuxiliary() {
+<b class="nc">&nbsp;        return element_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public &lt;X&gt; X getScreenshotAs(final OutputType&lt;X&gt; outputType) throws WebDriverException {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;Screenshots are not enabled for HtmlUnitDriver&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="nc">&nbsp;        return id_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

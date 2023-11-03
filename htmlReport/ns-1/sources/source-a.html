@@ -1,0 +1,325 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitOptions</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitOptions (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.7%
+  </span>
+  <span class="absValue">
+    (4/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.9%
+  </span>
+  <span class="absValue">
+    (7/79)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.net.URL;
+&nbsp;import java.util.Collections;
+&nbsp;import java.util.HashSet;
+&nbsp;import java.util.Optional;
+&nbsp;import java.util.Set;
+&nbsp;
+&nbsp;import org.htmlunit.CookieManager;
+&nbsp;import org.htmlunit.Page;
+&nbsp;import org.htmlunit.WebClient;
+&nbsp;import org.htmlunit.html.HtmlPage;
+&nbsp;import org.openqa.selenium.Cookie;
+&nbsp;import org.openqa.selenium.InvalidCookieDomainException;
+&nbsp;import org.openqa.selenium.UnableToSetCookieException;
+&nbsp;import org.openqa.selenium.WebDriver;
+&nbsp;import org.openqa.selenium.htmlunit.logging.HtmlUnitLogs;
+&nbsp;import org.openqa.selenium.logging.Logs;
+&nbsp;
+&nbsp;/**
+&nbsp; * Manages driver options.
+&nbsp; *
+&nbsp; * @author Martin Bartoš
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public class HtmlUnitOptions implements WebDriver.Options {
+&nbsp;    private final HtmlUnitLogs logs_;
+&nbsp;    private final HtmlUnitDriver driver_;
+&nbsp;    private final HtmlUnitTimeouts timeouts_;
+&nbsp;
+<b class="fc">&nbsp;    public HtmlUnitOptions(final HtmlUnitDriver driver) {</b>
+<b class="fc">&nbsp;        driver_ = driver;</b>
+<b class="fc">&nbsp;        logs_ = new HtmlUnitLogs(getWebClient());</b>
+<b class="fc">&nbsp;        timeouts_ = new HtmlUnitTimeouts(getWebClient());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Logs logs() {
+<b class="fc">&nbsp;        return logs_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void addCookie(final Cookie cookie) {
+<b class="nc">&nbsp;        final Page page = window().lastPage();</b>
+<b class="nc">&nbsp;        if (!(page instanceof HtmlPage)) {</b>
+<b class="nc">&nbsp;            throw new UnableToSetCookieException(&quot;You may not set cookies on a page that is not HTML&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        final String domain = getDomainForCookie();</b>
+<b class="nc">&nbsp;        verifyDomain(cookie, domain);</b>
+&nbsp;
+<b class="nc">&nbsp;        getWebClient().getCookieManager().addCookie(</b>
+<b class="nc">&nbsp;                new org.htmlunit.util.Cookie(</b>
+<b class="nc">&nbsp;                        domain,</b>
+<b class="nc">&nbsp;                        cookie.getName(),</b>
+<b class="nc">&nbsp;                        cookie.getValue(),</b>
+<b class="nc">&nbsp;                        cookie.getPath(),</b>
+<b class="nc">&nbsp;                        cookie.getExpiry(),</b>
+<b class="nc">&nbsp;                        cookie.isSecure(),</b>
+<b class="nc">&nbsp;                        cookie.isHttpOnly(),</b>
+<b class="nc">&nbsp;                        cookie.getSameSite()));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void verifyDomain(final Cookie cookie, String expectedDomain) {
+<b class="nc">&nbsp;        String domain = cookie.getDomain();</b>
+<b class="nc">&nbsp;        if (domain == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (&quot;&quot;.equals(domain)) {</b>
+<b class="nc">&nbsp;            throw new InvalidCookieDomainException(&quot;Domain must not be an empty string. Consider using null instead&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Line-noise-tastic
+<b class="nc">&nbsp;        if (domain.matches(&quot;.*[^:]:\\d+$&quot;)) {</b>
+<b class="nc">&nbsp;            domain = domain.replaceFirst(&quot;:\\d+$&quot;, &quot;&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        expectedDomain = expectedDomain.startsWith(&quot;.&quot;) ? expectedDomain : &quot;.&quot; + expectedDomain;</b>
+<b class="nc">&nbsp;        domain = domain.startsWith(&quot;.&quot;) ? domain : &quot;.&quot; + domain;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!expectedDomain.endsWith(domain)) {</b>
+<b class="nc">&nbsp;            throw new InvalidCookieDomainException(</b>
+<b class="nc">&nbsp;                    String.format(&quot;You may only add cookies that would be visible to the current domain: %s =&gt; %s&quot;,</b>
+<b class="nc">&nbsp;                            domain, expectedDomain));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Cookie getCookieNamed(final String name) {
+<b class="nc">&nbsp;        final Set&lt;Cookie&gt; allCookies = getCookies();</b>
+<b class="nc">&nbsp;        for (final Cookie cookie : allCookies) {</b>
+<b class="nc">&nbsp;            if (name.equals(cookie.getName())) {</b>
+<b class="nc">&nbsp;                return cookie;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void deleteCookieNamed(final String name) {
+<b class="nc">&nbsp;        final CookieManager cookieManager = getWebClient().getCookieManager();</b>
+&nbsp;
+<b class="nc">&nbsp;        final URL url = getRawUrl();</b>
+<b class="nc">&nbsp;        final Set&lt;org.htmlunit.util.Cookie&gt; rawCookies = getWebClient().getCookies(url);</b>
+<b class="nc">&nbsp;        for (final org.htmlunit.util.Cookie cookie : rawCookies) {</b>
+<b class="nc">&nbsp;            if (name.equals(cookie.getName())) {</b>
+<b class="nc">&nbsp;                cookieManager.removeCookie(cookie);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void deleteCookie(final Cookie cookie) {
+<b class="nc">&nbsp;        getWebClient().getCookieManager().removeCookie(convertSeleniumCookieToHtmlUnit(cookie));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void deleteAllCookies() {
+<b class="nc">&nbsp;        final CookieManager cookieManager = getWebClient().getCookieManager();</b>
+&nbsp;
+<b class="nc">&nbsp;        final URL url = getRawUrl();</b>
+<b class="nc">&nbsp;        final Set&lt;org.htmlunit.util.Cookie&gt; rawCookies = getWebClient().getCookies(url);</b>
+<b class="nc">&nbsp;        for (final org.htmlunit.util.Cookie cookie : rawCookies) {</b>
+<b class="nc">&nbsp;            cookieManager.removeCookie(cookie);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Set&lt;Cookie&gt; getCookies() {
+<b class="nc">&nbsp;        final URL url = getRawUrl();</b>
+&nbsp;
+&nbsp;        // The about:blank URL (the default in case no navigation took place)
+&nbsp;        // does not have a valid &#39;hostname&#39; part and cannot be used for creating
+&nbsp;        // cookies based on it - return an empty set.
+&nbsp;
+<b class="nc">&nbsp;        if (!url.toString().startsWith(&quot;http&quot;)) {</b>
+<b class="nc">&nbsp;            return Collections.emptySet();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        final Set&lt;Cookie&gt; result = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (final org.htmlunit.util.Cookie c : getWebClient().getCookies(url)) {</b>
+<b class="nc">&nbsp;            result .add(</b>
+<b class="nc">&nbsp;                    new Cookie.Builder(c.getName(), c.getValue())</b>
+<b class="nc">&nbsp;                    .domain(c.getDomain())</b>
+<b class="nc">&nbsp;                    .path(c.getPath())</b>
+<b class="nc">&nbsp;                    .expiresOn(c.getExpires())</b>
+<b class="nc">&nbsp;                    .isSecure(c.isSecure())</b>
+<b class="nc">&nbsp;                    .isHttpOnly(c.isHttpOnly())</b>
+<b class="nc">&nbsp;                    .sameSite(c.getSameSite())</b>
+<b class="nc">&nbsp;                    .build());</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return Collections.unmodifiableSet(result);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private org.htmlunit.util.Cookie convertSeleniumCookieToHtmlUnit(final Cookie cookie) {
+<b class="nc">&nbsp;        return new org.htmlunit.util.Cookie(</b>
+<b class="nc">&nbsp;                cookie.getDomain(),</b>
+<b class="nc">&nbsp;                cookie.getName(),</b>
+<b class="nc">&nbsp;                cookie.getValue(),</b>
+<b class="nc">&nbsp;                cookie.getPath(),</b>
+<b class="nc">&nbsp;                cookie.getExpiry(),</b>
+<b class="nc">&nbsp;                cookie.isSecure(),</b>
+<b class="nc">&nbsp;                cookie.isHttpOnly(),</b>
+<b class="nc">&nbsp;                cookie.getSameSite());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String getDomainForCookie() {
+<b class="nc">&nbsp;        final URL current = getRawUrl();</b>
+<b class="nc">&nbsp;        return current.getHost();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private WebClient getWebClient() {
+<b class="fc">&nbsp;        return driver_.getWebClient();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts timeouts() {
+<b class="fc">&nbsp;        return timeouts_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public HtmlUnitWindow window() {
+<b class="nc">&nbsp;        return driver_.getCurrentWindow();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private URL getRawUrl() {
+<b class="nc">&nbsp;        return Optional.ofNullable(window().lastPage()).map(Page::getUrl).orElse(null);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

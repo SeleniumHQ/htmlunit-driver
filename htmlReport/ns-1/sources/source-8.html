@@ -1,0 +1,245 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitKeyboardMapping</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitKeyboardMapping (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitKeyboardMapping</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.5%
+  </span>
+  <span class="absValue">
+    (67/68)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;import org.htmlunit.javascript.host.event.KeyboardEvent;
+&nbsp;import org.openqa.selenium.Keys;
+&nbsp;
+&nbsp;/**
+&nbsp; * Maps {@link Keys} to their {@link KeyboardEvent} constant.
+&nbsp; *
+&nbsp; * @author Ahmed Ashour
+&nbsp; * @author Luke Inman-Semerau
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public final class HtmlUnitKeyboardMapping {
+&nbsp;
+<b class="fc">&nbsp;    private static final Map&lt;Character, Integer&gt; specialKeysMap = new HashMap&lt;&gt;();</b>
+&nbsp;
+&nbsp;    static {
+<b class="fc">&nbsp;        addMapping(Keys.CANCEL, KeyboardEvent.DOM_VK_CANCEL);</b>
+<b class="fc">&nbsp;        addMapping(Keys.HELP, KeyboardEvent.DOM_VK_HELP);</b>
+<b class="fc">&nbsp;        addMapping(Keys.BACK_SPACE, KeyboardEvent.DOM_VK_BACK_SPACE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.TAB, KeyboardEvent.DOM_VK_TAB);</b>
+<b class="fc">&nbsp;        addMapping(Keys.CLEAR, KeyboardEvent.DOM_VK_CLEAR);</b>
+<b class="fc">&nbsp;        addMapping(Keys.RETURN, KeyboardEvent.DOM_VK_RETURN);</b>
+&nbsp;
+&nbsp;        // No match for Keys.ENTER
+<b class="fc">&nbsp;        addMapping(Keys.ENTER, KeyboardEvent.DOM_VK_RETURN);</b>
+<b class="fc">&nbsp;        addMapping(Keys.SHIFT, KeyboardEvent.DOM_VK_SHIFT);</b>
+&nbsp;        // No match for Keys.LEFT_SHIFT
+<b class="fc">&nbsp;        addMapping(Keys.LEFT_SHIFT, KeyboardEvent.DOM_VK_SHIFT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.CONTROL, KeyboardEvent.DOM_VK_CONTROL);</b>
+&nbsp;        // No match for Keys.LEFT_CONTROL
+<b class="fc">&nbsp;        addMapping(Keys.LEFT_CONTROL, KeyboardEvent.DOM_VK_CONTROL);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ALT, KeyboardEvent.DOM_VK_ALT);</b>
+&nbsp;        // No match for Keys.LEFT_ALT
+<b class="fc">&nbsp;        addMapping(Keys.LEFT_ALT, KeyboardEvent.DOM_VK_ALT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.PAUSE, KeyboardEvent.DOM_VK_PAUSE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ESCAPE, KeyboardEvent.DOM_VK_ESCAPE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.SPACE, KeyboardEvent.DOM_VK_SPACE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.PAGE_UP, KeyboardEvent.DOM_VK_PAGE_UP);</b>
+<b class="fc">&nbsp;        addMapping(Keys.PAGE_DOWN, KeyboardEvent.DOM_VK_PAGE_DOWN);</b>
+<b class="fc">&nbsp;        addMapping(Keys.END, KeyboardEvent.DOM_VK_END);</b>
+<b class="fc">&nbsp;        addMapping(Keys.HOME, KeyboardEvent.DOM_VK_HOME);</b>
+<b class="fc">&nbsp;        addMapping(Keys.LEFT, KeyboardEvent.DOM_VK_LEFT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ARROW_LEFT, KeyboardEvent.DOM_VK_LEFT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.UP, KeyboardEvent.DOM_VK_UP);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ARROW_UP, KeyboardEvent.DOM_VK_UP);</b>
+<b class="fc">&nbsp;        addMapping(Keys.RIGHT, KeyboardEvent.DOM_VK_RIGHT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ARROW_RIGHT, KeyboardEvent.DOM_VK_RIGHT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.DOWN, KeyboardEvent.DOM_VK_CLEAR);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ARROW_DOWN, KeyboardEvent.DOM_VK_DOWN);</b>
+<b class="fc">&nbsp;        addMapping(Keys.INSERT, KeyboardEvent.DOM_VK_INSERT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.DELETE, KeyboardEvent.DOM_VK_DELETE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.SEMICOLON, KeyboardEvent.DOM_VK_SEMICOLON);</b>
+<b class="fc">&nbsp;        addMapping(Keys.EQUALS, KeyboardEvent.DOM_VK_EQUALS);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD0, KeyboardEvent.DOM_VK_NUMPAD0);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD1, KeyboardEvent.DOM_VK_NUMPAD1);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD2, KeyboardEvent.DOM_VK_NUMPAD2);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD3, KeyboardEvent.DOM_VK_NUMPAD3);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD4, KeyboardEvent.DOM_VK_NUMPAD4);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD5, KeyboardEvent.DOM_VK_NUMPAD5);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD6, KeyboardEvent.DOM_VK_NUMPAD6);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD7, KeyboardEvent.DOM_VK_NUMPAD7);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD8, KeyboardEvent.DOM_VK_NUMPAD8);</b>
+<b class="fc">&nbsp;        addMapping(Keys.NUMPAD9, KeyboardEvent.DOM_VK_NUMPAD9);</b>
+<b class="fc">&nbsp;        addMapping(Keys.MULTIPLY, KeyboardEvent.DOM_VK_MULTIPLY);</b>
+<b class="fc">&nbsp;        addMapping(Keys.ADD, KeyboardEvent.DOM_VK_ADD);</b>
+<b class="fc">&nbsp;        addMapping(Keys.SEPARATOR, KeyboardEvent.DOM_VK_SEPARATOR);</b>
+<b class="fc">&nbsp;        addMapping(Keys.SUBTRACT, KeyboardEvent.DOM_VK_SUBTRACT);</b>
+<b class="fc">&nbsp;        addMapping(Keys.DECIMAL, KeyboardEvent.DOM_VK_DECIMAL);</b>
+<b class="fc">&nbsp;        addMapping(Keys.DIVIDE, KeyboardEvent.DOM_VK_DIVIDE);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F1, KeyboardEvent.DOM_VK_F1);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F2, KeyboardEvent.DOM_VK_F2);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F3, KeyboardEvent.DOM_VK_F3);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F4, KeyboardEvent.DOM_VK_F4);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F5, KeyboardEvent.DOM_VK_F5);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F6, KeyboardEvent.DOM_VK_F6);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F7, KeyboardEvent.DOM_VK_F7);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F8, KeyboardEvent.DOM_VK_F8);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F9, KeyboardEvent.DOM_VK_F9);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F10, KeyboardEvent.DOM_VK_F10);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F11, KeyboardEvent.DOM_VK_F11);</b>
+<b class="fc">&nbsp;        addMapping(Keys.F12, KeyboardEvent.DOM_VK_F12);</b>
+<b class="fc">&nbsp;        addMapping(Keys.META, KeyboardEvent.DOM_VK_META);</b>
+&nbsp;        // No match for Keys.COMMAND
+&nbsp;        // No match for Keys.ZENKAKU_HANKAKU
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void addMapping(final Keys keys, final int value) {
+<b class="fc">&nbsp;        specialKeysMap.put(keys.charAt(0), value);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    static boolean isSpecialKey(final char ch) {
+<b class="pc">&nbsp;        return ch &gt;= &#39;\uE000&#39; &amp;&amp; ch &lt;= &#39;\uF8FF&#39;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the equivalent constant in {@link KeyboardEvent}.
+&nbsp;     */
+&nbsp;    static int getKeysMapping(final char ch) {
+<b class="fc">&nbsp;        final Integer i = specialKeysMap.get(ch);</b>
+<b class="pc">&nbsp;        if (i == null) {</b>
+<b class="nc">&nbsp;            return 0;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return i;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private HtmlUnitKeyboardMapping() {
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

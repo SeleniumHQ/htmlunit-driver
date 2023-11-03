@@ -1,0 +1,224 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitWindow</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitWindow (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitWindow</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    36.4%
+  </span>
+  <span class="absValue">
+    (4/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    26.9%
+  </span>
+  <span class="absValue">
+    (7/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import org.htmlunit.Page;
+&nbsp;import org.htmlunit.WebWindow;
+&nbsp;import org.openqa.selenium.Dimension;
+&nbsp;import org.openqa.selenium.Point;
+&nbsp;import org.openqa.selenium.WebDriver;
+&nbsp;
+&nbsp;/**
+&nbsp; *
+&nbsp; * @author Martin Bartoš
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public class HtmlUnitWindow implements WebDriver.Window {
+&nbsp;
+&nbsp;    private static final int SCROLLBAR_WIDTH = 8;
+&nbsp;    private static final int HEADER_HEIGHT = 150;
+&nbsp;
+&nbsp;    private final WebWindow webWindow_;
+&nbsp;    private final Dimension initialWindowDimension_;
+&nbsp;    private Point windowPosition_;
+&nbsp;
+<b class="fc">&nbsp;    public HtmlUnitWindow(final WebWindow webWindow) {</b>
+<b class="fc">&nbsp;        webWindow_ = webWindow;</b>
+<b class="fc">&nbsp;        windowPosition_ = getBasePoint();</b>
+<b class="fc">&nbsp;        initialWindowDimension_ = new Dimension(webWindow_.getOuterWidth(), webWindow_.getOuterHeight());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public WebWindow getWebWindow() {
+<b class="fc">&nbsp;        return webWindow_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void setSize(final Dimension targetSize) {
+<b class="nc">&nbsp;        final WebWindow topWindow = webWindow_.getTopWindow();</b>
+&nbsp;
+<b class="nc">&nbsp;        int width = targetSize.getWidth();</b>
+<b class="nc">&nbsp;        if (width &lt; SCROLLBAR_WIDTH) {</b>
+<b class="nc">&nbsp;            width = SCROLLBAR_WIDTH;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        topWindow.setOuterWidth(width);</b>
+<b class="nc">&nbsp;        topWindow.setInnerWidth(width - SCROLLBAR_WIDTH);</b>
+&nbsp;
+<b class="nc">&nbsp;        int height = targetSize.getHeight();</b>
+<b class="nc">&nbsp;        if (height &lt; HEADER_HEIGHT) {</b>
+<b class="nc">&nbsp;            height = HEADER_HEIGHT;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        topWindow.setOuterHeight(height);</b>
+<b class="nc">&nbsp;        topWindow.setInnerHeight(height - HEADER_HEIGHT);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void setPosition(final Point targetPosition) {
+<b class="nc">&nbsp;        windowPosition_ = targetPosition;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Dimension getSize() {
+<b class="nc">&nbsp;        final WebWindow topWindow = webWindow_.getTopWindow();</b>
+<b class="nc">&nbsp;        return new Dimension(topWindow.getOuterWidth(), topWindow.getOuterHeight());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Point getPosition() {
+<b class="nc">&nbsp;        return windowPosition_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void maximize() {
+<b class="nc">&nbsp;        setSize(initialWindowDimension_);</b>
+<b class="nc">&nbsp;        setPosition(getBasePoint());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void minimize() {
+<b class="nc">&nbsp;        throw new UnsupportedOperationException(&quot;Cannot minimize window&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void fullscreen() {
+<b class="nc">&nbsp;        maximize();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Page lastPage() {
+<b class="fc">&nbsp;        return webWindow_.getEnclosedPage();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Point getBasePoint() {
+<b class="fc">&nbsp;        return new Point(0, 0);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,297 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitKeyboard</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitKeyboard (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitKeyboard</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.4%
+  </span>
+  <span class="absValue">
+    (28/34)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (56/70)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;
+&nbsp;import org.htmlunit.html.HtmlElement;
+&nbsp;import org.htmlunit.html.HtmlFileInput;
+&nbsp;import org.htmlunit.html.HtmlInput;
+&nbsp;import org.htmlunit.html.HtmlNumberInput;
+&nbsp;import org.htmlunit.html.Keyboard;
+&nbsp;import org.openqa.selenium.Keys;
+&nbsp;import org.openqa.selenium.WebDriverException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Implements keyboard operations using the HtmlUnit WebDriver.
+&nbsp; *
+&nbsp; * @author Alexei Barantsev
+&nbsp; * @author Ahmed Ashour
+&nbsp; * @author Simon Stewart
+&nbsp; * @author Glib Briia
+&nbsp; * @author Ronald Brill
+&nbsp; * @author Martin Bartoš
+&nbsp; */
+&nbsp;public class HtmlUnitKeyboard {
+<b class="fc">&nbsp;    private final KeyboardModifiersState modifiersState_ = new KeyboardModifiersState();</b>
+&nbsp;    private final HtmlUnitDriver parent_;
+&nbsp;    private HtmlElement lastElement_;
+&nbsp;
+<b class="fc">&nbsp;    HtmlUnitKeyboard(final HtmlUnitDriver parent) {</b>
+<b class="fc">&nbsp;        parent_ = parent;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void sendKeys(final CharSequence... keysToSend) {
+<b class="fc">&nbsp;        final HtmlUnitWebElement htmlElem = (HtmlUnitWebElement) parent_.switchTo().activeElement();</b>
+<b class="fc">&nbsp;        sendKeys(htmlElem, false, keysToSend);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    void sendKeys(final HtmlUnitWebElement htmlElem, final boolean releaseAllAtEnd, final CharSequence... value) {
+<b class="fc">&nbsp;        htmlElem.verifyCanInteractWithElement(false);</b>
+&nbsp;
+<b class="fc">&nbsp;        final HtmlElement element = (HtmlElement) htmlElem.getElement();</b>
+<b class="pc">&nbsp;        final boolean inputElementInsideForm = element instanceof HtmlInput &amp;&amp; element.getEnclosingForm() != null;</b>
+<b class="fc">&nbsp;        final InputKeysContainer keysContainer = new InputKeysContainer(inputElementInsideForm, value);</b>
+&nbsp;
+<b class="fc">&nbsp;        htmlElem.switchFocusToThisIfNeeded();</b>
+&nbsp;
+<b class="fc">&nbsp;        sendKeys(element, keysContainer, releaseAllAtEnd);</b>
+&nbsp;
+<b class="pc">&nbsp;        if (inputElementInsideForm &amp;&amp; keysContainer.wasSubmitKeyFound()) {</b>
+<b class="nc">&nbsp;            htmlElem.submitImpl();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void sendKeys(final HtmlElement element,
+&nbsp;            final InputKeysContainer keysToSend, final boolean releaseAllAtEnd) {
+<b class="fc">&nbsp;        keysToSend.setCapitalization(modifiersState_.isShiftPressed());</b>
+<b class="fc">&nbsp;        final String keysSequence = keysToSend.toString();</b>
+&nbsp;
+&nbsp;        // HtmlElement.type doesn&#39;t modify the value of a file input element. Special
+&nbsp;        // case.
+<b class="pc">&nbsp;        if (element instanceof HtmlFileInput) {</b>
+<b class="nc">&nbsp;            final HtmlFileInput fileInput = (HtmlFileInput) element;</b>
+<b class="nc">&nbsp;            fileInput.setValue(keysSequence);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+&nbsp;        try {
+<b class="fc">&nbsp;            final boolean startAtEnd = lastElement_ != element &amp;&amp; !(element instanceof HtmlNumberInput);</b>
+<b class="fc">&nbsp;            final Keyboard keyboard = asHtmlUnitKeyboard(startAtEnd, keysSequence, true);</b>
+<b class="fc">&nbsp;            if (releaseAllAtEnd) {</b>
+<b class="pc">&nbsp;                if (isShiftPressed()) {</b>
+<b class="nc">&nbsp;                    addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false);</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (isAltPressed()) {</b>
+<b class="nc">&nbsp;                    addToKeyboard(keyboard, Keys.ALT.charAt(0), false);</b>
+&nbsp;                }
+<b class="pc">&nbsp;                if (isCtrlPressed()) {</b>
+<b class="nc">&nbsp;                    addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false);</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;            element.type(keyboard);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final IOException e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        lastElement_ = element;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Keyboard asHtmlUnitKeyboard(final boolean startAtEnd, final CharSequence keysSequence,
+&nbsp;            final boolean isPress) {
+<b class="fc">&nbsp;        final Keyboard keyboard = new Keyboard(startAtEnd);</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; keysSequence.length(); i++) {</b>
+<b class="fc">&nbsp;            final char ch = keysSequence.charAt(i);</b>
+<b class="fc">&nbsp;            addToKeyboard(keyboard, ch, isPress);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return keyboard;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void addToKeyboard(final Keyboard keyboard, final char ch, final boolean isPress) {
+<b class="fc">&nbsp;        if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {</b>
+<b class="fc">&nbsp;            final int keyCode = HtmlUnitKeyboardMapping.getKeysMapping(ch);</b>
+<b class="fc">&nbsp;            if (isPress) {</b>
+<b class="fc">&nbsp;                keyboard.press(keyCode);</b>
+<b class="fc">&nbsp;                modifiersState_.storeKeyDown(ch);</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            else {
+<b class="fc">&nbsp;                keyboard.release(keyCode);</b>
+<b class="fc">&nbsp;                modifiersState_.storeKeyUp(ch);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;        else {
+<b class="fc">&nbsp;            keyboard.type(ch);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void pressKey(final CharSequence keyToPress) {
+<b class="fc">&nbsp;        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();</b>
+<b class="fc">&nbsp;        final HtmlElement element = (HtmlElement) htmlElement.getElement();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            element.type(asHtmlUnitKeyboard(lastElement_ != element, keyToPress, true));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final IOException e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        for (int i = 0; i &lt; keyToPress.length(); i++) {</b>
+<b class="fc">&nbsp;            final char ch = keyToPress.charAt(i);</b>
+<b class="fc">&nbsp;            modifiersState_.storeKeyDown(ch);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void releaseKey(final CharSequence keyToRelease) {
+<b class="fc">&nbsp;        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();</b>
+<b class="fc">&nbsp;        final HtmlElement element = (HtmlElement) htmlElement.getElement();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            element.type(asHtmlUnitKeyboard(lastElement_ != element, keyToRelease, false));</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        catch (final IOException e) {</b>
+<b class="nc">&nbsp;            throw new WebDriverException(e);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        for (int i = 0; i &lt; keyToRelease.length(); i++) {</b>
+<b class="fc">&nbsp;            final char ch = keyToRelease.charAt(i);</b>
+<b class="fc">&nbsp;            modifiersState_.storeKeyUp(ch);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isShiftPressed() {
+<b class="fc">&nbsp;        return modifiersState_.isShiftPressed();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isCtrlPressed() {
+<b class="fc">&nbsp;        return modifiersState_.isCtrlPressed();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isAltPressed() {
+<b class="fc">&nbsp;        return modifiersState_.isAltPressed();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isPressed(final char ch) {
+<b class="nc">&nbsp;        return modifiersState_.isPressed(ch);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean isPressed(final Keys keys) {
+<b class="nc">&nbsp;        return modifiersState_.isPressed(keys);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit.by;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -103,5 +104,43 @@ public class FindByIdTest extends WebDriverTestCase {
         final List<WebElement> elements = ctx.findElements(By.id("testDivId"));
         assertEquals(1, elements.size());
         assertEquals("TestDiv", elements.get(0).getText());
+    }
+
+    @Test
+    public void elementsByIdNotFound() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div id='testDivId'>TestDiv</div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        List<WebElement> elements = driver.findElements(By.id("nonExistentId"));
+
+        Assert.assertNotNull(elements);
+        Assert.assertEquals(0, elements.size());
+    }
+
+    @Test
+    public void relativeElementsByIdNotFound() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <div id='testDivId'>TestDiv</div>\n"
+                + "    <div id='testDivId2'>TestDiv2</div>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        WebElement ctx = driver.findElement(By.id("ctx"));
+        List<WebElement> elements = ctx.findElements(By.id("nonExistentId"));
+
+        Assert.assertNotNull(elements);
+        Assert.assertEquals(0, elements.size());
     }
 }
