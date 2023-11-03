@@ -1,0 +1,230 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > BrowserVersionDeterminer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: BrowserVersionDeterminer (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BrowserVersionDeterminer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    94.4%
+  </span>
+  <span class="absValue">
+    (34/36)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.7%
+  </span>
+  <span class="absValue">
+    (45/47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import org.htmlunit.BrowserVersion;
+&nbsp;import org.openqa.selenium.Capabilities;
+&nbsp;import org.openqa.selenium.remote.Browser;
+&nbsp;
+&nbsp;/**
+&nbsp; * Determine browser and its version.
+&nbsp; *
+&nbsp; * @author Martin Bartoš
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public final class BrowserVersionDeterminer {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Determine browser by its capabilities.
+&nbsp;     *
+&nbsp;     * @param capabilities the Capabilities
+&nbsp;     * @return the browser version
+&nbsp;     */
+&nbsp;    public static BrowserVersion determine(final Capabilities capabilities) {
+<b class="fc">&nbsp;        if (!Browser.HTMLUNIT.is(capabilities)) {</b>
+<b class="fc">&nbsp;            throw new IllegalArgumentException(</b>
+<b class="fc">&nbsp;                    &quot;When building an HtmlUntDriver, the capability browser name must be set to &#39;&quot;</b>
+<b class="fc">&nbsp;                            + Browser.HTMLUNIT.browserName() + &quot;&#39; but was &#39;&quot; + capabilities.getBrowserName() + &quot;&#39;.&quot;);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        final String browserName;
+&nbsp;        final String browserVersion;
+&nbsp;
+<b class="fc">&nbsp;        final String rawVersion = capabilities.getBrowserVersion();</b>
+<b class="pc">&nbsp;        final String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split(&quot;-&quot;);</b>
+<b class="fc">&nbsp;        if (splitVersion.length &gt; 1) {</b>
+<b class="fc">&nbsp;            browserName = splitVersion[0];</b>
+<b class="fc">&nbsp;            browserVersion = splitVersion[1];</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;        else {
+<b class="fc">&nbsp;            browserName = capabilities.getBrowserVersion();</b>
+<b class="fc">&nbsp;            browserVersion = null;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        BrowserVersion browserVersionObject;
+&nbsp;
+<b class="fc">&nbsp;        if (browserName.equalsIgnoreCase(BrowserVersion.CHROME.getNickname())</b>
+<b class="fc">&nbsp;                || &quot;googlechrome&quot;.equalsIgnoreCase(browserName)) {</b>
+<b class="fc">&nbsp;            browserVersionObject = BrowserVersion.CHROME;</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if (browserName.equalsIgnoreCase(BrowserVersion.EDGE.getNickname())</b>
+<b class="fc">&nbsp;                || &quot;MicrosoftEdge&quot;.equalsIgnoreCase(browserName)) {</b>
+<b class="fc">&nbsp;            browserVersionObject = BrowserVersion.EDGE;</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if (browserName.equalsIgnoreCase(BrowserVersion.INTERNET_EXPLORER.getNickname())</b>
+<b class="fc">&nbsp;                || &quot;internet explorer&quot;.equalsIgnoreCase(browserName)) {</b>
+<b class="fc">&nbsp;            browserVersionObject = BrowserVersion.INTERNET_EXPLORER;</b>
+&nbsp;
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        else if (browserName.equalsIgnoreCase(BrowserVersion.FIREFOX.getNickname())</b>
+<b class="fc">&nbsp;                || &quot;firefox&quot;.equalsIgnoreCase(browserName)) {</b>
+<b class="fc">&nbsp;            if (&quot;esr&quot;.equalsIgnoreCase(browserVersion)) {</b>
+<b class="fc">&nbsp;                browserVersionObject = BrowserVersion.FIREFOX_ESR;</b>
+<b class="fc">&nbsp;            }</b>
+&nbsp;            else {
+&nbsp;                try {
+<b class="fc">&nbsp;                    final int version = Integer.parseInt(browserVersion);</b>
+<b class="fc">&nbsp;                    if (version == 78 || version == 91 || version == 102 || version == 115) {</b>
+<b class="fc">&nbsp;                        browserVersionObject = BrowserVersion.FIREFOX_ESR;</b>
+<b class="fc">&nbsp;                    }</b>
+<b class="pc">&nbsp;                    else if (version == BrowserVersion.FIREFOX.getBrowserVersionNumeric()) {</b>
+<b class="fc">&nbsp;                        browserVersionObject = BrowserVersion.FIREFOX;</b>
+<b class="fc">&nbsp;                    }</b>
+&nbsp;                    else {
+<b class="nc">&nbsp;                        browserVersionObject = BrowserVersion.FIREFOX;</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                }</b>
+<b class="fc">&nbsp;                catch (final NumberFormatException e) {</b>
+<b class="fc">&nbsp;                    browserVersionObject = BrowserVersion.FIREFOX;</b>
+&nbsp;                }
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;        else {
+<b class="fc">&nbsp;            browserVersionObject = BrowserVersion.getDefault();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        final Object rawLanguage = capabilities.getCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY);</b>
+<b class="fc">&nbsp;        if (rawLanguage instanceof String) {</b>
+<b class="fc">&nbsp;            return new BrowserVersion.BrowserVersionBuilder(browserVersionObject)</b>
+<b class="fc">&nbsp;                    .setBrowserLanguage((String) rawLanguage).build();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return browserVersionObject;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private BrowserVersionDeterminer() {
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

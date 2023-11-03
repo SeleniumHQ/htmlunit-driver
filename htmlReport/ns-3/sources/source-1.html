@@ -1,0 +1,279 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Action</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit.w3</a>
+</div>
+
+<h1>Coverage Summary for Class: Action (org.openqa.selenium.htmlunit.w3)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Action</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    61.5%
+  </span>
+  <span class="absValue">
+    (8/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57.1%
+  </span>
+  <span class="absValue">
+    (16/28)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.8%
+  </span>
+  <span class="absValue">
+    (27/43)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit.w3;
+&nbsp;
+&nbsp;import org.htmlunit.html.DomElement;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.HtmlUnitAction;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyDownHtmlUnitAction;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.KeyUpHtmlUnitAction;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerDownHtmlUnitAction;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerMoveHtmlUnitAction;
+&nbsp;import org.openqa.selenium.htmlunit.HtmlUnitInputProcessor.PointerUpHtmlUnitAction;
+&nbsp;
+&nbsp;/**
+&nbsp; * An action object constructed with arguments id, type, and subtype is an
+&nbsp; * object with property id set to id, type set to type and subtype set to
+&nbsp; * subtype. Specific action objects have further properties added by other
+&nbsp; * algorithms in this specification.
+&nbsp; *
+&nbsp; * @see &lt;a href=&quot;https://www.w3.org/TR/webdriver/#dfn-action-object&quot;&gt;action object&lt;/a&gt;
+&nbsp; *
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public class Action {
+&nbsp;    private final String id_;
+&nbsp;    private final String type_;
+&nbsp;    private final String subtype_;
+&nbsp;
+&nbsp;    private Integer duration_;
+&nbsp;    private String value_;
+&nbsp;
+&nbsp;    private String pointerType_;
+&nbsp;    private Integer button_;
+&nbsp;
+&nbsp;    private DomElement domElement_;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ctor.
+&nbsp;     *
+&nbsp;     * @param id unique id
+&nbsp;     * @param type the type
+&nbsp;     * @param subtype the subtype
+&nbsp;     */
+<b class="fc">&nbsp;    public Action(final String id, final String type, final String subtype) {</b>
+<b class="fc">&nbsp;        id_ = id;</b>
+<b class="fc">&nbsp;        type_ = type;</b>
+<b class="fc">&nbsp;        subtype_ = subtype;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Integer getDuration() {
+<b class="nc">&nbsp;        return duration_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDuration(final int duration) {
+<b class="fc">&nbsp;        duration_ = duration;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getValue() {
+<b class="nc">&nbsp;        return value_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setValue(final String value) {
+<b class="fc">&nbsp;        value_ = value;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPointerType() {
+<b class="nc">&nbsp;        return pointerType_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPointerType(final String pointerType) {
+<b class="fc">&nbsp;        pointerType_ = pointerType;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Integer getButton() {
+<b class="fc">&nbsp;        return button_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setButton(final int button) {
+<b class="fc">&nbsp;        button_ = button;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public DomElement getDomElement() {
+<b class="nc">&nbsp;        return domElement_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDomElement(final DomElement domElement) {
+<b class="fc">&nbsp;        domElement_ = domElement;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public HtmlUnitAction buildHtmlUnitAction() {
+&nbsp;
+<b class="pc">&nbsp;        if (&quot;none&quot;.equals(type_)) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (&quot;pointer&quot;.equals(type_)) {</b>
+<b class="fc">&nbsp;            if (&quot;pause&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (&quot;pointerMove&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return new PointerMoveHtmlUnitAction(domElement_);</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (&quot;pointerUp&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return new PointerUpHtmlUnitAction(domElement_, getButton());</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (&quot;pointerDown&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return new PointerDownHtmlUnitAction(domElement_, getButton());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if (&quot;key&quot;.equals(type_)) {</b>
+<b class="fc">&nbsp;            if (&quot;pause&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return null;</b>
+&nbsp;            }
+&nbsp;
+<b class="fc">&nbsp;            if (&quot;keyUp&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return new KeyUpHtmlUnitAction(value_);</b>
+&nbsp;            }
+&nbsp;
+<b class="pc">&nbsp;            if (&quot;keyDown&quot;.equals(subtype_)) {</b>
+<b class="fc">&nbsp;                return new KeyDownHtmlUnitAction(value_);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        throw new RuntimeException(&quot;ups&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        String toString = &quot;Action: id=&quot; + id_ + &quot; type=&quot; + type_ + &quot; subtype=&quot; + subtype_;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (duration_ != null) {</b>
+<b class="nc">&nbsp;            toString += &quot; duration=&quot; + duration_;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (value_ != null) {</b>
+<b class="nc">&nbsp;            toString += &quot; value=&quot; + value_;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (pointerType_ != null) {</b>
+<b class="nc">&nbsp;            toString += &quot; pointerType=&quot; + pointerType_;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (button_ != null) {</b>
+<b class="nc">&nbsp;            toString += &quot; button=&quot; + button_;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return toString;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

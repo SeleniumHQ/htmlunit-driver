@@ -1,0 +1,465 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitAlert</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitAlert (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitAlert</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.2%
+  </span>
+  <span class="absValue">
+    (15/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    55.6%
+  </span>
+  <span class="absValue">
+    (15/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66%
+  </span>
+  <span class="absValue">
+    (62/94)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HtmlUnitAlert$AlertHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HtmlUnitAlert$PromptHolder</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    76.9%
+  </span>
+  <span class="absValue">
+    (20/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48.5%
+  </span>
+  <span class="absValue">
+    (16/33)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.7%
+  </span>
+  <span class="absValue">
+    (69/110)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;import java.util.concurrent.locks.Condition;
+&nbsp;import java.util.concurrent.locks.Lock;
+&nbsp;import java.util.concurrent.locks.ReentrantLock;
+&nbsp;
+&nbsp;import org.htmlunit.Page;
+&nbsp;import org.htmlunit.WebClient;
+&nbsp;import org.htmlunit.WebWindow;
+&nbsp;import org.openqa.selenium.Alert;
+&nbsp;import org.openqa.selenium.Capabilities;
+&nbsp;import org.openqa.selenium.ElementNotInteractableException;
+&nbsp;import org.openqa.selenium.NoAlertPresentException;
+&nbsp;import org.openqa.selenium.UnexpectedAlertBehaviour;
+&nbsp;import org.openqa.selenium.UnhandledAlertException;
+&nbsp;import org.openqa.selenium.remote.CapabilityType;
+&nbsp;
+&nbsp;/**
+&nbsp; * Implementation of {@link Alert}.
+&nbsp; *
+&nbsp; * @author Ahmed Ashour
+&nbsp; * @author A aftakhov
+&nbsp; * @author Ronald Brill
+&nbsp; */
+<b class="fc">&nbsp;public class HtmlUnitAlert implements Alert {</b>
+&nbsp;
+&nbsp;    private final HtmlUnitDriver driver_;
+&nbsp;    private AlertHolder holder_;
+&nbsp;    private boolean quitting_;
+<b class="fc">&nbsp;    private final Lock lock_ = new ReentrantLock();</b>
+<b class="fc">&nbsp;    private final Condition condition_ = lock_.newCondition();</b>
+&nbsp;    private WebWindow webWindow_;
+<b class="fc">&nbsp;    private UnexpectedAlertBehaviour unexpectedAlertBehaviour_ = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;</b>
+&nbsp;
+<b class="fc">&nbsp;    HtmlUnitAlert(final HtmlUnitDriver driver) {</b>
+<b class="fc">&nbsp;        driver_ = driver;</b>
+<b class="fc">&nbsp;        final WebClient webClient = driver.getWebClient();</b>
+<b class="fc">&nbsp;        webClient.setAlertHandler(this::alertHandler);</b>
+<b class="fc">&nbsp;        webClient.setPromptHandler(this::promptHandler);</b>
+<b class="fc">&nbsp;        webClient.setConfirmHandler(this::confirmHandler);</b>
+<b class="fc">&nbsp;        webClient.setOnbeforeunloadHandler(this::onbeforeunloadHandler);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void alertHandler(final Page page, final String message) {
+<b class="pc">&nbsp;        if (quitting_) {</b>
+&nbsp;            return;
+&nbsp;        }
+<b class="fc">&nbsp;        webWindow_ = page.getEnclosingWindow();</b>
+<b class="fc">&nbsp;        holder_ = new AlertHolder(message);</b>
+<b class="fc">&nbsp;        awaitCondition();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean confirmHandler(final Page page, final String message) {
+<b class="pc">&nbsp;        if (quitting_) {</b>
+<b class="nc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        webWindow_ = page.getEnclosingWindow();</b>
+<b class="fc">&nbsp;        holder_ = new AlertHolder(message);</b>
+<b class="fc">&nbsp;        final AlertHolder localHolder = holder_;</b>
+<b class="fc">&nbsp;        awaitCondition();</b>
+<b class="fc">&nbsp;        return localHolder.isAccepted();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private void awaitCondition() {
+<b class="fc">&nbsp;        lock_.lock();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            if (driver_.isProcessAlert()) {</b>
+&nbsp;                try {
+<b class="fc">&nbsp;                    condition_.await(5, TimeUnit.SECONDS);</b>
+<b class="fc">&nbsp;                }</b>
+<b class="nc">&nbsp;                catch (final InterruptedException e) {</b>
+<b class="nc">&nbsp;                    throw new RuntimeException(e);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        finally {</b>
+<b class="fc">&nbsp;            lock_.unlock();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private String promptHandler(final Page page, final String message, final String defaultMessage) {
+<b class="nc">&nbsp;        if (quitting_) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        webWindow_ = page.getEnclosingWindow();</b>
+<b class="nc">&nbsp;        holder_ = new PromptHolder(message, defaultMessage);</b>
+<b class="nc">&nbsp;        final PromptHolder localHolder = (PromptHolder) holder_;</b>
+<b class="nc">&nbsp;        awaitCondition();</b>
+<b class="nc">&nbsp;        return localHolder.value_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private boolean onbeforeunloadHandler(final Page page, final String returnValue) {
+<b class="nc">&nbsp;        if (quitting_) {</b>
+<b class="nc">&nbsp;            return true;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        webWindow_ = page.getEnclosingWindow();</b>
+<b class="nc">&nbsp;        holder_ = new AlertHolder(returnValue);</b>
+<b class="nc">&nbsp;        final AlertHolder localHolder = holder_;</b>
+<b class="nc">&nbsp;        awaitCondition();</b>
+<b class="nc">&nbsp;        return localHolder.isAccepted();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    WebWindow getWebWindow() {
+<b class="fc">&nbsp;        return webWindow_;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAutoAccept(final boolean autoAccept) {
+<b class="fc">&nbsp;        this.quitting_ = autoAccept;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void handleBrowserCapabilities(final Capabilities capabilities) {
+<b class="fc">&nbsp;        final UnexpectedAlertBehaviour behaviour = (UnexpectedAlertBehaviour) capabilities</b>
+<b class="fc">&nbsp;                .getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);</b>
+<b class="pc">&nbsp;        if (behaviour != null) {</b>
+<b class="nc">&nbsp;            this.unexpectedAlertBehaviour_ = behaviour;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void dismiss() {
+<b class="fc">&nbsp;        lock_.lock();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            condition_.signal();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        finally {</b>
+<b class="fc">&nbsp;            lock_.unlock();</b>
+<b class="fc">&nbsp;            holder_ = null;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void accept() {
+<b class="fc">&nbsp;        lock_.lock();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            holder_.accept();</b>
+<b class="fc">&nbsp;            condition_.signal();</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        finally {</b>
+<b class="fc">&nbsp;            lock_.unlock();</b>
+<b class="fc">&nbsp;            holder_ = null;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public String getText() {
+<b class="pc">&nbsp;        if (holder_ == null) {</b>
+<b class="nc">&nbsp;            throw new NoAlertPresentException();</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String msg = holder_.message_;</b>
+<b class="fc">&nbsp;        msg = msg.replace(&quot;\r\n&quot;, &quot;\n&quot;);</b>
+<b class="fc">&nbsp;        if (!driver_.getBrowserVersion().isIE()) {</b>
+<b class="fc">&nbsp;            msg = msg.replace(&#39;\r&#39;, &#39;\n&#39;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return msg;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void sendKeys(final String keysToSend) {
+<b class="fc">&nbsp;        holder_.sendKeys(keysToSend);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Closes the current window.
+&nbsp;     */
+&nbsp;    void close() {
+<b class="fc">&nbsp;        lock_.lock();</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            condition_.signal();</b>
+<b class="fc">&nbsp;            setAutoAccept(true);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="nc">&nbsp;        finally {</b>
+<b class="fc">&nbsp;            lock_.unlock();</b>
+<b class="fc">&nbsp;            holder_ = null;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean isLocked() {
+<b class="fc">&nbsp;        return holder_ != null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void ensureUnlocked() {
+<b class="fc">&nbsp;        if (isLocked()) {</b>
+<b class="fc">&nbsp;            final String text = getText();</b>
+&nbsp;
+<b class="pc">&nbsp;            switch (unexpectedAlertBehaviour_) {</b>
+&nbsp;                case ACCEPT:
+<b class="nc">&nbsp;                    accept();</b>
+&nbsp;                    return;
+&nbsp;
+&nbsp;                case ACCEPT_AND_NOTIFY:
+<b class="nc">&nbsp;                    accept();</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;
+&nbsp;                case DISMISS:
+<b class="nc">&nbsp;                    dismiss();</b>
+&nbsp;                    return;
+&nbsp;
+&nbsp;                case DISMISS_AND_NOTIFY:
+<b class="fc">&nbsp;                    dismiss();</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;
+&nbsp;                case IGNORE:
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;
+&nbsp;                default:
+&nbsp;                    break;
+&nbsp;            }
+<b class="fc">&nbsp;            throw new UnhandledAlertException(&quot;Unexpected alert found&quot;, text);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private static class AlertHolder {
+<b class="fc">&nbsp;        private final String message_;</b>
+&nbsp;        private boolean accepted_;
+&nbsp;
+<b class="fc">&nbsp;        AlertHolder(final String message) {</b>
+<b class="fc">&nbsp;            this.message_ = message;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        void sendKeys(final String keysToSend) {
+<b class="pc">&nbsp;            if (keysToSend != null) {</b>
+<b class="fc">&nbsp;                throw new ElementNotInteractableException(&quot;alert is not interactable&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            throw new IllegalArgumentException();</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        void accept() {
+<b class="fc">&nbsp;            accepted_ = true;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        boolean isAccepted() {
+<b class="fc">&nbsp;            return accepted_;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private static class PromptHolder extends AlertHolder {
+&nbsp;
+&nbsp;        private final String defaultMessage_;
+<b class="nc">&nbsp;        private String value_;</b>
+&nbsp;
+&nbsp;        PromptHolder(final String message, final String defaultMessage) {
+<b class="nc">&nbsp;            super(message);</b>
+<b class="nc">&nbsp;            this.defaultMessage_ = defaultMessage;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        void sendKeys(String keysToSend) {
+<b class="nc">&nbsp;            if (keysToSend == null) {</b>
+<b class="nc">&nbsp;                keysToSend = defaultMessage_;</b>
+&nbsp;            }
+<b class="nc">&nbsp;            this.value_ = keysToSend;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        void accept() {
+<b class="nc">&nbsp;            if (value_ == null) {</b>
+<b class="nc">&nbsp;                value_ = defaultMessage_;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

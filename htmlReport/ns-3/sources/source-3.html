@@ -1,0 +1,161 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Error</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit.w3</a>
+</div>
+
+<h1>Coverage Summary for Class: Error (org.openqa.selenium.htmlunit.w3)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Error</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit.w3;
+&nbsp;
+&nbsp;import java.util.Map;
+&nbsp;
+&nbsp;/**
+&nbsp; * Errors are represented in the WebDriver protocol by an HTTP response with an
+&nbsp; * HTTP status in the 4xx or 5xx range, and a JSON body containing details of
+&nbsp; * the error. The body is a JSON Object and has a field named &quot;value&quot; whose
+&nbsp; * value is an object bearing three, and sometimes four, fields: - &quot;error&quot;,
+&nbsp; * containing a string indicating the error code. - &quot;message&quot;, containing an
+&nbsp; * implementation-defined string with a human readable description of the kind
+&nbsp; * of error that occurred. - &quot;stacktrace&quot;, containing an implementation-defined
+&nbsp; * string with a stack trace report of the active stack frames at the time when
+&nbsp; * the error occurred. Optionally &quot;data&quot;, which is a JSON Object with additional
+&nbsp; * error data helpful in diagnosing the error.
+&nbsp; *
+&nbsp; * @see &lt;a href=&quot;https://www.w3.org/TR/webdriver/#errors&quot;&gt;Errors&lt;/a&gt;
+&nbsp; *
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public class Error {
+&nbsp;    private final String error_;
+&nbsp;    private final String message_;
+&nbsp;    private final String stacktrace_;
+&nbsp;
+&nbsp;    private Map&lt;String, String&gt; data_;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Ctor.
+&nbsp;     *
+&nbsp;     * @param error the error text
+&nbsp;     * @param message the message text
+&nbsp;     * @param stacktrace the stack trace
+&nbsp;     */
+<b class="nc">&nbsp;    public Error(final String error, final String message, final String stacktrace) {</b>
+<b class="nc">&nbsp;        error_ = error;</b>
+<b class="nc">&nbsp;        message_ = message;</b>
+<b class="nc">&nbsp;        stacktrace_ = stacktrace;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>

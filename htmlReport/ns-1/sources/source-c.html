@@ -1,0 +1,222 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > HtmlUnitTimeouts</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">org.openqa.selenium.htmlunit</a>
+</div>
+
+<h1>Coverage Summary for Class: HtmlUnitTimeouts (org.openqa.selenium.htmlunit)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HtmlUnitTimeouts</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (4/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    32%
+  </span>
+  <span class="absValue">
+    (8/25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Licensed to the Software Freedom Conservancy (SFC) under one
+&nbsp;// or more contributor license agreements.  See the NOTICE file
+&nbsp;// distributed with this work for additional information
+&nbsp;// regarding copyright ownership.  The SFC licenses this file
+&nbsp;// to you under the Apache License, Version 2.0 (the
+&nbsp;// &quot;License&quot;); you may not use this file except in compliance
+&nbsp;// with the License.  You may obtain a copy of the License at
+&nbsp;//
+&nbsp;//   http://www.apache.org/licenses/LICENSE-2.0
+&nbsp;//
+&nbsp;// Unless required by applicable law or agreed to in writing,
+&nbsp;// software distributed under the License is distributed on an
+&nbsp;// &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+&nbsp;// KIND, either express or implied.  See the License for the
+&nbsp;// specific language governing permissions and limitations
+&nbsp;// under the License.
+&nbsp;
+&nbsp;package org.openqa.selenium.htmlunit;
+&nbsp;
+&nbsp;import java.time.Duration;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;
+&nbsp;import org.htmlunit.WebClient;
+&nbsp;import org.openqa.selenium.WebDriver;
+&nbsp;
+&nbsp;/**
+&nbsp; * Class for timeouts managing.
+&nbsp; *
+&nbsp; * @author Martin Bartoš
+&nbsp; * @author Ronald Brill
+&nbsp; */
+&nbsp;public class HtmlUnitTimeouts implements WebDriver.Timeouts {
+<b class="fc">&nbsp;    private long implicitWait_ = 0;</b>
+<b class="fc">&nbsp;    private long scriptTimeout_ = 0;</b>
+<b class="fc">&nbsp;    private long pageLoadTimeout_ = 0;</b>
+<b class="fc">&nbsp;    private WebClient webClient_ = null;</b>
+&nbsp;
+<b class="nc">&nbsp;    public HtmlUnitTimeouts() {</b>
+&nbsp;        // nop
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public HtmlUnitTimeouts(final WebClient webClient) {</b>
+<b class="fc">&nbsp;        this.webClient_ = webClient;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Duration getImplicitWaitTimeout() {
+<b class="fc">&nbsp;        return Duration.ofMillis(implicitWait_);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Deprecated
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts implicitlyWait(final long time, final TimeUnit unit) {
+<b class="nc">&nbsp;        implicitlyWait(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts implicitlyWait(final Duration duration) {
+<b class="nc">&nbsp;        this.implicitWait_ = Math.max(0, duration.toMillis());</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts scriptTimeout(final Duration duration) {
+<b class="nc">&nbsp;        this.scriptTimeout_ = duration.toMillis();</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Deprecated
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts setScriptTimeout(final long time, final TimeUnit unit) {
+<b class="nc">&nbsp;        scriptTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Duration getScriptTimeout() {
+<b class="fc">&nbsp;        return Duration.ofMillis(scriptTimeout_);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Deprecated
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts pageLoadTimeout(final long time, final TimeUnit unit) {
+<b class="nc">&nbsp;        pageLoadTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public WebDriver.Timeouts pageLoadTimeout(final Duration duration) {
+<b class="nc">&nbsp;        this.pageLoadTimeout_ = duration.toMillis();</b>
+<b class="nc">&nbsp;        setPageLoadTimeoutForWebClient(webClient_, pageLoadTimeout_);</b>
+<b class="nc">&nbsp;        return this;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public Duration getPageLoadTimeout() {
+<b class="nc">&nbsp;        return Duration.ofMillis(pageLoadTimeout_);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void setPageLoadTimeoutForWebClient(final WebClient webClient, final long timeout) {
+<b class="nc">&nbsp;        if (webClient != null) {</b>
+<b class="nc">&nbsp;            webClient.getOptions().setTimeout(Math.max((int) timeout, 0));</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-11-02 21:22</div>
+</div>
+</body>
+</html>
