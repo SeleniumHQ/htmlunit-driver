@@ -93,6 +93,7 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "    <option id='o1' value='one'>option one</option>\n"
                         + "    <option id='o2'>option two</option>\n"
                         + "    <option id='o3'>option  three    \n    second line</option>\n"
+                        + "    <option id='o4' value='4'>option four</option>\n"
                         + "  </select>\n"
                         + "</form>\n"
                         + "</body>\n"
@@ -108,6 +109,9 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
 
         elem = driver.findElement(By.id("o3"));
         assertEquals("option three second line", elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("o4"));
+        assertEquals("4", elem.getAttribute("value"));
     }
 
     @Test
@@ -242,5 +246,95 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
         assertEquals("world", elem.getAttribute("value"));
         elem.sendKeys("hello");
         assertEquals("worldhello", elem.getAttribute("value"));
+    }
+
+    @Test
+    public void inputTextAreaValueTyped() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <textarea id='textBx' name='text' >world</textarea>\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement elem = driver.findElement(By.id("textBx"));
+        assertEquals("world", elem.getAttribute("value"));
+        elem.sendKeys("hello");
+        assertEquals("worldhello", elem.getAttribute("value"));
+    }
+
+    @Test
+    public void inputFileValue() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <fieldset>\n"
+                        + "    <input type='file' id='myFile1' name='myFile' accept='image/png'/>\n"
+                        + "    <input type='file' id='myFile2' name='myFile' accept='image/png' value='secret.txt' />\n"
+                        + "  </fieldset>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("myFile1"));
+        assertEquals("", elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("myFile2"));
+        assertEquals("", elem.getAttribute("value"));
+    }
+
+    @Test
+    public void anchor() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <a id='a1'>empty</a>"
+                        + "  <a id='a2' href='test'>empty</a>"
+                        + "  <a id='a3' href='https://www.htmlunit.org/href'>empty</a>"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("a1"));
+        assertNull(elem.getAttribute("href"));
+
+        elem = driver.findElement(By.id("a2"));
+        assertEquals(URL_FIRST.toExternalForm() + "test", elem.getAttribute("href"));
+
+        elem = driver.findElement(By.id("a3"));
+        assertEquals("https://www.htmlunit.org/href", elem.getAttribute("href"));
+    }
+
+    @Test
+    public void src() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <input id='img1' type='image'>"
+                        + "  <input id='img2' type='image' src='test'>"
+                        + "  <input id='img3' type='image' src='https://www.htmlunit.org/src'>"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("img1"));
+        assertEquals("", elem.getAttribute("src"));
+
+        elem = driver.findElement(By.id("img2"));
+        assertEquals(URL_FIRST.toExternalForm() + "test", elem.getAttribute("src"));
+
+        elem = driver.findElement(By.id("img3"));
+        assertEquals("https://www.htmlunit.org/src", elem.getAttribute("src"));
     }
 }

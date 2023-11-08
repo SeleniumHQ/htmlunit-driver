@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -50,6 +51,35 @@ public class FindByIdTest extends WebDriverTestCase {
         assertEquals("TestDiv", element.getText());
     }
 
+    @Test(expected = NoSuchElementException.class)
+    public void elementByIdNotFound() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("unknown"));
+    }
+
+    @Test
+    public void elementsByIdNothingFound() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final List<WebElement> elements = driver.findElements(By.id("unknown"));
+        assertEquals(0, elements.size());
+    }
+
     @Test
     public void elementsById() throws Exception {
         final String html = "<html>\n"
@@ -76,6 +106,26 @@ public class FindByIdTest extends WebDriverTestCase {
                         + "    <div id='testDivId'>TestDiv</div>\n"
                         + "    <div id='testDivId2'>TestDiv2</div>\n"
                         + "  </div>\n"
+                        + "  <div id='testDivId'>TestDiv Clone</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.id("testDivId"));
+        assertEquals("TestDiv", element.getText());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void relativeElementByIdNotFound() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='ctx'>\n"
+                        + "    <div id='testDivId2'>TestDiv2</div>\n"
+                        + "  </div>\n"
+                        + "  <div id='testDivId'>TestDiv Clone</div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
@@ -92,16 +142,15 @@ public class FindByIdTest extends WebDriverTestCase {
                         + "</head>\n"
                         + "<body>\n"
                         + "  <div id='ctx'>\n"
-                        + "    <div id='testDivId'>TestDiv</div>\n"
                         + "    <div id='testDivId2'>TestDiv2</div>\n"
                         + "  </div>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
         final WebElement ctx = driver.findElement(By.id("ctx"));
         final List<WebElement> elements = ctx.findElements(By.id("testDivId"));
-        assertEquals(1, elements.size());
-        assertEquals("TestDiv", elements.get(0).getText());
+        assertEquals(0, elements.size());
     }
 }

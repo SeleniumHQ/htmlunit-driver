@@ -290,10 +290,24 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return trueOrNull(((HtmlInput) element_).isChecked());
         }
 
-        if ("href".equals(lowerName) || "src".equals(lowerName)) {
+        if ("href".equals(lowerName)) {
+            final String href = element_.getAttribute(name);
+            if (ATTRIBUTE_NOT_DEFINED == href) {
+                return null;
+            }
+            final HtmlPage page = (HtmlPage) element_.getPage();
+            try {
+                return page.getFullyQualifiedUrl(href.trim()).toString();
+            }
+            catch (final MalformedURLException e) {
+                return null;
+            }
+        }
+
+        if ("src".equals(lowerName)) {
             final String link = element_.getAttribute(name);
             if (ATTRIBUTE_NOT_DEFINED == link) {
-                return null;
+                return "";
             }
             final HtmlPage page = (HtmlPage) element_.getPage();
             try {
@@ -305,9 +319,6 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         }
 
         if ("value".equals(lowerName)) {
-            if (element_ instanceof HtmlFileInput) {
-                return ((HTMLInputElement) element_.getScriptableObject()).getValue();
-            }
             if (element_ instanceof HtmlInput) {
                 return ((HtmlInput) element_).getValue();
             }
