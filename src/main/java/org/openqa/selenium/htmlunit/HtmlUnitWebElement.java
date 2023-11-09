@@ -336,7 +336,10 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
 
             final String attributeValue = element_.getAttribute(name);
-            return attributeValue == null ? "" : attributeValue;
+            if (ATTRIBUTE_NOT_DEFINED == attributeValue) {
+                return null;
+            }
+            return attributeValue;
         }
 
         if ("disabled".equals(lowerName)) {

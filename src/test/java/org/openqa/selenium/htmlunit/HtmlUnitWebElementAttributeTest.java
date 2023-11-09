@@ -115,6 +115,46 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
     }
 
     @Test
+    public void valueDiv() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='d1'>1</div>\n"
+                        + "  <div id='d2' value='two'>2</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("d1"));
+        assertNull(elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("d2"));
+        assertEquals("two", elem.getAttribute("value"));
+    }
+
+    @Test
+    public void valueP() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <p id='d1'>1</p>\n"
+                        + "  <p id='d2' value='two'>2</p>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("d1"));
+        assertNull(elem.getAttribute("value"));
+
+        elem = driver.findElement(By.id("d2"));
+        assertEquals("two", elem.getAttribute("value"));
+    }
+
+    @Test
     public void checkbox() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
