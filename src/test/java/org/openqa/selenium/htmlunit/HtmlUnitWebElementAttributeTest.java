@@ -115,6 +115,58 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
     }
 
     @Test
+    public void indexOption() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<form>\n"
+                        + "  <select id='selectWithRandomMultipleValue' multiple='somethingElse'>\n"
+                        + "    <option id='o1' value='one'>option one</option>\n"
+                        + "    <option id='o2'>option two</option>\n"
+                        + "    <option id='o3'>option  three    \n    second line</option>\n"
+                        + "    <option id='o4' value='4'>option four</option>\n"
+                        + "  </select>\n"
+                        + "</form>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("o1"));
+        assertEquals("0", elem.getAttribute("index"));
+
+        elem = driver.findElement(By.id("o2"));
+        assertEquals("1", elem.getAttribute("index"));
+
+        elem = driver.findElement(By.id("o3"));
+        assertEquals("2", elem.getAttribute("index"));
+
+        elem = driver.findElement(By.id("o4"));
+        assertEquals("3", elem.getAttribute("index"));
+    }
+
+    @Test
+    public void indexP() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <p id='d1'>1</p>\n"
+                        + "  <p id='d2' index='two'>2</p>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        WebElement elem = driver.findElement(By.id("d1"));
+        assertNull(elem.getAttribute("index"));
+
+        elem = driver.findElement(By.id("d2"));
+        assertEquals("two", elem.getAttribute("index"));
+    }
+
+    @Test
     public void valueDiv() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
