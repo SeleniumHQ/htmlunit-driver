@@ -1,26 +1,3 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <suppress>
-        <filePath regex="true">.*netty-.*\.jar</filePath>
-        <cve>CVE-2023-34462</cve>
-        <cve>CVE-2022-41915</cve>
-        <cve>CVE-2021-37136</cve>
-        <cve>CVE-2021-37137</cve>
-        <cve>CVE-2022-24823</cve>
-        <cve>CVE-2022-41881</cve>
-        <cve>CVE-2021-21409</cve>
-        <cve>CVE-2021-43797</cve>
-        <cve>CVE-2023-4586</cve>
-    </suppress>
-    
-    <suppress>
-        <filePath regex="true">.*guava-31\.1-jre\.jar</filePath>
-        <cve>CVE-2020-8908</cve>
-        <cve>CVE-2023-2976</cve>
-    </suppress>
-
-    <suppress>
-        <filePath regex="true">.*jetty-.*\.jar</filePath>
-        <cve>CVE-2023-44487</cve>
-    </suppress>
 </suppressions>
