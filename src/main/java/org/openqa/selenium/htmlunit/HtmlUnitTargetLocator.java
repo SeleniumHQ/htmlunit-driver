@@ -187,12 +187,14 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
     @Override
     public Alert alert() {
         final HtmlUnitAlert alert = driver_.getAlert();
+        final int SLEEP_TIME = 50;
+        final int NUMBER_OF_TRIES = 5;
 
         if (!alert.isLocked()) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < NUMBER_OF_TRIES; i++) {
                 if (!alert.isLocked()) {
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(SLEEP_TIME);
                     }
                     catch (final InterruptedException e) {
                         throw new RuntimeException(e);
@@ -208,11 +210,16 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         final WebWindow alertWindow = alert.getWebWindow();
         final WebWindow currentWindow = driver_.getCurrentWindow().getWebWindow();
 
-        if (alertWindow != currentWindow && !isChild(currentWindow, alertWindow)
-                && !isChild(alertWindow, currentWindow)) {
+        if (isAlertTimedOut(alertWindow , currentWindow)) {
             throw new TimeoutException();
         }
+
         return alert;
+    }
+
+    private static boolean isAlertTimedOut(WebWindow alertWindow , WebWindow currentWindow) {
+        return (alertWindow != currentWindow && !isChild(currentWindow, alertWindow)
+                && !isChild(alertWindow, currentWindow));
     }
 
     private static boolean isChild(final WebWindow parent, final WebWindow potentialChild) {
