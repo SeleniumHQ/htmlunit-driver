@@ -19,7 +19,7 @@
         <maven.compiler.target>11</maven.compiler.target>
 
         <selenium.version>4.15.0</selenium.version>
-        <htmlunit.version>3.8.0</htmlunit.version>
+        <htmlunit.version>3.9.0</htmlunit.version>
 
         <jetty.version>9.4.53.v20231009</jetty.version>
 
