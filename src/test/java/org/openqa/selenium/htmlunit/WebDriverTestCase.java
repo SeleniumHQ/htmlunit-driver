@@ -1413,6 +1413,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
      * @return the content of the file
      * @throws Exception in case of error
      */
+    @Override
     protected String loadExpectation(final String resourcePrefix, final String resourceSuffix) throws Exception {
         final Class<?> referenceClass = getClass();
         final BrowserVersion browserVersion = getBrowserVersion();

@@ -96,10 +96,12 @@ public class HtmlUnitInputProcessor {
             super(domElement);
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getMouse().mouseMove(getDomElement());
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             return this;
         }
@@ -124,10 +126,12 @@ public class HtmlUnitInputProcessor {
             super(domElement, button);
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getMouse().mouseDown((Coordinates) null);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             return this;
         }
@@ -139,10 +143,12 @@ public class HtmlUnitInputProcessor {
             super(domElement, button);
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getMouse().mouseUp((Coordinates) null);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof PointerDownHtmlUnitAction) {
                 final PointerDownHtmlUnitAction pointerDownAction = (PointerDownHtmlUnitAction) previousAction;
@@ -162,6 +168,7 @@ public class HtmlUnitInputProcessor {
             super(domElement, button);
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             if (2 == getButton()) {
                 driver.getMouse().contextClick(null);
@@ -171,6 +178,7 @@ public class HtmlUnitInputProcessor {
             driver.getMouse().click(null);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof PointerClickHtmlUnitAction) {
                 final PointerClickHtmlUnitAction pointerClickAction = (PointerClickHtmlUnitAction) previousAction;
@@ -189,10 +197,12 @@ public class HtmlUnitInputProcessor {
             super(domElement);
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getMouse().doubleClick((Coordinates) null);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             return this;
         }
@@ -205,10 +215,12 @@ public class HtmlUnitInputProcessor {
             value_ = value;
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getKeyboard().pressKey(value_);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             return this;
         }
@@ -221,10 +233,12 @@ public class HtmlUnitInputProcessor {
             value_ = value;
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getKeyboard().releaseKey(value_);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof KeyDownHtmlUnitAction) {
                 final KeyDownHtmlUnitAction keyDownHtmlUnitAction = (KeyDownHtmlUnitAction) previousAction;
@@ -245,10 +259,12 @@ public class HtmlUnitInputProcessor {
             value_ = value;
         }
 
+        @Override
         public void process(final HtmlUnitDriver driver) {
             driver.getKeyboard().sendKeys(value_);
         }
 
+        @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
             if (previousAction instanceof KeySendHtmlUnitAction) {
                 final KeySendHtmlUnitAction keySendHtmlUnitAction = (KeySendHtmlUnitAction) previousAction;

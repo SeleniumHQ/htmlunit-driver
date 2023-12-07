@@ -36,7 +36,6 @@ import org.htmlunit.html.DomNode;
 import org.htmlunit.html.HtmlButton;
 import org.htmlunit.html.HtmlCheckBoxInput;
 import org.htmlunit.html.HtmlElement;
-import org.htmlunit.html.HtmlFileInput;
 import org.htmlunit.html.HtmlForm;
 import org.htmlunit.html.HtmlImageInput;
 import org.htmlunit.html.HtmlInput;
@@ -49,7 +48,6 @@ import org.htmlunit.html.HtmlTextArea;
 import org.htmlunit.html.impl.SelectableTextInput;
 import org.htmlunit.javascript.HtmlUnitScriptable;
 import org.htmlunit.javascript.host.html.HTMLElement;
-import org.htmlunit.javascript.host.html.HTMLInputElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.ElementNotInteractableException;
@@ -694,22 +692,27 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         return driver_;
     }
 
+    @Override
     public Coordinates getCoordinates() {
         return this;
     }
 
+    @Override
     public Point onScreen() {
         throw new UnsupportedOperationException("Not displayed, no screen location.");
     }
 
+    @Override
     public Point inViewPort() {
         return getLocation();
     }
 
+    @Override
     public Point onPage() {
         return getLocation();
     }
 
+    @Override
     public Object getAuxiliary() {
         return element_;
     }
