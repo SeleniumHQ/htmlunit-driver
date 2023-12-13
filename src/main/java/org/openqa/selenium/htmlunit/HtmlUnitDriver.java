@@ -76,6 +76,7 @@ import org.htmlunit.html.DomNode;
 import org.htmlunit.html.FrameWindow;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
+import org.htmlunit.javascript.HtmlUnitScriptable;
 import org.htmlunit.javascript.host.Element;
 import org.htmlunit.javascript.host.Location;
 import org.htmlunit.javascript.host.html.DocumentProxy;
@@ -875,9 +876,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     private Object[] convertScriptArgs(final HtmlPage page, final Object[] args) {
-        final Object scope = page.getEnclosingWindow().getScriptableObject();
+        final HtmlUnitScriptable scope = page.getEnclosingWindow().getScriptableObject();
 
-        if (!(scope instanceof Scriptable)) {
+        if (scope == null) {
             return args;
         }
 
@@ -885,7 +886,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         Context.enter();
         try {
             for (int i = 0; i < args.length; i++) {
-                parameters[i] = parseArgumentIntoJavascriptParameter((Scriptable) scope, args[i]);
+                parameters[i] = parseArgumentIntoJavascriptParameter(scope, args[i]);
             }
         }
         finally {

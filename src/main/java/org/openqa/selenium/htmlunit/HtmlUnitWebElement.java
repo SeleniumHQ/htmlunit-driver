@@ -28,7 +28,6 @@ import java.util.concurrent.Callable;
 
 import org.htmlunit.ScriptResult;
 import org.htmlunit.corejs.javascript.ScriptRuntime;
-import org.htmlunit.corejs.javascript.Scriptable;
 import org.htmlunit.corejs.javascript.ScriptableObject;
 import org.htmlunit.html.DisabledElement;
 import org.htmlunit.html.DomElement;
@@ -383,9 +382,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return "";
         }
 
-        final Object scriptable = element_.getScriptableObject();
-        if (scriptable instanceof Scriptable) {
-            final Object slotVal = ScriptableObject.getProperty((Scriptable) scriptable, name);
+        final HtmlUnitScriptable scriptable = element_.getScriptableObject();
+        if (scriptable != null) {
+            final Object slotVal = ScriptableObject.getProperty(scriptable, name);
             if (slotVal instanceof String) {
                 return (String) slotVal;
             }
