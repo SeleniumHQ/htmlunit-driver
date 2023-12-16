@@ -382,11 +382,13 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return "";
         }
 
-        final HtmlUnitScriptable scriptable = element_.getScriptableObject();
-        if (scriptable != null) {
-            final Object slotVal = ScriptableObject.getProperty(scriptable, name);
-            if (slotVal instanceof String) {
-                return (String) slotVal;
+        if (driver_.isJavascriptEnabled()) {
+            final HtmlUnitScriptable scriptable = element_.getScriptableObject();
+            if (scriptable != null) {
+                final Object slotVal = ScriptableObject.getProperty(scriptable, name);
+                if (slotVal instanceof String) {
+                    return (String) slotVal;
+                }
             }
         }
 
@@ -630,10 +632,16 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     public String getCssValue(final String propertyName) {
         assertElementNotStale();
 
+        // TODO switch to the js free version
+        //
+        //    final ComputedCssStyleDeclaration cssStyle =
+        //            element_.getPage().getEnclosingWindow().getComputedStyle(element_, null);
+        //
+        //    final Definition definition = StyleAttributes.getDefinition(propertyName, driver_.getBrowserVersion());
+        //    final String style = cssStyle.getStyleAttribute(definition, true);
+
         final HTMLElement elem = element_.getScriptableObject();
-
         final String style = elem.getWindow().getComputedStyle(elem, null).getPropertyValue(propertyName);
-
         return getColor(style);
     }
 
