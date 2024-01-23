@@ -50,7 +50,7 @@ public final class Algorithms {
      * @return actions by tick
      */
     public static List<List<Action>> extractActionSequence(
-            final Collection<Sequence> sequences /* InputState inputState, paramters */) {
+            final Collection<Sequence> sequences /* InputState inputState, parameters */) {
 
         // Let actions by tick be an empty List.
         final List<List<Action>> actionsByTick = new ArrayList<>();
@@ -335,6 +335,7 @@ public final class Algorithms {
      *      wheel action</a>
      */
     private static Action processWheelAction(final String id, final Map<String, Object> actionItem) {
+        // TODO: Implement this function
         return null;
     }
 
@@ -447,6 +448,7 @@ public final class Algorithms {
      *      a pointer move action</a>
      */
     private static void processPointerMoveAction(final Map<String, Object> actionItem, final Action action) {
+        // TODO: Implement this function
     }
 
     /**
@@ -455,6 +457,7 @@ public final class Algorithms {
      *      a pointer cancel action</a>
      */
     private static void processPointerCancelAction(final Map<String, Object> actionItem) {
+        // TODO: Implement this function
     }
 
     /**

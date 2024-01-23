@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.htmlunit.ScriptResult;
@@ -62,6 +63,7 @@ import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.interactions.Coordinates;
 import org.openqa.selenium.interactions.Locatable;
+import org.openqa.selenium.remote.Dialect;
 import org.openqa.selenium.support.Color;
 import org.openqa.selenium.support.Colors;
 import org.w3c.dom.Attr;
@@ -733,4 +735,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         return id_;
     }
 
+    public Map<String, Object> toJson() {
+        return Map.of(Dialect.W3C.getEncodedElementKey(), getId());
+    }
 }
