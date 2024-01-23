@@ -35,6 +35,7 @@ public final class BrowserVersionDeterminer {
      * @param capabilities the Capabilities
      * @return the browser version
      */
+    @SuppressWarnings("deprecation")
     public static BrowserVersion determine(final Capabilities capabilities) {
         if (!Browser.HTMLUNIT.is(capabilities)) {
             throw new IllegalArgumentException(

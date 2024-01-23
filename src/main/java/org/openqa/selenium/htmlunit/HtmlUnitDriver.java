@@ -17,7 +17,6 @@
 
 package org.openqa.selenium.htmlunit;
 
-import static org.openqa.selenium.remote.Browser.HTMLUNIT;
 import static org.openqa.selenium.remote.CapabilityType.ACCEPT_INSECURE_CERTS;
 import static org.openqa.selenium.remote.CapabilityType.PAGE_LOAD_STRATEGY;
 
@@ -56,7 +55,6 @@ import org.htmlunit.SgmlPage;
 import org.htmlunit.StringWebResponse;
 import org.htmlunit.TopLevelWindow;
 import org.htmlunit.UnexpectedPage;
-import org.htmlunit.Version;
 import org.htmlunit.WaitingRefreshHandler;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebClientOptions;
@@ -90,7 +88,6 @@ import org.openqa.selenium.HasCapabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
-import org.openqa.selenium.Platform;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
@@ -198,9 +195,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * @param enableJavascript whether to enable JavaScript support or not
      */
     public HtmlUnitDriver(final BrowserVersion version, final boolean enableJavascript) {
-        this(version, enableJavascript, null);
-
-        modifyWebClient(webClient_);
+        this(new HtmlUnitDriverOptions(version, enableJavascript));
+    }
+    
+    public HtmlUnitDriver(final Capabilities desiredCapabilities, final Capabilities requiredCapabilities) {
+        this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
     }
 
     /**
@@ -213,49 +212,22 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *                     session
      */
     public HtmlUnitDriver(final Capabilities capabilities) {
-        this(BrowserVersionDeterminer.determine(capabilities),
-                capabilities.getCapability(JAVASCRIPT_ENABLED) == null || capabilities.is(JAVASCRIPT_ENABLED),
-                Proxy.extractFrom(capabilities));
-
-        setDownloadImages(capabilities.is(DOWNLOAD_IMAGES_CAPABILITY));
-
-        if (alert_ != null) {
-            alert_.handleBrowserCapabilities(capabilities);
-        }
-
-        Boolean acceptInsecureCerts = (Boolean) capabilities.getCapability(ACCEPT_INSECURE_CERTS);
-        if (acceptInsecureCerts == null) {
-            acceptInsecureCerts = true;
-        }
-        setAcceptInsecureCerts(acceptInsecureCerts);
-
-        final String pageLoadStrategyString = (String) capabilities.getCapability(PAGE_LOAD_STRATEGY);
+        HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(capabilities);
+        webClient_ = newWebClient(driverOptions.getWebClientVersion());
+        
+        setAcceptInsecureCerts(Boolean.FALSE != driverOptions.getCapability(ACCEPT_INSECURE_CERTS));
+        
+        final String pageLoadStrategyString = (String) driverOptions.getCapability(PAGE_LOAD_STRATEGY);
         if ("none".equals(pageLoadStrategyString)) {
             pageLoadStrategy_ = PageLoadStrategy.NONE;
-        }
-        else if ("eager".equals(pageLoadStrategyString)) {
+        } else if ("eager".equals(pageLoadStrategyString)) {
             pageLoadStrategy_ = PageLoadStrategy.EAGER;
         }
-
-        modifyWebClient(webClient_);
-    }
-
-    public HtmlUnitDriver(final Capabilities desiredCapabilities, final Capabilities requiredCapabilities) {
-        this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
-    }
-
-    private HtmlUnitDriver(final BrowserVersion version, final boolean enableJavascript, final Proxy proxy) {
-        webClient_ = newWebClient(version);
-
+        
         final WebClientOptions clientOptions = webClient_.getOptions();
-        clientOptions.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
-        clientOptions.setThrowExceptionOnFailingStatusCode(false);
-        clientOptions.setPrintContentOnFailingStatusCode(false);
-        clientOptions.setRedirectEnabled(true);
-        clientOptions.setUseInsecureSSL(true);
-
-        setJavascriptEnabled(enableJavascript);
-        setProxySettings(proxy);
+        driverOptions.applyOptions(clientOptions);
+        
+        setProxySettings(Proxy.extractFrom(driverOptions)); 
 
         webClient_.setRefreshHandler(new WaitingRefreshHandler());
         webClient_.setClipboardHandler(new AwtClipboardHandler());
@@ -263,6 +235,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         elementFinder_ = new HtmlUnitElementFinder();
 
         alert_ = new HtmlUnitAlert(this);
+        alert_.handleBrowserCapabilities(driverOptions);
         currentWindow_ = new HtmlUnitWindow(webClient_.getCurrentWindow());
 
         defaultExecutor_ = Executors.newCachedThreadPool();
@@ -323,6 +296,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         });
 
         resetKeyboardAndMouseState();
+        modifyWebClient(webClient_);
     }
 
     /**
@@ -618,13 +592,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public Capabilities getCapabilities() {
-        final DesiredCapabilities capabilities = new DesiredCapabilities(HTMLUNIT.browserName(), "", Platform.ANY);
-
-        capabilities.setPlatform(Platform.getCurrent());
-        capabilities.setVersion(Version.getProductVersion());
-
-        capabilities.setCapability(HtmlUnitDriver.JAVASCRIPT_ENABLED, isJavascriptEnabled());
-        return capabilities;
+        return new HtmlUnitDriverOptions(getBrowserVersion()).importOptions(webClient_.getOptions());
     }
 
     @Override

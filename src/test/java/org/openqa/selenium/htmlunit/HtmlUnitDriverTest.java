@@ -189,6 +189,7 @@ public class HtmlUnitDriverTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     public void ctorWebClientBrowserVersionIE() {
         new HtmlUnitDriver(BrowserVersion.INTERNET_EXPLORER) {
             @Override
@@ -533,6 +534,25 @@ public class HtmlUnitDriverTest {
                 assertFalse("client.getOptions().isJavaScriptEnabled() is true",
                         client.getOptions().isJavaScriptEnabled());
                 assertFalse("client.isJavaScriptEnabled() is true", client.isJavaScriptEnabled());
+                assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
+
+                return client;
+            }
+        };
+    }
+    
+    @Test
+    public void ctorHtmlUnitDriverOptions() {
+        final HtmlUnitDriverOptions capabilities = new HtmlUnitDriverOptions();
+        
+        new HtmlUnitDriver(capabilities) {
+            @Override
+            protected WebClient modifyWebClient(final WebClient client) {
+                assertEquals(BrowserVersion.getDefault(), client.getBrowserVersion());
+
+                assertTrue("client.getOptions().isJavaScriptEnabled() is false",
+                        client.getOptions().isJavaScriptEnabled());
+                assertTrue("client.isJavaScriptEnabled() is false", client.isJavaScriptEnabled());
                 assertTrue("client.isJavaScriptEngineEnabled() is false", client.isJavaScriptEngineEnabled());
 
                 return client;
