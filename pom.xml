@@ -23,7 +23,7 @@
 
         <jetty.version>9.4.53.v20231009</jetty.version>
 
-        <checkstyle.version>9.3</checkstyle.version>
+        <checkstyle.version>10.13.0</checkstyle.version>
         <spotbugs.version>4.8.3</spotbugs.version>
         <archunit.version>1.2.1</archunit.version>
         <dependencycheck.version>9.0.9</dependencycheck.version>
@@ -162,7 +162,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -212,7 +212,7 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.8.3.0</version>
+                <version>4.8.3.1</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.github.spotbugs</groupId>
