@@ -1230,7 +1230,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return currentWindow_;
     }
 
-    private class HtmlUnitNavigation implements Navigation {
+    private final class HtmlUnitNavigation implements Navigation {
 
         @Override
         public void back() {

@@ -64,7 +64,7 @@ public class HtmlUnitLogs implements Logs {
         return Collections.emptySet();
     }
 
-    private static class HtmlUnitDriverLogger implements Logger {
+    private static final class HtmlUnitDriverLogger implements Logger {
         private static final int BUFFER_SIZE = 1000;
 
         private final LogEntry[] buffer_ = new LogEntry[BUFFER_SIZE];
