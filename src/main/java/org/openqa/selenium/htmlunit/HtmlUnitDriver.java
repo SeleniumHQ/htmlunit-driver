@@ -477,62 +477,65 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         switch (proxy.getProxyType()) {
             case MANUAL:
-                final List<String> noProxyHosts = new ArrayList<>();
-                final String noProxy = proxy.getNoProxy();
-                if (noProxy != null && !noProxy.isEmpty()) {
-                    final String[] hosts = noProxy.split(",");
-                    for (final String host : hosts) {
-                        if (host.trim().length() > 0) {
-                            noProxyHosts.add(host.trim());
-                        }
-                    }
-                }
-
-                final String httpProxy = proxy.getHttpProxy();
-                if (httpProxy != null && !httpProxy.isEmpty()) {
-                    String host = httpProxy;
-                    int port = 0;
-
-                    final int index = httpProxy.indexOf(":");
-                    if (index != -1) {
-                        host = httpProxy.substring(0, index);
-                        port = Integer.parseInt(httpProxy.substring(index + 1));
-                    }
-
-                    setHTTPProxy(host, port, noProxyHosts);
-                }
-
-                final String socksProxy = proxy.getSocksProxy();
-                if (socksProxy != null && !socksProxy.isEmpty()) {
-                    String host = socksProxy;
-                    int port = 0;
-
-                    final int index = socksProxy.indexOf(":");
-                    if (index != -1) {
-                        host = socksProxy.substring(0, index);
-                        port = Integer.parseInt(socksProxy.substring(index + 1));
-                    }
-
-                    setSocksProxy(host, port, noProxyHosts);
-                }
-
-                // sslProxy is not supported/implemented
-                // ftpProxy is not supported/implemented
-
+                configureManualProxy(proxy);
                 break;
 
             case PAC:
-                final String pac = proxy.getProxyAutoconfigUrl();
-                if (pac != null && !pac.isEmpty()) {
-                    setAutoProxy(pac);
-                }
+                configurePacProxy(proxy);
                 break;
 
             default:
+                // Do nothing for other proxy types or log a warning that it's not supported
                 break;
         }
     }
 
+    private void configureManualProxy(Proxy proxy) {
+        final List<String> noProxyHosts = extractNoProxyHosts(proxy);
+        final String httpProxy = proxy.getHttpProxy();
+        if (httpProxy != null && !httpProxy.isEmpty()) {
+            configureHttpProxy(httpProxy, noProxyHosts);
+        }
+        final String socksProxy = proxy.getSocksProxy();
+        if (socksProxy != null && !socksProxy.isEmpty()) {
+            configureSocksProxy(socksProxy, noProxyHosts);
+        }
+        // Add any other manual proxy configuration if needed
+    }
+
+    private List<String> extractNoProxyHosts(Proxy proxy) {
+        final List<String> noProxyHosts = new ArrayList<>();
+        final String noProxy = proxy.getNoProxy();
+        if (noProxy != null && !noProxy.isEmpty()) {
+            for (String host : noProxy.split(",")) {
+                if (!host.trim().isEmpty()) {
+                    noProxyHosts.add(host.trim());
+                }
+            }
+        }
+        return noProxyHosts;
+    }
+
+    private void configureHttpProxy(String httpProxy, List<String> noProxyHosts) {
+        final String[] proxyParts = httpProxy.split(":", 2);
+        final String host = proxyParts[0];
+        final int port = proxyParts.length > 1 ? Integer.parseInt(proxyParts[1]) : 0;
+        setHTTPProxy(host, port, noProxyHosts);
+    }
+
+    private void configureSocksProxy(String socksProxy, List<String> noProxyHosts) {
+        final String[] proxyParts = socksProxy.split(":", 2);
+        final String host = proxyParts[0];
+        final int port = proxyParts.length > 1 ? Integer.parseInt(proxyParts[1]) : 0;
+        setSocksProxy(host, port, noProxyHosts);
+    }
+
+    private void configurePacProxy(Proxy proxy) {
+        final String pac = proxy.getProxyAutoconfigUrl();
+        if (pac != null && !pac.isEmpty()) {
+            setAutoProxy(pac);
+        }
+    }
     /**
      * Sets HTTP proxy for WebClient.
      *
