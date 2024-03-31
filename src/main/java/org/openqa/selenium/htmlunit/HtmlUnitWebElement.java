@@ -282,9 +282,12 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         assertElementNotStale();
 
         final String lowerName = name.toLowerCase();
+        final boolean isHtmlInput = element_ instanceof HtmlInput;
+        final boolean isSelectableAttribute = "selected".equals(lowerName) || "checked".equals(lowerName);
 
-        if (element_ instanceof HtmlInput && ("selected".equals(lowerName) || "checked".equals(lowerName))) {
-            return trueOrNull(((HtmlInput) element_).isChecked());
+        if (isHtmlInput && isSelectableAttribute) {
+            HtmlInput htmlInput = (HtmlInput) element_;
+            return trueOrNull(htmlInput.isChecked());
         }
 
         if ("href".equals(lowerName)) {
