@@ -249,18 +249,18 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     void switchFocusToThisIfNeeded() {
         final HtmlUnitWebElement oldActiveElement = (HtmlUnitWebElement) driver_.switchTo().activeElement();
 
-        final boolean jsEnabled = driver_.isJavascriptEnabled();
-        final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
-        try {
-            final boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
-            if (jsEnabled && !oldActiveEqualsCurrent && !isBody) {
-                oldActiveElement.element_.blur();
-            }
-        }
-        catch (final StaleElementReferenceException ex) {
-            // old element has gone, do nothing
+        if (shouldSwitchFocus(oldActiveElement)) {
+            oldActiveElement.element_.blur();
         }
         element_.focus();
+    }
+
+    private boolean shouldSwitchFocus(HtmlUnitWebElement oldActiveElement) {
+        final boolean jsEnabled = driver_.isJavascriptEnabled();
+        final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
+        final boolean isOldElementBody = "body".equalsIgnoreCase(oldActiveElement.getTagName());
+
+        return jsEnabled && !oldActiveEqualsCurrent && !isOldElementBody;
     }
 
     @Override
