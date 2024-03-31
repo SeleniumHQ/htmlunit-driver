@@ -47,6 +47,8 @@ import org.openqa.selenium.WrapsElement;
  * @author Ronald Brill
  */
 public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
+    private static final int ALERT_LOCK_RETRY_COUNT = 5;
+    private static final int ALERT_LOCK_RETRY_DELAY_MS = 50;
     private final HtmlUnitDriver driver_;
 
     public HtmlUnitTargetLocator(final HtmlUnitDriver driver) {
@@ -189,12 +191,11 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         final HtmlUnitAlert alert = driver_.getAlert();
 
         if (!alert.isLocked()) {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < ALERT_LOCK_RETRY_COUNT; i++) {
                 if (!alert.isLocked()) {
                     try {
-                        Thread.sleep(50);
-                    }
-                    catch (final InterruptedException e) {
+                        Thread.sleep(ALERT_LOCK_RETRY_DELAY_MS);
+                    } catch (final InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
