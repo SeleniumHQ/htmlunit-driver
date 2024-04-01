@@ -19,7 +19,7 @@ package org.openqa.selenium.htmlunit;
 
 import java.util.HashSet;
 import java.util.Set;
-
+import org.htmlunit.html.Keyboard;
 import org.openqa.selenium.Keys;
 
 /**
@@ -59,6 +59,21 @@ class KeyboardModifiersState {
         storeIfEqualsCtrl(key, false);
         storeIfEqualsAlt(key, false);
         set_.remove(key);
+    }
+
+    public void addToKeyboard(final Keyboard keyboard, final char ch, final boolean isPress) {
+        if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
+            final int keyCode = HtmlUnitKeyboardMapping.getKeysMapping(ch);
+            if (isPress) {
+                keyboard.press(keyCode);
+                storeKeyDown(ch);
+            } else {
+                keyboard.release(keyCode);
+                storeKeyUp(ch);
+            }
+        } else {
+            keyboard.type(ch);
+        }
     }
 
     private void storeIfEqualsShift(final char key, final boolean keyState) {

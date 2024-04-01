@@ -151,6 +151,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     /** JAVASCRIPT_ENABLED = "javascriptEnabled". */
     public static final String JAVASCRIPT_ENABLED = "javascriptEnabled";
 
+    private WebClient webClient;
+
+
+
     /**
      * The Lock for the {@link #mainCondition_}, which waits at the end of
      * {@link #runAsync(Runnable)} till either and alert is triggered, or
@@ -163,6 +167,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     private final ExecutorService defaultExecutor_;
     private Executor executor_;
 
+
+    private ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
     /**
      * Constructs a new instance with JavaScript disabled, and the
      * {@link BrowserVersion#getDefault() default} BrowserVersion.
@@ -255,7 +261,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         clientOptions.setUseInsecureSSL(true);
 
         setJavascriptEnabled(enableJavascript);
-        setProxySettings(proxy);
+        proxyConfigurationManager.setProxySettings(proxy);
 
         webClient_.setRefreshHandler(new WaitingRefreshHandler());
         webClient_.setClipboardHandler(new AwtClipboardHandler());
@@ -465,135 +471,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
     }
 
-    /**
-     * Set proxy for WebClient using Proxy.
-     *
-     * @param proxy The proxy preferences.
-     */
-    public void setProxySettings(final Proxy proxy) {
-        if (proxy == null || proxy.getProxyType() == Proxy.ProxyType.UNSPECIFIED) {
-            return;
-        }
 
-        switch (proxy.getProxyType()) {
-            case MANUAL:
-                configureManualProxy(proxy);
-                break;
-
-            case PAC:
-                configurePacProxy(proxy);
-                break;
-
-            default:
-                // Do nothing for other proxy types or log a warning that it's not supported
-                break;
-        }
-    }
-
-    private void configureManualProxy(Proxy proxy) {
-        final List<String> noProxyHosts = extractNoProxyHosts(proxy);
-        final String httpProxy = proxy.getHttpProxy();
-        if (httpProxy != null && !httpProxy.isEmpty()) {
-            configureHttpProxy(httpProxy, noProxyHosts);
-        }
-        final String socksProxy = proxy.getSocksProxy();
-        if (socksProxy != null && !socksProxy.isEmpty()) {
-            configureSocksProxy(socksProxy, noProxyHosts);
-        }
-        // Add any other manual proxy configuration if needed
-    }
-
-    private List<String> extractNoProxyHosts(Proxy proxy) {
-        final List<String> noProxyHosts = new ArrayList<>();
-        final String noProxy = proxy.getNoProxy();
-        if (noProxy != null && !noProxy.isEmpty()) {
-            for (String host : noProxy.split(",")) {
-                if (!host.trim().isEmpty()) {
-                    noProxyHosts.add(host.trim());
-                }
-            }
-        }
-        return noProxyHosts;
-    }
-
-    private void configureHttpProxy(String httpProxy, List<String> noProxyHosts) {
-        final String[] proxyParts = httpProxy.split(":", 2);
-        final String host = proxyParts[0];
-        final int port = proxyParts.length > 1 ? Integer.parseInt(proxyParts[1]) : 0;
-        setHTTPProxy(host, port, noProxyHosts);
-    }
-
-    private void configureSocksProxy(String socksProxy, List<String> noProxyHosts) {
-        final String[] proxyParts = socksProxy.split(":", 2);
-        final String host = proxyParts[0];
-        final int port = proxyParts.length > 1 ? Integer.parseInt(proxyParts[1]) : 0;
-        setSocksProxy(host, port, noProxyHosts);
-    }
-
-    private void configurePacProxy(Proxy proxy) {
-        final String pac = proxy.getProxyAutoconfigUrl();
-        if (pac != null && !pac.isEmpty()) {
-            setAutoProxy(pac);
-        }
-    }
-    /**
-     * Sets HTTP proxy for WebClient.
-     *
-     * @param host The hostname of HTTP proxy
-     * @param port The port of HTTP proxy, 0 means HTTP proxy w/o port
-     */
-    public void setProxy(final String host, final int port) {
-        setHTTPProxy(host, port, null);
-    }
-
-    /**
-     * Sets HTTP proxy for WebClient with bypass proxy hosts.
-     *
-     * @param host         The hostname of HTTP proxy
-     * @param port         The port of HTTP proxy, 0 means HTTP proxy w/o port
-     * @param noProxyHosts The list of hosts which need to bypass HTTP proxy
-     */
-    public void setHTTPProxy(final String host, final int port, final List<String> noProxyHosts) {
-        final ProxyConfig proxyConfig = new ProxyConfig();
-        proxyConfig.setProxyHost(host);
-        proxyConfig.setProxyPort(port);
-        if (noProxyHosts != null && noProxyHosts.size() > 0) {
-            for (final String noProxyHost : noProxyHosts) {
-                proxyConfig.addHostsToProxyBypass(noProxyHost);
-            }
-        }
-        getWebClient().getOptions().setProxyConfig(proxyConfig);
-    }
-
-    /**
-     * Sets SOCKS proxy for WebClient.
-     *
-     * @param host The hostname of SOCKS proxy
-     * @param port The port of SOCKS proxy, 0 means HTTP proxy w/o port
-     */
-    public void setSocksProxy(final String host, final int port) {
-        setSocksProxy(host, port, null);
-    }
-
-    /**
-     * Sets SOCKS proxy for WebClient with bypass proxy hosts.
-     *
-     * @param host         The hostname of SOCKS proxy
-     * @param port         The port of SOCKS proxy, 0 means HTTP proxy w/o port
-     * @param noProxyHosts The list of hosts which need to bypass SOCKS proxy
-     */
-    public void setSocksProxy(final String host, final int port, final List<String> noProxyHosts) {
-        final ProxyConfig proxyConfig = new ProxyConfig();
-        proxyConfig.setProxyHost(host);
-        proxyConfig.setProxyPort(port);
-        proxyConfig.setSocksProxy(true);
-        if (noProxyHosts != null && noProxyHosts.size() > 0) {
-            for (final String noProxyHost : noProxyHosts) {
-                proxyConfig.addHostsToProxyBypass(noProxyHost);
-            }
-        }
-        getWebClient().getOptions().setProxyConfig(proxyConfig);
-    }
 
     /**
      * Sets the {@link Executor} to be used for submitting async tasks to. You have
@@ -608,16 +486,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         this.executor_ = executor;
     }
 
-    /**
-     * Sets Proxy Autoconfiguration URL for WebClient.
-     *
-     * @param autoProxyUrl The Proxy Autoconfiguration URL
-     */
-    public void setAutoProxy(final String autoProxyUrl) {
-        final ProxyConfig proxyConfig = new ProxyConfig();
-        proxyConfig.setProxyAutoConfigUrl(autoProxyUrl);
-        getWebClient().getOptions().setProxyConfig(proxyConfig);
-    }
+
 
     @Override
     public Capabilities getCapabilities() {
