@@ -21,7 +21,6 @@ import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.CHR
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.EDGE;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF;
 import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.FF_ESR;
-import static org.openqa.selenium.htmlunit.junit.BrowserRunner.TestedBrowser.IE;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -72,13 +71,11 @@ public class BrowserRunner extends Suite {
     static final String REAL_FIREFOX = "ff";
     static final String REAL_FIREFOX_ESR = "ff-esr";
     static final String REAL_EDGE = "edge";
-    static final String REAL_IE = "ie";
 
     static final String HTMLUNIT_CHROME = "hu-chrome";
     static final String HTMLUNIT_FIREFOX = "hu-ff";
     static final String HTMLUNIT_FIREFOX_ESR = "hu-ff-esr";
     static final String HTMLUNIT_EDGE = "hu-edge";
-    static final String HTMLUNIT_IE = "hu-ie";
 
     private final ArrayList<Runner> runners_ = new ArrayList<>();
 
@@ -103,9 +100,6 @@ public class BrowserRunner extends Suite {
                 if (browsers.contains(REAL_FIREFOX)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, true));
                 }
-                if (browsers.contains(REAL_IE)) {
-                    runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, true));
-                }
                 if (browsers.contains(REAL_EDGE)) {
                     runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, true));
                 }
@@ -119,9 +113,6 @@ public class BrowserRunner extends Suite {
             }
             if (browsers.contains(HTMLUNIT_FIREFOX)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.FIREFOX, false));
-            }
-            if (browsers.contains(HTMLUNIT_IE)) {
-                runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.INTERNET_EXPLORER, false));
             }
             if (browsers.contains(HTMLUNIT_EDGE)) {
                 runners_.add(new BrowserVersionClassRunner(klass, BrowserVersion.EDGE, false));
@@ -180,9 +171,6 @@ public class BrowserRunner extends Suite {
         /** Latest version of Chrome. */
         CHROME,
 
-        /** Internet Explorer 11. */
-        IE,
-
         /** Edge. */
         EDGE,
 
@@ -211,12 +199,6 @@ public class BrowserRunner extends Suite {
          * @return the alerts
          */
         String[] value() default { EMPTY_DEFAULT };
-
-        /**
-         * Alerts for Internet Explorer 11.
-         * @return the alerts
-         */
-        String[] IE() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Edge.
@@ -263,12 +245,6 @@ public class BrowserRunner extends Suite {
          * @return the alerts
          */
         String[] value() default { EMPTY_DEFAULT };
-
-        /**
-         * Alerts for Internet Explorer 11.
-         * @return the alerts
-         */
-        String[] IE() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Edge.
@@ -327,7 +303,7 @@ public class BrowserRunner extends Suite {
          * @return the browsers
          */
         TestedBrowser[] value() default {
-            IE, EDGE, FF_ESR, FF, CHROME
+            CHROME, EDGE, FF, FF_ESR
         };
 
         /**
@@ -349,12 +325,6 @@ public class BrowserRunner extends Suite {
          * @return the alerts
          */
         String[] value() default { EMPTY_DEFAULT };
-
-        /**
-         * Alerts for Internet Explorer 11.
-         * @return the alerts
-         */
-        String[] IE() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Edge.
@@ -399,12 +369,6 @@ public class BrowserRunner extends Suite {
          * @return the alerts
          */
         String[] value() default { EMPTY_DEFAULT };
-
-        /**
-         * Alerts for Internet Explorer 11.
-         * @return the alerts
-         */
-        String[] IE() default { EMPTY_DEFAULT };
 
         /**
          * Alerts for latest Edge.

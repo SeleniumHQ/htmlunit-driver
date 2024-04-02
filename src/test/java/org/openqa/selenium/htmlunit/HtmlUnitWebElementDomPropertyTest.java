@@ -52,8 +52,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
     }
 
     @Test
-    @Alerts(DEFAULT = "null",
-            IE = "true")
+    @Alerts("null")
     public void unsupportedAttribute() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"

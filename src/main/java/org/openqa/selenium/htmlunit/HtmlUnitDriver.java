@@ -206,8 +206,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     /**
      * The browserName is {@link Browser#HTMLUNIT} "htmlunit" and the
      * browserVersion denotes the required browser AND its version. For example
-     * "chrome" for Chrome, "firefox-100" for Firefox 100 or "internet explorer" for
-     * IE.
+     * "chrome" for Chrome, "firefox-100" for Firefox 100.
      *
      * @param capabilities desired capabilities requested for the htmlunit driver
      *                     session

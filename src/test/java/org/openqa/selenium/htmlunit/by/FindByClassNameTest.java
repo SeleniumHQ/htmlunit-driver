@@ -110,7 +110,7 @@ public class FindByClassNameTest extends WebDriverTestCase {
 
     @Test
     @Alerts("testId")
-    @HtmlUnitNYI(CHROME = "", EDGE = "", FF = "", FF_ESR = "", IE = "")
+    @HtmlUnitNYI(CHROME = "", EDGE = "", FF = "", FF_ESR = "")
     public void caseInsensitiveByClassName() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"

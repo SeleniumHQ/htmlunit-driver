@@ -37,8 +37,7 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 public class WebStorageTest extends WebDriverTestCase {
 
     @Test
-    @Alerts(DEFAULT = "WebStorage supported",
-            IE = "WebStorage not supported")
+    @Alerts("WebStorage supported")
     @HtmlUnitNYI(CHROME = "WebStorage not supported",
             EDGE = "WebStorage not supported",
             FF = "WebStorage not supported",

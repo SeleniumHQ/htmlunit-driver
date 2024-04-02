@@ -19,7 +19,6 @@ package org.openqa.selenium.htmlunit;
 
 import static org.htmlunit.BrowserVersion.FIREFOX;
 import static org.htmlunit.BrowserVersion.FIREFOX_ESR;
-import static org.htmlunit.BrowserVersion.INTERNET_EXPLORER;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -48,15 +47,16 @@ public class HtmlUnitCapabilitiesTest {
 
     @Test
     public void configurationViaDirectCapabilities() {
-        final DesiredCapabilities ieCapabilities = new DesiredCapabilities(Browser.IE.browserName(), "", Platform.ANY);
+        final DesiredCapabilities capabilities =
+                new DesiredCapabilities(Browser.CHROME.browserName(), "", Platform.ANY);
 
         try {
-            BrowserVersionDeterminer.determine(ieCapabilities);
+            BrowserVersionDeterminer.determine(capabilities);
             fail("IllegalArgumentException expected");
         }
         catch (final IllegalArgumentException e) {
             assertEquals("When building an HtmlUntDriver, the capability browser name "
-                    + "must be set to 'htmlunit' but was 'internet explorer'.", e.getMessage());
+                    + "must be set to 'htmlunit' but was 'chrome'.", e.getMessage());
         }
     }
 
@@ -106,13 +106,6 @@ public class HtmlUnitCapabilitiesTest {
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "firefox-esr",
                 Platform.ANY);
         assertEquals(FIREFOX_ESR, BrowserVersionDeterminer.determine(firefoxCapabilities));
-    }
-
-    @Test
-    public void configurationOfIEViaRemote() {
-        final DesiredCapabilities ieCapabilities = new DesiredCapabilities(Browser.HTMLUNIT.browserName(),
-                "internet explorer", Platform.ANY);
-        assertEquals(INTERNET_EXPLORER, BrowserVersionDeterminer.determine(ieCapabilities));
     }
 
     @Test

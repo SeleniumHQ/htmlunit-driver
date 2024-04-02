@@ -39,8 +39,7 @@ public class LocationContextTest extends WebDriverTestCase {
     @Test
     @Alerts(DEFAULT = "LocationContext supported",
             FF = "LocationContext not supported",
-            FF_ESR = "LocationContext not supported",
-            IE = "LocationContext not supported")
+            FF_ESR = "LocationContext not supported")
     @HtmlUnitNYI(CHROME = "LocationContext not supported",
             EDGE = "LocationContext not supported")
     public void locationContext() throws Exception {

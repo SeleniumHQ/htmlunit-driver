@@ -131,12 +131,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         driver.findElement(By.id("clickMe")).click();
 
         // selenium seems to normalize this
-        if (getBrowserVersion().isIE()) {
-            assertEquals("1\n2\n3\t4\r5\n\r6", driver.switchTo().alert().getText());
-        }
-        else {
-            assertEquals("1\n2\n3\t4\n5\n\n6", driver.switchTo().alert().getText());
-        }
+        assertEquals("1\n2\n3\t4\n5\n\n6", driver.switchTo().alert().getText());
         driver.switchTo().alert().dismiss();
     }
 
@@ -226,8 +221,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     @Alerts("Unexpected alert found: HtmlUnit is great")
     @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
             FF = "Dismissed user prompt dialog: HtmlUnit is great",
-            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great",
-            IE = "Modal dialog present with text: HtmlUnit is great")
+            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great")
     public void testIncludesAlertTextInUnhandledAlertException() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
@@ -256,8 +250,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     @Alerts("Unexpected alert found: HtmlUnit is great")
     @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
             FF = "Dismissed user prompt dialog: HtmlUnit is great",
-            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great",
-            IE = "Modal dialog present with text: HtmlUnit is great")
+            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great")
     @NotYetImplemented
     public void testIncludesAlertTextInUnhandledAlertExceptionFromnAsyncScript() throws Exception {
         final String html = "<html>\n"

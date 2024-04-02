@@ -41,11 +41,9 @@ public class HtmlUnitWebElementTextTest extends WebDriverTestCase {
     @Alerts(CHROME = "    option1\n     Number Three\n    Number 4\n  ",
             EDGE = "    option1\n     Number Three\n    Number 4\n  ",
             FF = "option1\nNumber Three\nNumber 4",
-            FF_ESR = "option1\nNumber Three\nNumber 4",
-            IE = "option1 Number Three Number 4")
+            FF_ESR = "option1\nNumber Three\nNumber 4")
     @HtmlUnitNYI(CHROME = "option1\nNumber Three\nNumber 4",
-            EDGE = "option1\nNumber Three\nNumber 4",
-            IE = "option1\nNumber Three\nNumber 4")
+            EDGE = "option1\nNumber Three\nNumber 4")
     public void select() throws Exception {
         final String html =
             "<html>\n"

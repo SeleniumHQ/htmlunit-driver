@@ -192,9 +192,7 @@ public class ClickTest extends WebDriverTestCase {
             FF = {"[object Event]", "undefined", "[object MouseEvent]", "1",
                   "[object MouseEvent]", "2", "[object MouseEvent]", "1"},
             FF_ESR = {"[object Event]", "undefined", "[object MouseEvent]", "1",
-                      "[object MouseEvent]", "2", "[object MouseEvent]", "2"},
-            IE = {"[object Event]", "undefined", "[object PointerEvent]", "0",
-                  "[object PointerEvent]", "0", "[object PointerEvent]", "0"})
+                      "[object MouseEvent]", "2", "[object MouseEvent]", "2"})
     public void detail() throws Exception {
         final String html =
               "<html><head><script>\n"

@@ -125,7 +125,6 @@ public class WindowsTest extends WebDriverTestCase {
      * @throws Exception if something goes wrong
      */
     @Test
-    // shift click seems not working with real IE
     public void newWindowFromShiftClick() throws Exception {
         final String html =
                 "<html>\n"

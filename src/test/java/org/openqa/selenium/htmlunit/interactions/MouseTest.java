@@ -82,8 +82,7 @@ public class MouseTest extends WebDriverTestCase {
      * @throws Exception if an error occurs
      */
     @Test
-    @Alerts(DEFAULT = "Test:mouse over [disabledBtn]",
-            IE = "Test:")
+    @Alerts("Test:mouse over [disabledBtn]")
     public void mouseOverDiabled() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_

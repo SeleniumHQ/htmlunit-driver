@@ -57,8 +57,7 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
             FF = "",
             FF_ESR = "")
     @HtmlUnitNYI(CHROME = "",
-            EDGE = "",
-            IE = "")
+            EDGE = "")
     public void unsupportedAttribute() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
