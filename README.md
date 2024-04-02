@@ -15,14 +15,8 @@ There are two versions available
 
 ### Selenium compatibility
 
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.18.1
-is for Selenium 4.18.1.
-
-Because there are so many tools working on top HtmlUnitDriver, we now maintain two version (artifact id's).
-
-**htmlunit3-driver** uses the (latest) version of HtmlUnit 3.x and is therefore not backward compatible.
-
-**htmlunit-driver** is backward compatible but it still is based on HtmlUnit 2.70.
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.19.1
+is for Selenium 4.19.1.
 
 For an overview please check the following tables:
 
@@ -30,8 +24,9 @@ For an overview please check the following tables:
 
 | selenium | htmlunit-driver |    htmlunit     |    artifactId    |  JDK |
 |----------|-----------------|-----------------|------------------|------|
-|   4.18.1 |      **4.18.1** |         3.11.0  | htmlunit3-driver |   11 |
-|   4.17.0 |      **4.17.0** |         3.10.0  | htmlunit3-driver |   11 |
+|   4.19.1 |      **4.19.1** |       **4.0.0** | htmlunit3-driver |   11 |
+|   4.18.1 |          4.18.1 |         3.11.0  | htmlunit3-driver |   11 |
+|   4.17.0 |          4.17.0 |         3.10.0  | htmlunit3-driver |   11 |
 |   4.16.1 |          4.16.1 |         3.10.0  | htmlunit3-driver |   11 |
 |   4.16.0 |          4.16.0 |          3.9.0  | htmlunit3-driver |   11 |
 |   4.15.1 |          4.15.1 |          3.9.0  | htmlunit3-driver |   11 |

@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.18.1</version>
+    <version>4.19.1</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -18,15 +18,15 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <selenium.version>4.18.1</selenium.version>
-        <htmlunit.version>3.11.0</htmlunit.version>
+        <selenium.version>4.19.1</selenium.version>
+        <htmlunit.version>4.0.0</htmlunit.version>
 
-        <jetty.version>9.4.53.v20231009</jetty.version>
+        <jetty.version>9.4.54.v20240208</jetty.version>
 
-        <checkstyle.version>10.13.0</checkstyle.version>
+        <checkstyle.version>10.15.0</checkstyle.version>
         <spotbugs.version>4.8.3</spotbugs.version>
         <archunit.version>1.2.1</archunit.version>
-        <dependencycheck.version>9.0.9</dependencycheck.version>
+        <dependencycheck.version>9.1.0</dependencycheck.version>
     </properties>
 
     <licenses>
@@ -184,7 +184,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.12.1</version>
+                <version>3.13.0</version>
                 <configuration>
                     <release>11</release>
                     <showDeprecation>true</showDeprecation>
@@ -268,7 +268,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.2</version>
                 <executions>
                     <execution>
                         <phase>verify</phase>
@@ -296,7 +296,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.6.0</version>
+                <version>3.7.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
