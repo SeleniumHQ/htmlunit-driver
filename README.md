@@ -18,7 +18,7 @@ There are two versions available
 Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.19.1
 is for Selenium 4.19.1.
 
-For an overview please check the following tables:
+For an overview about the different version and compatibility please check the following tables:
 
 ***htmlunit3-driver***
 
@@ -93,14 +93,14 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.18.1</version>
+    <version>4.19.1</version>
 </dependency>
 ```
 
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.18.1'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.19.1'
 ```
 
 
