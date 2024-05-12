@@ -284,6 +284,7 @@
                 <version>${dependencycheck.version}</version>
                 <configuration>
                     <failBuildOnCVSS>0</failBuildOnCVSS>
+                    <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
                 </configuration>
                 <executions>
                     <execution>
