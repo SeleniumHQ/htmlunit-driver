@@ -15,8 +15,8 @@ There are two versions available
 
 ### Selenium compatibility
 
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.20.0
-is for Selenium 4.20.0.
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.21.0
+is for Selenium 4.21.0.
 
 For an overview about the different version and compatibility please check the following tables:
 
@@ -24,7 +24,8 @@ For an overview about the different version and compatibility please check the f
 
 | selenium | htmlunit-driver |    htmlunit     |    artifactId    |  JDK |
 |----------|-----------------|-----------------|------------------|------|
-|   4.20.0 |      **4.20.0** |       **4.0.0** | htmlunit3-driver |   11 |
+|   4.21.0 |      **4.21.0** |       **4.1.0** | htmlunit3-driver |   11 |
+|   4.20.0 |          4.20.0 |          4.0.0  | htmlunit3-driver |   11 |
 |   4.19.1 |          4.19.1 |          4.0.0  | htmlunit3-driver |   11 |
 |   4.18.1 |          4.18.1 |         3.11.0  | htmlunit3-driver |   11 |
 |   4.17.0 |          4.17.0 |         3.10.0  | htmlunit3-driver |   11 |
@@ -94,14 +95,14 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.20.0</version>
+    <version>4.21.0</version>
 </dependency>
 ```
 
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.20.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.21.0'
 ```
 
 
