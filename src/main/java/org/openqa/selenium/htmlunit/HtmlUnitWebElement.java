@@ -382,7 +382,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return "";
         }
 
-        if (driver_.isJavascriptEnabled()) {
+        // it is sufficient to have to javascript engine enable to be
+        // able to use the properties from the script element
+        if (driver_.getWebClient().isJavaScriptEngineEnabled()) {
             final HtmlUnitScriptable scriptable = element_.getScriptableObject();
             if (scriptable != null) {
                 final Object slotVal = ScriptableObject.getProperty(scriptable, name);

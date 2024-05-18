@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.htmlunit;
 
+import java.nio.charset.StandardCharsets;
+
+import org.htmlunit.MockWebConnection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -428,5 +431,45 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
 
         elem = driver.findElement(By.id("img3"));
         assertEquals("https://www.htmlunit.org/src", elem.getAttribute("src"));
+    }
+
+    @Test
+    public void innerHTML() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement elem = driver.findElement(By.id("testDivId"));
+        assertEquals("TestDiv", elem.getAttribute("innerHTML"));
+    }
+
+    @Test
+    public void innerHTMLJsDisabled() throws Exception {
+        final HtmlUnitDriver driver = new HtmlUnitDriver(false);
+        assertFalse(driver.isJavascriptEnabled());
+        assertFalse(driver.getWebClient().getOptions().isJavaScriptEnabled());
+        assertFalse(driver.getWebClient().isJavaScriptEnabled());
+        assertTrue(driver.getWebClient().isJavaScriptEngineEnabled());
+
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId'>TestDiv</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final MockWebConnection mockWebConnection = getMockWebConnection();
+        mockWebConnection.setDefaultResponse(html);
+        startWebServer(mockWebConnection, StandardCharsets.UTF_8);
+        driver.get(URL_FIRST.toExternalForm());
+
+        final WebElement elem = driver.findElement(By.id("testDivId"));
+        assertEquals("TestDiv", elem.getAttribute("innerHTML"));
     }
 }
