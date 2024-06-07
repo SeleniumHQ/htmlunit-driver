@@ -32,6 +32,8 @@ import org.openqa.selenium.Proxy;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+
+
 /**
  * Test the proxy setting.
  *
@@ -62,7 +64,9 @@ public class HtmlUnitProxyTest {
         final Proxy proxy = new Proxy().setHttpProxy("http.proxy:1234");
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxySettings(proxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxySettings(proxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -77,7 +81,9 @@ public class HtmlUnitProxyTest {
     public void testManualHttpProxyDirectly() {
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxy("http.proxy", 1234);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxy("http.proxy", 1234);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -93,7 +99,9 @@ public class HtmlUnitProxyTest {
         final Proxy proxy = new Proxy().setHttpProxy("http.proxy").setNoProxy("localhost, 127.0.0.1");
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxySettings(proxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxySettings(proxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -111,7 +119,9 @@ public class HtmlUnitProxyTest {
         final List<String> noProxy = new ArrayList<>();
         noProxy.add("localhost");
         noProxy.add("127.0.0.1");
-        driver.setHTTPProxy("http.proxy", 0, noProxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setHTTPProxy("http.proxy", 0, noProxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -127,7 +137,9 @@ public class HtmlUnitProxyTest {
         final Proxy proxy = new Proxy().setSocksProxy("socks.proxy:1234");
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxySettings(proxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxySettings(proxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -142,7 +154,9 @@ public class HtmlUnitProxyTest {
     public void testManualSocksProxyDirectly() {
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setSocksProxy("socks.proxy", 1234);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setSocksProxy("socks.proxy", 1234);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -158,7 +172,9 @@ public class HtmlUnitProxyTest {
         final Proxy proxy = new Proxy().setSocksProxy("socks.proxy").setNoProxy("localhost");
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxySettings(proxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxySettings(proxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -174,7 +190,9 @@ public class HtmlUnitProxyTest {
         final HtmlUnitDriver driver = new HtmlUnitDriver();
         final List<String> noProxy = new ArrayList<>();
         noProxy.add("localhost");
-        driver.setSocksProxy("socks.proxy", 0, noProxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setSocksProxy("socks.proxy", 0, noProxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -190,7 +208,9 @@ public class HtmlUnitProxyTest {
         final Proxy proxy = new Proxy().setProxyAutoconfigUrl("http://aaa/bb.pac");
 
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setProxySettings(proxy);
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+
+        proxyConfigurationManager.setProxySettings(proxy);
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
@@ -202,7 +222,8 @@ public class HtmlUnitProxyTest {
     @Test
     public void testPACProxyDirectly() {
         final HtmlUnitDriver driver = new HtmlUnitDriver();
-        driver.setAutoProxy("http://aaa/bb.pac");
+        final ProxyConfigurationManager proxyConfigurationManager=new ProxyConfigurationManager();
+        proxyConfigurationManager.setAutoProxy("http://aaa/bb.pac");
 
         final ProxyConfig config = driver.getWebClient().getOptions().getProxyConfig();
 
