@@ -41,7 +41,7 @@ public class BrowserVersionTraitTest {
     static void verify(final BrowserVersion expect, final BrowserVersion actual) {
         for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
             assertEquals("Browser version trait mismatch for: "
-                    + trait.key, trait.obtain(expect), trait.obtain(actual));
+                    + trait.getCapabilityKey(), trait.obtain(expect), trait.obtain(actual));
         }
     }
 }

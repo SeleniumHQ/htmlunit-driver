@@ -19,28 +19,72 @@ package org.openqa.selenium.htmlunit.options;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 public interface BrowserVersionTraitNames {
+    /** "browser-version-trait". */
     String SECTION = "browser-version-trait";
+
+    /** "numericCode". */
     String optNumericCode = "numericCode";
+
+    /** "nickname". */
     String optNickname = "nickname";
+
+    /** "applicationVersion". */
     String optApplicationVersion = "applicationVersion";
+
+    /** "userAgent". */
     String optUserAgent = "userAgent";
+
+    /** "applicationName". */
     String optApplicationName = "applicationName";
+
+    /** "applicationCodeName". */
     String optApplicationCodeName = "applicationCodeName";
+
+    /** "applicationMinorVersion". */
     String optApplicationMinorVersion = "applicationMinorVersion";
+
+    /** "vendor". */
     String optVendor = "vendor";
+
+    /** "browserLanguage". */
     String optBrowserLanguage = "browserLanguage";
+
+    /** "isOnline". */
     String optIsOnline = "isOnline";
+
+    /** "platform". */
     String optPlatform = "platform";
+
+    /** "systemTimezone". */
     String optSystemTimezone = "systemTimezone";
+
+    /** "acceptEncodingHeader". */
     String optAcceptEncodingHeader = "acceptEncodingHeader";
+
+    /** "acceptLanguageHeader". */
     String optAcceptLanguageHeader = "acceptLanguageHeader";
+
+    /** "htmlAcceptHeader". */
     String optHtmlAcceptHeader = "htmlAcceptHeader";
+
+    /** "imgAcceptHeader". */
     String optImgAcceptHeader = "imgAcceptHeader";
+
+    /** "cssAcceptHeader". */
     String optCssAcceptHeader = "cssAcceptHeader";
+
+    /** "scriptAcceptHeader". */
     String optScriptAcceptHeader = "scriptAcceptHeader";
+
+    /** "xmlHttpRequestAcceptHeader". */
     String optXmlHttpRequestAcceptHeader = "xmlHttpRequestAcceptHeader";
+
+    /** "secClientHintUserAgentHeader". */
     String optSecClientHintUserAgentHeader = "secClientHintUserAgentHeader";
+
+    /** "secClientHintUserAgentPlatformHeader". */
     String optSecClientHintUserAgentPlatformHeader = "secClientHintUserAgentPlatformHeader";
 }

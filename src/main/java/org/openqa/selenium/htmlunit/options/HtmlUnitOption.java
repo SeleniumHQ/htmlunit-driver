@@ -32,8 +32,10 @@ import org.htmlunit.WebConnection;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
+    /** WEB_CLIENT_VERSION(optWebClientVersion, BrowserVersion.class, BrowserVersion.BEST_SUPPORTED). */
     WEB_CLIENT_VERSION(optWebClientVersion, BrowserVersion.class, BrowserVersion.BEST_SUPPORTED),
 
     /**
@@ -562,7 +564,8 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * property: <b>webdriver.htmlunit.sslInsecureProtocol</b><br>
      * type: {@link String}<br>
      * default: {@code null} (use default protocol: SSL)<br>
-     * see: <a href="https://docs.oracle.com/en/java/javase/19/docs/specs/security/standard-names.html#sslcontext-algorithms">
+     * see <a
+     * href="https://docs.oracle.com/en/java/javase/19/docs/specs/security/standard-names.html#sslcontext-algorithms">
      * {@code SSLContext} Algorithms</a>
      */
     SSL_INSECURE_PROTOCOL(optSslInsecureProtocol, String.class, null) {
@@ -835,36 +838,36 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         }
     };
 
-    public final String key;
-    public final String name;
-    public final Class<?> type;
-    public final Object initial;
+    private final String capabilityKey_;
+    private final String propertyName_;
+    private final Class<?> optionType_;
+    private final Object defaultValue_;
 
     HtmlUnitOption(final String key, final Class<?> type, final Object initial) {
-        this.key = key;
-        this.name = "webdriver.htmlunit." + key;
-        this.type = type;
-        this.initial = initial;
+        capabilityKey_ = key;
+        propertyName_ = "webdriver.htmlunit." + key;
+        optionType_ = type;
+        defaultValue_ = initial;
     }
 
     @Override
     public String getCapabilityKey() {
-        return key;
+        return capabilityKey_;
     }
 
     @Override
     public String getPropertyName() {
-        return name;
+        return propertyName_;
     }
 
     @Override
     public Class<?> getOptionType() {
-        return type;
+        return optionType_;
     }
 
     @Override
     public Object getDefaultValue() {
-        return initial;
+        return defaultValue_;
     }
 
     /**
@@ -875,13 +878,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      */
     @Override
     public boolean isDefaultValue(final Object value) {
-        if (initial == null) {
+        if (defaultValue_ == null) {
             return value == null;
         }
         if (value == null) {
             return false;
         }
-        return value.equals(initial);
+        return value.equals(defaultValue_);
     }
 
     /**
@@ -889,10 +892,10 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      */
     @Override
     public void applyPropertyTo(final Map<String, Object> optionsMap) {
-        final String value = System.getProperty(name);
+        final String value = System.getProperty(propertyName_);
         if (value != null) {
-            optionsMap.put(key, decode(value));
-            System.clearProperty(key);
+            optionsMap.put(capabilityKey_, decode(value));
+            System.clearProperty(capabilityKey_);
         }
     }
 
@@ -904,7 +907,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      */
     @Override
     public Object encode(final Object value) {
-        switch (type.getName()) {
+        switch (optionType_.getName()) {
             case "boolean":
             case "int":
             case "long":
@@ -920,10 +923,11 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                 return TypeCodec.encodeProxyConfig(value);
             case "org.htmlunit.BrowserVersion":
                 return TypeCodec.encodeBrowserVersion(value);
+            default:
+                throw new IllegalStateException(
+                        String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
+                                optionType_.getName(), toString(), TypeCodec.getClassName(value)));
         }
-        throw new IllegalStateException(
-                String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
-                this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
 
     /**
@@ -934,7 +938,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      */
     @Override
     public Object decode(final Object value) {
-        switch (this.type.getName()) {
+        switch (optionType_.getName()) {
             case "boolean":
                 return TypeCodec.decodeBoolean(value);
             case "int":
@@ -957,10 +961,11 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                 return TypeCodec.decodeProxyConfig(value);
             case "org.htmlunit.BrowserVersion":
                 return TypeCodec.decodeBrowserVersion(value);
+            default:
+                throw new IllegalStateException(
+                        String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
+                                optionType_.getName(), toString(), TypeCodec.getClassName(value)));
         }
-        throw new IllegalStateException(
-                String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
-                this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
 
     /**
@@ -971,7 +976,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      */
     public void insert(final WebClientOptions options, final Object value) {
         throw new UnsupportedOperationException(
-                String.format("Option '%s' does not support value insertion", this.toString()));
+                String.format("Option '%s' does not support value insertion", toString()));
     }
 
     /**
@@ -986,7 +991,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
 
     public static HtmlUnitOption fromCapabilityKey(final String key) {
         for (final HtmlUnitOption option : HtmlUnitOption.values()) {
-            if (option.key.equals(key)) {
+            if (option.capabilityKey_.equals(key)) {
                 return option;
             }
         }
@@ -995,7 +1000,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
 
     public static HtmlUnitOption fromPropertyName(final String name) {
         for (final HtmlUnitOption option : HtmlUnitOption.values()) {
-            if (option.name.equals(name)) {
+            if (option.propertyName_.equals(name)) {
                 return option;
             }
         }

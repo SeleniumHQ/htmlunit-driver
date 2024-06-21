@@ -113,6 +113,7 @@ import org.openqa.selenium.remote.CapabilityType;
  * @see BrowserVersionTrait
  *
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 @SuppressWarnings("serial")
 public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverOptions> {
@@ -123,15 +124,15 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      */
     public static final String HTMLUNIT_OPTIONS = "garg:htmlunitOptions";
 
-    private WebClientOptions webClientOptions = new WebClientOptions();
-    private BrowserVersion webClientVersion = BrowserVersion.BEST_SUPPORTED;
+    private WebClientOptions webClientOptions_ = new WebClientOptions();
+    private BrowserVersion webClientVersion_ = BrowserVersion.BEST_SUPPORTED;
 
     public HtmlUnitDriverOptions() {
         setCapability(CapabilityType.BROWSER_NAME, HTMLUNIT.browserName());
-        webClientOptions.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
-        webClientOptions.setThrowExceptionOnFailingStatusCode(false);
-        webClientOptions.setPrintContentOnFailingStatusCode(false);
-        webClientOptions.setUseInsecureSSL(true);
+        webClientOptions_.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
+        webClientOptions_.setThrowExceptionOnFailingStatusCode(false);
+        webClientOptions_.setPrintContentOnFailingStatusCode(false);
+        webClientOptions_.setUseInsecureSSL(true);
     }
 
     public HtmlUnitDriverOptions(final BrowserVersion version) {
@@ -155,9 +156,9 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
 
             if (source instanceof HtmlUnitDriverOptions) {
                 // transfer web client option from source capabilities
-                transfer(((HtmlUnitDriverOptions) source).webClientOptions, webClientOptions);
+                transfer(((HtmlUnitDriverOptions) source).webClientOptions_, webClientOptions_);
                 // copy web client version from source capabilities
-                webClientVersion = ((HtmlUnitDriverOptions) source).webClientVersion;
+                webClientVersion_ = ((HtmlUnitDriverOptions) source).webClientVersion_;
             }
             else {
                 // get HtmlUnit options from standard capabilities
@@ -172,7 +173,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
                 }
                 else {
                     // set web client version from standard capabilities
-                    webClientVersion = BrowserVersionDeterminer.determine(source);
+                    webClientVersion_ = BrowserVersionDeterminer.determine(source);
                 }
             }
 
@@ -210,14 +211,14 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
                 case SSL_TRUST_STORE_PASSWORD:
                     return null;
                 case WEB_CLIENT_VERSION:
-                    return webClientVersion;
+                    return webClientVersion_;
                 default:
-                    return option.obtain(webClientOptions);
+                    return option.obtain(webClientOptions_);
             }
         }
         final BrowserVersionTrait trait = BrowserVersionTrait.fromCapabilityKey(capabilityName);
         if (trait != null) {
-            return trait.obtain(webClientVersion);
+            return trait.obtain(webClientVersion_);
         }
         return super.getCapability(capabilityName);
     }
@@ -233,10 +234,10 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         if (option != null) {
             switch (option) {
                 case WEB_CLIENT_VERSION:
-                    webClientVersion = (BrowserVersion) option.decode(value);
+                    webClientVersion_ = (BrowserVersion) option.decode(value);
                     return;
                 default:
-                    option.insert(webClientOptions, value);
+                    option.insert(webClientOptions_, value);
                     return;
             }
         }
@@ -268,7 +269,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      * @return this {@link HtmlUnitDriverOptions} object
      */
     public HtmlUnitDriverOptions importOptions(final WebClientOptions source) {
-        transfer(source, webClientOptions);
+        transfer(source, webClientOptions_);
         return this;
     }
 
@@ -278,60 +279,60 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      * @param target target {@link WebClientOptions} object
      */
     public void applyOptions(final WebClientOptions target) {
-        transfer(webClientOptions, target);
+        transfer(webClientOptions_, target);
     }
 
     public boolean isJavaScriptEnabled() {
-        return webClientOptions.isJavaScriptEnabled();
+        return webClientOptions_.isJavaScriptEnabled();
     }
 
     public HtmlUnitDriverOptions setJavaScriptEnabled(final boolean enableJavascript) {
-        webClientOptions.setJavaScriptEnabled(enableJavascript);
+        webClientOptions_.setJavaScriptEnabled(enableJavascript);
         return this;
     }
 
     public boolean isDownloadImages() {
-        return webClientOptions.isDownloadImages();
+        return webClientOptions_.isDownloadImages();
     }
 
     public HtmlUnitDriverOptions setDownloadImages(final boolean downloadImages) {
-        webClientOptions.setDownloadImages(downloadImages);
+        webClientOptions_.setDownloadImages(downloadImages);
         return this;
     }
 
     public BrowserVersion getWebClientVersion() {
-        return webClientVersion;
+        return webClientVersion_;
     }
 
     public HtmlUnitDriverOptions setWebClientVersion(final BrowserVersion webClientVersion) {
         Require.nonNull("Web client version", webClientVersion);
-        this.webClientVersion = webClientVersion;
+        this.webClientVersion_ = webClientVersion;
         return this;
     }
 
     public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final KeyStore keyStore,
             final char[] keyStorePassword) {
-        webClientOptions.setSSLClientCertificateKeyStore(keyStore, keyStorePassword);
+        webClientOptions_.setSSLClientCertificateKeyStore(keyStore, keyStorePassword);
         return this;
     }
 
     public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final URL keyStoreUrl, final String keyStorePassword,
             final String keyStoreType) {
         Require.nonNull("Key store URL", keyStoreUrl);
-        webClientOptions.setSSLClientCertificateKeyStore(keyStoreUrl, keyStorePassword, keyStoreType);
+        webClientOptions_.setSSLClientCertificateKeyStore(keyStoreUrl, keyStorePassword, keyStoreType);
         return this;
     }
 
     public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final InputStream keyStoreInputStream,
             final String keyStorePassword, final String keyStoreType) {
-        webClientOptions.setSSLClientCertificateKeyStore(keyStoreInputStream, keyStorePassword, keyStoreType);
+        webClientOptions_.setSSLClientCertificateKeyStore(keyStoreInputStream, keyStorePassword, keyStoreType);
         return this;
     }
 
     public HtmlUnitDriverOptions setSSLTrustStore(final URL sslTrustStoreUrl, final String sslTrustStorePassword,
             final String sslTrustStoreType) {
         Require.nonNull("Trust store URL", sslTrustStoreUrl);
-        webClientOptions.setSSLTrustStore(sslTrustStoreUrl, sslTrustStorePassword, sslTrustStoreType);
+        webClientOptions_.setSSLTrustStore(sslTrustStoreUrl, sslTrustStorePassword, sslTrustStoreType);
         return this;
     }
 
@@ -353,16 +354,17 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
 
         if (!optionsMap.isEmpty()) {
             for (final HtmlUnitOption option : HtmlUnitOption.values()) {
-                if (optionsMap.containsKey(option.key)) {
+                if (optionsMap.containsKey(option.getCapabilityKey())) {
                     switch (option) {
                         case SSL_CLIENT_CERTIFICATE_PASSWORD:
                         case SSL_TRUST_STORE_PASSWORD:
                             continue;
                         case WEB_CLIENT_VERSION:
-                            webClientVersion = (BrowserVersion) option.decode(optionsMap.get(option.key));
+                            webClientVersion_ =
+                                (BrowserVersion) option.decode(optionsMap.get(option.getCapabilityKey()));
                             break;
                         default:
-                            option.insert(webClientOptions, optionsMap.get(option.key));
+                            option.insert(webClientOptions_, optionsMap.get(option.getCapabilityKey()));
                             break;
                     }
                 }
@@ -378,14 +380,14 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
                 case SSL_TRUST_STORE_PASSWORD:
                     continue;
                 case WEB_CLIENT_VERSION:
-                    if (webClientVersion != null) {
-                        optionsMap.put(option.key, option.encode(webClientVersion));
+                    if (webClientVersion_ != null) {
+                        optionsMap.put(option.getCapabilityKey(), option.encode(webClientVersion_));
                     }
                     break;
                 default:
-                    final Object value = option.obtain(webClientOptions);
+                    final Object value = option.obtain(webClientOptions_);
                     if (!option.isDefaultValue(value)) {
-                        optionsMap.put(option.key, option.encode(value));
+                        optionsMap.put(option.getCapabilityKey(), option.encode(value));
                     }
                     break;
             }

@@ -129,6 +129,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * @author Rob Winch
  * @author Andrei Solntsev
  * @author Martin Bartoš
+ * @author Scott Babcock
  */
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabilities, Interactive {
 
@@ -206,7 +207,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     public HtmlUnitDriver(final BrowserVersion version, final boolean enableJavascript) {
         this(new HtmlUnitDriverOptions(version, enableJavascript));
     }
-    
+
     public HtmlUnitDriver(final Capabilities desiredCapabilities, final Capabilities requiredCapabilities) {
         this(new DesiredCapabilities(desiredCapabilities, requiredCapabilities));
     }
@@ -220,22 +221,23 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *                     session
      */
     public HtmlUnitDriver(final Capabilities capabilities) {
-        HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(capabilities);
+        final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(capabilities);
         webClient_ = newWebClient(driverOptions.getWebClientVersion());
-        
+
         setAcceptInsecureCerts(Boolean.FALSE != driverOptions.getCapability(ACCEPT_INSECURE_CERTS));
-        
+
         final String pageLoadStrategyString = (String) driverOptions.getCapability(PAGE_LOAD_STRATEGY);
         if ("none".equals(pageLoadStrategyString)) {
             pageLoadStrategy_ = PageLoadStrategy.NONE;
-        } else if ("eager".equals(pageLoadStrategyString)) {
+        }
+        else if ("eager".equals(pageLoadStrategyString)) {
             pageLoadStrategy_ = PageLoadStrategy.EAGER;
         }
-        
+
         final WebClientOptions clientOptions = webClient_.getOptions();
         driverOptions.applyOptions(clientOptions);
-        
-        setProxySettings(Proxy.extractFrom(driverOptions)); 
+
+        setProxySettings(Proxy.extractFrom(driverOptions));
 
         webClient_.setRefreshHandler(new WaitingRefreshHandler());
         webClient_.setClipboardHandler(new AwtClipboardHandler());
@@ -1115,7 +1117,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     protected HtmlUnitWebElement toWebElement(final DomElement element) {
         return getElementsMap().addIfAbsent(this, element);
     }
-    
+
     public HtmlUnitWebElement toWebElement(final String elementId) {
         return getElementsMap().getWebElement(elementId);
     }
@@ -1307,14 +1309,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         public void remove(final Page page) {
-            Map<DomElement, HtmlUnitWebElement> pageMap = elementsMapByPage_.remove(page);
+            final Map<DomElement, HtmlUnitWebElement> pageMap = elementsMapByPage_.remove(page);
             if (pageMap != null) {
                 pageMap.values().forEach(element -> elementsMapById_.remove(Integer.toString(element.getId())));
             }
         }
-        
+
         public HtmlUnitWebElement getWebElement(final String elementId) {
-            HtmlUnitWebElement webElement = elementsMapById_.get(elementId);
+            final HtmlUnitWebElement webElement = elementsMapById_.get(elementId);
             if (webElement == null) {
                 throw new StaleElementReferenceException(
                         "Failed finding web element associated with identifier: " + elementId);

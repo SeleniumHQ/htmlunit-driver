@@ -23,38 +23,39 @@ import java.net.URL;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 @SuppressWarnings("serial")
 public class KeyStoreBean implements Serializable {
-    private String url;
-    private String password;
-    private String type;
+    private String url_;
+    private String password_;
+    private String type_;
 
     public String getUrl() {
-        return url;
+        return url_;
     }
 
     public void setUrl(final String url) {
-        this.url = url;
+        url_ = url;
     }
 
     public String getPassword() {
-        return password;
+        return password_;
     }
 
     public void setPassword(final String password) {
-        this.password = password;
+        password_ = password;
     }
 
     public String getType() {
-        return type;
+        return type_;
     }
 
     public void setType(final String type) {
-        this.type = type;
+        type_ = type;
     }
 
     public URL createUrl() throws MalformedURLException {
-        return new URL(url);
+        return new URL(url_);
     }
 }

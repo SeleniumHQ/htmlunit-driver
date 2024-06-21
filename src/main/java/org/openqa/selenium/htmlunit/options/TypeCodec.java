@@ -37,6 +37,7 @@ import org.openqa.selenium.json.TypeToken;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 final class TypeCodec {
 
@@ -82,7 +83,8 @@ final class TypeCodec {
         if (value instanceof String) {
             return Integer.parseInt((String) value);
         }
-        throw new IllegalStateException("Specified value must be 'Long', 'Integer', or 'String'; was " + getClassName(value));
+        throw new IllegalStateException(
+                "Specified value must be 'Long', 'Integer', or 'String'; was " + getClassName(value));
     }
 
     /**
@@ -206,7 +208,8 @@ final class TypeCodec {
         if (value instanceof InetAddress) {
             return ((InetAddress) value).getHostAddress();
         }
-        throw new IllegalStateException("Specified value must be 'InetAddress' or 'String'; was " + getClassName(value));
+        throw new IllegalStateException(
+                "Specified value must be 'InetAddress' or 'String'; was " + getClassName(value));
     }
 
     /**
@@ -261,7 +264,6 @@ final class TypeCodec {
      * @param value value to be decoded
      * @return specified value decoded as {@link ProxyConfig}
      */
-    @SuppressWarnings("unchecked")
     static ProxyConfig decodeProxyConfig(final Object value) {
         final String json;
 
@@ -269,7 +271,7 @@ final class TypeCodec {
             return (ProxyConfig) value;
         }
         else if (value instanceof Map) {
-            json = new Json().toJson((Map<String, Object>) value);
+            json = new Json().toJson(value);
         }
         else if (value instanceof String) {
             json = (String) value;
@@ -296,7 +298,7 @@ final class TypeCodec {
             for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
                 final Object traitValue = trait.obtain(browserVersion);
                 if (!trait.isDefaultValue(traitValue)) {
-                    optionsMap.put(trait.key, trait.encode(traitValue));
+                    optionsMap.put(trait.getCapabilityKey(), trait.encode(traitValue));
                 }
             }
             return optionsMap;
@@ -343,7 +345,8 @@ final class TypeCodec {
         }
 
         // browser version numeric code is required
-        final Object numericCode =  Objects.requireNonNull(optionsMap.get(BrowserVersionTrait.NUMERIC_CODE.key),
+        final Object numericCode =  Objects.requireNonNull(
+                optionsMap.get(BrowserVersionTrait.NUMERIC_CODE.getCapabilityKey()),
                 "Required browser version trait [numericCode] is unspecified");
 
         if (numericCode instanceof Long) {
@@ -358,7 +361,8 @@ final class TypeCodec {
         }
 
         // browser version nickname is required
-        final Object nickname = Objects.requireNonNull(optionsMap.get(BrowserVersionTrait.NICKNAME.key),
+        final Object nickname = Objects.requireNonNull(
+                optionsMap.get(BrowserVersionTrait.NICKNAME.getCapabilityKey()),
                 "Required browser version trait [nickname] is unspecified");
 
         if (nickname instanceof String) {
@@ -386,9 +390,9 @@ final class TypeCodec {
         // if spec'd numeric code overrides seed
         if (seed.getBrowserVersionNumeric() != code) {
             try {
-                final Field browserVersionNumeric_ = BrowserVersion.class.getField("browserVersionNumeric_");
-                browserVersionNumeric_.setAccessible(true);
-                browserVersionNumeric_.set(seed, code);
+                final Field browserVersionNumericField = BrowserVersion.class.getField("browserVersionNumeric_");
+                browserVersionNumericField.setAccessible(true);
+                browserVersionNumericField.set(seed, code);
             }
             catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
                 // nothing to do here
@@ -405,8 +409,8 @@ final class TypeCodec {
                 case NICKNAME:
                     continue;
                 default:
-                    if (optionsMap.containsKey(trait.key)) {
-                        trait.apply(optionsMap.get(trait.key), builder);
+                    if (optionsMap.containsKey(trait.getCapabilityKey())) {
+                        trait.apply(optionsMap.get(trait.getCapabilityKey()), builder);
                     }
             }
         }

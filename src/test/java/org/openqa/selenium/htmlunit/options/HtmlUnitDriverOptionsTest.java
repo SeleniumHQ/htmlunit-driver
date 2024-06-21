@@ -129,8 +129,8 @@ public class HtmlUnitDriverOptionsTest {
         final Map<String, Object> extraOptions =
                 (Map<String, Object>) options.getExtraCapability(HtmlUnitDriverOptions.HTMLUNIT_OPTIONS);
         for (final HtmlUnitOption option : HtmlUnitOption.values()) {
-            if (extraOptions.containsKey(option.key)) {
-                result.put(option, extraOptions.get(option.key));
+            if (extraOptions.containsKey(option.getCapabilityKey())) {
+                result.put(option, extraOptions.get(option.getCapabilityKey()));
             }
         }
         return result;

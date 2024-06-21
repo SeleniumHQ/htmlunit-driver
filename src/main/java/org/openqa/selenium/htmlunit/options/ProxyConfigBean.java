@@ -29,70 +29,71 @@ import org.htmlunit.ProxyConfig;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 @SuppressWarnings("serial")
 public class ProxyConfigBean implements Serializable {
-    private String host;
-    private int port;
-    private String scheme;
-    private boolean socksProxy;
-    private List<String> bypassHosts;
-    private String autoConfigUrl;
+    private String host_;
+    private int port_;
+    private String scheme_;
+    private boolean socksProxy_;
+    private List<String> bypassHosts_;
+    private String autoConfigUrl_;
 
     public String getHost() {
-        return host;
+        return host_;
     }
 
     public void setHost(final String host) {
-        this.host = host;
+        host_ = host;
     }
 
     public int getPort() {
-        return port;
+        return port_;
     }
 
     public void setPort(final int port) {
-        this.port = port;
+        port_ = port;
     }
 
     public String getScheme() {
-        return scheme;
+        return scheme_;
     }
 
     public void setScheme(final String scheme) {
-        this.scheme = scheme;
+        scheme_ = scheme;
     }
 
     public boolean isSocksProxy() {
-        return socksProxy;
+        return socksProxy_;
     }
 
     public void setSocksProxy(final boolean socksProxy) {
-        this.socksProxy = socksProxy;
+        socksProxy_ = socksProxy;
     }
 
     public List<String> getBypassHosts() {
-        return bypassHosts;
+        return bypassHosts_;
     }
 
     public String getBypassHosts(final int index) {
-        return bypassHosts.get(index);
+        return bypassHosts_.get(index);
     }
 
     public void setBypassHosts(final List<String> bypassHosts) {
-        this.bypassHosts = bypassHosts;
+        bypassHosts_ = bypassHosts;
     }
 
     public void setBypassHosts(final int index, final String bypassHost) {
-        bypassHosts.set(index, bypassHost);
+        bypassHosts_.set(index, bypassHost);
     }
 
     public String getAutoConfigUrl() {
-        return autoConfigUrl;
+        return autoConfigUrl_;
     }
 
     public void setAutoConfigUrl(final String autoConfigUrl) {
-        this.autoConfigUrl = autoConfigUrl;
+        autoConfigUrl_ = autoConfigUrl;
     }
 
     /**
@@ -112,18 +113,18 @@ public class ProxyConfigBean implements Serializable {
     }
 
     public ProxyConfig build() {
-        final ProxyConfig value = new ProxyConfig(host, port, scheme, socksProxy);
-        bypassHosts.forEach(value::addHostsToProxyBypass);
-        value.setProxyAutoConfigUrl(autoConfigUrl);
+        final ProxyConfig value = new ProxyConfig(host_, port_, scheme_, socksProxy_);
+        bypassHosts_.forEach(value::addHostsToProxyBypass);
+        value.setProxyAutoConfigUrl(autoConfigUrl_);
         return value;
     }
 
     @SuppressWarnings("unchecked")
     static List<String> getBypassHosts(final ProxyConfig value) {
         try {
-            final Field proxyBypassHosts_ = ProxyConfig.class.getDeclaredField("proxyBypassHosts_");
-            proxyBypassHosts_.setAccessible(true);
-            final Map<String, Pattern> proxyBypassHosts = (Map<String, Pattern>) proxyBypassHosts_.get(value);
+            final Field proxyBypassHostsField = ProxyConfig.class.getDeclaredField("proxyBypassHosts_");
+            proxyBypassHostsField.setAccessible(true);
+            final Map<String, Pattern> proxyBypassHosts = (Map<String, Pattern>) proxyBypassHostsField.get(value);
             return new ArrayList<String>(proxyBypassHosts.keySet());
         }
         catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {

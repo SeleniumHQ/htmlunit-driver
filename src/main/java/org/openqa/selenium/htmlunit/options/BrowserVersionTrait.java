@@ -24,6 +24,7 @@ import org.htmlunit.BrowserVersion.BrowserVersionBuilder;
 
 /**
  * @author Scott Babcock
+ * @author Ronald Brill
  */
 public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum {
     /**
@@ -425,36 +426,36 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         }
     };
 
-    public final String key;
-    public final String name;
-    public final Class<?> type;
-    public final Object initial;
+    private final String capabilityKey_;
+    private final String propertyName_;
+    private final Class<?> optionType_;
+    private final Object defaultValue_;
 
     BrowserVersionTrait(final String key, final Class<?> type, final Object initial) {
-        this.key = key;
-        this.name = "webdriver.htmlunit.browserVersionTrait." + key;
-        this.type = type;
-        this.initial = initial;
+        capabilityKey_ = key;
+        propertyName_ = "webdriver.htmlunit.browserVersionTrait." + key;
+        optionType_ = type;
+        defaultValue_ = initial;
     }
 
     @Override
     public String getCapabilityKey() {
-        return key;
+        return capabilityKey_;
     }
 
     @Override
     public String getPropertyName() {
-        return name;
+        return propertyName_;
     }
 
     @Override
     public Class<?> getOptionType() {
-        return type;
+        return optionType_;
     }
 
     @Override
     public Object getDefaultValue() {
-        return initial;
+        return defaultValue_;
     }
 
     /**
@@ -465,13 +466,13 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
      */
     @Override
     public boolean isDefaultValue(final Object value) {
-        if (initial == null) {
+        if (defaultValue_ == null) {
             return value == null;
         }
         if (value == null) {
             return false;
         }
-        return value.equals(initial);
+        return value.equals(defaultValue_);
     }
 
     /**
@@ -481,10 +482,10 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
      */
     @Override
     public void applyPropertyTo(final Map<String, Object> optionsMap) {
-        final String value = System.getProperty(name);
+        final String value = System.getProperty(propertyName_);
         if (value != null) {
-            optionsMap.put(key, decode(value));
-            System.clearProperty(key);
+            optionsMap.put(capabilityKey_, decode(value));
+            System.clearProperty(capabilityKey_);
         }
     }
 
@@ -496,17 +497,18 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
      */
     @Override
     public Object encode(final Object value) {
-        switch (type.getName()) {
+        switch (optionType_.getName()) {
             case "boolean":
             case "int":
             case "java.lang.String":
                 return value;
             case "java.util.TimeZone":
                 return TypeCodec.encodeTimeZone(value);
+            default:
+                throw new IllegalStateException(
+                        String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
+                                optionType_.getName(), toString(), TypeCodec.getClassName(value)));
         }
-        throw new IllegalStateException(
-                String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
-                this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
 
     /**
@@ -517,7 +519,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
      */
     @Override
     public Object decode(final Object value) {
-        switch (this.type.getName()) {
+        switch (optionType_.getName()) {
             case "boolean":
                 return TypeCodec.decodeBoolean(value);
             case "int":
@@ -526,10 +528,11 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
                 return TypeCodec.decodeString(value);
             case "java.util.TimeZone":
                 return TypeCodec.decodeTimeZone(value);
+            default:
+                throw new IllegalStateException(
+                        String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
+                                optionType_.getName(), toString(), TypeCodec.getClassName(value)));
         }
-        throw new IllegalStateException(
-                String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
-                this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
 
     /**
@@ -540,7 +543,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
      */
     public void apply(final Object value, final BrowserVersionBuilder builder) {
         throw new UnsupportedOperationException(
-                String.format("Trait '%s' does not support value insertion", this.toString()));
+                String.format("Trait '%s' does not support value insertion", toString()));
     }
 
     /**
@@ -555,7 +558,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
 
     public static BrowserVersionTrait fromCapabilityKey(final String key) {
         for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
-            if (trait.key.equals(key)) {
+            if (trait.capabilityKey_.equals(key)) {
                 return trait;
             }
         }
@@ -564,7 +567,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
 
     public static BrowserVersionTrait fromPropertyName(final String name) {
         for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
-            if (trait.name.equals(name)) {
+            if (trait.propertyName_.equals(name)) {
                 return trait;
             }
         }
