@@ -37,6 +37,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  *
  * @author Ronald Brill
  * @author Martin Bartoš
+ * @author Scott Babcock
  */
 public class HtmlUnitDriverTest {
 
@@ -522,11 +523,11 @@ public class HtmlUnitDriverTest {
             }
         };
     }
-    
+
     @Test
     public void ctorHtmlUnitDriverOptions() {
         final HtmlUnitDriverOptions capabilities = new HtmlUnitDriverOptions();
-        
+
         new HtmlUnitDriver(capabilities) {
             @Override
             protected WebClient modifyWebClient(final WebClient client) {

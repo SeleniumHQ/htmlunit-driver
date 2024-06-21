@@ -26,43 +26,48 @@ import org.htmlunit.ProxyConfig;
 import org.junit.Test;
 import org.openqa.selenium.json.Json;
 
+/**
+ * @author Scott Babcock
+ */
 public class BeanTest {
-    
-    private static final String proxyConfig = 
+
+    private static final String proxyConfig =
             "{\"host\": \"proxy.example.com\", \"port\": 8080, \"scheme\": \"https\", "
             + "\"socksProxy\": false, \"bypassHosts\": [\"localhost\", \"intranet.info\"], "
             + "\"autoConfigUrl\": \"http://aaa/bb.pac\"}";
-    
+
     private static final String keyStore =
             "{\"url\":\"file:///path/to/cert/store\", \"password\":\"fortnight\", \"type\":\"jks\"}";
-    
+
     @Test
     public void decodeProxyConfigBean() {
-        ProxyConfigBean bean = new Json().toType(proxyConfig, ProxyConfigBean.class);
+        final ProxyConfigBean bean = new Json().toType(proxyConfig, ProxyConfigBean.class);
         assertEquals("Failed decoding [host]", "proxy.example.com", bean.getHost());
         assertEquals("Failed decoding [port]", 8080, bean.getPort());
         assertEquals("Failed decoding [scheme]", "https", bean.getScheme());
         assertEquals("Failed decoding [socksProxy]", false, bean.isSocksProxy());
-        assertEquals("Failed decoding [bypassHosts]", Arrays.asList("localhost", "intranet.info"), bean.getBypassHosts());
+        assertEquals("Failed decoding [bypassHosts]", Arrays.asList("localhost", "intranet.info"),
+                bean.getBypassHosts());
         assertEquals("Failed decoding [autoConfigUrl]", "http://aaa/bb.pac", bean.getAutoConfigUrl());
-        
-        ProxyConfig config = bean.build();
+
+        final ProxyConfig config = bean.build();
         assertEquals("Failed building [host]", "proxy.example.com", config.getProxyHost());
         assertEquals("Failed building [port]", 8080, config.getProxyPort());
         assertEquals("Failed building [scheme]", "https", config.getProxyScheme());
         assertEquals("Failed building [socksProxy]", false, config.isSocksProxy());
-        assertEquals("Failed decoding [bypassHosts]", Arrays.asList("localhost", "intranet.info"), ProxyConfigBean.getBypassHosts(config));
+        assertEquals("Failed decoding [bypassHosts]", Arrays.asList("localhost", "intranet.info"),
+                ProxyConfigBean.getBypassHosts(config));
         assertEquals("Failed building [autoConfigUrl]", "http://aaa/bb.pac", config.getProxyAutoConfigUrl());
     }
-    
+
     @Test
     public void decodeKeyStoreBean() throws MalformedURLException {
-        KeyStoreBean bean = new Json().toType(keyStore, KeyStoreBean.class);
+        final KeyStoreBean bean = new Json().toType(keyStore, KeyStoreBean.class);
         assertEquals("Failed decoding [url]", "file:///path/to/cert/store", bean.getUrl());
         assertEquals("failed deciding [password]", "fortnight", bean.getPassword());
         assertEquals("Failed decoding [type]", "jks", bean.getType());
-        
+
         assertEquals("Failed creating URL from [url]", new URL("file:///path/to/cert/store"), bean.createUrl());
     }
-    
+
 }

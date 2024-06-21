@@ -32,6 +32,7 @@ import org.openqa.selenium.interactions.Sequence;
  * and no object oriented design.
  *
  * @author Ronald Brill
+ * @author Scott Babcock
  */
 public final class Algorithms {
 

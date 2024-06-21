@@ -77,6 +77,7 @@ import org.w3c.dom.NamedNodeMap;
  * @author Ronald Brill
  * @author Andrei Solntsev
  * @author Martin Bartoš
+ * @author Scott Babcock
  */
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 

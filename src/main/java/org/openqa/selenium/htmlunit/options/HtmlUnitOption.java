@@ -30,9 +30,12 @@ import org.htmlunit.ProxyConfig;
 import org.htmlunit.WebClientOptions;
 import org.htmlunit.WebConnection;
 
+/**
+ * @author Scott Babcock
+ */
 public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
     WEB_CLIENT_VERSION(optWebClientVersion, BrowserVersion.class, BrowserVersion.BEST_SUPPORTED),
-    
+
     /**
      * Enables/disables JavaScript support.
      * <p>
@@ -45,13 +48,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setJavaScriptEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isJavaScriptEnabled();
         }
     },
-    
+
     /**
      * Enables/disables CSS support.
      * If disabled, <b>HtmlUnit</b> will not download linked CSS files and also
@@ -66,13 +69,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setCssEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isCssEnabled();
         }
     },
-    
+
     /**
      * Specifies whether or not the content of the resulting document will be
      * printed to the console in the event of a failing response code.
@@ -87,13 +90,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setPrintContentOnFailingStatusCode(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isPrintContentOnFailingStatusCode();
         }
     },
-    
+
     /**
      * Specifies whether or not an exception will be thrown in the event of a
      * failing status code. Successful status codes are in the range <b>200-299</b>.
@@ -107,13 +110,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setThrowExceptionOnFailingStatusCode(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isThrowExceptionOnFailingStatusCode();
         }
     },
-    
+
     /**
      * Indicates if an exception should be thrown when a script execution fails
      * or if it should be caught and just logged to allow page execution to continue.
@@ -127,13 +130,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setThrowExceptionOnScriptError(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isThrowExceptionOnScriptError();
         }
     },
-    
+
     /**
      * Enable/disable the popup window blocker. By default, the popup blocker is disabled, and popup
      * windows are allowed. When set to {@code true}, the {@code window.open()} function has no effect
@@ -148,13 +151,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setPopupBlockerEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isPopupBlockerEnabled();
         }
     },
-    
+
     /**
      * Sets whether or not redirections will be followed automatically on receipt of a redirect
      * status code from the server.
@@ -168,13 +171,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setRedirectEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isRedirectEnabled();
         }
     },
-    
+
     /**
      * Path to the directory to be used for storing the response content in a
      * temporary file. The specified directory is created if if doesn't exist.
@@ -189,21 +192,22 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             try {
                 options.setTempFileDirectory(TypeCodec.decodeFile(value));
-            } catch (IOException e) {
+            }
+            catch (final IOException e) {
                 throw new IllegalArgumentException("Failed setting directory for temporary files", e);
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getTempFileDirectory();
         }
     },
-    
+
     /**
      * The SSL client certificate <b>KeyStore</b> to use.
      * <p>
-     * <b>NOTE</b>: 
+     * <b>NOTE</b>:
      * <p>
      * property: <b>webdriver.htmlunit.sslClientCertificateStore</b><br>
      * type: {@link KeyStore}<br>
@@ -216,24 +220,25 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public Object encode(final Object value) {
             return null;
         }
-        
+
         @Override
         public void insert(final WebClientOptions options, final Object value) {
             try {
-                KeyStoreBean bean = TypeCodec.decodeKeyStore(value);
+                final KeyStoreBean bean = TypeCodec.decodeKeyStore(value);
                 options.setSSLClientCertificateKeyStore(bean.createUrl(), bean.getPassword(), bean.getType());
-            } catch (MalformedURLException e) {
+            }
+            catch (final MalformedURLException e) {
                 throw new IllegalArgumentException(
                         "Specified SSL_CLIENT_CERTIFICATE_STORE URL is malformed", e);
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLClientCertificateStore();
         }
     },
-    
+
     /**
      * Type of the specified SSL client certificate <b>KeyStore</b> (e.g. - {@code jks} or {@code pkcs12}).
      * <p>
@@ -253,14 +258,14 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                         + "use HtmlUnitDriverOptions.setSSLClientCertificateStore() instead");
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
-            KeyStore keyStore = options.getSSLClientCertificateStore();
+            final KeyStore keyStore = options.getSSLClientCertificateStore();
             return (keyStore != null) ? keyStore.getType() : null;
         }
     },
-    
+
     /**
      * Password for the specified SSL client certificate <b>KeyStore</b>.
      * <p>
@@ -279,13 +284,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                         + "use HtmlUnitDriverOptions.setSSLClientCertificateStore() instead");
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLClientCertificatePassword();
         }
     },
-    
+
     /**
      * The SSL server certificate trust store. All server certificates will be validated against
      * this trust store.
@@ -301,24 +306,25 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public Object encode(final Object value) {
             return null;
         }
-        
+
         @Override
         public void insert(final WebClientOptions options, final Object value) {
             try {
-                KeyStoreBean bean = TypeCodec.decodeKeyStore(value);
+                final KeyStoreBean bean = TypeCodec.decodeKeyStore(value);
                 options.setSSLTrustStore(bean.createUrl(), bean.getPassword(), bean.getType());
-            } catch (MalformedURLException e) {
+            }
+            catch (final MalformedURLException e) {
                 throw new IllegalArgumentException(
                         "Specified SSL_TRUST_STORE URL is malformed", e);
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLTrustStore();
         }
     },
-    
+
     /**
      * Type of the specified SSL trust <b>KeyStore</b> (e.g. - {@code jks} or {@code pkcs12}).
      * <p>
@@ -338,14 +344,14 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                         + "use HtmlUnitDriverOptions.setSSLTrustStore() instead");
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
-            KeyStore keyStore = options.getSSLTrustStore();
+            final KeyStore keyStore = options.getSSLTrustStore();
             return (keyStore != null) ? keyStore.getType() : null;
         }
     },
-    
+
     /**
      * Password for the specified SSL trust <b>KeyStore</b>.
      * <p>
@@ -364,13 +370,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
                         + "use HtmlUnitDriverOptions.setSSLTrustStore() instead");
             }
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             throw new UnsupportedOperationException("SSL trust store password cannot be retrieved");
         }
     },
-    
+
     /**
      * Sets the protocol versions enabled for use on SSL connections.
      * <p>
@@ -384,13 +390,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setSSLClientProtocols(TypeCodec.decodeStringArray(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLClientProtocols();
         }
     },
-    
+
     /**
      * Sets the cipher suites enabled for use on SSL connections.
      * <p>
@@ -404,13 +410,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setSSLClientCipherSuites(TypeCodec.decodeStringArray(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLClientCipherSuites();
         }
     },
-    
+
     /**
      * Enables/disables geo-location support.
      * <p>
@@ -423,13 +429,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setGeolocationEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isGeolocationEnabled();
         }
     },
-    
+
     /**
      * Enables/disables "Do Not Track" support.
      * <p>
@@ -442,13 +448,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setDoNotTrackEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isDoNotTrackEnabled();
         }
     },
-    
+
     /**
      * Sets the client's home page.
      * <p>
@@ -461,13 +467,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setHomePage(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getHomePage();
         }
     },
-    
+
     /**
      * Sets the proxy configuration for this client.
      * <p>
@@ -480,13 +486,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setProxyConfig(TypeCodec.decodeProxyConfig(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getProxyConfig();
         }
     },
-    
+
     /**
      * Sets the timeout of the {@link WebConnection}. Set to zero for an infinite wait.
      * <p>
@@ -502,13 +508,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setTimeout(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getTimeout();
         }
     },
-    
+
     /**
      * Sets the {@code connTimeToLive} (in milliseconds) of the {@link org.apache.http.client.HttpClient HttpClient}
      * connection pool. Use this if you are working with web pages behind a DNS based load balancer.
@@ -522,13 +528,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setConnectionTimeToLive(TypeCodec.decodeLong(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getConnectionTimeToLive();
         }
     },
-    
+
     /**
      * If set to {@code true}, the client will accept connections to any host, regardless of
      * whether they have valid certificates or not. This is especially useful when you are trying to
@@ -543,13 +549,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setUseInsecureSSL(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isUseInsecureSSL();
         }
     },
-    
+
     /**
      * Sets the SSL protocol, used only when {@link #USE_INSECURE_SSL} is set to {@code true}.
      * <p>
@@ -564,13 +570,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setSSLInsecureProtocol(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getSSLInsecureProtocol();
         }
     },
-    
+
     /**
      * Sets the maximum bytes to have in memory, after which the content is saved to a temporary file.<br>
      * <b>NOTE</b>: Set this to zero or -1 to deactivate the saving at all.
@@ -584,13 +590,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setMaxInMemory(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getMaxInMemory();
         }
     },
-    
+
     /**
      * Sets the maximum number of {@link Page pages} to cache in history. <b>HtmlUnit</b>
      * uses {@code SoftReference<Page>} for storing the pages that are part of the history.
@@ -607,13 +613,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setHistorySizeLimit(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getHistorySizeLimit();
         }
     },
-    
+
     /**
      * Sets the maximum number of {@link Page pages} to cache in history. If this value
      * is smaller than {@link #HISTORY_SIZE_LIMIT}, <b>HtmlUnit</b> will only use soft
@@ -629,13 +635,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setHistoryPageCacheLimit(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getHistoryPageCacheLimit();
         }
     },
-    
+
     /**
      * Sets the local address to be used for request execution.
      * <p>
@@ -651,13 +657,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setLocalAddress(TypeCodec.decodeInetAddress(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getLocalAddress();
         }
     },
-    
+
     /**
      * Sets whether or not to automatically download images.
      * <p>
@@ -670,13 +676,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setDownloadImages(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isDownloadImages();
         }
     },
-    
+
     /**
      * Sets the screen width.
      * <p>
@@ -689,13 +695,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setScreenWidth(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getScreenWidth();
         }
     },
-    
+
     /**
      * Sets the screen height.
      * <p>
@@ -708,13 +714,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setScreenHeight(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getScreenHeight();
         }
     },
-    
+
     /**
      * Enables/disables WebSocket support.
      * <p>
@@ -727,13 +733,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setWebSocketEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isWebSocketEnabled();
         }
     },
-    
+
     /**
      * Sets the WebSocket {@code maxTextMessageSize}.
      * <p>
@@ -746,13 +752,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setWebSocketMaxTextMessageSize(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getWebSocketMaxTextMessageSize();
         }
     },
-    
+
     /**
      * Sets the WebSocket {@code maxTextMessageBufferSize}.
      * <p>
@@ -765,13 +771,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setWebSocketMaxTextMessageBufferSize(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getWebSocketMaxTextMessageBufferSize();
         }
     },
-    
+
     /**
      * Sets the WebSocket {@code maxBinaryMessageSize}.
      * <p>
@@ -784,13 +790,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setWebSocketMaxBinaryMessageSize(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getWebSocketMaxBinaryMessageSize();
         }
     },
-    
+
     /**
      * Sets the WebSocket {@code maxBinaryMessageBufferSize}.
      * <p>
@@ -803,13 +809,13 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setWebSocketMaxBinaryMessageBufferSize(TypeCodec.decodeInt(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.getWebSocketMaxBinaryMessageBufferSize();
         }
     },
-    
+
     /**
      * Sets whether or not fetch polyfill should be used.
      * <p>
@@ -822,138 +828,144 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public void insert(final WebClientOptions options, final Object value) {
             options.setFetchPolyfillEnabled(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final WebClientOptions options) {
             return options.isFetchPolyfillEnabled();
         }
     };
-    
+
     public final String key;
     public final String name;
     public final Class<?> type;
     public final Object initial;
-    
+
     HtmlUnitOption(final String key, final Class<?> type, final Object initial) {
         this.key = key;
         this.name = "webdriver.htmlunit." + key;
         this.type = type;
         this.initial = initial;
     }
-    
+
     @Override
     public String getCapabilityKey() {
         return key;
     }
-    
+
     @Override
     public String getPropertyName() {
         return name;
     }
-    
+
     @Override
     public Class<?> getOptionType() {
         return type;
     }
-    
+
     @Override
     public Object getDefaultValue() {
         return initial;
     }
-    
+
     /**
      * Determine if the specified value matches the default for this option.
-     * 
+     *
      * @param value value to be evaluated
      * @return {@code true} if specified value matches the default value; otherwise {@code false}
      */
     @Override
     public boolean isDefaultValue(final Object value) {
-        if (initial == null) return value == null;
-        if (value == null) return false;
+        if (initial == null) {
+            return value == null;
+        }
+        if (value == null) {
+            return false;
+        }
         return value.equals(initial);
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public
-    void applyPropertyTo(Map<String, Object> optionsMap) {
-        String value = System.getProperty(name);
+    public void applyPropertyTo(final Map<String, Object> optionsMap) {
+        final String value = System.getProperty(name);
         if (value != null) {
             optionsMap.put(key, decode(value));
             System.clearProperty(key);
         }
     }
-    
+
     /**
      * Encode the specified value according to the type of this option.
-     * 
+     *
      * @param value value to be encoded
      * @return option-specific encoding for specified value
      */
     @Override
     public Object encode(final Object value) {
-        switch (this.type.getName()) {
-        case "boolean":
-        case "int":
-        case "long":
-        case "java.lang.String":
-        case "[C":
-        case "[Ljava.lang.String;":
-            return value;
-        case "java.io.File":
-            return TypeCodec.encodeFile(value);
-        case "java.net.InetAddress":
-            return TypeCodec.encodeInetAddress(value);
-        case "org.htmlunit.ProxyConfig":
-            return TypeCodec.encodeProxyConfig(value);
-        case "org.htmlunit.BrowserVersion":
-            return TypeCodec.encodeBrowserVersion(value);
+        switch (type.getName()) {
+            case "boolean":
+            case "int":
+            case "long":
+            case "java.lang.String":
+            case "[C":
+            case "[Ljava.lang.String;":
+                return value;
+            case "java.io.File":
+                return TypeCodec.encodeFile(value);
+            case "java.net.InetAddress":
+                return TypeCodec.encodeInetAddress(value);
+            case "org.htmlunit.ProxyConfig":
+                return TypeCodec.encodeProxyConfig(value);
+            case "org.htmlunit.BrowserVersion":
+                return TypeCodec.encodeBrowserVersion(value);
         }
         throw new IllegalStateException(
                 String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
                 this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
-    
+
     /**
      * Decode the specified value according to the type of this option.
-     * 
+     *
      * @param value value to be decoded
      * @return option-specific decoding for specified value
      */
     @Override
     public Object decode(final Object value) {
         switch (this.type.getName()) {
-        case "boolean":
-            return TypeCodec.decodeBoolean(value);
-        case "int":
-            return TypeCodec.decodeInt(value);
-        case "long":
-            return TypeCodec.decodeLong(value);
-        case "java.lang.String":
-            return TypeCodec.decodeString(value);
-        case "[C":
-            return TypeCodec.decodeCharArray(value);
-        case "[Ljava.lang.String;":
-            return TypeCodec.decodeStringArray(value);
-        case "java.io.File":
-            return TypeCodec.decodeFile(value);
-        case "java.net.InetAddress":
-            return TypeCodec.decodeInetAddress(value);
-        case "java.security.KeyStore":
-            return TypeCodec.decodeKeyStore(value);
-        case "org.htmlunit.ProxyConfig":
-            return TypeCodec.decodeProxyConfig(value);
-        case "org.htmlunit.BrowserVersion":
-            return TypeCodec.decodeBrowserVersion(value);
+            case "boolean":
+                return TypeCodec.decodeBoolean(value);
+            case "int":
+                return TypeCodec.decodeInt(value);
+            case "long":
+                return TypeCodec.decodeLong(value);
+            case "java.lang.String":
+                return TypeCodec.decodeString(value);
+            case "[C":
+                return TypeCodec.decodeCharArray(value);
+            case "[Ljava.lang.String;":
+                return TypeCodec.decodeStringArray(value);
+            case "java.io.File":
+                return TypeCodec.decodeFile(value);
+            case "java.net.InetAddress":
+                return TypeCodec.decodeInetAddress(value);
+            case "java.security.KeyStore":
+                return TypeCodec.decodeKeyStore(value);
+            case "org.htmlunit.ProxyConfig":
+                return TypeCodec.decodeProxyConfig(value);
+            case "org.htmlunit.BrowserVersion":
+                return TypeCodec.decodeBrowserVersion(value);
         }
         throw new IllegalStateException(
                 String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
                 this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
-    
+
     /**
      * Insert the specified value for this option into the provided web client options object.
-     * 
+     *
      * @param options {@link WebClientOptions} object
      * @param value value to be inserted
      */
@@ -961,28 +973,28 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         throw new UnsupportedOperationException(
                 String.format("Option '%s' does not support value insertion", this.toString()));
     }
-    
+
     /**
      * Obtain the value for this option from the specified web client options object.
-     * 
+     *
      * @param options {@link WebClientOptions} object
      * @return value for this option
      */
     public Object obtain(final WebClientOptions options) {
         return null;
     }
-    
+
     public static HtmlUnitOption fromCapabilityKey(final String key) {
-        for (HtmlUnitOption option : HtmlUnitOption.values()) {
+        for (final HtmlUnitOption option : HtmlUnitOption.values()) {
             if (option.key.equals(key)) {
                 return option;
             }
         }
         return null;
     }
-    
+
     public static HtmlUnitOption fromPropertyName(final String name) {
-        for (HtmlUnitOption option : HtmlUnitOption.values()) {
+        for (final HtmlUnitOption option : HtmlUnitOption.values()) {
             if (option.name.equals(name)) {
                 return option;
             }

@@ -60,7 +60,7 @@ import org.openqa.selenium.remote.CapabilityType;
  *     new URL("http://localhost:4444/"),
  *     new HtmlUnitDriverOptions());
  * </code></pre>
- * 
+ *
  * <p>Getting/setting HtmlUnitDriver options:
  * <p>
  * In addition to methods for reading and writing specific <b>HtmlUnitDriver</b> options, you can use
@@ -70,9 +70,9 @@ import org.openqa.selenium.remote.CapabilityType;
  *     <li>{@link #getCapability(String)}</li>
  *     <li>{@link #setCapability(String, Object)}</li>
  * </ul>
- * 
+ *
  * <p>Example usage:
- * 
+ *
  * <pre><code>
  * HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
  * boolean popupBlockerEnabled = options.is(HtmlUnitOption.optPopupBlockerEnabled);
@@ -80,17 +80,17 @@ import org.openqa.selenium.remote.CapabilityType;
  * String  browserLanguage = (String) options.getCapability(BrowserVersionTrait.optBrowserLanguage);
  * options.setCapability(HtmlUnitOption.optGeolocationEnabled, true);
  * </code></pre>
- * 
+ *
  * <p>Getting individual browser version traits:
  * <p>
- * <b>HtmlUnitDriverOption</b> contains a {@link BrowserVersion} which can be read and written directly: 
+ * <b>HtmlUnitDriverOption</b> contains a {@link BrowserVersion} which can be read and written directly:
  * <ul>
  *     <li>{@link #getWebClientVersion()}</li>
  *     <li>{@link #setWebClientVersion(BrowserVersion)}</li>
  * </ul>
  * The individual traits of the <b>BrowserVersion</b> object can be read directly as well via the standard
- * {@link Capabilities} API. For example: 
- * 
+ * {@link Capabilities} API. For example:
+ *
  * <pre><code>
  * HtmlUnitDriverOptions options = new HtmlUnitDriverOptions(BrowserVersion.EDGE);
  * // System time zone accessed via BrowserVersion API
@@ -98,19 +98,21 @@ import org.openqa.selenium.remote.CapabilityType;
  * // System time zone accessed via standard Capabilities API
  * TimeZone viaCapabilityName = (TimeZone) options.getCapability(BrowserVersionTrait.optSystemTimezone);
  * </code></pre>
- * 
+ *
  * <b>NOTE</b>: Although <b>HtmlUnitDriverOptions</b> objects are mutable (their properties can be altered),
  * the individual traits of the {@link BrowserVersion} object within these objects cannot be altered:
- * 
+ *
  * <pre><code>
  * HtmlUnitDriverOptions options = new HtmlUnitDriverOptions(BrowserVersion.CHROME);
  * options.setCapability(BrowserVersionTrait.optUserAgent, "HtmlUnitDriver emulating Google Chrome");
  * // =&gt; UnsupporterOperationException: Individual browser version traits are immutable; 'optUserAgent' cannot be set
  * </code></pre>
- * 
- * @since HtmlUnitDriver v4.21.0
+ *
+ * @since HtmlUnitDriver v4.22.0
  * @see HtmlUnitOption
  * @see BrowserVersionTrait
+ *
+ * @author Scott Babcock
  */
 @SuppressWarnings("serial")
 public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverOptions> {
@@ -120,7 +122,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      * object.
      */
     public static final String HTMLUNIT_OPTIONS = "garg:htmlunitOptions";
-    
+
     private WebClientOptions webClientOptions = new WebClientOptions();
     private BrowserVersion webClientVersion = BrowserVersion.BEST_SUPPORTED;
 
@@ -131,18 +133,18 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         webClientOptions.setPrintContentOnFailingStatusCode(false);
         webClientOptions.setUseInsecureSSL(true);
     }
-    
+
     public HtmlUnitDriverOptions(final BrowserVersion version) {
         this();
         setWebClientVersion(version);
     }
-    
+
     public HtmlUnitDriverOptions(final BrowserVersion version, final boolean enableJavascript) {
         this();
         setWebClientVersion(version);
         setJavaScriptEnabled(enableJavascript);
     }
-    
+
     public HtmlUnitDriverOptions(final Capabilities source) {
         this();
         if (source != null) {
@@ -150,28 +152,30 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
             source.asMap().forEach(this::setCapability);
             // ensure browser name is correct
             setCapability(CapabilityType.BROWSER_NAME, HTMLUNIT.browserName());
-            
+
             if (source instanceof HtmlUnitDriverOptions) {
                 // transfer web client option from source capabilities
                 transfer(((HtmlUnitDriverOptions) source).webClientOptions, webClientOptions);
                 // copy web client version from source capabilities
                 webClientVersion = ((HtmlUnitDriverOptions) source).webClientVersion;
-            } else {
+            }
+            else {
                 // get HtmlUnit options from standard capabilities
-                Object htmlunitOptions = source.getCapability(HTMLUNIT_OPTIONS);
+                final Object htmlunitOptions = source.getCapability(HTMLUNIT_OPTIONS);
                 // if capability was found
                 if (htmlunitOptions != null) {
                     // import HtmlUnit options
                     importOptions(htmlunitOptions);
-                    
+
                     // remove encoded HtmlUnit options
                     setCapability(HTMLUNIT_OPTIONS, (Object) null);
-                } else {
+                }
+                else {
                     // set web client version from standard capabilities
                     webClientVersion = BrowserVersionDeterminer.determine(source);
                 }
             }
-            
+
             // if JAVASCRIPT_ENABLED has default value, but legacy capability is 'false'
             if (isJavaScriptEnabled() && (Boolean.FALSE == source.getCapability(JAVASCRIPT_ENABLED))) {
                 // disable JavaScript support
@@ -182,7 +186,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
                 // enable image download
                 setDownloadImages(true);
             }
-            
+
             // remove legacy capabilities
             super.setCapability(JAVASCRIPT_ENABLED, (Object) null);
             super.setCapability(DOWNLOAD_IMAGES_CAPABILITY, (Object) null);
@@ -192,26 +196,26 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
     public HtmlUnitDriverOptions(final Map<String, Object> optionsMap) {
         this(new MutableCapabilities(Require.nonNull("Source options map", optionsMap)));
     }
-    
+
     @Override
     public Object getCapability(final String capabilityName) {
         Require.nonNull("Capability name", capabilityName);
         if (HTMLUNIT_OPTIONS.equals(capabilityName)) {
             return exportOptions();
         }
-        HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
+        final HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
         if (option != null) {
             switch (option) {
-            case SSL_CLIENT_CERTIFICATE_PASSWORD:
-            case SSL_TRUST_STORE_PASSWORD:
-                return null;
-            case WEB_CLIENT_VERSION:
-                return webClientVersion;
-            default:
-                return option.obtain(webClientOptions);
+                case SSL_CLIENT_CERTIFICATE_PASSWORD:
+                case SSL_TRUST_STORE_PASSWORD:
+                    return null;
+                case WEB_CLIENT_VERSION:
+                    return webClientVersion;
+                default:
+                    return option.obtain(webClientOptions);
             }
         }
-        BrowserVersionTrait trait = BrowserVersionTrait.fromCapabilityKey(capabilityName);
+        final BrowserVersionTrait trait = BrowserVersionTrait.fromCapabilityKey(capabilityName);
         if (trait != null) {
             return trait.obtain(webClientVersion);
         }
@@ -225,15 +229,15 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
             importOptions(value);
             return;
         }
-        HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
+        final HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
         if (option != null) {
             switch (option) {
-            case WEB_CLIENT_VERSION:
-                webClientVersion = (BrowserVersion) option.decode(value);
-                return;
-            default:
-                option.insert(webClientOptions, value);
-                return;
+                case WEB_CLIENT_VERSION:
+                    webClientVersion = (BrowserVersion) option.decode(value);
+                    return;
+                default:
+                    option.insert(webClientOptions, value);
+                    return;
             }
         }
         if (BrowserVersionTrait.fromCapabilityKey(capabilityName) != null) {
@@ -242,7 +246,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         }
         super.setCapability(capabilityName, value);
     }
-    
+
     @Override
     protected Set<String> getExtraCapabilityNames() {
         return Collections.singleton(HTMLUNIT_OPTIONS);
@@ -256,10 +260,10 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         }
         return null;
     }
-    
+
     /**
      * Import values from the specified source into this <b>HtmlUnitDriver</b> options object.
-     * 
+     *
      * @param source source {@link WebClientOptions} object
      * @return this {@link HtmlUnitDriverOptions} object
      */
@@ -267,45 +271,46 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         transfer(source, webClientOptions);
         return this;
     }
-    
+
     /**
      * Apply values from this <b>HtmlUnitDriver</b> options object to the specifies target.
-     * 
+     *
      * @param target target {@link WebClientOptions} object
      */
     public void applyOptions(final WebClientOptions target) {
         transfer(webClientOptions, target);
     }
-    
+
     public boolean isJavaScriptEnabled() {
         return webClientOptions.isJavaScriptEnabled();
     }
-    
+
     public HtmlUnitDriverOptions setJavaScriptEnabled(final boolean enableJavascript) {
         webClientOptions.setJavaScriptEnabled(enableJavascript);
         return this;
     }
-    
+
     public boolean isDownloadImages() {
         return webClientOptions.isDownloadImages();
     }
-    
+
     public HtmlUnitDriverOptions setDownloadImages(final boolean downloadImages) {
         webClientOptions.setDownloadImages(downloadImages);
         return this;
     }
-    
+
     public BrowserVersion getWebClientVersion() {
         return webClientVersion;
     }
-    
+
     public HtmlUnitDriverOptions setWebClientVersion(final BrowserVersion webClientVersion) {
         Require.nonNull("Web client version", webClientVersion);
         this.webClientVersion = webClientVersion;
         return this;
     }
-    
-    public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final KeyStore keyStore, final char[] keyStorePassword) {
+
+    public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final KeyStore keyStore,
+            final char[] keyStorePassword) {
         webClientOptions.setSSLClientCertificateKeyStore(keyStore, keyStorePassword);
         return this;
     }
@@ -317,8 +322,8 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         return this;
     }
 
-    public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final InputStream keyStoreInputStream, final String keyStorePassword,
-            final String keyStoreType) {
+    public HtmlUnitDriverOptions setSSLClientCertificateKeyStore(final InputStream keyStoreInputStream,
+            final String keyStorePassword, final String keyStoreType) {
         webClientOptions.setSSLClientCertificateKeyStore(keyStoreInputStream, keyStorePassword, keyStoreType);
         return this;
     }
@@ -329,68 +334,68 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         webClientOptions.setSSLTrustStore(sslTrustStoreUrl, sslTrustStorePassword, sslTrustStoreType);
         return this;
     }
-    
+
     @SuppressWarnings("unchecked")
     private void importOptions(final Object rawOptions) {
         Map<String, Object> optionsMap = new HashMap<>();
-        
+
         // if value specified
         if (rawOptions != null) {
             Require.stateCondition(rawOptions instanceof Map,
                     "Specified value must be 'Map'; was %s", rawOptions.getClass().getName());
-            optionsMap = (Map<String, Object>) rawOptions;            
+            optionsMap = (Map<String, Object>) rawOptions;
         }
-        
+
         // apply specified system properties to options map
-        for (HtmlUnitOption option : HtmlUnitOption.values()) {
+        for (final HtmlUnitOption option : HtmlUnitOption.values()) {
             option.applyPropertyTo(optionsMap);
         }
-        
+
         if (!optionsMap.isEmpty()) {
-            for (HtmlUnitOption option : HtmlUnitOption.values()) {
+            for (final HtmlUnitOption option : HtmlUnitOption.values()) {
                 if (optionsMap.containsKey(option.key)) {
                     switch (option) {
-                    case SSL_CLIENT_CERTIFICATE_PASSWORD:
-                    case SSL_TRUST_STORE_PASSWORD:
-                        continue;
-                    case WEB_CLIENT_VERSION:
-                        webClientVersion = (BrowserVersion) option.decode(optionsMap.get(option.key));
-                        break;
-                    default:
-                        option.insert(webClientOptions, optionsMap.get(option.key));
-                        break;
+                        case SSL_CLIENT_CERTIFICATE_PASSWORD:
+                        case SSL_TRUST_STORE_PASSWORD:
+                            continue;
+                        case WEB_CLIENT_VERSION:
+                            webClientVersion = (BrowserVersion) option.decode(optionsMap.get(option.key));
+                            break;
+                        default:
+                            option.insert(webClientOptions, optionsMap.get(option.key));
+                            break;
                     }
                 }
             }
         }
     }
-    
+
     private Map<String, Object> exportOptions() {
-        Map<String, Object> optionsMap = new HashMap<>();
-        for (HtmlUnitOption option : HtmlUnitOption.values()) {
+        final Map<String, Object> optionsMap = new HashMap<>();
+        for (final HtmlUnitOption option : HtmlUnitOption.values()) {
             switch (option) {
-            case SSL_CLIENT_CERTIFICATE_PASSWORD:
-            case SSL_TRUST_STORE_PASSWORD:
-                continue;
-            case WEB_CLIENT_VERSION:
-                if (webClientVersion != null) {
-                    optionsMap.put(option.key, option.encode(webClientVersion));
-                }
-                break;
-            default:
-                Object value = option.obtain(webClientOptions);
-                if (!option.isDefaultValue(value)) {
-                    optionsMap.put(option.key, option.encode(value));
-                }
-                break;
+                case SSL_CLIENT_CERTIFICATE_PASSWORD:
+                case SSL_TRUST_STORE_PASSWORD:
+                    continue;
+                case WEB_CLIENT_VERSION:
+                    if (webClientVersion != null) {
+                        optionsMap.put(option.key, option.encode(webClientVersion));
+                    }
+                    break;
+                default:
+                    final Object value = option.obtain(webClientOptions);
+                    if (!option.isDefaultValue(value)) {
+                        optionsMap.put(option.key, option.encode(value));
+                    }
+                    break;
             }
         }
         return optionsMap;
     }
-    
+
     private static void transfer(final WebClientOptions source, final WebClientOptions target) {
         Require.nonNull("Source capabilities", source);
-        Require.nonNull("Target capabilities", target);        
+        Require.nonNull("Target capabilities", target);
         target.setJavaScriptEnabled(source.isJavaScriptEnabled());
         target.setCssEnabled(source.isCssEnabled());
         target.setPrintContentOnFailingStatusCode(source.isPrintContentOnFailingStatusCode());
@@ -398,18 +403,23 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         target.setThrowExceptionOnScriptError(source.isThrowExceptionOnScriptError());
         target.setPopupBlockerEnabled(source.isPopupBlockerEnabled());
         target.setRedirectEnabled(source.isRedirectEnabled());
-        try { target.setTempFileDirectory(source.getTempFileDirectory()); } catch (IOException eaten) { }
+        try {
+            target.setTempFileDirectory(source.getTempFileDirectory());
+        }
+        catch (final IOException eaten) {
+            // ignore
+        }
         target.setSSLClientProtocols(source.getSSLClientProtocols());
         target.setSSLClientCipherSuites(source.getSSLClientCipherSuites());
         target.setGeolocationEnabled(source.isGeolocationEnabled());
         target.setDoNotTrackEnabled(source.isDoNotTrackEnabled());
         target.setHomePage(source.getHomePage());
-        
-        ProxyConfig proxyConfig = source.getProxyConfig();
+
+        final ProxyConfig proxyConfig = source.getProxyConfig();
         if (proxyConfig != null) {
             target.setProxyConfig(proxyConfig);
         }
-        
+
         target.setTimeout(source.getTimeout());
         target.setConnectionTimeToLive(source.getConnectionTimeToLive());
         target.setUseInsecureSSL(source.isUseInsecureSSL());
@@ -428,5 +438,5 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         target.setWebSocketMaxBinaryMessageBufferSize(source.getWebSocketMaxBinaryMessageBufferSize());
         target.setFetchPolyfillEnabled(source.isFetchPolyfillEnabled());
     }
-    
+
 }

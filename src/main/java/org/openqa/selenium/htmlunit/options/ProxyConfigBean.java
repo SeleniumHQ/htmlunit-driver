@@ -27,6 +27,9 @@ import java.util.regex.Pattern;
 
 import org.htmlunit.ProxyConfig;
 
+/**
+ * @author Scott Babcock
+ */
 @SuppressWarnings("serial")
 public class ProxyConfigBean implements Serializable {
     private String host;
@@ -35,43 +38,43 @@ public class ProxyConfigBean implements Serializable {
     private boolean socksProxy;
     private List<String> bypassHosts;
     private String autoConfigUrl;
-    
+
     public String getHost() {
         return host;
     }
-    
+
     public void setHost(final String host) {
         this.host = host;
     }
-    
+
     public int getPort() {
         return port;
     }
-    
+
     public void setPort(final int port) {
         this.port = port;
     }
-    
+
     public String getScheme() {
         return scheme;
     }
-    
+
     public void setScheme(final String scheme) {
         this.scheme = scheme;
     }
-    
+
     public boolean isSocksProxy() {
         return socksProxy;
     }
-    
+
     public void setSocksProxy(final boolean socksProxy) {
         this.socksProxy = socksProxy;
     }
-    
+
     public List<String> getBypassHosts() {
         return bypassHosts;
     }
-    
+
     public String getBypassHosts(final int index) {
         return bypassHosts.get(index);
     }
@@ -79,27 +82,27 @@ public class ProxyConfigBean implements Serializable {
     public void setBypassHosts(final List<String> bypassHosts) {
         this.bypassHosts = bypassHosts;
     }
-    
+
     public void setBypassHosts(final int index, final String bypassHost) {
         bypassHosts.set(index, bypassHost);
     }
-    
+
     public String getAutoConfigUrl() {
         return autoConfigUrl;
     }
-    
+
     public void setAutoConfigUrl(final String autoConfigUrl) {
         this.autoConfigUrl = autoConfigUrl;
     }
-    
+
     /**
      * Encode the specified {@code ProxyConfig} object.
-     * 
+     *
      * @param value {@link ProxyConfig} object to be encoded
      * @return encoded {@code ProxyConfig} object
      */
     public static Map<String, Object> encodeProxyConfig(final ProxyConfig value) {
-        Map<String, Object> configMap = new HashMap<>();
+        final Map<String, Object> configMap = new HashMap<>();
         configMap.put("host", value.getProxyHost());
         configMap.put("port", value.getProxyPort());
         configMap.put("scheme", value.getProxyScheme());
@@ -107,24 +110,25 @@ public class ProxyConfigBean implements Serializable {
         configMap.put("autoConfigUrl", value.getProxyAutoConfigUrl());
         return configMap;
     }
-    
+
     public ProxyConfig build() {
-        ProxyConfig value = new ProxyConfig(host, port, scheme, socksProxy);
+        final ProxyConfig value = new ProxyConfig(host, port, scheme, socksProxy);
         bypassHosts.forEach(value::addHostsToProxyBypass);
         value.setProxyAutoConfigUrl(autoConfigUrl);
         return value;
     }
-    
+
     @SuppressWarnings("unchecked")
     static List<String> getBypassHosts(final ProxyConfig value) {
         try {
-            Field proxyBypassHosts_ = ProxyConfig.class.getDeclaredField("proxyBypassHosts_");
+            final Field proxyBypassHosts_ = ProxyConfig.class.getDeclaredField("proxyBypassHosts_");
             proxyBypassHosts_.setAccessible(true);
-            Map<String, Pattern> proxyBypassHosts = (Map<String, Pattern>) proxyBypassHosts_.get(value);
+            final Map<String, Pattern> proxyBypassHosts = (Map<String, Pattern>) proxyBypassHosts_.get(value);
             return new ArrayList<String>(proxyBypassHosts.keySet());
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        }
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             return null;
         }
-        
+
     }
 }

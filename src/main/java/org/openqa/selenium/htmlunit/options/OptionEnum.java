@@ -19,6 +19,9 @@ package org.openqa.selenium.htmlunit.options;
 
 import java.util.Map;
 
+/**
+ * @author Scott Babcock
+ */
 public interface OptionEnum {
     String getCapabilityKey();
     String getPropertyName();

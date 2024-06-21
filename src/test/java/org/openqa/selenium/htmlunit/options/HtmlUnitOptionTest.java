@@ -17,9 +17,14 @@
 
 package org.openqa.selenium.htmlunit.options;
 
-import static org.junit.Assert.assertEquals;
-import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.*;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.LOCAL_ADDRESS;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.PROXY_CONFIG;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.SSL_CLIENT_PROTOCOLS;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.SSL_TRUST_STORE_TYPE;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.TEMP_FILE_DIRECTORY;
+import static org.openqa.selenium.htmlunit.options.HtmlUnitOption.WEB_CLIENT_VERSION;
 
 import java.io.File;
 import java.net.InetAddress;
@@ -30,39 +35,42 @@ import org.htmlunit.BrowserVersion;
 import org.htmlunit.ProxyConfig;
 import org.junit.Test;
 
+/**
+ * @author Scott Babcock
+ */
 public class HtmlUnitOptionTest {
-    
+
     @Test
     public void decodeStringToCharArray() {
-        char[] sslTrustStoreType = "jks".toCharArray();
-        char[] decoded = (char[]) SSL_TRUST_STORE_TYPE.decode("jks");
+        final char[] sslTrustStoreType = "jks".toCharArray();
+        final char[] decoded = (char[]) SSL_TRUST_STORE_TYPE.decode("jks");
         assertArrayEquals(sslTrustStoreType, decoded);
     }
-    
+
     @Test
     public void decodeStringToStringArray() {
-        String[] sslClientProtocols = new String[] {"foo", "bar", "baz"};
-        String encoded = "[\"foo\", \"bar\",\"baz\"]";
-        String[] decoded = (String[]) SSL_CLIENT_PROTOCOLS.decode(encoded);
+        final String[] sslClientProtocols = new String[] {"foo", "bar", "baz"};
+        final String encoded = "[\"foo\", \"bar\",\"baz\"]";
+        final String[] decoded = (String[]) SSL_CLIENT_PROTOCOLS.decode(encoded);
         assertArrayEquals(sslClientProtocols, decoded);
     }
-    
+
     @Test
     public void encodeAndDecodeFile() {
-        File tempFileDirectory = new File(System.getProperty("user.home"));
-        String encoded = (String) TEMP_FILE_DIRECTORY.encode(tempFileDirectory);
-        File decoded = (File) TEMP_FILE_DIRECTORY.decode(encoded);
+        final File tempFileDirectory = new File(System.getProperty("user.home"));
+        final String encoded = (String) TEMP_FILE_DIRECTORY.encode(tempFileDirectory);
+        final File decoded = (File) TEMP_FILE_DIRECTORY.decode(encoded);
         assertEquals(tempFileDirectory, decoded);
     }
-    
+
     @Test
     public void encodeAndDecodeInetAddress() throws UnknownHostException {
         final InetAddress localHost = InetAddress.getLocalHost();
-        String encoded = (String) LOCAL_ADDRESS.encode(localHost);
-        InetAddress decoded = (InetAddress) LOCAL_ADDRESS.decode(encoded);
+        final String encoded = (String) LOCAL_ADDRESS.encode(localHost);
+        final InetAddress decoded = (InetAddress) LOCAL_ADDRESS.decode(encoded);
         assertEquals(localHost, decoded);
     }
-    
+
     @Test
     public void encodeAndDecodeProxyConfig() {
         final ProxyConfig proxyConfig = new ProxyConfig();
@@ -71,19 +79,20 @@ public class HtmlUnitOptionTest {
         proxyConfig.setProxyPort(1234);
         proxyConfig.addHostsToProxyBypass("localhost");
         proxyConfig.addHostsToProxyBypass("127\\.0\\.0\\.1");
-        Object encoded = PROXY_CONFIG.encode(proxyConfig);
-        ProxyConfig decoded = (ProxyConfig) PROXY_CONFIG.decode(encoded);
+        final Object encoded = PROXY_CONFIG.encode(proxyConfig);
+        final ProxyConfig decoded = (ProxyConfig) PROXY_CONFIG.decode(encoded);
         verifyEquals(proxyConfig, decoded);
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void encodeAndDecodeBrowserVersion() {
-        Map<String, Object> encoded = (Map<String, Object>) WEB_CLIENT_VERSION.encode(BrowserVersion.BEST_SUPPORTED);
-        BrowserVersion decoded = (BrowserVersion) WEB_CLIENT_VERSION.decode(encoded);
+        final Map<String, Object> encoded =
+                (Map<String, Object>) WEB_CLIENT_VERSION.encode(BrowserVersion.BEST_SUPPORTED);
+        final BrowserVersion decoded = (BrowserVersion) WEB_CLIENT_VERSION.decode(encoded);
         BrowserVersionTraitTest.verify(BrowserVersion.BEST_SUPPORTED, decoded);
     }
-    
+
     private static void verifyEquals(final ProxyConfig expected, final ProxyConfig actual) {
         assertEquals("Proxy host mismatch", expected.getProxyHost(), actual.getProxyHost());
         assertEquals("Proxy port mismatch", expected.getProxyPort(), actual.getProxyPort());

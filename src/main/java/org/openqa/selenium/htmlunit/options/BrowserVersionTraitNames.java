@@ -17,6 +17,9 @@
 
 package org.openqa.selenium.htmlunit.options;
 
+/**
+ * @author Scott Babcock
+ */
 public interface BrowserVersionTraitNames {
     String SECTION = "browser-version-trait";
     String optNumericCode = "numericCode";

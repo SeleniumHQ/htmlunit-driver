@@ -22,6 +22,9 @@ import java.util.TimeZone;
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.BrowserVersion.BrowserVersionBuilder;
 
+/**
+ * @author Scott Babcock
+ */
 public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum {
     /**
      * Returns the numeric code for the browser represented by this <b>BrowserVersion</b>.
@@ -36,7 +39,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
             return version.getBrowserVersionNumeric();
         }
     },
-    
+
     /**
      * Returns the nickname for the browser represented by this <b>BrowserVersion</b>.
      * <p>
@@ -50,7 +53,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
             return version.getNickname();
         }
     },
-    
+
     /**
      * Returns the application version, for example "4.0 (compatible; MSIE 6.0b; Windows 98)".
      * <p>
@@ -64,13 +67,13 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setApplicationVersion(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getApplicationVersion();
         }
     },
-    
+
     /**
      * Returns the user agent string, for example "Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)".
      * <p>
@@ -83,7 +86,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setUserAgent(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getUserAgent();
@@ -103,13 +106,13 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setApplicationName(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getApplicationName();
         }
     },
-    
+
     /**
      * Returns the application code name, for example "Mozilla".
      * <p>
@@ -123,13 +126,13 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setApplicationCodeName(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getApplicationCodeName();
         }
     },
-    
+
     /**
      * Returns the application minor version, for example "0".
      * <p>
@@ -143,13 +146,13 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setApplicationMinorVersion(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getApplicationMinorVersion();
         }
     },
-    
+
     /**
      * Returns the browser vendor, for example "Google Inc.".
      * <p>
@@ -160,9 +163,9 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
     VENDOR(optVendor, String.class, "") {
         @Override
         public void apply(final Object value, final BrowserVersionBuilder builder) {
-            builder.setVendor(TypeCodec.decodeString(value));            
+            builder.setVendor(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getVendor();
@@ -181,7 +184,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setBrowserLanguage(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getBrowserLanguage();
@@ -201,7 +204,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setOnLine(TypeCodec.decodeBoolean(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.isOnLine();
@@ -221,7 +224,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setPlatform(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getPlatform();
@@ -240,7 +243,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setSystemTimezone(TypeCodec.decodeTimeZone(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getSystemTimezone();
@@ -259,7 +262,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setAcceptEncodingHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getAcceptEncodingHeader();
@@ -278,7 +281,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setAcceptLanguageHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getAcceptLanguageHeader();
@@ -297,7 +300,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setHtmlAcceptHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getHtmlAcceptHeader();
@@ -317,7 +320,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setImgAcceptHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getImgAcceptHeader();
@@ -337,7 +340,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setCssAcceptHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getCssAcceptHeader();
@@ -357,7 +360,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setScriptAcceptHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getScriptAcceptHeader();
@@ -377,7 +380,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setXmlHttpRequestAcceptHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getXmlHttpRequestAcceptHeader();
@@ -396,7 +399,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setSecClientHintUserAgentHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getSecClientHintUserAgentHeader();
@@ -415,7 +418,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         public void apply(final Object value, final BrowserVersionBuilder builder) {
             builder.setSecClientHintUserAgentPlatformHeader(TypeCodec.decodeString(value));
         }
-        
+
         @Override
         public Object obtain(final BrowserVersion version) {
             return version.getSecClientHintUserAgentPlatformHeader();
@@ -426,109 +429,112 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
     public final String name;
     public final Class<?> type;
     public final Object initial;
-    
+
     BrowserVersionTrait(final String key, final Class<?> type, final Object initial) {
         this.key = key;
         this.name = "webdriver.htmlunit.browserVersionTrait." + key;
         this.type = type;
         this.initial = initial;
     }
-    
+
     @Override
     public String getCapabilityKey() {
         return key;
     }
-    
+
     @Override
     public String getPropertyName() {
         return name;
     }
-    
+
     @Override
     public Class<?> getOptionType() {
         return type;
     }
-    
+
     @Override
     public Object getDefaultValue() {
         return initial;
     }
-    
+
     /**
      * Determine if the specified value matches the default for this trait.
-     * 
+     *
      * @param value value to be evaluated
      * @return {@code true} if specified value matches the default value; otherwise {@code false}
      */
     @Override
     public boolean isDefaultValue(final Object value) {
-        if (initial == null) return value == null;
-        if (value == null) return false;
+        if (initial == null) {
+            return value == null;
+        }
+        if (value == null) {
+            return false;
+        }
         return value.equals(initial);
     }
-    
+
     /**
      * Apply the value of the system property associated with this trait to the specified options map.
-     * 
+     *
      * @param optionsMap browser version options map
      */
     @Override
-    public
-    void applyPropertyTo(Map<String, Object> optionsMap) {
-        String value = System.getProperty(name);
+    public void applyPropertyTo(final Map<String, Object> optionsMap) {
+        final String value = System.getProperty(name);
         if (value != null) {
             optionsMap.put(key, decode(value));
             System.clearProperty(key);
         }
     }
-    
+
     /**
      * Encode the specified value according to the type of this trait.
-     * 
+     *
      * @param value value to be encoded
      * @return trait-specific encoding for specified value
      */
     @Override
     public Object encode(final Object value) {
-        switch (this.type.getName()) {
-        case "boolean":
-        case "int":
-        case "java.lang.String":
-            return value;
-        case "java.util.TimeZone":
-            return TypeCodec.encodeTimeZone(value);
+        switch (type.getName()) {
+            case "boolean":
+            case "int":
+            case "java.lang.String":
+                return value;
+            case "java.util.TimeZone":
+                return TypeCodec.encodeTimeZone(value);
         }
         throw new IllegalStateException(
                 String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
                 this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
-    
+
     /**
      * Decode the specified value according to the type of this trait.
-     * 
+     *
      * @param value value to be decoded
      * @return trait-specific decoding for specified value
      */
     @Override
     public Object decode(final Object value) {
         switch (this.type.getName()) {
-        case "boolean":
-            return TypeCodec.decodeBoolean(value);
-        case "int":
-            return TypeCodec.decodeInt(value);
-        case "java.lang.String":
-            return TypeCodec.decodeString(value);
-        case "java.util.TimeZone":
-            return TypeCodec.decodeTimeZone(value);
+            case "boolean":
+                return TypeCodec.decodeBoolean(value);
+            case "int":
+                return TypeCodec.decodeInt(value);
+            case "java.lang.String":
+                return TypeCodec.decodeString(value);
+            case "java.util.TimeZone":
+                return TypeCodec.decodeTimeZone(value);
         }
         throw new IllegalStateException(
                 String.format("Unsupported type '%s' specified for option [%s]; value is of type: %s",
                 this.type.getName(), this.toString(), TypeCodec.getClassName(value)));
     }
-    
+
     /**
      * Apply the specified value for this trait into the provided browser version builder.
-     * 
+     *
      * @param value value to be inserted
      * @param builder {@link BrowserVersionBuilder} object
      */
@@ -536,28 +542,28 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         throw new UnsupportedOperationException(
                 String.format("Trait '%s' does not support value insertion", this.toString()));
     }
-    
+
     /**
      * Obtain the value for this trait from the specified browser version object.
-     * 
+     *
      * @param version {@link BrowserVersion} object
      * @return value for this trait
      */
     public Object obtain(final BrowserVersion version) {
         return null;
     }
-    
+
     public static BrowserVersionTrait fromCapabilityKey(final String key) {
-        for (BrowserVersionTrait trait : BrowserVersionTrait.values()) {
+        for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
             if (trait.key.equals(key)) {
                 return trait;
             }
         }
         return null;
     }
-    
+
     public static BrowserVersionTrait fromPropertyName(final String name) {
-        for (BrowserVersionTrait trait : BrowserVersionTrait.values()) {
+        for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
             if (trait.name.equals(name)) {
                 return trait;
             }
