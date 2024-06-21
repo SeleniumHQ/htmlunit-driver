@@ -245,7 +245,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Type of the specified SSL client certificate <b>KeyStore</b> (e.g. - {@code jks} or {@code pkcs12}).
      * <p>
      * property: <b>webdriver.htmlunit.sslClientCertificateType</b><br>
-     * type: {@link char[]}<br>
+     * type: char[]<br>
      * default: {@code null}<br>
      * see: {@link #SSL_CLIENT_CERTIFICATE_STORE}<br>
      * see: {@link #SSL_CLIENT_CERTIFICATE_PASSWORD}<br>
@@ -272,7 +272,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Password for the specified SSL client certificate <b>KeyStore</b>.
      * <p>
      * property: <b>webdriver.htmlunit.sslClientCertificatePassword</b><br>
-     * type: {@code char[]}<br>
+     * type: char[]<br>
      * default: {@code null}<br>
      * see: {@link #SSL_CLIENT_CERTIFICATE_STORE}<br>
      * see: {@link #SSL_CLIENT_CERTIFICATE_TYPE}
@@ -331,7 +331,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Type of the specified SSL trust <b>KeyStore</b> (e.g. - {@code jks} or {@code pkcs12}).
      * <p>
      * property: <b>webdriver.htmlunit.sslTrustStoreType</b><br>
-     * type: {@link char[]}<br>
+     * type: char[]<br>
      * default: {@code null}<br>
      * see: {@link #SSL_TRUST_STORE}<br>
      * see: {@link #SSL_TRUST_STORE_PASSWORD}<br>
@@ -358,7 +358,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Password for the specified SSL trust <b>KeyStore</b>.
      * <p>
      * property: <b>webdriver.htmlunit.sslTrustStorePassword</b><br>
-     * type: {@code char[]}<br>
+     * type: char[]<br>
      * default: {@code null}<br>
      * see: {@link #SSL_TRUST_STORE}<br>
      * see: {@link #SSL_TRUST_STORE_TYPE}
@@ -383,7 +383,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Sets the protocol versions enabled for use on SSL connections.
      * <p>
      * property: <b>webdriver.htmlunit.sslClientProtocols</b><br>
-     * type: {@code String[]}<br>
+     * type: String[]<br>
      * default: {@code null} (use default protocols)<br>
      * see: {@link javax.net.ssl.SSLSocket#setEnabledProtocols(String[]) SSLSocket.setEnabledProtocols}
      */
@@ -403,7 +403,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * Sets the cipher suites enabled for use on SSL connections.
      * <p>
      * property: <b>webdriver.htmlunit.sslClientCipherSuites</b><br>
-     * type: {@code String[]}<br>
+     * type: String[]<br>
      * default: {@code null} (use default cipher suites)<br>
      * see: {@link javax.net.ssl.SSLSocket#setEnabledCipherSuites(String[]) SSLSocket.setEnabledCipherSuites}
      */

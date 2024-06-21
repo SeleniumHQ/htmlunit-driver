@@ -120,10 +120,10 @@ final class TypeCodec {
     }
 
     /**
-     * Decode the specified value as a {@code char[]}.
+     * Decode the specified value as a char[].
      *
      * @param value value to be decoded
-     * @return specified value decoded as {@code char[]}
+     * @return specified value decoded as char[]
      */
     static char[] decodeCharArray(final Object value) {
         if (value == null) {
@@ -139,10 +139,10 @@ final class TypeCodec {
     }
 
     /**
-     * Decode the specified value as a {@code String[]}.
+     * Decode the specified value as a String[].
      *
      * @param value value to be decoded
-     * @return specified value decoded as {@link String}[]
+     * @return specified value decoded as String[]
      */
     static String[] decodeStringArray(final Object value) {
         if (value == null) {
