@@ -107,8 +107,7 @@ import org.openqa.selenium.firefox.FirefoxDriverService;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.remote.Browser;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.htmlunit.options.HtmlUnitDriverOptions;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 /**
@@ -542,24 +541,20 @@ public abstract class WebDriverTestCase extends WebTestCase {
             throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
         }
         if (webDriver_ == null) {
-            final DesiredCapabilities capabilities = new DesiredCapabilities();
-            capabilities.setBrowserName(Browser.HTMLUNIT.browserName());
-            capabilities.setVersion(getBrowserName(getBrowserVersion()));
-            webDriver_ = new HtmlUnitDriver(capabilities) {
-                @Override
-                protected WebClient newWebClient(final BrowserVersion version) {
-                    final WebClient webClient = super.newWebClient(version);
-                    if (isWebClientCached()) {
-                        webClient.getOptions().setHistorySizeLimit(0);
-                    }
+            final WebClientOptions options = new WebClientOptions();
+            if (isWebClientCached()) {
+                options.setHistorySizeLimit(0);
+            }
 
-                    final Integer timeout = getWebClientTimeout();
-                    if (timeout != null) {
-                        webClient.getOptions().setTimeout(timeout.intValue());
-                    }
-                    return webClient;
-                }
-            };
+            final Integer timeout = getWebClientTimeout();
+            if (timeout != null) {
+                options.setTimeout(timeout.intValue());
+            }
+
+            final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(getBrowserVersion());
+            driverOptions.importOptions(options);
+
+            webDriver_ = new HtmlUnitDriver(driverOptions);
             webDriver_.setExecutor(EXECUTOR_POOL);
         }
         return webDriver_;
@@ -579,16 +574,6 @@ public abstract class WebDriverTestCase extends WebTestCase {
         profile.setPreference("intl.accept_languages", "en-US,en");
         options.setProfile(profile);
         return new FirefoxDriver(service, options);
-    }
-
-    private static String getBrowserName(final BrowserVersion browserVersion) {
-        if (browserVersion == BrowserVersion.FIREFOX) {
-            return browserVersion.getNickname() + '-' + browserVersion.getBrowserVersionNumeric();
-        }
-        if (browserVersion == BrowserVersion.FIREFOX_ESR) {
-            return browserVersion.getNickname() + '-' + browserVersion.getBrowserVersionNumeric();
-        }
-        return browserVersion.getNickname();
     }
 
     /**
