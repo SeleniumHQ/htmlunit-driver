@@ -86,7 +86,7 @@ public class BrowserRunner extends Suite {
      * @throws Throwable If an exception occurs
      */
     public BrowserRunner(final Class<WebTestCase> klass) throws Throwable {
-        super(klass, Collections.<Runner>emptyList());
+        super(klass, Collections.emptyList());
 
         if (BrowserVersionClassRunner.containsTestMethods(klass)) {
             final Set<String> browsers = WebDriverTestCase.getBrowsersProperties();

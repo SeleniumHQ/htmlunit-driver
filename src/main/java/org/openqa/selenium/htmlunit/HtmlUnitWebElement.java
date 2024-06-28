@@ -81,13 +81,6 @@ import org.w3c.dom.NamedNodeMap;
  */
 public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates, Locatable {
 
-    private static final String[] booleanAttributes = {"async", "autofocus", "autoplay", "checked", "compact",
-        "complete", "controls", "declare", "defaultchecked", "defaultselected", "defer", "disabled", "draggable",
-        "ended", "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope", "loop",
-        "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open", "paused", "pubdate",
-        "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
-        "willvalidate"};
-
     private final HtmlUnitDriver driver_;
     private final int id_;
     private final DomElement element_;
@@ -255,7 +248,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         final boolean jsEnabled = driver_.isJavascriptEnabled();
         final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
         try {
-            final boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
+            final boolean isBody = oldActiveElement.getTagName().equalsIgnoreCase("body");
             if (jsEnabled && !oldActiveEqualsCurrent && !isBody) {
                 oldActiveElement.element_.blur();
             }
@@ -285,6 +278,12 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         assertElementNotStale();
 
         final String lowerName = name.toLowerCase();
+        final String[] booleanAttributes = {"async", "autofocus", "autoplay", "checked", "compact",
+                "complete", "controls", "declare", "defaultchecked", "defaultselected", "defer", "disabled", "draggable",
+                "ended", "formnovalidate", "hidden", "indeterminate", "iscontenteditable", "ismap", "itemscope", "loop",
+                "multiple", "muted", "nohref", "noresize", "noshade", "novalidate", "nowrap", "open", "paused", "pubdate",
+                "readonly", "required", "reversed", "scoped", "seamless", "seeking", "selected", "spellcheck", "truespeed",
+                "willvalidate"};
 
         if (element_ instanceof HtmlInput && ("selected".equals(lowerName) || "checked".equals(lowerName))) {
             return trueOrNull(((HtmlInput) element_).isChecked());
@@ -414,21 +413,11 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return ScriptRuntime.toCharSequence(ScriptableObject.getProperty(scriptable, lowerName)).toString();
         }
 
-        // js disabled, fallback to some hacks
-        if ("disabled".equals(lowerName)) {
-            if (element_ instanceof DisabledElement) {
-                return trueOrFalse(((DisabledElement) element_).isDisabled());
-            }
-        }
+        String element_1 = disabledJsCheck(lowerName);
+        if (element_1 != null) return element_1;
 
-        if ("checked".equals(lowerName)) {
-            if (element_ instanceof HtmlCheckBoxInput) {
-                return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());
-            }
-            else if (element_ instanceof HtmlRadioButtonInput) {
-                return trueOrFalse(((HtmlRadioButtonInput) element_).isChecked());
-            }
-        }
+        String element_2 = isElementChecked(lowerName);
+        if (element_2 != null) return element_2;
 
         final String value = element_.getAttribute(lowerName);
         if (ATTRIBUTE_NOT_DEFINED == value) {
@@ -440,6 +429,27 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         }
 
         return value;
+    }
+
+    private String isElementChecked(String lowerName) {
+        if ("checked".equals(lowerName)) {
+            if (element_ instanceof HtmlCheckBoxInput) {
+                return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());
+            }
+            else if (element_ instanceof HtmlRadioButtonInput) {
+                return trueOrFalse(((HtmlRadioButtonInput) element_).isChecked());
+            }
+        }
+        return null;
+    }
+
+    private String disabledJsCheck(String lowerName) {
+        if ("disabled".equals(lowerName)) {
+            if (element_ instanceof DisabledElement) {
+                return trueOrFalse(((DisabledElement) element_).isDisabled());
+            }
+        }
+        return null;
     }
 
     @Override
