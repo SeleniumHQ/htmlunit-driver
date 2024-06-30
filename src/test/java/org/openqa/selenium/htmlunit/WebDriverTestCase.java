@@ -108,6 +108,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.htmlunit.options.HtmlUnitDriverOptions;
+import org.openqa.selenium.htmlunit.options.HtmlUnitOption;
 import org.openqa.selenium.remote.UnreachableBrowserException;
 
 /**
@@ -541,19 +542,16 @@ public abstract class WebDriverTestCase extends WebTestCase {
             throw new RuntimeException("Unexpected BrowserVersion: " + getBrowserVersion());
         }
         if (webDriver_ == null) {
-            final WebClientOptions options = new WebClientOptions();
-            if (isWebClientCached()) {
-                options.setHistorySizeLimit(0);
-            }
-
-            final Integer timeout = getWebClientTimeout();
-            if (timeout != null) {
-                options.setTimeout(timeout.intValue());
-            }
-
             final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(getBrowserVersion());
-            driverOptions.importOptions(options);
-
+            
+            if (isWebClientCached()) {
+                driverOptions.setCapability(HtmlUnitOption.optHistorySizeLimit, 0);
+            }
+            
+            if (getWebClientTimeout() != null) {
+                driverOptions.setCapability(HtmlUnitOption.optTimeout, getWebClientTimeout());
+            }
+            
             webDriver_ = new HtmlUnitDriver(driverOptions);
             webDriver_.setExecutor(EXECUTOR_POOL);
         }
