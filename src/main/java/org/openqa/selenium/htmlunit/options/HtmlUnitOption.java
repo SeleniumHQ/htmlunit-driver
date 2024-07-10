@@ -836,6 +836,25 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
         public Object obtain(final WebClientOptions options) {
             return options.isFetchPolyfillEnabled();
         }
+    },
+
+    /**
+     * Sets whether or not the file protocol is allowed for XMLHttpRequests.
+     * <p>
+     * property: <b>webdriver.htmlunit.fileProtocolForXMLHttpRequestsAllowed</b><br>
+     * type: {@code boolean}<br>
+     * default: {@code false}
+     */
+    FILE_PROTOCOL_FOR_XMLHTTPREQUESTS_ALLOWED(optFileProtocolForXMLHttpRequestsAllowed, boolean.class, false) {
+        @Override
+        public void insert(final WebClientOptions options, final Object value) {
+            options.setFileProtocolForXMLHttpRequestsAllowed(TypeCodec.decodeBoolean(value));
+        }
+
+        @Override
+        public Object obtain(final WebClientOptions options) {
+            return options.isFileProtocolForXMLHttpRequestsAllowed();
+        }
     };
 
     private final String capabilityKey_;

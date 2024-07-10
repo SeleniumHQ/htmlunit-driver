@@ -138,4 +138,7 @@ public interface HtmlUnitOptionNames {
 
     /** "fetchPolyfillEnabled". */
     String optFetchPolyfillEnabled = "fetchPolyfillEnabled";
+
+    /** "fileProtocolForXMLHttpRequestsAllowed". */
+    String optFileProtocolForXMLHttpRequestsAllowed = "fileProtocolForXMLHttpRequestsAllowed";
 }
