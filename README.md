@@ -9,20 +9,15 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](https://www.h
 
 [![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
 
-## Download and Installation
+## HtmlUnit Remote - Selenium 4 Grid support
 
-There are two versions available
-
-### Selenium compatibility
-
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.22.0
-is for Selenium 4.22.0.
-
-An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
-can be found in these [tables](compatibility.md).
+Please have a look at the **[HtmlUnit Remote](https://github.com/sbabcoc/htmlunit-remote)** project if you like to use this driver from [Selenium 4 Grid](https://www.selenium.dev/documentation/grid).
 
 
 ## Get it!
+
+An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
+can be found in these [tables](compatibility.md).
 
 ### Maven
 
@@ -34,7 +29,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.22.0</version>
+    <version>4.23.0</version>
 </dependency>
 ```
 
@@ -43,7 +38,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.22.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.23.0'
 ```
 
 
@@ -74,27 +69,30 @@ WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 ```
 
 
-### More customization
+### Customization
 
-HtmlUnit offers a lot more customization options. To adjust these options you can use this pattern.
+HtmlUnit offers many customization options.
+Similar to the other WebDriver's the class HtmlUnitDriverOptions can be used to customize your HtmlUnit driver.
 
 ```java
-WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true) {
-    @Override
-    protected WebClient modifyWebClient(WebClient client) {
-        final WebClient webClient = super.modifyWebClient(client);
-        // you might customize the client here
-        webClient.getOptions().setCssEnabled(false);
+    final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(BrowserVersion.FIREFOX);
 
-       return webClient;
-    }
-};
+    // configure e.g.
+    driverOptions.setCapability(HtmlUnitOption.optThrowExceptionOnScriptError, false);
+
+    HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
+    // use the driver
 ```
 
-And for some special cases you and also overwrite the method newWebClient(final BrowserVersion version) to
-adjust the webClient before the standard WebDriver setup takes place or for constructing your
-own webClient.
+Please check the 
 
+### Selenium compatibility
+
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.23.0
+is for Selenium 4.23.0.
+
+An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
+can be found in these [tables](compatibility.md).
 
 ## License
 
