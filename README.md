@@ -75,21 +75,18 @@ HtmlUnit offers many customization options.
 Similar to the other WebDriver's the class HtmlUnitDriverOptions can be used to customize your HtmlUnit driver.
 
 ```java
-    final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(BrowserVersion.FIREFOX);
+final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(BrowserVersion.FIREFOX);
 
-    // configure e.g.
-    driverOptions.setCapability(HtmlUnitOption.optThrowExceptionOnScriptError, false);
+// configure e.g.
+driverOptions.setCapability(HtmlUnitOption.optThrowExceptionOnScriptError, false);
 
-    HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
-    // use the driver
+HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
+// use the driver
 ```
 
 Please check the 
 
 ### Selenium compatibility
-
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.23.0
-is for Selenium 4.23.0.
 
 An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
 can be found in these [tables](compatibility.md).
