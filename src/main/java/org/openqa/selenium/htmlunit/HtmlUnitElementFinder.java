@@ -124,7 +124,7 @@ public class HtmlUnitElementFinder {
             }
 
             final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsById(getValue(locator));
-            return convertRawDomElementsToWebElements(driver, allElements);
+            return HtmlUnitElementUtils.convertRawDomElementsToWebElements(driver, allElements);
         }
 
         @Override
@@ -150,7 +150,7 @@ public class HtmlUnitElementFinder {
             }
 
             final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(getValue(locator));
-            return convertRawDomElementsToWebElements(driver, allElements);
+            return HtmlUnitElementUtils.convertRawDomElementsToWebElements(driver, allElements);
         }
 
         @Override
@@ -489,7 +489,7 @@ public class HtmlUnitElementFinder {
             // selector is therefore
             // invalid
             throw new InvalidSelectorException(
-                    String.format(INVALIDSELECTIONERROR, value, node.getClass().toString()));
+                    String.format(INVALIDSELECTIONERROR, value, node.getClass()));
         }
 
         @Override
@@ -515,7 +515,7 @@ public class HtmlUnitElementFinder {
                     // selector is
                     // therefore invalid
                     throw new InvalidSelectorException(
-                            String.format(INVALIDSELECTIONERROR, value, e.getClass().toString()));
+                            String.format(INVALIDSELECTIONERROR, value, e.getClass()));
                 }
             }
             return toReturn;
@@ -565,14 +565,18 @@ public class HtmlUnitElementFinder {
         }
     }
 
-    private static List<WebElement> convertRawDomElementsToWebElements(
-            final HtmlUnitDriver driver, final List<DomElement> nodes) {
-        final List<WebElement> toReturn = new ArrayList<>(nodes.size());
+    public static class HtmlUnitElementUtils{
 
-        for (final DomElement node : nodes) {
-            toReturn.add(driver.toWebElement(node));
+        public static List<WebElement> convertRawDomElementsToWebElements(
+                final HtmlUnitDriver driver, final List<DomElement> nodes) {
+            final List<WebElement> toReturn = new ArrayList<>(nodes.size());
+
+            for (final DomElement node : nodes) {
+                toReturn.add(driver.toWebElement(node));
+            }
+
+            return toReturn;
         }
 
-        return toReturn;
     }
 }

@@ -44,7 +44,7 @@ public class HtmlUnitAlert implements Alert {
 
     private final HtmlUnitDriver driver_;
     private AlertHolder holder_;
-    private boolean quitting_;
+    private boolean autoDismissOnQuit;
     private final Lock lock_ = new ReentrantLock();
     private final Condition condition_ = lock_.newCondition();
     private WebWindow webWindow_;
@@ -60,7 +60,7 @@ public class HtmlUnitAlert implements Alert {
     }
 
     private void alertHandler(final Page page, final String message) {
-        if (quitting_) {
+        if (autoDismissOnQuit) {
             return;
         }
         webWindow_ = page.getEnclosingWindow();
@@ -69,7 +69,7 @@ public class HtmlUnitAlert implements Alert {
     }
 
     private boolean confirmHandler(final Page page, final String message) {
-        if (quitting_) {
+        if (autoDismissOnQuit) {
             return false;
         }
         webWindow_ = page.getEnclosingWindow();
@@ -83,12 +83,7 @@ public class HtmlUnitAlert implements Alert {
         lock_.lock();
         try {
             if (driver_.isProcessAlert()) {
-                try {
-                    condition_.await(5, TimeUnit.SECONDS);
-                }
-                catch (final InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                waitFor(5);
             }
         }
         finally {
@@ -96,8 +91,17 @@ public class HtmlUnitAlert implements Alert {
         }
     }
 
+    private void waitFor(int time) {
+        try {
+            condition_.await(time, TimeUnit.SECONDS);
+        }
+        catch (final InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private String promptHandler(final Page page, final String message, final String defaultMessage) {
-        if (quitting_) {
+        if (autoDismissOnQuit) {
             return null;
         }
         webWindow_ = page.getEnclosingWindow();
@@ -108,7 +112,7 @@ public class HtmlUnitAlert implements Alert {
     }
 
     private boolean onbeforeunloadHandler(final Page page, final String returnValue) {
-        if (quitting_) {
+        if (autoDismissOnQuit) {
             return true;
         }
         webWindow_ = page.getEnclosingWindow();
@@ -123,7 +127,7 @@ public class HtmlUnitAlert implements Alert {
     }
 
     public void setAutoAccept(final boolean autoAccept) {
-        this.quitting_ = autoAccept;
+        this.autoDismissOnQuit = autoAccept;
     }
 
     public void handleBrowserCapabilities(final Capabilities capabilities) {
