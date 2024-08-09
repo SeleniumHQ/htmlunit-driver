@@ -788,12 +788,31 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public void quit() {
-        if (webClient_ != null) {
-            alert_.close();
-            webClient_.close();
-            webClient_ = null;
+        // closing the web client while some async processes are running
+        // will produce strange effects; therefore wait until they are done
+        while (runAsyncRunning_) {
+            try {
+                Thread.sleep(10);
+            }
+            catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        defaultExecutor_.shutdown();
+
+        conditionLock_.lock();
+        runAsyncRunning_ = true;
+        try {
+            if (webClient_ != null) {
+                alert_.close();
+                webClient_.close();
+                webClient_ = null;
+            }
+            defaultExecutor_.shutdown();
+        }
+        finally {
+            runAsyncRunning_ = false;
+            conditionLock_.unlock();
+        }
     }
 
     @Override

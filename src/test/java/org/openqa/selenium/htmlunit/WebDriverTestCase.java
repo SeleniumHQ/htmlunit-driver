@@ -543,15 +543,15 @@ public abstract class WebDriverTestCase extends WebTestCase {
         }
         if (webDriver_ == null) {
             final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(getBrowserVersion());
-            
+
             if (isWebClientCached()) {
                 driverOptions.setCapability(HtmlUnitOption.optHistorySizeLimit, 0);
             }
-            
+
             if (getWebClientTimeout() != null) {
                 driverOptions.setCapability(HtmlUnitOption.optTimeout, getWebClientTimeout());
             }
-            
+
             webDriver_ = new HtmlUnitDriver(driverOptions);
             webDriver_.setExecutor(EXECUTOR_POOL);
         }
