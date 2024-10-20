@@ -1606,6 +1606,9 @@ public abstract class WebDriverTestCase extends WebTestCase {
                 catch (final NoSuchWindowException e) {
                     // ignore
                 }
+                catch (final NoSuchSessionException e) {
+                    // ignore
+                }
                 catch (final UnhandledAlertException e) {
                     ex = e;
                     unhandledAlerts.add(e.getMessage());
