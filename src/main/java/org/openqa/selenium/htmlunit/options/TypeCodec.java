@@ -380,7 +380,7 @@ final class TypeCodec {
             seed = BrowserVersion.EDGE;
         }
         else if (name.startsWith("FF")) {
-            seed = (code == 115) ? BrowserVersion.FIREFOX_ESR : BrowserVersion.FIREFOX;
+            seed = (code == 128) ? BrowserVersion.FIREFOX_ESR : BrowserVersion.FIREFOX;
         }
         else {
             throw new IllegalArgumentException(
