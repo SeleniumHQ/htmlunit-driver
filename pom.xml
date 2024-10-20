@@ -20,7 +20,7 @@
 
         <selenium.version>4.25.0</selenium.version>
         <selenium.devtools.artifactId>selenium-devtools-v129</selenium.devtools.artifactId>
-        <htmlunit.version>4.5.0-SNAPSHOT</htmlunit.version>
+        <htmlunit.version>4.5.0</htmlunit.version>
 
         <jetty.version>9.4.56.v20240826</jetty.version>
 
