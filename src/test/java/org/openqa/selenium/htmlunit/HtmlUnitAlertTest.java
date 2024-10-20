@@ -184,7 +184,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     }
 
     @Test
-    public void testCanQuitWhenAnAlertIsPresent() throws Exception {
+    public void canQuitWhenAnAlertIsPresent() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
                 + "</head>\n"
@@ -199,7 +199,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     }
 
     @Test(expected = ElementNotInteractableException.class)
-    public void testSettingTheValueOfAnAlertThrows() throws Exception {
+    public void settingTheValueOfAnAlertThrows() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
                 + "</head>\n"
@@ -220,9 +220,9 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     @Test
     @Alerts("Unexpected alert found: HtmlUnit is great")
     @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
-            FF = "Dismissed user prompt dialog: HtmlUnit is great",
-            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great")
-    public void testIncludesAlertTextInUnhandledAlertException() throws Exception {
+            FF = "Unexpected alert dialog detected. Performed handler \"dismiss\"",
+            FF_ESR = "Unexpected alert dialog detected. Performed handler \"dismiss\"")
+    public void includesAlertTextInUnhandledAlertException() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
                 + "</head>\n"
@@ -249,10 +249,10 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     @Test
     @Alerts("Unexpected alert found: HtmlUnit is great")
     @BuggyWebDriver(DEFAULT = "unexpected alert open: {Alert text : HtmlUnit is great}",
-            FF = "Dismissed user prompt dialog: HtmlUnit is great",
-            FF_ESR = "Dismissed user prompt dialog: HtmlUnit is great")
+            FF = "Unexpected alert dialog detected. Performed handler \"dismiss\"",
+            FF_ESR = "Unexpected alert dialog detected. Performed handler \"dismiss\"")
     @NotYetImplemented
-    public void testIncludesAlertTextInUnhandledAlertExceptionFromnAsyncScript() throws Exception {
+    public void includesAlertTextInUnhandledAlertExceptionFromnAsyncScript() throws Exception {
         final String html = "<html>\n"
                 + "<head>\n"
                 + "</head>\n"
