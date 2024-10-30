@@ -17,18 +17,22 @@
 
 package org.openqa.selenium.htmlunit.by;
 
+import static org.openqa.selenium.By.cssSelector;
+import static org.openqa.selenium.By.tagName;
+import static org.openqa.selenium.By.xpath;
+import static org.openqa.selenium.support.locators.RelativeLocator.with;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
-import org.openqa.selenium.support.locators.RelativeLocator;
 
 /**
  * Tests for RelativeLocator.
@@ -39,215 +43,238 @@ import org.openqa.selenium.support.locators.RelativeLocator;
 public class RelativeLocatorTest extends WebDriverTestCase {
 
     @Test
-    @Ignore
     public void shouldBeAbleToFindElementsAboveAnotherWithTagName() throws Exception {
         final String html = getFileContent("relative_locators.html");
-
         final WebDriver driver = loadPage2(html);
 
         final WebElement lowest = driver.findElement(By.id("below"));
 
-        final List<WebElement> elements = driver.findElements(RelativeLocator.with(By.tagName("p")).above(lowest));
-        final List<String> ids = elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+        final List<WebElement> seen  = driver.findElements(with(tagName("p")).above(lowest));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
+        assertEquals(2, ids.size());
+        assertTrue(ids.contains("mid"));
+        assertTrue(ids.contains("above"));
     }
 
-//    @Test
-//    void shouldBeAbleToFindElementsAboveAnotherWithTagName() {
-//      driver.get(appServer.whereIs("relative_locators.html"));
-//
-//      WebElement lowest = driver.findElement(By.id("below"));
-//
-//      List<WebElement> elements = driver.findElements(with(tagName("p")).above(lowest));
-//      List<String> ids =
-//          elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//      assertThat(ids).containsExactly("mid", "above");
-//    }
+    @Test
+    public void shouldBeAbleToFindElementsAboveAnotherWithXpath() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
 
-//  @Test
-//  void shouldBeAbleToFindElementsAboveAnotherWithXpath() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    WebElement lowest = driver.findElement(By.id("seventh"));
-//
-//    List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).above(lowest));
-//
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids).containsExactly("fourth", "first");
-//  }
-//
-//  @Test
-//  void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    WebElement lowest = driver.findElement(By.id("below"));
-//
-//    List<WebElement> elements = driver.findElements(with(cssSelector("p")).above(lowest));
-//    List<String> ids =
-//        elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids).containsExactly("mid", "above");
-//  }
-//
-//  @Test
-//  void shouldBeAbleToCombineFilters() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen =
-//        driver.findElements(with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
-//
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids).containsExactly("third");
-//  }
-//
-//  @Test
-//  void shouldBeAbleToCombineFiltersWithXpath() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen =
-//        driver.findElements(with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
-//
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids).containsExactly("fourth");
-//  }
-//
-//  @Test
-//  void shouldBeAbleToCombineFiltersWithCssSelector() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen =
-//        driver.findElements(
-//            with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
-//
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids).containsExactly("third");
-//  }
-//
-//  @Test
-//  void exerciseNearLocatorWithTagName() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen = driver.findElements(with(tagName("td")).near(By.id("center")));
-//
-//    // Elements are sorted by proximity and then DOM insertion order.
-//    // Proximity is determined using distance from center points, so
-//    // we expect the order to be:
-//    // 1. Directly above (short vertical distance, first in DOM)
-//    // 2. Directly below (short vertical distance, later in DOM)
-//    // 3. Directly left (slight longer distance horizontally, first in DOM)
-//    // 4. Directly right (slight longer distance horizontally, later in DOM)
-//    // 5-8. Diagonally close (pythagoras sorting, with top row first
-//    //    because of DOM insertion order)
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//    assertThat(ids)
-//        .containsExactly(
-//            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
-//  }
-//
-//  @Test
-//  void exerciseNearLocatorWithXpath() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen = driver.findElements(with(xpath("//td")).near(By.id("center")));
-//
-//    // Elements are sorted by proximity and then DOM insertion order.
-//    // Proximity is determined using distance from center points, so
-//    // we expect the order to be:
-//    // 1. Directly above (short vertical distance, first in DOM)
-//    // 2. Directly below (short vertical distance, later in DOM)
-//    // 3. Directly left (slight longer distance horizontally, first in DOM)
-//    // 4. Directly right (slight longer distance horizontally, later in DOM)
-//    // 5-8. Diagonally close (pythagoras sorting, with top row first
-//    //    because of DOM insertion order)
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//
-//    assertThat(ids)
-//        .containsExactly(
-//            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
-//  }
-//
-//  @Test
-//  void exerciseNearLocatorWithCssSelector() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    List<WebElement> seen = driver.findElements(with(cssSelector("td")).near(By.id("center")));
-//
-//    // Elements are sorted by proximity and then DOM insertion order.
-//    // Proximity is determined using distance from center points, so
-//    // we expect the order to be:
-//    // 1. Directly above (short vertical distance, first in DOM)
-//    // 2. Directly below (short vertical distance, later in DOM)
-//    // 3. Directly left (slight longer distance horizontally, first in DOM)
-//    // 4. Directly right (slight longer distance horizontally, later in DOM)
-//    // 5-8. Diagonally close (pythagoras sorting, with top row first
-//    //    because of DOM insertion order)
-//    List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
-//    assertThat(ids)
-//        .containsExactly(
-//            "second", "eighth", "fourth", "sixth", "first", "third", "seventh", "ninth");
-//  }
-//
-//  @Test
-//  void ensureNoRepeatedElements() {
-//    String url =
-//        appServer.create(
-//            new Page()
-//                .withTitle("Repeated Elements")
-//                .withStyles(
-//                    " .c {\n"
-//                        + "    \tposition: absolute;\n"
-//                        + "    \tborder: 1px solid black;\n"
-//                        + "    \theight: 50px;\n"
-//                        + "    \twidth: 50px;\n"
-//                        + "    }")
-//                .withBody(
-//                    "<span style=\"position: relative;\">\n"
-//                        + "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n"
-//                        + "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n"
-//                        + "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n"
-//                        + "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n"
-//                        + "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n"
-//                        + "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n"
-//                        + "  </span>"));
-//
-//    driver.get(url);
-//
-//    WebElement base = driver.findElement(By.id("e"));
-//    List<WebElement> cells = driver.findElements(with(tagName("div")).above(base));
-//
-//    WebElement a = driver.findElement(By.id("a"));
-//    WebElement b = driver.findElement(By.id("b"));
-//
-//    assertThat(cells)
-//        .describedAs(
-//            cells.stream().map(e -> e.getAttribute("id")).collect(Collectors.joining(", ")))
-//        .isEqualTo(List.of(b, a));
-//  }
-//
-//  @Test
-//  void nearLocatorShouldFindNearElements() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    WebElement rect1 = driver.findElement(By.id("rect1"));
-//
-//    WebElement rect2 = driver.findElement(with(By.id("rect2")).near(rect1));
-//
-//    assertThat(rect2.getAttribute("id")).isEqualTo("rect2");
-//  }
-//
-//  @Test
-//  void nearLocatorShouldNotFindFarElements() {
-//    driver.get(appServer.whereIs("relative_locators.html"));
-//
-//    WebElement rect3 = driver.findElement(By.id("rect3"));
-//
-//    assertThatExceptionOfType(NoSuchElementException.class)
-//        .isThrownBy(() -> driver.findElement(with(By.id("rect4")).near(rect3)))
-//        .withMessageContaining("Cannot locate an element using");
-//  }
+        final WebElement lowest = driver.findElement(By.id("seventh"));
+
+        final List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).above(lowest));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(2, ids.size());
+        assertTrue(ids.contains("fourth"));
+        assertTrue(ids.contains("first"));
+    }
+
+    @Test
+    public void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement lowest = driver.findElement(By.id("below"));
+
+        final List<WebElement> seen = driver.findElements(with(cssSelector("p")).above(lowest));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(2, ids.size());
+        assertTrue(ids.contains("mid"));
+        assertTrue(ids.contains("above"));
+    }
+
+    @Test
+    public void shouldBeAbleToCombineFilters() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(
+                        with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains("third"));
+    }
+
+    @Test
+    public void shouldBeAbleToCombineFiltersWithXpath() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(
+                        with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains("fourth"));
+    }
+
+    @Test
+    public void shouldBeAbleToCombineFiltersWithCssSelector() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(
+                        with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(1, ids.size());
+        assertTrue(ids.contains("third"));
+    }
+
+    @Test
+    public void exerciseNearLocatorWithTagName() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(with(tagName("td")).near(By.id("center")));
+
+        // Elements are sorted by proximity and then DOM insertion order.
+        // Proximity is determined using distance from center points, so
+        // we expect the order to be:
+        // 1. Directly above (short vertical distance, first in DOM)
+        // 2. Directly below (short vertical distance, later in DOM)
+        // 3. Directly left (slight longer distance horizontally, first in DOM)
+        // 4. Directly right (slight longer distance horizontally, later in DOM)
+        // 5-8. Diagonally close (pythagoras sorting, with top row first
+        //    because of DOM insertion order)
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(8, ids.size());
+        assertTrue(ids.contains("second"));
+        assertTrue(ids.contains("eighth"));
+        assertTrue(ids.contains("fourth"));
+        assertTrue(ids.contains("sixth"));
+        assertTrue(ids.contains("first"));
+        assertTrue(ids.contains("third"));
+        assertTrue(ids.contains("seventh"));
+        assertTrue(ids.contains("ninth"));
+    }
+
+    @Test
+    public void exerciseNearLocatorWithXpath() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(with(xpath("//td")).near(By.id("center")));
+
+        // Elements are sorted by proximity and then DOM insertion order.
+        // Proximity is determined using distance from center points, so
+        // we expect the order to be:
+        // 1. Directly above (short vertical distance, first in DOM)
+        // 2. Directly below (short vertical distance, later in DOM)
+        // 3. Directly left (slight longer distance horizontally, first in DOM)
+        // 4. Directly right (slight longer distance horizontally, later in DOM)
+        // 5-8. Diagonally close (pythagoras sorting, with top row first
+        //    because of DOM insertion order)
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(8, ids.size());
+        assertTrue(ids.contains("second"));
+        assertTrue(ids.contains("eighth"));
+        assertTrue(ids.contains("fourth"));
+        assertTrue(ids.contains("sixth"));
+        assertTrue(ids.contains("first"));
+        assertTrue(ids.contains("third"));
+        assertTrue(ids.contains("seventh"));
+        assertTrue(ids.contains("ninth"));
+    }
+
+    @Test
+    public void exerciseNearLocatorWithCssSelector() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final List<WebElement> seen = driver.findElements(with(cssSelector("td")).near(By.id("center")));
+
+        // Elements are sorted by proximity and then DOM insertion order.
+        // Proximity is determined using distance from center points, so
+        // we expect the order to be:
+        // 1. Directly above (short vertical distance, first in DOM)
+        // 2. Directly below (short vertical distance, later in DOM)
+        // 3. Directly left (slight longer distance horizontally, first in DOM)
+        // 4. Directly right (slight longer distance horizontally, later in DOM)
+        // 5-8. Diagonally close (pythagoras sorting, with top row first
+        //    because of DOM insertion order)
+        final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+
+        assertEquals(8, ids.size());
+        assertTrue(ids.contains("second"));
+        assertTrue(ids.contains("eighth"));
+        assertTrue(ids.contains("fourth"));
+        assertTrue(ids.contains("sixth"));
+        assertTrue(ids.contains("first"));
+        assertTrue(ids.contains("third"));
+        assertTrue(ids.contains("seventh"));
+        assertTrue(ids.contains("ninth"));
+    }
+
+    @Test
+    public void ensureNoRepeatedElements() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "  <title>Repeated Elements</title>"
+                + "  <style>\n"
+                + "    .c {\n"
+                + "      position: absolute;\n"
+                + "      border: 1px solid black;\n"
+                + "      height: 50px;\n"
+                + "      width: 50px;\n"
+                + "    }\n"
+                + "  </style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <span style=\"position: relative;\">\n"
+                + "    <div id= \"a\" class=\"c\" style=\"left:25;top:0;\">El-A</div>\n"
+                + "    <div id= \"b\" class=\"c\" style=\"left:78;top:30;\">El-B</div>\n"
+                + "    <div id= \"c\" class=\"c\" style=\"left:131;top:60;\">El-C</div>\n"
+                + "    <div id= \"d\" class=\"c\" style=\"left:0;top:53;\">El-D</div>\n"
+                + "    <div id= \"e\" class=\"c\" style=\"left:53;top:83;\">El-E</div>\n"
+                + "    <div id= \"f\" class=\"c\" style=\"left:106;top:113;\">El-F</div>\n"
+                + "  </span>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement base = driver.findElement(By.id("e"));
+        final List<WebElement> cells = driver.findElements(with(tagName("div")).above(base));
+
+        final WebElement a = driver.findElement(By.id("a"));
+        final WebElement b = driver.findElement(By.id("b"));
+
+        assertEquals(2, cells.size());
+        assertEquals(b, cells.get(0));
+        assertEquals(a, cells.get(1));
+    }
+
+    @Test
+    public void nearLocatorShouldFindNearElements() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement rect1 = driver.findElement(By.id("rect1"));
+        final WebElement rect2 = driver.findElement(with(By.id("rect2")).near(rect1));
+
+        assertEquals("rect2", rect2.getAttribute("id"));
+    }
+
+    @Test
+    public void nearLocatorShouldNotFindFarElements() throws Exception {
+        final String html = getFileContent("relative_locators.html");
+        final WebDriver driver = loadPage2(html);
+
+        final WebElement rect3 = driver.findElement(By.id("rect3"));
+
+        try {
+            driver.findElement(with(By.id("rect4")).near(rect3));
+        }
+        catch (final NoSuchElementException e) {
+            assertTrue(e.getMessage().contains("Cannot locate an element using"));
+        }
+    }
 }
