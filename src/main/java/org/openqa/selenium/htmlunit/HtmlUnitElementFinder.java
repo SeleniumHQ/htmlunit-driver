@@ -605,10 +605,6 @@ public class HtmlUnitElementFinder {
 
     public static class FindByRelativeLocator extends HtmlUnitElementLocator {
 
-        public FindByRelativeLocator() {
-
-        }
-
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             return (List<WebElement>) driver.executeScript(FIND_ELEMENTS_JS, asParameter(locator));

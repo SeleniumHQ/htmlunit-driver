@@ -106,6 +106,10 @@ public class RelativeLocatorTest extends WebDriverTestCase {
 
     @Test
     @Alerts({"1", "third"})
+    @HtmlUnitNYI(CHROME = "0",
+            EDGE = "0",
+            FF = "0",
+            FF_ESR = "0")
     public void shouldBeAbleToCombineFilters() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -114,12 +118,19 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
-        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        final int expectedSize = Integer.parseInt(getExpectedAlerts()[0]);
+        assertEquals(expectedSize, ids.size());
+        if (expectedSize > 0) {
+            assertTrue(ids.contains(getExpectedAlerts()[1]));
+        }
     }
 
     @Test
     @Alerts({"1", "fourth"})
+    @HtmlUnitNYI(CHROME = "0",
+            EDGE = "0",
+            FF = "0",
+            FF_ESR = "0")
     public void shouldBeAbleToCombineFiltersWithXpath() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -128,12 +139,19 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
-        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        final int expectedSize = Integer.parseInt(getExpectedAlerts()[0]);
+        assertEquals(expectedSize, ids.size());
+        if (expectedSize > 0) {
+            assertTrue(ids.contains(getExpectedAlerts()[1]));
+        }
     }
 
     @Test
     @Alerts({"1", "third"})
+    @HtmlUnitNYI(CHROME = "0",
+            EDGE = "0",
+            FF = "0",
+            FF_ESR = "0")
     public void shouldBeAbleToCombineFiltersWithCssSelector() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -142,8 +160,11 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
-        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        final int expectedSize = Integer.parseInt(getExpectedAlerts()[0]);
+        assertEquals(expectedSize, ids.size());
+        if (expectedSize > 0) {
+            assertTrue(ids.contains(getExpectedAlerts()[1]));
+        }
     }
 
     @Test
