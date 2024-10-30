@@ -2433,11 +2433,7 @@ return (function() {
         };
         var Y = {
             F: function(a, b) {
-console.log('caller is 2' + arguments.callee.caller);
-console.log(arguments);
                 return function(c) {
-console.log('caller is 1' + arguments.callee.caller);
-console.log(arguments);
                     var d = Y.u(a);
                     d = V(d);
                     c = V(c);
@@ -2445,10 +2441,6 @@ console.log(arguments);
                 }
             },
             R: function(a) {
-console.log('caller is 3' + arguments.callee.caller);
-console.log(arguments);
-console.log(a);
-// a ist args aus dem übergebenen
                 return Y.F(a, function(b, c) {
                     return c.b + c.height < b.b
                 })
@@ -2482,8 +2474,6 @@ console.log(a);
                 }
             },
             u: function(a) {
-console.log(a);
-console.log('caller is ' + arguments.callee.caller);
                 if (ha(a) && 1 == a.nodeType) return a;
                 if (ea(a)) return Y.u(a.call(null));
                 if (ha(a)) {
@@ -2496,7 +2486,6 @@ console.log('caller is ' + arguments.callee.caller);
                                 break a
                             }
                         }
-console.log("#### " + b);
                         throw new P(61, "Unsupported locator strategy: " + b);
                     }
                     if (!b) throw new P(7, "No element has been found by " + JSON.stringify(a));
@@ -2526,9 +2515,6 @@ console.log("#### " + b);
                     var g = f.kind,
                         h = Y.P[g];
                     if (!h) throw new P(61, "Cannot find filter suitable for " + g);
-console.log(f);
-console.log(f.args);
-console.log(e);
                     return h.apply(null, f.args)(e)
                 }, null) && c.push(e)
             }, null);

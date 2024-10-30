@@ -33,6 +33,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * Tests for RelativeLocator.
@@ -43,6 +45,11 @@ import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 public class RelativeLocatorTest extends WebDriverTestCase {
 
     @Test
+    @Alerts({"2", "mid", "above"})
+    @HtmlUnitNYI(CHROME = {"1", "above", "above"},
+            EDGE = {"1", "above", "above"},
+            FF = {"1", "above", "above"},
+            FF_ESR = {"1", "above", "above"})
     public void shouldBeAbleToFindElementsAboveAnotherWithTagName() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -52,12 +59,17 @@ public class RelativeLocatorTest extends WebDriverTestCase {
         final List<WebElement> seen  = driver.findElements(with(tagName("p")).above(lowest));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(2, ids.size());
-        assertTrue(ids.contains("mid"));
-        assertTrue(ids.contains("above"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        assertTrue(ids.contains(getExpectedAlerts()[2]));
     }
 
     @Test
+    @Alerts({"2", "fourth", "first"})
+    @HtmlUnitNYI(CHROME = {"1", "first", "first"},
+            EDGE = {"1", "first", "first"},
+            FF = {"1", "first", "first"},
+            FF_ESR = {"1", "first", "first"})
     public void shouldBeAbleToFindElementsAboveAnotherWithXpath() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -67,12 +79,17 @@ public class RelativeLocatorTest extends WebDriverTestCase {
         final List<WebElement> seen = driver.findElements(with(xpath("//td[1]")).above(lowest));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(2, ids.size());
-        assertTrue(ids.contains("fourth"));
-        assertTrue(ids.contains("first"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        assertTrue(ids.contains(getExpectedAlerts()[2]));
     }
 
     @Test
+    @Alerts({"2", "mid", "above"})
+    @HtmlUnitNYI(CHROME = {"1", "above", "above"},
+            EDGE = {"1", "above", "above"},
+            FF = {"1", "above", "above"},
+            FF_ESR = {"1", "above", "above"})
     public void shouldBeAbleToFindElementsAboveAnotherWithCssSelector() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -82,12 +99,13 @@ public class RelativeLocatorTest extends WebDriverTestCase {
         final List<WebElement> seen = driver.findElements(with(cssSelector("p")).above(lowest));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(2, ids.size());
-        assertTrue(ids.contains("mid"));
-        assertTrue(ids.contains("above"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
+        assertTrue(ids.contains(getExpectedAlerts()[2]));
     }
 
     @Test
+    @Alerts({"1", "third"})
     public void shouldBeAbleToCombineFilters() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -96,11 +114,12 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(tagName("td")).above(By.id("center")).toRightOf(By.id("second")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(1, ids.size());
-        assertTrue(ids.contains("third"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
     }
 
     @Test
+    @Alerts({"1", "fourth"})
     public void shouldBeAbleToCombineFiltersWithXpath() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -109,11 +128,12 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(xpath("//td[1]")).below(By.id("second")).above(By.id("seventh")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(1, ids.size());
-        assertTrue(ids.contains("fourth"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
     }
 
     @Test
+    @Alerts({"1", "third"})
     public void shouldBeAbleToCombineFiltersWithCssSelector() throws Exception {
         final String html = getFileContent("relative_locators.html");
         final WebDriver driver = loadPage2(html);
@@ -122,8 +142,8 @@ public class RelativeLocatorTest extends WebDriverTestCase {
                         with(cssSelector("td")).above(By.id("center")).toRightOf(By.id("second")));
         final List<String> ids = seen.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
 
-        assertEquals(1, ids.size());
-        assertTrue(ids.contains("third"));
+        assertEquals(Integer.parseInt(getExpectedAlerts()[0]), ids.size());
+        assertTrue(ids.contains(getExpectedAlerts()[1]));
     }
 
     @Test
