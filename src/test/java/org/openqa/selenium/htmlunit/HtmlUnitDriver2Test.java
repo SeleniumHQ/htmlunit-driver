@@ -17,11 +17,19 @@
 
 package org.openqa.selenium.htmlunit;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
 
 /**
  * General tests for the HtmlUnitDriver.
@@ -33,9 +41,151 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
 
     @Test
     public void executeScriptWithoutPage() {
-        final WebDriver driver = getWebDriver();
-        final String text = (String) ((JavascriptExecutor) driver).executeScript("return 'test';");
+        final WebDriver webDriver = getWebDriver();
+        final String text = (String) ((JavascriptExecutor) webDriver).executeScript("return 'test';");
 
         assertEquals("test", text);
+    }
+
+    @Test
+    @Alerts({"1| [0]HtmlUnit string", "1| [0] string"})
+    public void executeScriptParamString() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], "HtmlUnit");
+        executeScriptParam(getExpectedAlerts()[1], "");
+    }
+
+    @Test
+    @Alerts({"1| [0]true boolean", "1| [0]false boolean", "1| [0]true boolean"})
+    public void executeScriptParamBoolean() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], true);
+        executeScriptParam(getExpectedAlerts()[1], false);
+        executeScriptParam(getExpectedAlerts()[2], Boolean.TRUE);
+    }
+
+    @Test
+    @Alerts({"1| [0]4711 number",
+             "1| [0]-1234567890155 number",
+             "1| [0]0 number",
+             "1| [0]3.141592653589793 number",
+             "1| [0]4444 number"})
+    @HtmlUnitNYI(
+            CHROME = {"1| [0]4711 number",
+                      "1| [0]-1234567890155 number",
+                      "1| [0]0 number",
+                      "1| [0]3.141592653589793 number",
+                      "1| [0]4444 bigint"},
+            EDGE = {"1| [0]4711 number",
+                    "1| [0]-1234567890155 number",
+                    "1| [0]0 number",
+                    "1| [0]3.141592653589793 number",
+                    "1| [0]4444 bigint"},
+            FF = {"1| [0]4711 number",
+                  "1| [0]-1234567890155 number",
+                  "1| [0]0 number",
+                  "1| [0]3.141592653589793 number",
+                  "1| [0]4444 bigint"},
+            FF_ESR = {"1| [0]4711 number",
+                      "1| [0]-1234567890155 number",
+                      "1| [0]0 number",
+                      "1| [0]3.141592653589793 number",
+                      "1| [0]4444 bigint"})
+    public void executeScriptParamNumber() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], 4711);
+        executeScriptParam(getExpectedAlerts()[1], -1234567890155L);
+        executeScriptParam(getExpectedAlerts()[2], 0f);
+        executeScriptParam(getExpectedAlerts()[3], Math.PI);
+        executeScriptParam(getExpectedAlerts()[4], BigInteger.valueOf(4444));
+    }
+
+    @Test
+    @Alerts({"2| [0]Html string [1]Unit string", "0|"})
+    public void executeScriptParamSimpleArray() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], new String[] {"Html", "Unit"});
+        executeScriptParam(getExpectedAlerts()[1], new String[] {});
+    }
+
+    @Test
+    @Alerts({"1| [0]1,-2 array",
+             "1| [0]1,-2 array",
+             "1| [0]1,-2 array",
+             "1| [0]1,-2 array",
+             "1| [0]false array"})
+    public void executeScriptParamPrimitiveArray() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], new int[] {1, -2});
+        executeScriptParam(getExpectedAlerts()[1], new long[] {1L, -2L});
+        executeScriptParam(getExpectedAlerts()[2], new float[] {1f, -2f});
+        executeScriptParam(getExpectedAlerts()[3], new double[] {1d, -2d});
+        executeScriptParam(getExpectedAlerts()[4], new boolean[] {false});
+    }
+
+    @Test
+    @Alerts({"3| [0]Html string [1]17 number [2]true boolean",
+             "3| [0]Html string [1]42,7 array [2]true boolean"})
+    public void executeScriptParamMixedArray() throws Exception {
+        executeScriptParam(getExpectedAlerts()[0], new Object[] {"Html", 17, true});
+        executeScriptParam(getExpectedAlerts()[1], new Object[] {"Html", new int[] {42, 7}, true});
+    }
+
+    @Test
+    @Alerts({"1| [0][object Object] object ()",
+             "1| [0][object Object] object (Html->Unit )",
+             "1| [0][object Object] object (Zahl->17 )"})
+    public void executeScriptParamSimpleMap() throws Exception {
+        Map<String, Object> param = new HashMap<>();
+
+        executeScriptParam(getExpectedAlerts()[0], param);
+
+        param.put("Html", "Unit");
+        executeScriptParam(getExpectedAlerts()[1], param);
+
+        param = new HashMap<>();
+        param.put("Zahl", 17);
+        executeScriptParam(getExpectedAlerts()[2], param);
+    }
+
+    private void executeScriptParam(final Object expected, final Object... params) throws Exception {
+        final String html = "<html><head><title>Tester</title></head></html>";
+        final WebDriver webDriver = loadPage2(html);
+
+        final String js = "let result = '';\n"
+                + "result += arguments.length;\n"
+                + "result += '|';\n"
+                + "for (let i = 0; i < arguments.length; i++) {\n"
+                + "  result += ' [' + i + ']' + arguments[i];"
+                + "  if (Array.isArray(arguments[i])) {\n"
+                + "    result += ' array';\n"
+                + "  } else if (Object.getPrototypeOf(arguments[i]) === Map.prototype) {\n"
+                + "    result += ' map';\n"
+                + "  } else {\n"
+                + "    result += ' ' + typeof arguments[i];\n"
+                + "    if ('object' === typeof arguments[i]) {\n"
+                + "      result += ' (';\n"
+                + "      let props = Object.getOwnPropertyNames(arguments[i]);\n"
+                + "      for (let p = 0; p < props.length; p++) {\n"
+                + "        result += props[p];\n"
+                + "        result += '->';\n"
+                + "        result += arguments[i][props[p]] + ' ';\n"
+                + "      }\n"
+                + "      result += ')';\n"
+                + "    }\n"
+                + "  }\n"
+                + "}\n"
+                + "return result;\n";
+
+        final String text = (String) ((JavascriptExecutor) webDriver).executeScript(js, params);
+        assertEquals(expected, text);
+    }
+
+    @Test
+    public void executeScriptParamWebElement() throws Exception {
+        final String html = "<html><head><title>Tester</title></head>\n"
+                + "<body><div id='myDivId'>diff</div></html>";
+        final WebDriver webDriver = loadPage2(html);
+
+        final WebElement webElement = webDriver.findElement(By.id("myDivId"));
+
+        final String js = "return arguments[0].outerHTML;";
+        final String text = (String) ((JavascriptExecutor) webDriver).executeScript(js, webElement);
+        assertEquals("<div id=\"myDivId\">diff</div>", text);
     }
 }

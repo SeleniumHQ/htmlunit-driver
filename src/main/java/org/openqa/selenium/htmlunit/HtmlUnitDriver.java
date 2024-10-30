@@ -915,7 +915,14 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 || arg instanceof Number // special case the underlying type
                 || arg instanceof String
                 || arg instanceof Boolean
-                || arg.getClass().isArray()
+
+                || arg instanceof Object[]
+                || arg instanceof int[]
+                || arg instanceof long[]
+                || arg instanceof float[]
+                || arg instanceof double[]
+                || arg instanceof boolean[]
+
                 || arg instanceof Collection<?> || arg instanceof Map<?, ?>)) {
             throw new IllegalArgumentException(
                     "Argument must be a string, number, boolean or WebElement: " + arg + " (" + arg.getClass() + ")");
@@ -925,13 +932,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             final HtmlUnitWebElement webElement = (HtmlUnitWebElement) arg;
             assertElementNotStale(webElement.getElement());
             return webElement.getElement().getScriptableObject();
-
         }
         else if (arg instanceof HtmlElement) {
             final HtmlElement element = (HtmlElement) arg;
             assertElementNotStale(element);
             return element.getScriptableObject();
-
         }
         else if (arg instanceof Collection<?>) {
             final List<Object> list = new ArrayList<>();
@@ -939,25 +944,60 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
-
         }
-        else if (arg.getClass().isArray()) {
+
+        else if (arg instanceof Object[]) {
             final List<Object> list = new ArrayList<>();
             for (final Object o : (Object[]) arg) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
-
         }
-        else if (arg instanceof Map<?, ?>) {
-            final Map<?, ?> argmap = (Map<?, ?>) arg;
-            final Scriptable map = Context.getCurrentContext().newObject(scope);
-            for (final Map.Entry<?, ?> entry : argmap.entrySet()) {
-                map.put((String) entry.getKey(), map, parseArgumentIntoJavascriptParameter(scope, entry.getValue()));
+        else if (arg instanceof int[]) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (int[]) arg) {
+                list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
-            return map;
-
+            return Context.getCurrentContext().newArray(scope, list.toArray());
         }
+        else if (arg instanceof long[]) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (long[]) arg) {
+                list.add(parseArgumentIntoJavascriptParameter(scope, o));
+            }
+            return Context.getCurrentContext().newArray(scope, list.toArray());
+        }
+        else if (arg instanceof float[]) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (float[]) arg) {
+                list.add(parseArgumentIntoJavascriptParameter(scope, o));
+            }
+            return Context.getCurrentContext().newArray(scope, list.toArray());
+        }
+        else if (arg instanceof double[]) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (double[]) arg) {
+                list.add(parseArgumentIntoJavascriptParameter(scope, o));
+            }
+            return Context.getCurrentContext().newArray(scope, list.toArray());
+        }
+        else if (arg instanceof boolean[]) {
+            final List<Object> list = new ArrayList<>();
+            for (final Object o : (boolean[]) arg) {
+                list.add(parseArgumentIntoJavascriptParameter(scope, o));
+            }
+            return Context.getCurrentContext().newArray(scope, list.toArray());
+        }
+
+        else if (arg instanceof Map<?, ?>) {
+            final Map<?, ?> map = (Map<?, ?>) arg;
+            final Scriptable obj = Context.getCurrentContext().newObject(scope);
+            for (final Map.Entry<?, ?> entry : map.entrySet()) {
+                obj.put((String) entry.getKey(), obj, parseArgumentIntoJavascriptParameter(scope, entry.getValue()));
+            }
+            return obj;
+        }
+
         else {
             return arg;
         }
