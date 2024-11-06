@@ -27,8 +27,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.ScriptResult;
 import org.htmlunit.corejs.javascript.ScriptRuntime;
+import org.htmlunit.corejs.javascript.Scriptable;
 import org.htmlunit.corejs.javascript.ScriptableObject;
 import org.htmlunit.html.DisabledElement;
 import org.htmlunit.html.DomElement;
@@ -47,6 +49,8 @@ import org.htmlunit.html.HtmlSubmitInput;
 import org.htmlunit.html.HtmlTextArea;
 import org.htmlunit.html.impl.SelectableTextInput;
 import org.htmlunit.javascript.HtmlUnitScriptable;
+import org.htmlunit.javascript.host.css.CSSStyleDeclaration;
+import org.htmlunit.javascript.host.dom.DOMTokenList;
 import org.htmlunit.javascript.host.html.HTMLElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -404,24 +408,36 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     public String getDomProperty(final String name) {
         assertElementNotStale();
 
-        final String lowerName = name.toLowerCase();
-
         final HtmlUnitScriptable scriptable = element_.getScriptableObject();
         if (scriptable != null) {
-            if (!ScriptableObject.hasProperty(scriptable, lowerName)) {
+            final Object propValue = ScriptableObject.getProperty(scriptable, name);
+            if (Scriptable.NOT_FOUND == propValue) {
                 return null;
             }
-            return ScriptRuntime.toCharSequence(ScriptableObject.getProperty(scriptable, lowerName)).toString();
+
+            if (propValue instanceof CSSStyleDeclaration) {
+                return ((CSSStyleDeclaration) propValue).getCssText();
+            }
+
+            if (propValue instanceof DOMTokenList) {
+                final String value = ((DOMTokenList) propValue).getValue();
+                if (value != null) {
+                    return '[' + String.join(", ", StringUtils.split(value, " \t\r\n\u000C")) + ']';
+                }
+                return "";
+            }
+
+            return ScriptRuntime.toString(propValue);
         }
 
         // js disabled, fallback to some hacks
-        if ("disabled".equals(lowerName)) {
+        if ("disabled".equals(name)) {
             if (element_ instanceof DisabledElement) {
                 return trueOrFalse(((DisabledElement) element_).isDisabled());
             }
         }
 
-        if ("checked".equals(lowerName)) {
+        if ("checked".equals(name)) {
             if (element_ instanceof HtmlCheckBoxInput) {
                 return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());
             }
@@ -430,7 +446,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
         }
 
-        final String value = element_.getAttribute(lowerName);
+        final String value = element_.getAttribute(name);
         if (ATTRIBUTE_NOT_DEFINED == value) {
             return null;
         }
@@ -464,6 +480,18 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
             else if (element_ instanceof HtmlRadioButtonInput) {
                 return trueOrNull(((HtmlRadioButtonInput) element_).isChecked());
+            }
+        }
+
+        if ("multiple".equals(lowerName)) {
+            if (element_ instanceof HtmlSelect) {
+                return "true";
+            }
+        }
+
+        if ("selected".equals(lowerName)) {
+            if (element_ instanceof HtmlOption) {
+                return trueOrNull(((HtmlOption) element_).isSelected());
             }
         }
 
