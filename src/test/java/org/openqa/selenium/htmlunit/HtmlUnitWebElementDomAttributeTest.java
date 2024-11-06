@@ -70,9 +70,15 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("disabled"));
+        assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("Disabled"));
     }
 
     @Test
+    @Alerts(DEFAULT = {"true", "true", "true"},
+            FF = {"true", "", ""},
+            FF_ESR = {"true", "", ""})
+    @HtmlUnitNYI(FF = {"true", "true", "true"},
+            FF_ESR = {"true", "true", "true"})
     public void disabled() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
@@ -86,7 +92,9 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
         final WebElement elem = driver.findElement(By.id("chkBx"));
-        assertEquals("true", elem.getDomAttribute("disabled"));
+        assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("disabled"));
+        assertEquals(getExpectedAlerts()[1], elem.getDomAttribute("Disabled"));
+        assertEquals(getExpectedAlerts()[2], elem.getDomAttribute("DisaBLED"));
     }
 
     @Test
@@ -104,9 +112,15 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement elem = driver.findElement(By.id("chkBx"));
         assertNull(elem.getDomAttribute("disabled"));
+        assertNull(elem.getDomAttribute("Disabled"));
     }
 
     @Test
+    @Alerts(DEFAULT = {"true", "true", "true", "true", "true", "true"},
+            FF = {"true", "checked", "checked", "true", "false", "false"},
+            FF_ESR = {"true", "checked", "checked", "true", "false", "false"})
+    @HtmlUnitNYI(FF = {"true", "true", "true", "true", "true", "true"},
+            FF_ESR = {"true", "true", "true", "true", "true", "true"})
     public void checkbox() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
@@ -123,13 +137,19 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
 
         WebElement elem = driver.findElement(By.id("chkBx"));
-        assertEquals("true", elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[1], elem.getDomAttribute("Checked"));
+        assertEquals(getExpectedAlerts()[2], elem.getDomAttribute("CheCKeD"));
 
         elem = driver.findElement(By.id("chkBx2"));
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
+        assertNull(elem.getDomAttribute("CheCKeD"));
 
         elem = driver.findElement(By.id("chkBx3"));
-        assertEquals("true", elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[3], elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[4], elem.getDomAttribute("Checked"));
+        assertEquals(getExpectedAlerts()[5], elem.getDomAttribute("CheCKeD"));
     }
 
     @Test
@@ -148,11 +168,19 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
         final WebElement elem = driver.findElement(By.id("chkBx"));
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
+
         elem.click();
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
     }
 
     @Test
+    @Alerts(DEFAULT = {"true", "true", "true", "true", "true", "true"},
+            FF = {"true", "checked", "checked", "true", "false", "false"},
+            FF_ESR = {"true", "checked", "checked", "true", "false", "false"})
+    @HtmlUnitNYI(FF = {"true", "true", "true", "true", "true", "true"},
+            FF_ESR = {"true", "true", "true", "true", "true", "true"})
     public void radio() throws Exception {
         final String html = "<html>\n"
                         + "<head>\n"
@@ -169,13 +197,19 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
 
         WebElement elem = driver.findElement(By.id("radioBx"));
-        assertEquals("true", elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[0], elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[1], elem.getDomAttribute("Checked"));
+        assertEquals(getExpectedAlerts()[2], elem.getDomAttribute("CheCKeD"));
 
         elem = driver.findElement(By.id("radioBx2"));
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
+        assertNull(elem.getDomAttribute("CheCKeD"));
 
         elem = driver.findElement(By.id("radioBx3"));
-        assertEquals("true", elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[3], elem.getDomAttribute("checked"));
+        assertEquals(getExpectedAlerts()[4], elem.getDomAttribute("Checked"));
+        assertEquals(getExpectedAlerts()[5], elem.getDomAttribute("CheCKeD"));
     }
 
     @Test
@@ -194,8 +228,11 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
         final WebElement elem = driver.findElement(By.id("radioBx"));
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
+
         elem.click();
         assertNull(elem.getDomAttribute("checked"));
+        assertNull(elem.getDomAttribute("Checked"));
     }
 
     @Test
@@ -215,9 +252,11 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
         WebElement elem = driver.findElement(By.id("textBx"));
         assertEquals("world", elem.getDomAttribute("value"));
+        assertEquals("world", elem.getDomAttribute("Value"));
 
         elem = driver.findElement(By.id("textBx2"));
         assertNull(elem.getDomAttribute("value"));
+        assertNull(elem.getDomAttribute("Value"));
     }
 
     @Test
@@ -236,7 +275,10 @@ public class HtmlUnitWebElementDomAttributeTest extends WebDriverTestCase {
 
         final WebElement elem = driver.findElement(By.id("textBx"));
         assertEquals("world", elem.getDomAttribute("value"));
+        assertEquals("world", elem.getDomAttribute("Value"));
+
         elem.sendKeys("hello");
         assertEquals("world", elem.getDomAttribute("value"));
+        assertEquals("world", elem.getDomAttribute("Value"));
     }
 }

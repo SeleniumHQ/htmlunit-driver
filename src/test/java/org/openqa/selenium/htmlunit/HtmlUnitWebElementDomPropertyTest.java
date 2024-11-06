@@ -65,6 +65,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals(getExpectedAlerts()[0], "" + elem.getDomProperty("disabled"));
+        assertEquals(getExpectedAlerts()[0], "" + elem.getDomProperty("Disabled"));
     }
 
     @Test
@@ -82,6 +83,7 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getDomProperty("disabled"));
+        assertNull(elem.getDomProperty("Disabled"));
     }
 
     @Test
@@ -102,12 +104,15 @@ public class HtmlUnitWebElementDomPropertyTest extends WebDriverTestCase {
 
         WebElement elem = driver.findElement(By.id("chkBx"));
         assertEquals("true", elem.getDomProperty("checked"));
+        assertNull(elem.getDomProperty("Checked"));
 
         elem = driver.findElement(By.id("chkBx2"));
         assertEquals("false", elem.getDomProperty("checked"));
+        assertNull(elem.getDomProperty("Checked"));
 
         elem = driver.findElement(By.id("chkBx3"));
         assertEquals("true", elem.getDomProperty("checked"));
+        assertNull(elem.getDomProperty("Checked"));
     }
 
     @Test
