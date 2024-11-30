@@ -4,8 +4,12 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](https://www.h
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver)
 
-##### News
-[<img src="https://www.htmlunit.org/images/logos/twitter.png" alt="Twitter" height="44" width="60">](https://twitter.com/HtmlUnit)
+## News
+
+**[Developer Blog][15]**
+
+[HtmlUnit@mastodon](https://fosstodon.org/@HtmlUnit) | [HtmlUnit@LinkedIn](https://www.linkedin.com/in/ronald-brill-a93271197/) | [HtmlUnit@Twitter](https://twitter.com/HtmlUnit)
+
 
 [![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
 
@@ -29,7 +33,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.26.0</version>
+    <version>4.27.0</version>
 </dependency>
 ```
 
@@ -38,7 +42,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.26.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.27.0'
 ```
 
 
