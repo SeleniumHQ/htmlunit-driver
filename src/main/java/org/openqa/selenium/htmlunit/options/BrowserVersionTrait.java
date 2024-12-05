@@ -370,7 +370,7 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
 
     /**
      * Returns the value used by the browser for the {@code Accept} header
-     * if performing an XMLHttpRequest.
+     * if performing an <b>XMLHttpRequest</b>.
      * <p>
      * property: <b>webdriver.htmlunit.xmlHttpRequestAcceptHeader</b><br>
      * type: {@link String}<br>
