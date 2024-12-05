@@ -1,6 +1,6 @@
 # ![HtmlUnitDriver Logo](https://github.com/SeleniumHQ/htmlunit-driver/blob/master/htmlunit_webdriver.png)
 
-HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](https://www.htmlunit.org) headless browser.
+**HtmlUnitDriver** is a WebDriver compatible driver for the [HtmlUnit](https://www.htmlunit.org) headless browser.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver)
 
@@ -15,7 +15,8 @@ HtmlUnitDriver is a WebDriver compatible driver for the [HtmlUnit](https://www.h
 
 ## HtmlUnit Remote - Selenium 4 Grid support
 
-Please have a look at the **[HtmlUnit Remote](https://github.com/sbabcoc/htmlunit-remote)** project if you like to use this driver from [Selenium 4 Grid](https://www.selenium.dev/documentation/grid).
+Please have a look at the **[HtmlUnit Remote](https://github.com/sbabcoc/htmlunit-remote)** project if you like to use
+this driver from [Selenium 4 Grid](https://www.selenium.dev/documentation/grid).
 
 
 ## Get it!
@@ -25,7 +26,8 @@ can be found in these [tables](compatibility.md).
 
 ### Maven
 
-Simply add a dependency on the latest `htmlunit3-driver` version available in the Maven Central.
+Simply add a dependency on the latest `htmlunit3-driver` version available in the
+[Maven Central](https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/htmlunit3-driver/) repository.
 
 Add to your `pom.xml`:
 
@@ -50,7 +52,7 @@ implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', versi
 
 ### Simple
 
-You can simply use one of the constructors from the HtmlUnit driver class
+You can simply use one of the constructors from the **HtmlUnit** driver class
 
 ```java
 // simple case - no javascript support
@@ -75,8 +77,8 @@ WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 
 ### Customization
 
-HtmlUnit offers many customization options.
-Similar to the other WebDriver's the class HtmlUnitDriverOptions can be used to customize your HtmlUnit driver.
+**HtmlUnit** offers many customization options. Similar to the other WebDriver implementations, the **HtmlUnitDriverOptions**
+class can be used to customize your **HtmlUnit** driver.
 
 ```java
 final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(BrowserVersion.FIREFOX);
@@ -88,13 +90,13 @@ HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
 // use the driver
 ```
 
-Please check the 
+**NOTE**: Complete details for the **HtmlUnitDriverOptions** class can be found [here](docs/HtmlUnitDriverOptions.md).
 
 ### Selenium compatibility
 
-An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
+An overview of the different versions, the **HtmlUnit** version used in each case and the compatibility 
 can be found in these [tables](compatibility.md).
 
 ## License
 
-HtmlUnitDriver is distributed under Apache License 2.0.
+**HtmlUnitDriver** is distributed under Apache License 2.0.
