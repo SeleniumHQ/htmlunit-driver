@@ -22,7 +22,7 @@ this driver from [Selenium 4 Grid](https://www.selenium.dev/documentation/grid).
 ## Get it!
 
 An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
-can be found in these [tables](compatibility.md).
+can be found in these [tables](docs/compatibility.md).
 
 ### Maven
 
@@ -90,12 +90,12 @@ HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
 // use the driver
 ```
 
-**NOTE**: Complete details for the **HtmlUnitDriverOptions** class can be found [here](docs/HtmlUnitDriverOptions.md).
+**NOTE**: Complete details for the **HtmlUnitDriverOptions** class can be found [here](docs/options.md).
 
 ### Selenium compatibility
 
 An overview of the different versions, the **HtmlUnit** version used in each case and the compatibility 
-can be found in these [tables](compatibility.md).
+can be found in these [tables](docs/compatibility.md).
 
 ## License
 
