@@ -6,7 +6,7 @@
 
 ## News
 
-**[Developer Blog][15]**
+**[Developer Blog](https://htmlunit.github.io/htmlunit-blog/)**
 
 [HtmlUnit@mastodon](https://fosstodon.org/@HtmlUnit) | [HtmlUnit@LinkedIn](https://www.linkedin.com/in/ronald-brill-a93271197/) | [HtmlUnit@Twitter](https://twitter.com/HtmlUnit)
 
