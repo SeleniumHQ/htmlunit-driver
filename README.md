@@ -8,7 +8,7 @@
 
 **[Developer Blog](https://htmlunit.github.io/htmlunit-blog/)**
 
-[HtmlUnit@mastodon](https://fosstodon.org/@HtmlUnit) | [HtmlUnit@LinkedIn](https://www.linkedin.com/in/ronald-brill-a93271197/) | [HtmlUnit@Twitter](https://twitter.com/HtmlUnit)
+[HtmlUnit@mastodon](https://fosstodon.org/@HtmlUnit) | [HtmlUnit@bsky](https://bsky.app/profile/htmlunit.bsky.social) | [HtmlUnit@Twitter](https://twitter.com/HtmlUnit)
 
 
 [![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
@@ -35,7 +35,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.27.0</version>
+    <version>4.28.0</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.27.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.28.0'
 ```
 
 
