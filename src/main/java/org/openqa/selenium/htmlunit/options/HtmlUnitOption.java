@@ -1020,7 +1020,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
 
     /**
      * Get the enumerated constant for the specified option key name.
-     * 
+     *
      * @param key option key name
      * @return {@link HtmlUnitOption} constant for option key; {@code null} if constant not found
      */
@@ -1035,7 +1035,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
 
     /**
      * Get the enumerated constant for the specified system property name.
-     * 
+     *
      * @param name system property name
      * @return {@link HtmlUnitOption} constant for property name; {@code null} if constant not found
      */
