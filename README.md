@@ -35,7 +35,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.28.0</version>
+    <version>4.29.0</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.28.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.29.0'
 ```
 
 
