@@ -1,5 +1,7 @@
 # ![HtmlUnitDriver Logo](https://github.com/SeleniumHQ/htmlunit-driver/blob/master/htmlunit_webdriver.png)
 
+Version 4.30.0 / March 26, 2025
+
 **HtmlUnitDriver** is a WebDriver compatible driver for the [HtmlUnit](https://www.htmlunit.org) headless browser.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver)
@@ -35,7 +37,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.29.0</version>
+    <version>4.30.0</version>
 </dependency>
 ```
 
@@ -44,7 +46,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.29.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.30.0'
 ```
 
 
