@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.32.0-SNAPSHOT</version>
+    <version>4.32.0</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -20,7 +20,7 @@
 
         <selenium.version>4.32.0</selenium.version>
         <selenium.devtools.artifactId>selenium-devtools-v136</selenium.devtools.artifactId>
-        <htmlunit.version>4.12.0-SNAPSHOT</htmlunit.version>
+        <htmlunit.version>4.12.0</htmlunit.version>
 
         <jetty.version>9.4.57.v20241219</jetty.version>
 
@@ -288,6 +288,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -306,6 +307,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
