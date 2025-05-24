@@ -206,7 +206,7 @@ class AsyncScriptExecutor {
          */
         public void callback(final Object callbackValue) {
             if (latch_.getCount() > 0) {
-                this.value_ = callbackValue;
+                value_ = callbackValue;
                 latch_.countDown();
             }
         }
@@ -231,7 +231,7 @@ class AsyncScriptExecutor {
          */
         private void alert(final String message) {
             if (latch_.getCount() > 0) {
-                this.alertMessage_ = message;
+                alertMessage_ = message;
                 latch_.countDown();
             }
         }

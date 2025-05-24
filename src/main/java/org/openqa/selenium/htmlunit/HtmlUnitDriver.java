@@ -366,7 +366,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         };
         executor_.execute(wrapped);
 
-        if (loadStrategyWait && this.runAsyncRunning_) {
+        if (loadStrategyWait && runAsyncRunning_) {
             mainCondition_.awaitUninterruptibly();
             conditionLock_.unlock();
         }
@@ -586,7 +586,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         if (executor == null) {
             throw new IllegalArgumentException("executor cannot be null");
         }
-        this.executor_ = executor;
+        executor_ = executor;
     }
 
     /**

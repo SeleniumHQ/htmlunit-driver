@@ -47,8 +47,8 @@ public class HtmlUnitMouse {
     private DomElement currentActiveElement_;
 
     public HtmlUnitMouse(final HtmlUnitDriver parent, final HtmlUnitKeyboard keyboard) {
-        this.parent_ = parent;
-        this.keyboard_ = keyboard;
+        parent_ = parent;
+        keyboard_ = keyboard;
     }
 
     private DomElement getElementForOperation(final Coordinates potentialCoordinates) {

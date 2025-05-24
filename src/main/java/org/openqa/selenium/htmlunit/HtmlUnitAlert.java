@@ -123,14 +123,14 @@ public class HtmlUnitAlert implements Alert {
     }
 
     public void setAutoAccept(final boolean autoAccept) {
-        this.quitting_ = autoAccept;
+        quitting_ = autoAccept;
     }
 
     public void handleBrowserCapabilities(final Capabilities capabilities) {
         final UnexpectedAlertBehaviour behaviour = (UnexpectedAlertBehaviour) capabilities
                 .getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);
         if (behaviour != null) {
-            this.unexpectedAlertBehaviour_ = behaviour;
+            unexpectedAlertBehaviour_ = behaviour;
         }
     }
 
@@ -229,7 +229,7 @@ public class HtmlUnitAlert implements Alert {
         private boolean accepted_;
 
         AlertHolder(final String message) {
-            this.message_ = message;
+            message_ = message;
         }
 
         void sendKeys(final String keysToSend) {
@@ -255,7 +255,7 @@ public class HtmlUnitAlert implements Alert {
 
         PromptHolder(final String message, final String defaultMessage) {
             super(message);
-            this.defaultMessage_ = defaultMessage;
+            defaultMessage_ = defaultMessage;
         }
 
         @Override
@@ -263,7 +263,7 @@ public class HtmlUnitAlert implements Alert {
             if (keysToSend == null) {
                 keysToSend = defaultMessage_;
             }
-            this.value_ = keysToSend;
+            value_ = keysToSend;
         }
 
         @Override

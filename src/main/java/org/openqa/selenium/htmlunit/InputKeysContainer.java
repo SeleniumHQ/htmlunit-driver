@@ -80,6 +80,6 @@ public class InputKeysContainer {
     }
 
     public void setCapitalization(final boolean capitalize) {
-        this.capitalize_ = capitalize;
+        capitalize_ = capitalize;
     }
 }
