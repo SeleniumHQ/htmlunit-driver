@@ -18,7 +18,6 @@
 package org.openqa.selenium.htmlunit;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.htmlunit.WebClient;
 import org.openqa.selenium.WebDriver;
@@ -40,7 +39,7 @@ public class HtmlUnitTimeouts implements WebDriver.Timeouts {
     }
 
     public HtmlUnitTimeouts(final WebClient webClient) {
-        this.webClient_ = webClient;
+        webClient_ = webClient;
     }
 
     @Override
@@ -48,29 +47,15 @@ public class HtmlUnitTimeouts implements WebDriver.Timeouts {
         return Duration.ofMillis(implicitWait_);
     }
 
-    @Deprecated
-    @Override
-    public WebDriver.Timeouts implicitlyWait(final long time, final TimeUnit unit) {
-        implicitlyWait(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
-        return this;
-    }
-
     @Override
     public WebDriver.Timeouts implicitlyWait(final Duration duration) {
-        this.implicitWait_ = Math.max(0, duration.toMillis());
+        implicitWait_ = Math.max(0, duration.toMillis());
         return this;
     }
 
     @Override
     public WebDriver.Timeouts scriptTimeout(final Duration duration) {
-        this.scriptTimeout_ = duration.toMillis();
-        return this;
-    }
-
-    @Deprecated
-    @Override
-    public WebDriver.Timeouts setScriptTimeout(final long time, final TimeUnit unit) {
-        scriptTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
+        scriptTimeout_ = duration.toMillis();
         return this;
     }
 
@@ -79,16 +64,9 @@ public class HtmlUnitTimeouts implements WebDriver.Timeouts {
         return Duration.ofMillis(scriptTimeout_);
     }
 
-    @Deprecated
-    @Override
-    public WebDriver.Timeouts pageLoadTimeout(final long time, final TimeUnit unit) {
-        pageLoadTimeout(Duration.ofMillis(TimeUnit.MILLISECONDS.convert(time, unit)));
-        return this;
-    }
-
     @Override
     public WebDriver.Timeouts pageLoadTimeout(final Duration duration) {
-        this.pageLoadTimeout_ = duration.toMillis();
+        pageLoadTimeout_ = duration.toMillis();
         setPageLoadTimeoutForWebClient(webClient_, pageLoadTimeout_);
         return this;
     }
