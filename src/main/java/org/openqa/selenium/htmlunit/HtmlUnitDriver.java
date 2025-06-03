@@ -641,10 +641,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             setCurrentWindow(getCurrentWindow().getWebWindow().getTopWindow());
         }
         catch (final UnknownHostException e) {
-            final WebWindow currentTopWebWindow = getCurrentWindow().getWebWindow().getTopWindow();
-            final UnexpectedPage unexpectedPage = new UnexpectedPage(new StringWebResponse("Unknown host", fullUrl),
-                    currentTopWebWindow);
-            currentTopWebWindow.setEnclosedPage(unexpectedPage);
+            throw new WebDriverException(e);
         }
         catch (final ConnectException e) {
             // This might be expected

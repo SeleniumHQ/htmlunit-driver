@@ -17,7 +17,10 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.junit.Assert.fail;
+
 import java.math.BigInteger;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
@@ -187,5 +191,71 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
         final String js = "return arguments[0].outerHTML;";
         final String text = (String) ((JavascriptExecutor) webDriver).executeScript(js, webElement);
         assertEquals("<div id=\"myDivId\">diff</div>", text);
+    }
+
+    @Test
+    public void getNotExistingUrl() throws Exception {
+        final WebDriver webDriver = getWebDriver();
+
+        try {
+            webDriver.get("https://getnotexistingurl_" + System.currentTimeMillis() + ".ace");
+            fail("WebDriverException expected");
+        }
+        catch (final WebDriverException e) {
+            // expected
+            if (webDriver instanceof HtmlUnitDriver) {
+                assertTrue(e.getMessage(), e.getMessage().startsWith("java.net.UnknownHostException: No such host is known (getnotexistingurl_"));
+            }
+        }
+    }
+
+    @Test
+    @Alerts(DEFAULT = "Privacy error",
+            FF = "self-signed.badssl.com",
+            FF_ESR = "self-signed.badssl.com")
+    @HtmlUnitNYI(CHROME = "self-signed.badssl.com",
+            EDGE = "self-signed.badssl.com")
+    public void getSslSelfSigned() throws Exception {
+        final WebDriver webDriver = getWebDriver();
+
+        webDriver.get("https://self-signed.badssl.com");
+        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
+        assertEquals("https://self-signed.badssl.com/", webDriver.getCurrentUrl());
+    }
+
+    @Test
+    @Alerts(DEFAULT = "Privacy error",
+            FF = "wrong.host.badssl.com",
+            FF_ESR = "wrong.host.badssl.com")
+    @HtmlUnitNYI(CHROME = "wrong.host.badssl.com",
+            EDGE = "wrong.host.badssl.com")
+    public void getSslWrongHost() throws Exception {
+        final WebDriver webDriver = getWebDriver();
+
+        webDriver.get("https://wrong.host.badssl.com/");
+        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
+        assertEquals("https://wrong.host.badssl.com/", webDriver.getCurrentUrl());
+    }
+
+    @Test
+    @Alerts(DEFAULT = "revoked.badssl.com",
+            FF = "WebDriverException",
+            FF_ESR = "WebDriverException")
+    @HtmlUnitNYI(FF = "revoked.badssl.com",
+            FF_ESR = "revoked.badssl.com")
+    public void getSslRevoked() throws Exception {
+        final WebDriver webDriver = getWebDriver();
+
+        try {
+            webDriver.get("https://revoked.badssl.com");
+            if ("WebDriverException".equals(getExpectedAlerts()[0])) {
+                fail("WebDriverException expected");
+            }
+            assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
+            assertEquals("https://revoked.badssl.com/", webDriver.getCurrentUrl());
+        }
+        catch (final WebDriverException e) {
+            // expected
+        }
     }
 }
