@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.33.0</version>
+    <version>4.34.0-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -18,9 +18,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <selenium.version>4.33.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v136</selenium.devtools.artifactId>
-        <htmlunit.version>4.13.0</htmlunit.version>
+        <selenium.version>4.34.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v138</selenium.devtools.artifactId>
+        <htmlunit.version>4.14.0-SNAPSHOT</htmlunit.version>
 
         <jetty.version>9.4.57.v20241219</jetty.version>
 
@@ -35,7 +35,7 @@
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
