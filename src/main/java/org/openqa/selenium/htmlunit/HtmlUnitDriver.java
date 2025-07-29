@@ -6,7 +6,7 @@
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//   https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
@@ -55,9 +55,7 @@ import org.htmlunit.Page;
 import org.htmlunit.ProxyConfig;
 import org.htmlunit.ScriptResult;
 import org.htmlunit.SgmlPage;
-import org.htmlunit.StringWebResponse;
 import org.htmlunit.TopLevelWindow;
-import org.htmlunit.UnexpectedPage;
 import org.htmlunit.WaitingRefreshHandler;
 import org.htmlunit.WebClient;
 import org.htmlunit.WebClientOptions;

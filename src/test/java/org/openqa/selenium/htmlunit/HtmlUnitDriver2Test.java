@@ -6,7 +6,7 @@
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//   https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
@@ -20,7 +20,6 @@ package org.openqa.selenium.htmlunit;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -204,7 +203,9 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
         catch (final WebDriverException e) {
             // expected
             if (webDriver instanceof HtmlUnitDriver) {
-                assertTrue(e.getMessage(), e.getMessage().startsWith("java.net.UnknownHostException: No such host is known (getnotexistingurl_"));
+                assertTrue(e.getMessage(),
+                        e.getMessage()
+                        .startsWith("java.net.UnknownHostException: No such host is known (getnotexistingurl_"));
             }
         }
     }
