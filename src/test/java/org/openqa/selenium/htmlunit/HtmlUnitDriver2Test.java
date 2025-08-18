@@ -239,24 +239,12 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
     }
 
     @Test
-    @Alerts(DEFAULT = "revoked.badssl.com",
-            FF = "WebDriverException",
-            FF_ESR = "WebDriverException")
-    @HtmlUnitNYI(FF = "revoked.badssl.com",
-            FF_ESR = "revoked.badssl.com")
+    @Alerts("revoked.badssl.com")
     public void getSslRevoked() throws Exception {
         final WebDriver webDriver = getWebDriver();
 
-        try {
-            webDriver.get("https://revoked.badssl.com");
-            if ("WebDriverException".equals(getExpectedAlerts()[0])) {
-                fail("WebDriverException expected");
-            }
-            assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
-            assertEquals("https://revoked.badssl.com/", webDriver.getCurrentUrl());
-        }
-        catch (final WebDriverException e) {
-            // expected
-        }
+        webDriver.get("https://revoked.badssl.com");
+        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
+        assertEquals("https://revoked.badssl.com/", webDriver.getCurrentUrl());
     }
 }
