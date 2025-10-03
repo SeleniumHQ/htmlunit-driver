@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.35.0</version>
+    <version>4.36.0-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -18,9 +18,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <selenium.version>4.35.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v139</selenium.devtools.artifactId>
-        <htmlunit.version>4.15.0</htmlunit.version>
+        <selenium.version>4.36.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v140</selenium.devtools.artifactId>
+        <htmlunit.version>4.17.0-SNAPSHOT</htmlunit.version>
 
         <jetty.version>9.4.58.v20250814</jetty.version>
 
