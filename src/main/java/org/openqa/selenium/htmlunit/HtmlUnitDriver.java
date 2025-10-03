@@ -833,7 +833,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     public Object executeScript(String script, final Object... args) {
         final HtmlPage page = getPageToInjectScriptInto();
 
-        script = "function() {" + script + "\n};";
+        script = "let huDriverFoo = function() {" + script + "\n}; huDriverFoo;";
         ScriptResult result = page.executeJavaScript(script);
         final Object function = result.getJavaScriptResult();
 
