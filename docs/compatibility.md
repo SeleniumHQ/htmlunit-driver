@@ -8,7 +8,8 @@ is for Selenium 4.29.0.
 
 | selenium | htmlunit-driver |    htmlunit    |    artifactId    |  JDK |
 |----------|-----------------|----------------|------------------|------|
-|   4.35.0 |      **4.35.0** |     **4.15.0** | htmlunit3-driver |   11 |
+|   4.36.0 |      **4.36.0** |     **4.17.0** | htmlunit3-driver |   11 |
+|   4.35.0 |          4.35.0 |         4.15.0 | htmlunit3-driver |   11 |
 |   4.34.0 |          4.34.0 |         4.14.0 | htmlunit3-driver |   11 |
 |   4.33.0 |          4.33.0 |         4.13.0 | htmlunit3-driver |   11 |
 |   4.32.0 |          4.32.0 |         4.12.0 | htmlunit3-driver |   11 |
