@@ -30,8 +30,8 @@ import org.openqa.selenium.WebDriver;
  */
 public class HtmlUnitTimeouts implements WebDriver.Timeouts {
     private long implicitWait_ = 0;
-    private long scriptTimeout_ = 0;
-    private long pageLoadTimeout_ = 0;
+    private long scriptTimeout_ = 30 * 1000;
+    private long pageLoadTimeout_ = 300 * 1000;
     private WebClient webClient_ = null;
 
     public HtmlUnitTimeouts() {
