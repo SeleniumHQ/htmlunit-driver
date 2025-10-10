@@ -29,6 +29,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.ScriptTimeoutException;
+import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -343,132 +344,118 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
     }
 
     /* TODO
-      @Test
-      void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
-        String script =
-            "var url = arguments[0];"
-                + "var callback = arguments[arguments.length - 1];"
-                +
-                // Adapted from http://www.quirksmode.org/js/xmlhttp.html
-                "var XMLHttpFactories = ["
-                + "  function () {return new XMLHttpRequest()},"
-                + "  function () {return new ActiveXObject('Msxml2.XMLHTTP')},"
-                + "  function () {return new ActiveXObject('Msxml3.XMLHTTP')},"
-                + "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}"
-                + "];"
-                + "var xhr = false;"
-                + "while (!xhr && XMLHttpFactories.length) {"
-                + "  try {"
-                + "    xhr = XMLHttpFactories.shift().call();"
-                + "  } catch (e) {}"
-                + "}"
-                + "if (!xhr) throw Error('unable to create XHR object');"
-                + "xhr.open('GET', url, true);"
-                + "xhr.onreadystatechange = function() {"
-                + "  if (xhr.readyState == 4) callback(xhr.responseText);"
-                + "};"
-                + "xhr.send('');"; // empty string to stop firefox 3 from choking
+    @Test
+    void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
+      String script =
+          "var url = arguments[0];"
+              + "var callback = arguments[arguments.length - 1];"
+              +
+              // Adapted from http://www.quirksmode.org/js/xmlhttp.html
+              "var XMLHttpFactories = ["
+              + "  function () {return new XMLHttpRequest()},"
+              + "  function () {return new ActiveXObject('Msxml2.XMLHTTP')},"
+              + "  function () {return new ActiveXObject('Msxml3.XMLHTTP')},"
+              + "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}"
+              + "];"
+              + "var xhr = false;"
+              + "while (!xhr && XMLHttpFactories.length) {"
+              + "  try {"
+              + "    xhr = XMLHttpFactories.shift().call();"
+              + "  } catch (e) {}"
+              + "}"
+              + "if (!xhr) throw Error('unable to create XHR object');"
+              + "xhr.open('GET', url, true);"
+              + "xhr.onreadystatechange = function() {"
+              + "  if (xhr.readyState == 4) callback(xhr.responseText);"
+              + "};"
+              + "xhr.send('');"; // empty string to stop firefox 3 from choking
 
-        driver.get(pages.ajaxyPage);
-        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(3));
-        String response = (String) executor.executeAsyncScript(script, pages.sleepingPage + "?time=2");
-        assertThat(response.trim())
-            .isEqualTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>");
-      }
+      driver.get(pages.ajaxyPage);
+      driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(3));
+      String response = (String) executor.executeAsyncScript(script, pages.sleepingPage + "?time=2");
+      assertThat(response.trim())
+          .isEqualTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>");
+    }
+  */
 
-      @Test
-      @Ignore(CHROME)
-      @Ignore(EDGE)
-      @Ignore(IE)
-      @Ignore(FIREFOX)
-      @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-      public void throwsIfScriptTriggersAlert() {
-        driver.get(pages.simpleTestPage);
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
-        assertThatExceptionOfType(UnhandledAlertException.class)
-            .isThrownBy(
-                () ->
-                    executor.executeAsyncScript(
-                        "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('Look! An"
-                            + " alert!'); }, 50);"));
-        // Shouldn't throw
-        driver.getTitle();
-      }
+    @Test
+    public void throwsIfScriptTriggersAlert() throws Exception {
+        final String html = getFileContent("simpleTest.html");
+        final WebDriver driver = loadPage2(html);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
 
-      @Test
-      @Ignore(CHROME)
-      @Ignore(EDGE)
-      @Ignore(IE)
-      @Ignore(FIREFOX)
-      @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-      public void throwsIfAlertHappensDuringScript() {
-        driver.get(pages.slowLoadingAlertPage);
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
-        assertThatExceptionOfType(UnhandledAlertException.class)
-            .isThrownBy(() -> executor.executeAsyncScript("setTimeout(arguments[0], 1000);"));
-        // Shouldn't throw
-        driver.getTitle();
-      }
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        final String js =
+                "setTimeout(arguments[0], 200);"
+                + "setTimeout(function() { window.alert('Look! An alert!'); }, 50);";
 
-      @Test
-      @Ignore(CHROME)
-      @Ignore(EDGE)
-      @Ignore(IE)
-      @Ignore(FIREFOX)
-      @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-      public void throwsIfScriptTriggersAlertWhichTimesOut() {
-        driver.get(pages.simpleTestPage);
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
-        assertThatExceptionOfType(UnhandledAlertException.class)
-            .isThrownBy(
-                () ->
-                    executor.executeAsyncScript(
-                        "setTimeout(function() { window.alert('Look! An alert!'); }, 50);"));
-        // Shouldn't throw
-        driver.getTitle();
-      }
+        // does not throw with selenium but already is supported in HtmlUnitDriver
+        Assert.assertThrows(UnhandledAlertException.class, () -> executor.executeAsyncScript(js));
 
-      @Test
-      @Ignore(CHROME)
-      @Ignore(EDGE)
-      @Ignore(IE)
-      @Ignore(FIREFOX)
-      @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-      public void throwsIfAlertHappensDuringScriptWhichTimesOut() {
-        driver.get(pages.slowLoadingAlertPage);
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
-        assertThatExceptionOfType(UnhandledAlertException.class)
-            .isThrownBy(() -> executor.executeAsyncScript(""));
-        // Shouldn't throw
-        driver.getTitle();
-      }
+        assertEquals("Hello WebDriver", driver.getTitle());
+    }
 
-      @Test
-      @Ignore(CHROME)
-      @Ignore(EDGE)
-      @Ignore(IE)
-      @Ignore(FIREFOX)
-      @Ignore(value = SAFARI, reason = "Does not support alerts yet")
-      public void includesAlertTextInUnhandledAlertException() {
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(5000));
-        String alertText = "Look! An alert!";
-        assertThatExceptionOfType(UnhandledAlertException.class)
-            .isThrownBy(
-                () ->
-                    executor.executeAsyncScript(
-                        "setTimeout(arguments[0], 200) ; setTimeout(function() { window.alert('"
-                            + alertText
-                            + "'); }, 50);"))
-            .satisfies(t -> assertThat(t.getAlertText()).isEqualTo(alertText));
-      }
+    @Test
+    public void throwsIfAlertHappensDuringScript() throws Exception {
+        final String html = getFileContent("slowLoadingAlert.html");
+        final WebDriver driver = loadPage2(html);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
 
-      private long getNumDivElements() {
-        // Selenium does not support "findElements" yet, so we have to do this through a script.
-        return (Long)
-            ((JavascriptExecutor) driver)
-                .executeScript("return document.getElementsByTagName('div').length;");
-      }
-    */
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        final String js = "setTimeout(arguments[0], 1000);";
+
+        // does not throw with selenium but already is supported in HtmlUnitDriver
+        Assert.assertThrows(UnhandledAlertException.class, () -> executor.executeAsyncScript(js));
+
+        assertEquals("slowLoadingAlert", driver.getTitle());
+    }
+
+    @Test
+    public void throwsIfScriptTriggersAlertWhichTimesOut() throws Exception {
+        final String html = getFileContent("simpleTest.html");
+        final WebDriver driver = loadPage2(html);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
+
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        final String js = "setTimeout(function() { window.alert('Look! An alert!'); }, 50);";
+
+        // does not throw with selenium but already is supported in HtmlUnitDriver
+        Assert.assertThrows(UnhandledAlertException.class, () -> executor.executeAsyncScript(js));
+
+        assertEquals("Hello WebDriver", driver.getTitle());
+    }
+
+    @Test
+    public void throwsIfAlertHappensDuringScriptWhichTimesOut() throws Exception {
+        final String html = getFileContent("slowLoadingAlert.html");
+        final WebDriver driver = loadPage2(html);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
+
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+
+        // does not throw with selenium but already is supported in HtmlUnitDriver
+        Assert.assertThrows(UnhandledAlertException.class, () -> executor.executeAsyncScript(""));
+
+        assertEquals("slowLoadingAlert", driver.getTitle());
+    }
+
+    @Test
+    public void includesAlertTextInUnhandledAlertException() throws Exception {
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(5));
+
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+
+        final String alertText = "Look! An alert!";
+        final String js = "setTimeout(arguments[0], 200);"
+                + "setTimeout(function() { window.alert('" + alertText + "'); }, 50);";
+
+        // does not throw with selenium but already is supported in HtmlUnitDriver
+        final WebDriverException ex =
+                Assert.assertThrows(UnhandledAlertException.class, () -> executor.executeAsyncScript(js));
+
+        assertTrue(ex.getMessage().contains(alertText));
+    }
 
     private static long getNumDivElements(final WebDriver driver) {
         // Selenium does not support "findElements" yet, so we have to do this through a script.
