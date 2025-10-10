@@ -17,9 +17,19 @@
 
 package org.openqa.selenium.htmlunit;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.htmlunit.corejs.javascript.JavaScriptException;
 import org.junit.Assert;
@@ -343,40 +353,76 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
         assertEquals(3, result.intValue());
     }
 
-    /* TODO
     @Test
-    void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
-      String script =
-          "var url = arguments[0];"
-              + "var callback = arguments[arguments.length - 1];"
-              +
-              // Adapted from http://www.quirksmode.org/js/xmlhttp.html
-              "var XMLHttpFactories = ["
-              + "  function () {return new XMLHttpRequest()},"
-              + "  function () {return new ActiveXObject('Msxml2.XMLHTTP')},"
-              + "  function () {return new ActiveXObject('Msxml3.XMLHTTP')},"
-              + "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}"
-              + "];"
-              + "var xhr = false;"
-              + "while (!xhr && XMLHttpFactories.length) {"
-              + "  try {"
-              + "    xhr = XMLHttpFactories.shift().call();"
-              + "  } catch (e) {}"
-              + "}"
-              + "if (!xhr) throw Error('unable to create XHR object');"
-              + "xhr.open('GET', url, true);"
-              + "xhr.onreadystatechange = function() {"
-              + "  if (xhr.readyState == 4) callback(xhr.responseText);"
-              + "};"
-              + "xhr.send('');"; // empty string to stop firefox 3 from choking
+    public void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() throws Exception {
+        final Map<String, Class<? extends Servlet>> servlets = new HashMap<>();
+        servlets.put("/sleep", SleepServlet.class);
 
-      driver.get(pages.ajaxyPage);
-      driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(3));
-      String response = (String) executor.executeAsyncScript(script, pages.sleepingPage + "?time=2");
-      assertThat(response.trim())
-          .isEqualTo("<html><head><title>Done</title></head><body>Slept for 2s</body></html>");
+        final String html = getFileContent("ajax_page.html");
+        final WebDriver driver = loadPage2(html, servlets);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(3));
+
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        final String script =
+                "var url = arguments[0];"
+                    + "var callback = arguments[arguments.length - 1];"
+                    +
+                    // Adapted from http://www.quirksmode.org/js/xmlhttp.html
+                    "var XMLHttpFactories = ["
+                    + "  function () {return new XMLHttpRequest()},"
+                    + "  function () {return new ActiveXObject('Msxml2.XMLHTTP')},"
+                    + "  function () {return new ActiveXObject('Msxml3.XMLHTTP')},"
+                    + "  function () {return new ActiveXObject('Microsoft.XMLHTTP')}"
+                    + "];"
+                    + "var xhr = false;"
+                    + "while (!xhr && XMLHttpFactories.length) {"
+                    + "  try {"
+                    + "    xhr = XMLHttpFactories.shift().call();"
+                    + "  } catch (e) {}"
+                    + "}"
+                    + "if (!xhr) throw Error('unable to create XHR object');"
+                    + "xhr.open('GET', url, true);"
+                    + "xhr.onreadystatechange = function() {"
+                    + "  if (xhr.readyState == 4) callback(xhr.responseText);"
+                    + "};"
+                    + "xhr.send('');"; // empty string to stop firefox 3 from choking
+
+        final String response = (String) executor.executeAsyncScript(script, "sleep?time=2");
+        assertEquals("<html><head><title>Done</title></head><body>Slept for 2s</body></html>", response);
     }
-  */
+
+    /**
+     * Servlet for {@link #patch()}.
+     */
+    public static class SleepServlet extends HttpServlet {
+        private static final String RESPONSE_STRING_FORMAT =
+                "<html><head><title>Done</title></head><body>Slept for %ss</body></html>";
+
+        @Override
+        protected void service(final HttpServletRequest req,
+                        final HttpServletResponse resp) throws ServletException, IOException {
+            final String duration = req.getParameter("time");
+            final long timeout = Long.parseLong(duration) * 1000;
+
+            reallySleep(timeout);
+
+            final Writer writer = resp.getWriter();
+            writer.write(String.format(RESPONSE_STRING_FORMAT, duration));
+        }
+
+        private static void reallySleep(final long timeout) {
+            final long start = System.currentTimeMillis();
+            try {
+                Thread.sleep(timeout);
+                while ((System.currentTimeMillis() - start) < timeout) {
+                    Thread.sleep(20);
+                }
+            }
+            catch (final InterruptedException ignore) {
+                // ignore
+            }
+        }
+    }
 
     @Test
     public void throwsIfScriptTriggersAlert() throws Exception {
