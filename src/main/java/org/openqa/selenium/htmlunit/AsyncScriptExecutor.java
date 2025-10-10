@@ -25,6 +25,7 @@ import org.htmlunit.ScriptResult;
 import org.htmlunit.corejs.javascript.Function;
 import org.htmlunit.corejs.javascript.NativeJavaObject;
 import org.htmlunit.html.HtmlPage;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.WebDriverException;
@@ -186,7 +187,7 @@ class AsyncScriptExecutor {
             }
 
             if (unloadDetected_) {
-                throw new WebDriverException(
+                throw new JavascriptException(
                         "Detected a page unload event; executeAsyncScript does not work across page loads");
             }
             return value_;

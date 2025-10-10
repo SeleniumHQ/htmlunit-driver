@@ -21,10 +21,12 @@ import java.time.Duration;
 import java.util.Iterator;
 import java.util.List;
 
+import org.htmlunit.corejs.javascript.JavaScriptException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -202,13 +204,27 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
         getMockWebConnection().setResponse(URL_SECOND, "<html><body></body></html>");
 
         final WebDriver driver = loadPage2("<html><body></body></html>");
-        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(100));
+        // driver.manage().timeouts().scriptTimeout(Duration.ofMillis(100));
 
         final JavascriptExecutor executor = (JavascriptExecutor) driver;
-        // TODO real FF creates JavascriptException
+        // TODO real FF creates JavascriptException, Chrome/Edge ScriptTimeoutException
+        /*
         Assert.assertThrows(
                 ScriptTimeoutException.class,
                 () -> executor.executeAsyncScript("window.location = '" + URL_SECOND + "';"));
+        */
+        final Throwable t = Assert.assertThrows(
+                Throwable.class,
+                () -> executor.executeAsyncScript("window.location = '" + URL_SECOND + "';"));
+
+        assertTrue(t instanceof ScriptTimeoutException || t instanceof JavascriptException);
+
+        if (t instanceof ScriptTimeoutException) {
+            assertTrue(t.getMessage().startsWith("script timeout"));
+        }
+        else if (t instanceof JavaScriptException) {
+            assertEquals("Document was unloaded", t.getMessage());
+        }
     }
 
     @Test
@@ -261,7 +277,7 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
         assertTrue(ex.getMessage().contains("errormessage"));
 
         final Throwable rootCause = ex.getCause();
-        assertTrue(result instanceof Throwable);
+        assertTrue(rootCause instanceof Throwable);
         // does not work with real browsers because root cause is null
         assertTrue(rootCause.getMessage().contains("errormessage"));
 
