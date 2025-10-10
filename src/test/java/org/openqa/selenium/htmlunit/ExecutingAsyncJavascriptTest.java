@@ -24,6 +24,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.ScriptTimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -41,18 +42,18 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldNotTimeoutIfCallbackInvokedImmediately() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
         assertEquals(123L, result);
     }
 
     @Test
     public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NeitherNullNorUndefined() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Object result = executor.executeAsyncScript("arguments[arguments.length - 1](123);");
         assertEquals(123L, result);
 
@@ -68,9 +69,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnJavascriptPrimitivesFromAsyncScripts_NullAndUndefined() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Object result = executor.executeAsyncScript("arguments[arguments.length - 1](null);");
         assertEquals(null, result);
 
@@ -83,9 +84,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnAnArrayLiteralFromAnAsyncScript() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result = executor.executeAsyncScript("arguments[arguments.length - 1]([]);");
         assertTrue(result instanceof List);
         assertEquals(0, ((List<?>) result).size());
@@ -93,9 +94,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnAnArrayObjectFromAnAsyncScript() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result = executor.executeAsyncScript("arguments[arguments.length - 1](new Array());");
         assertTrue(result instanceof List);
         assertEquals(0, ((List<?>) result).size());
@@ -103,9 +104,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnArraysOfPrimitivesFromAsyncScripts() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result =
                 executor.executeAsyncScript("arguments[arguments.length - 1]([null, 123, 'abc', true, false]);");
 
@@ -123,9 +124,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnWebElementsFromAsyncScripts() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result = executor.executeAsyncScript("arguments[arguments.length - 1](document.body);");
         assertTrue(result instanceof WebElement);
         assertEquals("body", ((WebElement) result).getTagName());
@@ -133,9 +134,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldBeAbleToReturnArraysOfWebElementsFromAsyncScripts() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
+        final WebDriver driver = loadPage2("<html><body></body></html>");
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final Object result = executor.executeAsyncScript(
                                     "arguments[arguments.length - 1]([document.body, document.body]);");
 
@@ -151,10 +152,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldTimeoutIfScriptDoesNotInvokeCallback() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         // Script is expected to be async and explicitly callback, so this should timeout.
         Assert.assertThrows(
                 ScriptTimeoutException.class,
@@ -163,10 +164,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithAZeroTimeout() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Assert.assertThrows(
                 ScriptTimeoutException.class,
                 () -> executor.executeAsyncScript("window.setTimeout(function() {}, 0);"));
@@ -174,10 +175,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldNotTimeoutIfScriptCallsbackInsideAZeroTimeout() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         executor.executeAsyncScript(
                     "var callback = arguments[arguments.length - 1];"
                         + "window.setTimeout(function() { callback(123); }, 0)");
@@ -185,10 +186,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldTimeoutIfScriptDoesNotInvokeCallbackWithLongTimeout() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Assert.assertThrows(
                 ScriptTimeoutException.class,
                 () -> executor.executeAsyncScript(
@@ -200,10 +201,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
     public void shouldDetectPageLoadsWhileWaitingOnAnAsyncScriptAndReturnAnError() throws Exception {
         getMockWebConnection().setResponse(URL_SECOND, "<html><body></body></html>");
 
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofMillis(100));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofMillis(100));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         // TODO real FF creates JavascriptException
         Assert.assertThrows(
                 ScriptTimeoutException.class,
@@ -212,10 +213,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldCatchErrorsWhenExecutingInitialScript() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Assert.assertThrows(
                 WebDriverException.class,
                 () -> executor.executeAsyncScript("throw Error('you should catch this!');"));
@@ -223,10 +224,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldNotTimeoutWithMultipleCallsTheFirstOneBeingSynchronous() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         Object result = executor.executeAsyncScript("arguments[arguments.length - 1](true);");
         assertEquals(true, result);
 
@@ -238,10 +239,10 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
 
     @Test
     public void shouldCatchErrorsWithMessageAndStacktraceWhenExecutingInitialScript() throws Exception {
-        final WebDriver webDriver = loadPage2("<html><body></body></html>");
-        webDriver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        final JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
         final String js =
                 "function functionB() { throw Error('errormessage'); };"
                         + "function functionA() { functionB(); };"
@@ -260,10 +261,9 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
         assertTrue(ex.getMessage().contains("errormessage"));
 
         final Throwable rootCause = ex.getCause();
-        // rootCause.printStackTrace();
-
-        // does not work with real browsers because root caus is null
-        assertTrue(ex.getMessage().contains("errormessage"));
+        assertTrue(result instanceof Throwable);
+        // does not work with real browsers because root cause is null
+        assertTrue(rootCause.getMessage().contains("errormessage"));
 
         /* TODO
         final StackTraceElement[] trace = rootCause.getStackTrace();
@@ -277,47 +277,56 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
         */
     }
 
-    /* TODO
-      @Test
-      void shouldBeAbleToExecuteAsynchronousScripts() {
-        driver.get(pages.ajaxyPage);
+    @Test
+    public void shouldBeAbleToExecuteAsynchronousScripts() throws Exception {
+        final String html = getFileContent("ajax_page.html");
+        final WebDriver driver = loadPage2(html);
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
 
-        WebElement typer = driver.findElement(By.name("typer"));
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        Object result = executor.executeAsyncScript("arguments[arguments.length - 1](true);");
+        assertEquals(true, result);
+
+        result = executor.executeAsyncScript(
+                        "var cb = arguments[arguments.length - 1];"
+                                + " window.setTimeout(function(){cb(true);}, 9);");
+        assertEquals(true, result);
+
+        final WebElement typer = driver.findElement(By.name("typer"));
         typer.sendKeys("bob");
-        assertThat(typer.getAttribute("value")).isEqualTo("bob");
+        assertEquals("bob", typer.getAttribute("value"));
 
         driver.findElement(By.id("red")).click();
         driver.findElement(By.name("submit")).click();
 
-        assertThat(getNumDivElements())
-            .describedAs(
-                "There should only be 1 DIV at this point, which is used for the butter message")
-            .isEqualTo(1);
+        assertEquals(1L, getNumDivElements(driver));
 
         driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(15));
-        String text =
+        final String text =
             (String)
                 executor.executeAsyncScript(
                     "var callback = arguments[arguments.length - 1];"
                         + "window.registerListener(arguments[arguments.length - 1]);");
-        assertThat(text).isEqualTo("bob");
-        assertThat(typer.getAttribute("value")).isEmpty();
 
-        assertThat(getNumDivElements())
-            .describedAs("There should be 1 DIV (for the butter message) + 1 DIV (for the new label)")
-            .isEqualTo(2);
-      }
+        assertEquals("bob", text);
+        assertEquals("", typer.getAttribute("value"));
+        assertEquals(2L, getNumDivElements(driver));
+    }
 
-      @Test
-      void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() {
-        driver.get(pages.ajaxyPage);
-        Number result =
+    @Test
+    public void shouldBeAbleToPassMultipleArgumentsToAsyncScripts() throws Exception {
+        final WebDriver driver = loadPage2("<html><body></body></html>");
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(1));
+
+        final JavascriptExecutor executor = (JavascriptExecutor) driver;
+        final Number result =
             (Number)
                 executor.executeAsyncScript(
                     "arguments[arguments.length - 1](arguments[0] + arguments[1]);", 1, 2);
-        assertThat(result.intValue()).isEqualTo(3);
-      }
+        assertEquals(3, result.intValue());
+    }
 
+    /* TODO
       @Test
       void shouldBeAbleToMakeXMLHttpRequestsAndWaitForTheResponse() {
         String script =
@@ -444,4 +453,11 @@ public class ExecutingAsyncJavascriptTest extends WebDriverTestCase {
                 .executeScript("return document.getElementsByTagName('div').length;");
       }
     */
+
+    private static long getNumDivElements(final WebDriver driver) {
+        // Selenium does not support "findElements" yet, so we have to do this through a script.
+        return (Long)
+            ((JavascriptExecutor) driver)
+                .executeScript("return document.getElementsByTagName('div').length;");
+    }
 }
