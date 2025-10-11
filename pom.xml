@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.36.1-SNAPSHOT</version>
+    <version>4.36.1</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
