@@ -17,6 +17,7 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
@@ -25,11 +26,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
@@ -246,5 +243,37 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
         webDriver.get("https://revoked.badssl.com");
         assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
         assertEquals("https://revoked.badssl.com/", webDriver.getCurrentUrl());
+    }
+
+    /**
+     * @throws Exception if an error occurs
+     */
+    @Test
+    @Alerts(DEFAULT = "Given xpath expression \"//svg:svg//svg:text\" is invalid",
+            CHROME = "Something",
+            EDGE = "Something")
+    @HtmlUnitNYI(FF = "Something",
+            FF_ESR = "Something")
+    public void shouldBeAbleToFindElementByXPathInXmlDocument() throws Exception {
+        final String html = "<?xml version='1.0' encoding='UTF-8'?>\n"
+                + "<html xmlns='http://www.w3.org/1999/xhtml'\n"
+                + "      xmlns:svg='http://www.w3.org/2000/svg'\n"
+                + "      xmlns:xlink='http://www.w3.org/1999/xlink'>\n"
+                + "<body>\n"
+                + "  <svg:svg id='chart_container' height='220' width='400'>\n"
+                + "    <svg:text y='16' x='200' text-anchor='middle'>Something</svg:text>\n"
+                + "  </svg:svg>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html, URL_FIRST, "application/xhtml+xml", ISO_8859_1, null);
+        String actual;
+        try {
+            final WebElement element = driver.findElement(By.xpath("//svg:svg//svg:text"));
+            assertEquals(getExpectedAlerts()[0], element.getText());
+        }
+        catch (final InvalidSelectorException e) {
+            assertTrue(e.getMessage(), e.getMessage().contains(getExpectedAlerts()[0]));
+        }
     }
 }
