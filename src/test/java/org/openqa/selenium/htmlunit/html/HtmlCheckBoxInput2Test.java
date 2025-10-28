@@ -36,20 +36,21 @@ public class HtmlCheckBoxInput2Test extends WebDriverTestCase {
     public void checkedAttribute() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
-            + "<html><head><title>foo</title>\n"
+            + "<html><head>\n"
             + "<script>\n"
+            + LOG_TITLE_FUNCTION
             + "  function test() {\n"
             + "    var checkbox = document.getElementById('c1');\n"
-            + "    alert(checkbox.checked);\n"
-            + "    alert(checkbox.getAttribute('checked'));\n"
+            + "    log(checkbox.checked);\n"
+            + "    log(checkbox.getAttribute('checked'));\n"
 
             + "    checkbox = document.getElementById('c2');\n"
-            + "    alert(checkbox.checked);\n"
-            + "    alert(checkbox.getAttribute('checked'));\n"
+            + "    log(checkbox.checked);\n"
+            + "    log(checkbox.getAttribute('checked'));\n"
 
             + "    checkbox = document.getElementById('c3');\n"
-            + "    alert(checkbox.checked);\n"
-            + "    alert(checkbox.getAttribute('checked'));\n"
+            + "    log(checkbox.checked);\n"
+            + "    log(checkbox.getAttribute('checked'));\n"
             + "  }\n"
             + "</script>\n"
             + "</head><body>\n"
@@ -67,6 +68,6 @@ public class HtmlCheckBoxInput2Test extends WebDriverTestCase {
         driver.findElement(By.id("c3")).click();
 
         driver.findElement(By.id("clickMe")).click();
-        verifyAlerts(driver, getExpectedAlerts());
+        verifyTitle2(driver, getExpectedAlerts());
     }
 }
