@@ -159,7 +159,7 @@ public class HtmlUnitLoggingTest extends WebDriverTestCase {
         final List<LogEntry> logEntryList = logEntries.getAll();
 
         final int count = logEntryList.size();
-        assertTrue(count > 0);
+        assertTrue("" + count, count > 0);
 
         final long timestamp = 0;
         for (int i = 0; i < 4; i++) {
