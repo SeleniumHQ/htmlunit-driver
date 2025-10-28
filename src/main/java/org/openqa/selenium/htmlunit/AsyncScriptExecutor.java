@@ -24,6 +24,8 @@ import org.htmlunit.ScriptException;
 import org.htmlunit.ScriptResult;
 import org.htmlunit.corejs.javascript.Function;
 import org.htmlunit.corejs.javascript.NativeJavaObject;
+import org.htmlunit.corejs.javascript.lc.type.TypeInfo;
+import org.htmlunit.corejs.javascript.lc.type.TypeInfoFactory;
 import org.htmlunit.html.HtmlPage;
 import org.openqa.selenium.JavascriptException;
 import org.openqa.selenium.ScriptTimeoutException;
@@ -144,7 +146,9 @@ class AsyncScriptExecutor {
         final Function function = (Function) result.getJavaScriptResult();
 
         // Finally, update the script with the callback host object.
-        function.put("host", function, new NativeJavaObject(function, asyncResult, null));
+        TypeInfo staticType = TypeInfoFactory.getOrElse(function, TypeInfoFactory.GLOBAL).create(AsyncScriptResult.class);
+        NativeJavaObject nativeJavaObject = new NativeJavaObject(function, asyncResult, staticType);
+        function.put("host", function, nativeJavaObject);
 
         return function;
     }
