@@ -4,7 +4,7 @@ Version 4.38.0 / October 31, 2025
 
 **HtmlUnitDriver** is a WebDriver compatible driver for the [HtmlUnit](https://www.htmlunit.org) headless browser.
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.seleniumhq.selenium/htmlunit3-driver)
+[![Maven Central Version](https://img.shields.io/maven-central/v/org.seleniumhq.selenium/htmlunit3-driver)](https://central.sonatype.com/artifact/org.seleniumhq.selenium/htmlunit3-driver)
 
 ## News
 
