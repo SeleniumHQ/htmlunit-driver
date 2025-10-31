@@ -1,14 +1,15 @@
 # Htmlunitdriver - Selenium Compatibility
 
-Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.36.0
-is for Selenium 4.36.0.
+Starting with Selenium 4.5 we use the same version numbers for the driver - e.g. HtmlUnit-Driver 4.38.0
+is for Selenium 4.38.0.
 
 
 ***htmlunit3-driver***
 
 | selenium | htmlunit-driver |    htmlunit    |    artifactId    |  JDK |
 |----------|-----------------|----------------|------------------|------|
-|   4.36.0 |      **4.36.1** |     **4.17.0** | htmlunit3-driver |   11 |
+|   4.38.0 |      **4.38.0** |     **4.18.0** | htmlunit3-driver |   11 |
+|   4.36.0 |          4.36.1 |         4.17.0 | htmlunit3-driver |   11 |
 |   4.36.0 |          4.36.0 |         4.17.0 | htmlunit3-driver |   11 |
 |   4.35.0 |          4.35.0 |         4.15.0 | htmlunit3-driver |   11 |
 |   4.34.0 |          4.34.0 |         4.14.0 | htmlunit3-driver |   11 |
