@@ -30,8 +30,8 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import org.htmlunit.BrowserVersion;
-import org.htmlunit.ProxyConfig;
 import org.htmlunit.BrowserVersion.BrowserVersionBuilder;
+import org.htmlunit.ProxyConfig;
 import org.openqa.selenium.json.Json;
 import org.openqa.selenium.json.TypeToken;
 
@@ -380,7 +380,12 @@ final class TypeCodec {
             seed = BrowserVersion.EDGE;
         }
         else if (name.startsWith("FF")) {
-            seed = (code == BrowserVersion.FIREFOX_ESR.getBrowserVersionNumeric()) ? BrowserVersion.FIREFOX_ESR : BrowserVersion.FIREFOX;
+            if (code == BrowserVersion.FIREFOX_ESR.getBrowserVersionNumeric()) {
+                seed = BrowserVersion.FIREFOX_ESR;
+            }
+            else {
+                seed = BrowserVersion.FIREFOX;
+            }
         }
         else {
             throw new IllegalArgumentException(
