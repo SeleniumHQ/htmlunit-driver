@@ -21,12 +21,19 @@ import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.htmlunit.MockWebConnection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.HtmlUnitNYI;
@@ -265,7 +272,6 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
                 + "</html>\n";
 
         final WebDriver driver = loadPage2(html, URL_FIRST, "application/xhtml+xml", ISO_8859_1, null);
-        String actual;
         try {
             final WebElement element = driver.findElement(By.xpath("//svg:svg//svg:text"));
             assertEquals(getExpectedAlerts()[0], element.getText());
@@ -273,5 +279,47 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
         catch (final InvalidSelectorException e) {
             assertTrue(e.getMessage(), e.getMessage().contains(getExpectedAlerts()[0]));
         }
+    }
+
+    /**
+     * @throws Exception if something goes wrong
+     */
+    @Test
+    @Alerts({"loadExtraContent started at Page 1", " loadExtraContent finished at Page 1"})
+    public void buttonClickReachesPageWithJScompileError() throws Exception {
+        final String htmlStartPage = "<html>\n"
+            + "<head>"
+            + "  <title>Page 1</title>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "  <form method='post' action='" + URL_SECOND + "'>\n"
+            + "    <input id='btnNext' type='submit' value='Next'>\n"
+            + "  </form>\n"
+            + "</body>\n"
+            + "</html>";
+
+        final String htmlSecondPage = "<html>\n"
+            + "<head>"
+            + "  <title>Page 2</title>\n"
+            + "  <script>\n"
+            + "    this script does not compile!"
+            + "  </script>\n"
+            + "</head>\n"
+            + "<body>\n"
+            + "  <h1>Page2</h1>\n"
+            + "  <p>This is page 2</p>\n"
+            + "</body>\n"
+            + "</html>";
+
+        final MockWebConnection webConnection = getMockWebConnection();
+
+        webConnection.setDefaultResponse(htmlStartPage);
+        webConnection.setResponse(URL_SECOND, htmlSecondPage);
+
+        final WebDriver driver = loadPage2(URL_FIRST, StandardCharsets.ISO_8859_1);
+        assertEquals("Page 1", driver.getTitle());
+
+        driver.findElement(By.id("btnNext")).click();
+        assertEquals("Page 2", driver.getTitle());
     }
 }
