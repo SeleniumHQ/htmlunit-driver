@@ -195,14 +195,12 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
 
         try {
             webDriver.get("https://getnotexistingurl_" + System.currentTimeMillis() + ".ace");
-            fail("WebDriverException expected");
+            fail("WebDriverException caused by UnknownHostException expected");
         }
         catch (final WebDriverException e) {
             // expected
             if (webDriver instanceof HtmlUnitDriver) {
-                assertTrue(e.getMessage(),
-                        e.getMessage()
-                        .startsWith("java.net.UnknownHostException: No such host is known (getnotexistingurl_"));
+                assertTrue(e.getMessage(), e.getCause() instanceof java.net.UnknownHostException);
             }
         }
     }

@@ -21,6 +21,7 @@ import static org.htmlunit.BrowserVersion.FIREFOX;
 import static org.htmlunit.BrowserVersion.FIREFOX_ESR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY;
@@ -30,7 +31,9 @@ import org.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.htmlunit.options.HtmlUnitDriverOptions;
 import org.openqa.selenium.remote.Browser;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
@@ -109,11 +112,56 @@ public class HtmlUnitCapabilitiesTest {
     }
 
     @Test
-    public void tetsDefautlBrowserVersion() {
+    public void testGridCompatibleFirefoxDefault() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "",
+                Platform.ANY);
+        firefoxCapabilities.setCapability(HtmlUnitDriverOptions.BROWSER_VERSION, "firefox");
+        assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
+
+    @Test
+    public void testDefaultBrowserVersion() {
         final DesiredCapabilities capabilities =
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
 
         assertEquals(BrowserVersion.getDefault(), BrowserVersionDeterminer.determine(capabilities));
+    }
+
+    @Test
+    public void setAndGetBrowserVersion() {
+        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        options.setBrowserVersion("chrome");
+        assertEquals("chrome", options.getBrowserVersion());
+        verifyBrowserVersion(options, "chrome");
+    }
+
+    @Test
+    public void testBrowserVersionCapabilityWithStandardKey() {
+        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        options.setCapability(CapabilityType.BROWSER_VERSION, "edge");
+        verifyBrowserVersion(options, "edge");
+    }
+
+    @Test
+    public void testBrowserVersionCapabilityWithVendorSpecificKey() {
+        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        options.setCapability(HtmlUnitDriverOptions.BROWSER_VERSION, "firefox");
+        verifyBrowserVersion(options, "firefox");
+    }
+
+    private static void verifyBrowserVersion(Capabilities capabilities, String version) {
+        // get value of [browserVersion] from capabilities map
+        assertNull(capabilities.asMap().get(CapabilityType.BROWSER_VERSION));
+        // get value of [garg:browserVersion] from capabilities map
+        assertEquals(version, capabilities.asMap().get(HtmlUnitDriverOptions.BROWSER_VERSION));
+
+    	if (capabilities instanceof HtmlUnitDriverOptions) {
+            // get capability with standard [browserVersion] key
+            assertEquals(version, capabilities.getCapability(CapabilityType.BROWSER_VERSION));
+            // get capability with vendor-specific [garg:browserVersion] key
+            assertEquals(version, capabilities.getCapability(HtmlUnitDriverOptions.BROWSER_VERSION));
+    	}
     }
 
     @Test
