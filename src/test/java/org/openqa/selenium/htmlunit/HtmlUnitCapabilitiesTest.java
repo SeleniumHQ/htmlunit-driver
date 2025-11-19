@@ -30,6 +30,7 @@ import org.htmlunit.BrowserVersion;
 import org.junit.Test;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.htmlunit.options.HtmlUnitDriverOptions;
 import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -109,7 +110,16 @@ public class HtmlUnitCapabilitiesTest {
     }
 
     @Test
-    public void tetsDefautlBrowserVersion() {
+    public void testGridCompatibleFirefoxDefault() {
+        final DesiredCapabilities firefoxCapabilities =
+                new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "",
+                Platform.ANY);
+        firefoxCapabilities.setCapability(HtmlUnitDriverOptions.BROWSER_VERSION, "firefox");
+        assertEquals(FIREFOX, BrowserVersionDeterminer.determine(firefoxCapabilities));
+    }
+
+    @Test
+    public void testDefaultBrowserVersion() {
         final DesiredCapabilities capabilities =
                 new DesiredCapabilities(Browser.HTMLUNIT.browserName(), "", Platform.ANY);
 
