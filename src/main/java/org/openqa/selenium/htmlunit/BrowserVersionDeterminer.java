@@ -17,6 +17,10 @@
 
 package org.openqa.selenium.htmlunit;
 
+import static org.openqa.selenium.htmlunit.options.HtmlUnitDriverOptions.BROWSER_VERSION;
+
+import java.util.Optional;
+
 import org.htmlunit.BrowserVersion;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.remote.Browser;
@@ -45,14 +49,14 @@ public final class BrowserVersionDeterminer {
         final String browserName;
         final String browserVersion;
 
-        final String rawVersion = capabilities.getBrowserVersion();
+        final String rawVersion = getBrowserVersion(capabilities);
         final String[] splitVersion = rawVersion == null ? new String[0] : rawVersion.split("-");
         if (splitVersion.length > 1) {
             browserName = splitVersion[0];
             browserVersion = splitVersion[1];
         }
         else {
-            browserName = capabilities.getBrowserVersion();
+            browserName = getBrowserVersion(capabilities);
             browserVersion = null;
         }
 
@@ -100,6 +104,11 @@ public final class BrowserVersionDeterminer {
         }
 
         return browserVersionObject;
+    }
+
+    public static String getBrowserVersion(final Capabilities capabilities) {
+        return String.valueOf(Optional.ofNullable(capabilities.getCapability(BROWSER_VERSION))
+                .orElse(capabilities.getBrowserVersion()));
     }
 
     private BrowserVersionDeterminer() {

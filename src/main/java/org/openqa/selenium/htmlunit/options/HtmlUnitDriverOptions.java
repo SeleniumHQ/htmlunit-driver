@@ -27,6 +27,7 @@ import java.net.URL;
 import java.security.KeyStore;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -124,6 +125,20 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      */
     public static final String HTMLUNIT_OPTIONS = "garg:htmlunitOptions";
 
+    /**
+     * Key used to store the browser version in a {@link Capabilities} object.
+     * <p>
+     * This key includes the "garg:" vendor prefix so that the Grid Distributor
+     * will ignore it. Using the standard "browserVersion" key instead results
+     * in slot match failures, because the distributor requires the version
+     * specified in the requested capabilities to match the version specified
+     * by the slot stereotype.
+     */
+    public static final String BROWSER_VERSION = "garg:browserVersion";
+
+    private static final List<String> BROWSER_VERSION_KEYS =
+        List.of(BROWSER_VERSION, CapabilityType.BROWSER_VERSION);
+
     private WebClientOptions webClientOptions_ = new WebClientOptions();
     private BrowserVersion webClientVersion_ = BrowserVersion.BEST_SUPPORTED;
 
@@ -199,10 +214,24 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
     }
 
     @Override
+    public HtmlUnitDriverOptions setBrowserVersion(final String browserVersion) {
+    	super.setCapability(BROWSER_VERSION, (Object) Require.nonNull("Browser version", browserVersion));
+        return this;
+    }
+
+    @Override
+    public String getBrowserVersion() {
+    	return BrowserVersionDeterminer.getBrowserVersion(this);
+    }
+
+    @Override
     public Object getCapability(final String capabilityName) {
         Require.nonNull("Capability name", capabilityName);
         if (HTMLUNIT_OPTIONS.equals(capabilityName)) {
             return exportOptions();
+        }
+        if (BROWSER_VERSION_KEYS.contains(capabilityName)) {
+        	return getBrowserVersion();
         }
         final HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
         if (option != null) {
@@ -229,6 +258,10 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         if (HTMLUNIT_OPTIONS.equals(capabilityName)) {
             importOptions(value);
             return;
+        }
+        if (BROWSER_VERSION_KEYS.contains(capabilityName)) {
+        	setBrowserVersion(String.valueOf(value));
+        	return;
         }
         final HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
         if (option != null) {
