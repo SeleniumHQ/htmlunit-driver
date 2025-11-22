@@ -156,12 +156,12 @@ public class HtmlUnitCapabilitiesTest {
         // get value of [garg:browserVersion] from capabilities map
         assertEquals(version, capabilities.asMap().get(HtmlUnitDriverOptions.BROWSER_VERSION));
 
-    	if (capabilities instanceof HtmlUnitDriverOptions) {
+        if (capabilities instanceof HtmlUnitDriverOptions) {
             // get capability with standard [browserVersion] key
             assertEquals(version, capabilities.getCapability(CapabilityType.BROWSER_VERSION));
             // get capability with vendor-specific [garg:browserVersion] key
             assertEquals(version, capabilities.getCapability(HtmlUnitDriverOptions.BROWSER_VERSION));
-    	}
+        }
     }
 
     @Test

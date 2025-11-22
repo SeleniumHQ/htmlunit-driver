@@ -34,7 +34,8 @@ import org.openqa.selenium.UnhandledAlertException;
 import org.openqa.selenium.remote.CapabilityType;
 
 /**
- * Implementation of {@link Alert}.
+ * Provides an implementation of {@link Alert} for {@link HtmlUnitDriver}.
+ * Handles JavaScript alert, confirm, prompt, and beforeunload dialogs.
  *
  * @author Ahmed Ashour
  * @author A aftakhov
@@ -42,14 +43,33 @@ import org.openqa.selenium.remote.CapabilityType;
  */
 public class HtmlUnitAlert implements Alert {
 
+    /** The {@link HtmlUnitDriver} that owns this alert handler. */
     private final HtmlUnitDriver driver_;
+
+    /** Holds the current alert state and message. */
     private AlertHolder holder_;
+
+    /** Indicates whether the driver is quitting. */
     private boolean quitting_;
+
+    /** Lock used to coordinate access to alert state. */
     private final Lock lock_ = new ReentrantLock();
+
+    /** Condition used to signal when an alert is available. */
     private final Condition condition_ = lock_.newCondition();
+
+    /** The {@link WebWindow} currently associated with alert events. */
     private WebWindow webWindow_;
+
+    /** The configured behavior for unexpected alerts. */
     private UnexpectedAlertBehaviour unexpectedAlertBehaviour_ = UnexpectedAlertBehaviour.DISMISS_AND_NOTIFY;
 
+    /**
+     * Constructs a new {@link HtmlUnitAlert} for the given driver.
+     * Registers handlers for alert, prompt, confirm, and beforeunload events.
+     *
+     * @param driver the driver that owns this alert handler
+     */
     HtmlUnitAlert(final HtmlUnitDriver driver) {
         driver_ = driver;
         final WebClient webClient = driver.getWebClient();
@@ -118,14 +138,29 @@ public class HtmlUnitAlert implements Alert {
         return localHolder.isAccepted();
     }
 
+    /**
+     * Returns the {@link WebWindow} associated with this alert.
+     *
+     * @return the current web window
+     */
     WebWindow getWebWindow() {
         return webWindow_;
     }
 
+    /**
+     * Sets whether alerts should be automatically accepted when the driver is quitting.
+     *
+     * @param autoAccept {@code true} to automatically accept alerts; {@code false} otherwise
+     */
     public void setAutoAccept(final boolean autoAccept) {
         quitting_ = autoAccept;
     }
 
+    /**
+     * Configures the behavior for unexpected alerts based on the given capabilities.
+     *
+     * @param capabilities the browser capabilities to inspect for unhandled prompt behavior
+     */
     public void handleBrowserCapabilities(final Capabilities capabilities) {
         final UnexpectedAlertBehaviour behaviour = (UnexpectedAlertBehaviour) capabilities
                 .getCapability(CapabilityType.UNHANDLED_PROMPT_BEHAVIOUR);
@@ -175,7 +210,8 @@ public class HtmlUnitAlert implements Alert {
     }
 
     /**
-     * Closes the current window.
+     * Closes the current alert, signals any waiting threads, and sets auto-accept to {@code true}.
+     * Clears the current alert holder.
      */
     void close() {
         lock_.lock();
@@ -189,10 +225,22 @@ public class HtmlUnitAlert implements Alert {
         }
     }
 
+    /**
+     * Returns whether an alert is currently active and locking the driver.
+     *
+     * @return {@code true} if an alert is active; {@code false} otherwise
+     */
     boolean isLocked() {
         return holder_ != null;
     }
 
+    /**
+     * Ensures that any active alert is handled according to the configured {@link UnexpectedAlertBehaviour}.
+     * If an alert is present and the behavior is not {@code IGNORE}, it will be accepted or dismissed.
+     * If the behavior indicates notification, an {@link UnhandledAlertException} is thrown.
+     *
+     * @throws UnhandledAlertException if an unexpected alert is found and notification is required
+     */
     public void ensureUnlocked() {
         if (isLocked()) {
             final String text = getText();

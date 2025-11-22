@@ -23,6 +23,10 @@ import org.htmlunit.BrowserVersion;
 import org.htmlunit.BrowserVersion.BrowserVersionBuilder;
 
 /**
+ * Defines traits of a {@link BrowserVersion} that can be configured or queried.
+ * Implements {@link BrowserVersionTraitNames} for standardized trait names
+ * and {@link OptionEnum} for capability and property management.
+ *
  * @author Scott Babcock
  * @author Ronald Brill
  */
@@ -556,6 +560,12 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         return null;
     }
 
+    /**
+     * Returns the {@link BrowserVersionTrait} corresponding to the given capability key.
+     *
+     * @param key the capability key to look up
+     * @return the matching BrowserVersionTrait, or {@code null} if none matches
+     */
     public static BrowserVersionTrait fromCapabilityKey(final String key) {
         for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
             if (trait.capabilityKey_.equals(key)) {
@@ -565,6 +575,12 @@ public enum BrowserVersionTrait implements BrowserVersionTraitNames, OptionEnum 
         return null;
     }
 
+    /**
+     * Returns the {@link BrowserVersionTrait} corresponding to the given property name.
+     *
+     * @param name the property name to look up
+     * @return the matching BrowserVersionTrait, or {@code null} if none matches
+     */
     public static BrowserVersionTrait fromPropertyName(final String name) {
         for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
             if (trait.propertyName_.equals(name)) {

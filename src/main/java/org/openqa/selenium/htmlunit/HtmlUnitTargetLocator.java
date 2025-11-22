@@ -41,14 +41,29 @@ import org.openqa.selenium.WindowType;
 import org.openqa.selenium.WrapsElement;
 
 /**
- * HtmlUnit target locator.
+ * Provides target–location functionality for {@link HtmlUnitDriver}, allowing
+ * navigation to frames, windows, alerts, and other browser contexts.
+ * <p>
+ * This implementation backs the {@link WebDriver.TargetLocator} interface
+ * for HtmlUnit-based drivers.
  *
  * @author Martin Bartoš
  * @author Ronald Brill
  */
 public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
+    /**
+     * The owning {@link HtmlUnitDriver} instance used to perform target
+     * resolution and context switching operations.
+     */
     private final HtmlUnitDriver driver_;
 
+    /**
+     * Creates a new {@link HtmlUnitTargetLocator} bound to the specified
+     * {@link HtmlUnitDriver}.
+     *
+     * @param driver the driver instance for which this target locator will
+     *               perform context switching; must not be {@code null}
+     */
     public HtmlUnitTargetLocator(final HtmlUnitDriver driver) {
         driver_ = driver;
     }
