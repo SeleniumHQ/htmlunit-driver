@@ -33,6 +33,7 @@ import java.util.Set;
 
 import org.htmlunit.BrowserVersion;
 import org.htmlunit.ProxyConfig;
+import org.htmlunit.WebClient;
 import org.htmlunit.WebClientOptions;
 import org.htmlunit.util.UrlUtils;
 import org.openqa.selenium.Capabilities;
@@ -136,12 +137,27 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      */
     public static final String BROWSER_VERSION = "garg:browserVersion";
 
+    /** List of capability keys used for storing browser version. */
     private static final List<String> BROWSER_VERSION_KEYS =
         List.of(BROWSER_VERSION, CapabilityType.BROWSER_VERSION);
 
+    /** Configuration options for the underlying {@link WebClient} instance. */
     private WebClientOptions webClientOptions_ = new WebClientOptions();
+    /** The {@link BrowserVersion} used by the underlying {@link WebClient}. */
     private BrowserVersion webClientVersion_ = BrowserVersion.BEST_SUPPORTED;
 
+	/**
+     * Default constructor.
+     * <p>
+     * Initializes HtmlUnitDriverOptions with default capabilities:
+     * <ul>
+     *   <li>Browser name set to "htmlunit"</li>
+     *   <li>Home page set to "about:blank"</li>
+     *   <li>Exceptions on failing status codes disabled</li>
+     *   <li>Print content on failing status code disabled</li>
+     *   <li>Use insecure SSL enabled</li>
+     * </ul>
+     */
     public HtmlUnitDriverOptions() {
         setCapability(CapabilityType.BROWSER_NAME, HTMLUNIT.browserName());
         webClientOptions_.setHomePage(UrlUtils.URL_ABOUT_BLANK.toString());
@@ -150,17 +166,38 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         webClientOptions_.setUseInsecureSSL(true);
     }
 
+    /**
+     * Constructs HtmlUnitDriverOptions with a specific {@link BrowserVersion}.
+     * 
+     * @param version the browser version to use
+     */
     public HtmlUnitDriverOptions(final BrowserVersion version) {
         this();
         setWebClientVersion(version);
     }
 
+    /**
+     * Constructs HtmlUnitDriverOptions with a specific {@link BrowserVersion} and
+     * JavaScript support enabled/disabled.
+     * 
+     * @param version the browser version to use
+     * @param enableJavascript true to enable JavaScript support, false to disable
+     */
     public HtmlUnitDriverOptions(final BrowserVersion version, final boolean enableJavascript) {
         this();
         setWebClientVersion(version);
         setJavaScriptEnabled(enableJavascript);
     }
 
+    /**
+     * Constructs HtmlUnitDriverOptions from an existing {@link Capabilities} object.
+     * <p>
+     * Transfers mapped capabilities and legacy HtmlUnit options. If the source is
+     * another HtmlUnitDriverOptions instance, copies the {@link WebClientOptions}
+     * and {@link BrowserVersion} from it.
+     * 
+     * @param source source capabilities to copy
+     */
     public HtmlUnitDriverOptions(final Capabilities source) {
         this();
         if (source != null) {
@@ -209,6 +246,11 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         }
     }
 
+    /**
+     * Constructs HtmlUnitDriverOptions from a map of options.
+     * 
+     * @param optionsMap map containing option key-value pairs
+     */
     public HtmlUnitDriverOptions(final Map<String, Object> optionsMap) {
         this(new MutableCapabilities(Require.nonNull("Source options map", optionsMap)));
     }

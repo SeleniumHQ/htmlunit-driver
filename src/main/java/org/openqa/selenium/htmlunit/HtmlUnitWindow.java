@@ -33,16 +33,30 @@ public class HtmlUnitWindow implements WebDriver.Window {
     private static final int SCROLLBAR_WIDTH = 8;
     private static final int HEADER_HEIGHT = 150;
 
+    /** The underlying {@link WebWindow} instance. */
     private final WebWindow webWindow_;
+    /** The position of the window. */
     private final Dimension initialWindowDimension_;
+    /** The initial size of the window when created. */
     private Point windowPosition_;
 
+    /**
+     * Constructs a new {@link HtmlUnitWindow} wrapping the given {@link WebWindow}.
+     * Initializes the window position and initial dimensions based on the wrapped window.
+     *
+     * @param webWindow the {@link WebWindow} to wrap
+     */
     public HtmlUnitWindow(final WebWindow webWindow) {
         webWindow_ = webWindow;
         windowPosition_ = getBasePoint();
         initialWindowDimension_ = new Dimension(webWindow_.getOuterWidth(), webWindow_.getOuterHeight());
     }
 
+    /**
+     * Returns the underlying {@link WebWindow} wrapped by this object.
+     *
+     * @return the wrapped {@link WebWindow} instance
+     */
     public WebWindow getWebWindow() {
         return webWindow_;
     }
@@ -98,6 +112,11 @@ public class HtmlUnitWindow implements WebDriver.Window {
         maximize();
     }
 
+    /**
+     * Returns the last page loaded in the wrapped {@link WebWindow}.
+     *
+     * @return the last {@link Page} loaded in this window
+     */
     public Page lastPage() {
         return webWindow_.getEnclosedPage();
     }

@@ -89,42 +89,74 @@ public class HtmlUnitElementFinder {
         finders_.put(RelativeLocator.with(By.id("id")).getClass(), new FindByRelativeLocator());
     }
 
+    /**
+     * Finds a single {@link WebElement} on the current page using the specified locator.
+     *
+     * @param driver  the {@link HtmlUnitDriver} to search with
+     * @param locator the {@link By} locator to use
+     * @return the first matching {@link WebElement}
+     * @throws NoSuchElementException if no matching element is found
+     */
     public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
         final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElement(driver);
         }
-
         return elementLocator.findElement(driver, locator);
     }
 
+    /**
+     * Finds all {@link WebElement} instances on the current page matching the specified locator.
+     *
+     * @param driver  the {@link HtmlUnitDriver} to search with
+     * @param locator the {@link By} locator to use
+     * @return a {@link List} of matching {@link WebElement} instances; may be empty if none found
+     */
     public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
         final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElements(driver);
         }
-
         return elementLocator.findElements(driver, locator);
     }
 
+    /**
+     * Finds a single {@link WebElement} within the context of the specified parent element.
+     *
+     * @param element the parent {@link HtmlUnitWebElement} to search within
+     * @param locator the {@link By} locator to use
+     * @return the first matching child {@link WebElement}
+     * @throws NoSuchElementException if no matching element is found
+     */
     public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
         final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElement(element);
         }
-
         return elementLocator.findElement(element, locator);
     }
 
+    /**
+     * Finds all {@link WebElement} instances within the context of the specified parent element.
+     *
+     * @param element the parent {@link HtmlUnitWebElement} to search within
+     * @param locator the {@link By} locator to use
+     * @return a {@link List} of matching child {@link WebElement} instances; may be empty if none found
+     */
     public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
         final HtmlUnitElementLocator elementLocator = finders_.get(locator.getClass());
         if (elementLocator == null) {
             return locator.findElements(element);
         }
-
         return elementLocator.findElements(element, locator);
     }
 
+    /**
+     * Locator strategy for finding elements by their {@code id} attribute.
+     * <p>
+     * Supports searching both on the {@link HtmlUnitDriver} page and within a
+     * {@link HtmlUnitWebElement} context.
+     */
     public static class FindByID extends HtmlUnitElementLocator {
 
         @Override
@@ -167,6 +199,12 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding elements by their {@code name} attribute.
+     * <p>
+     * Supports searching both on the {@link HtmlUnitDriver} page and within a
+     * {@link HtmlUnitWebElement} context.
+     */
     public static class FindByName extends HtmlUnitElementLocator {
 
         @Override
@@ -187,6 +225,12 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding anchor elements (&lt;a&gt;) by their exact visible text.
+     * <p>
+     * Supports searching both on the {@link HtmlUnitDriver} page and within a
+     * {@link HtmlUnitWebElement} context.
+     */
     public static class FindByLinkText extends HtmlUnitElementLocator {
 
         @Override
@@ -223,6 +267,13 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding anchor elements (&lt;a&gt;) by partial visible text.
+     * <p>
+     * Supports searching both on the {@link HtmlUnitDriver} page and within a
+     * {@link HtmlUnitWebElement} context. Matches anchors whose text contains
+     * the specified substring.
+     */
     public static class FindByPartialLinkText extends HtmlUnitElementLocator {
 
         @Override
@@ -258,8 +309,22 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding elements by their CSS class name.
+     * <p>
+     * This class ensures that only single class names are used. Compound class names
+     * (containing spaces) are not permitted. Internally, the search is delegated
+     * to {@link FindByCssSelector} using a CSS class selector.
+     */
     public static class FindByClassName extends HtmlUnitElementLocator {
 
+        /**
+         * Validates the provided locator value and ensures it represents a single class name.
+         *
+         * @param locator the {@link By} locator specifying the class name
+         * @return the validated class name
+         * @throws NoSuchElementException if the class name contains spaces
+         */
         private String checkValue(final By locator) {
             final String value = getValue(locator);
 
@@ -280,6 +345,14 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding elements using CSS selectors.
+     * <p>
+     * This class provides methods to locate a single element or multiple elements
+     * on a page or within a specific element by applying a CSS selector string.
+     * If the CSS selector is invalid or does not match any {@link DomElement}, 
+     * a {@link NoSuchElementException} is thrown.
+     */
     public static class FindByCssSelector extends HtmlUnitElementLocator {
 
         @Override
@@ -369,6 +442,14 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding elements by their tag name.
+     * <p>
+     * This class provides methods to locate a single element or multiple elements
+     * on a page or within a specific element by tag name. If no matching elements
+     * are found, a {@link NoSuchElementException} is thrown. If the tag name is
+     * empty, an {@link InvalidSelectorException} is thrown.
+     */
     public static class FindByTagName extends HtmlUnitElementLocator {
 
         @Override
@@ -431,6 +512,14 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Locator strategy for finding elements using XPath expressions.
+     * <p>
+     * This class allows locating a single element or multiple elements on a page
+     * or within a specific element using an XPath query. If the XPath expression
+     * is invalid or cannot be evaluated, an {@link InvalidSelectorException} is thrown.
+     * If no matching elements are found, a {@link NoSuchElementException} is thrown.
+     */
     public static class FindByXPath extends HtmlUnitElementLocator {
 
         @Override
@@ -549,8 +638,26 @@ public class HtmlUnitElementFinder {
         }
     }
 
+    /**
+     * Base class for element locators used by {@link HtmlUnitElementFinder}.
+     * <p>
+     * Provides common utilities for finding elements within a page or another element,
+     * as well as methods for retrieving the last loaded page and extracting values from
+     * {@link By} locators.
+     */
     public abstract static class HtmlUnitElementLocator {
 
+        /**
+         * Finds a single element on the given page using the provided locator.
+         * <p>
+         * If multiple elements match, only the first is returned. If no element is found,
+         * a {@link NoSuchElementException} is thrown.
+         *
+         * @param driver the driver representing the browser/page context
+         * @param locator the locator strategy to use
+         * @return the first matching {@link WebElement}
+         * @throws NoSuchElementException if no element matches the locator
+         */
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
             final List<WebElement> toReturn = findElements(driver, locator);
             if (!toReturn.isEmpty()) {
@@ -559,8 +666,26 @@ public class HtmlUnitElementFinder {
             throw new NoSuchElementException("Unable to locate element");
         }
 
+        /**
+         * Finds multiple elements on the given page using the provided locator.
+         *
+         * @param driver the driver representing the browser/page context
+         * @param locator the locator strategy to use
+         * @return a list of matching {@link WebElement} objects
+         */
         public abstract List<WebElement> findElements(HtmlUnitDriver driver, By locator);
 
+        /**
+         * Finds a single element within a specific {@link HtmlUnitWebElement}.
+         * <p>
+         * If multiple elements match, only the first is returned. If no element is found,
+         * a {@link NoSuchElementException} is thrown.
+         *
+         * @param element the element within which to search
+         * @param locator the locator strategy to use
+         * @return the first matching {@link WebElement}
+         * @throws NoSuchElementException if no element matches the locator
+         */
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
             final List<WebElement> toReturn = findElements(element, locator);
             if (!toReturn.isEmpty()) {
@@ -569,8 +694,22 @@ public class HtmlUnitElementFinder {
             throw new NoSuchElementException("Unable to locate element");
         }
 
+        /**
+         * Finds multiple elements within a specific {@link HtmlUnitWebElement}.
+         *
+         * @param element the element within which to search
+         * @param locator the locator strategy to use
+         * @return a list of matching {@link WebElement} objects
+         */
         public abstract List<WebElement> findElements(HtmlUnitWebElement element, By locator);
 
+        /**
+         * Converts a {@link By} locator to a {@link By.Remotable} locator.
+         *
+         * @param locator the locator to convert
+         * @return the remotable locator
+         * @throws IllegalStateException if the locator is not remotable
+         */
         protected static By.Remotable getRemotable(final By locator) {
             if (!(locator instanceof By.Remotable)) {
                 throw new IllegalStateException("Cannot convert locator to Remotable");
@@ -578,6 +717,13 @@ public class HtmlUnitElementFinder {
             return (By.Remotable) locator;
         }
 
+        /**
+         * Retrieves the last loaded {@link SgmlPage} from the driver.
+         *
+         * @param driver the driver representing the browser/page context
+         * @return the last loaded {@link SgmlPage}
+         * @throws IllegalStateException if the current page is not an SgmlPage
+         */
         protected SgmlPage getLastPage(final HtmlUnitDriver driver) {
             final Page lastPage = driver.getCurrentWindow().lastPage();
             if (!(lastPage instanceof SgmlPage)) {
@@ -586,12 +732,26 @@ public class HtmlUnitElementFinder {
             return (SgmlPage) lastPage;
         }
 
+        /**
+         * Extracts the string value from a remotable {@link By} locator.
+         *
+         * @param locator the locator from which to extract the value
+         * @return the string value of the locator
+         */
         protected static String getValue(final By locator) {
             final By.Remotable remote = getRemotable(locator);
             return (String) remote.getRemoteParameters().value();
         }
     }
 
+    /**
+     * Converts a list of raw {@link DomElement} objects into {@link WebElement} instances
+     * using the provided {@link HtmlUnitDriver}.
+     *
+     * @param driver the driver used to convert DOM elements into WebElements
+     * @param nodes the list of {@link DomElement} objects to convert
+     * @return a list of corresponding {@link WebElement} objects
+     */
     private static List<WebElement> convertRawDomElementsToWebElements(
             final HtmlUnitDriver driver, final List<DomElement> nodes) {
         final List<WebElement> toReturn = new ArrayList<>(nodes.size());
@@ -603,19 +763,30 @@ public class HtmlUnitElementFinder {
         return toReturn;
     }
 
+    /**
+     * Locator implementation that handles {@link RelativeBy} selectors for
+     * finding elements relative to other elements.
+     */
     public static class FindByRelativeLocator extends HtmlUnitElementLocator {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
+            // Executes a JavaScript snippet to find elements according to the relative locator
             return (List<WebElement>) driver.executeScript(FIND_ELEMENTS_JS, asParameter(locator));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            // TODO Auto-generated method stub
+            // Not yet implemented
             return null;
         }
 
+        /**
+         * Converts a {@link RelativeBy} locator into a parameter map suitable for JavaScript execution.
+         *
+         * @param locator the relative locator
+         * @return a map of the locator's key and value
+         */
         private static Object asParameter(final By locator) {
             final Parameters params = ((RelativeBy) locator).getRemoteParameters();
             return Map.of(params.using(), params.value());
