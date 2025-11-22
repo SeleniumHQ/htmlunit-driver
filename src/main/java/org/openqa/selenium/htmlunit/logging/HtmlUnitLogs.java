@@ -31,22 +31,36 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 
 /**
- * An implementation of the {@link Logs} interface for HtmlUnit. At the moment
- * this is empty.
+ * Implementation of the {@link Logs} interface for HtmlUnit-based drivers.
+ * <p>
+ * This class provides access to logging information produced by HtmlUnit’s
+ * WebConsole and exposes it through the standard WebDriver logging API.
+ * Log entries recorded by the browser are captured by an internal
+ * {@link HtmlUnitDriverLogger} instance.
  *
  * @author Ronald Brill
  */
 public class HtmlUnitLogs implements Logs {
+    /**
+     * The logger used to collect and store WebConsole log messages from the
+     * underlying HtmlUnit {@link WebClient}.
+     */
     private final HtmlUnitDriverLogger logger_;
 
+    /**
+     * Creates a new {@link HtmlUnitLogs} instance and configures the given
+     * {@link WebClient} to use an internal {@link HtmlUnitDriverLogger} for
+     * WebConsole log output.
+     *
+     * @param webClient the HtmlUnit client whose WebConsole logger will be
+     *                  replaced with an {@link HtmlUnitDriverLogger};
+     *                  must not be {@code null}
+     */
     public HtmlUnitLogs(final WebClient webClient) {
         logger_ = new HtmlUnitDriverLogger();
         webClient.getWebConsole().setLogger(logger_);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public LogEntries get(final String logType) {
         if (LogType.BROWSER.equals(logType)) {
@@ -56,9 +70,6 @@ public class HtmlUnitLogs implements Logs {
         return new LogEntries(Collections.emptyList());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Set<String> getAvailableLogTypes() {
         return Collections.emptySet();

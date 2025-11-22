@@ -27,7 +27,9 @@ import org.openqa.selenium.remote.Browser;
 import org.openqa.selenium.remote.CapabilityType;
 
 /**
- * Determine browser and its version.
+ * Determines the appropriate {@link BrowserVersion} to use based on system properties,
+ * capabilities, or other configuration sources. Provides utilities to select or customize
+ * browser versions for HtmlUnitDriver instances.
  *
  * @author Martin Bartoš
  * @author Ronald Brill
@@ -107,11 +109,19 @@ public final class BrowserVersionDeterminer {
         return browserVersionObject;
     }
 
+    /**
+     * Retrieves the browser version string from the given {@link Capabilities}.
+     * Checks both {@link HtmlUnitDriverOptions#BROWSER_VERSION} and
+     * {@link CapabilityType#BROWSER_VERSION}.
+     *
+     * @param capabilities the capabilities to inspect
+     * @return the browser version as a string, or an empty string if not specified
+     */
     public static String getBrowserVersion(final Capabilities capabilities) {
-    	Map<String, Object> capsMap = capabilities.asMap();
-		return String.valueOf(Optional.ofNullable(capsMap.get(HtmlUnitDriverOptions.BROWSER_VERSION))
-				.or(() -> Optional.ofNullable(capsMap.get(CapabilityType.BROWSER_VERSION)))
-				.orElse(""));
+        Map<String, Object> capsMap = capabilities.asMap();
+        return String.valueOf(Optional.ofNullable(capsMap.get(HtmlUnitDriverOptions.BROWSER_VERSION))
+                .or(() -> Optional.ofNullable(capsMap.get(CapabilityType.BROWSER_VERSION)))
+                .orElse(""));
     }
 
     private BrowserVersionDeterminer() {

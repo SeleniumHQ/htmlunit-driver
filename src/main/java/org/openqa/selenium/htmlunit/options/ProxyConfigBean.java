@@ -50,8 +50,8 @@ import org.htmlunit.ProxyConfig;
 public class ProxyConfigBean implements Serializable {
 
     /** The proxy host name or IP address. */
-	private String host_;
-	/** The port number of the proxy server. */
+    private String host_;
+    /** The port number of the proxy server. */
     private int port_;
     /** The scheme used by the proxy (e.g., "http", "https"). */
     private String scheme_;
