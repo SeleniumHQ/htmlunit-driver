@@ -18,9 +18,9 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <selenium.version>4.38.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v141</selenium.devtools.artifactId>
-        <htmlunit.version>4.18.0</htmlunit.version>
+        <selenium.version>4.39.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v143</selenium.devtools.artifactId>
+        <htmlunit.version>4.20.0-SNAPSHOT</htmlunit.version>
 
         <jetty.version>9.4.58.v20250814</jetty.version>
 
@@ -31,7 +31,7 @@
         <checkstyle.version>12.1.1</checkstyle.version>
         <spotbugs.version>4.9.8</spotbugs.version>
         <archunit.version>1.4.1</archunit.version>
-        <dependencycheck.version>12.1.8</dependencycheck.version>
+        <dependencycheck.version>12.1.9</dependencycheck.version>
 
         <!-- plugins -->
         <central-publishing-plugin.version>0.9.0</central-publishing-plugin.version>
@@ -40,6 +40,8 @@
         <gpg-plugin.version>3.2.8</gpg-plugin.version>
         <enforcer-plugin.version>3.6.2</enforcer-plugin.version>
         <compiler-plugin.version>3.14.1</compiler-plugin.version>
+        <assembly-plugin.version>3.8.0</assembly-plugin.version>
+        <source-plugin.version>3.4.0</source-plugin.version>
         <javadoc-plugin.version>3.12.0</javadoc-plugin.version>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <cyclonedx-plugin.version>2.9.1</cyclonedx-plugin.version>
@@ -253,7 +255,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>${source-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -313,6 +315,7 @@
                     <publishingServerId>central</publishingServerId>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
@@ -331,10 +334,11 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
+                <version>${assembly-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
