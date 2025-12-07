@@ -118,7 +118,7 @@ public final class BrowserVersionDeterminer {
      * @return the browser version as a string, or an empty string if not specified
      */
     public static String getBrowserVersion(final Capabilities capabilities) {
-        Map<String, Object> capsMap = capabilities.asMap();
+        final Map<String, Object> capsMap = capabilities.asMap();
         return String.valueOf(Optional.ofNullable(capsMap.get(HtmlUnitDriverOptions.BROWSER_VERSION))
                 .or(() -> Optional.ofNullable(capsMap.get(CapabilityType.BROWSER_VERSION)))
                 .orElse(""));

@@ -130,7 +130,7 @@ public class HtmlUnitCapabilitiesTest {
 
     @Test
     public void setAndGetBrowserVersion() {
-        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        final HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
         options.setBrowserVersion("chrome");
         assertEquals("chrome", options.getBrowserVersion());
         verifyBrowserVersion(options, "chrome");
@@ -138,19 +138,19 @@ public class HtmlUnitCapabilitiesTest {
 
     @Test
     public void testBrowserVersionCapabilityWithStandardKey() {
-        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        final HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
         options.setCapability(CapabilityType.BROWSER_VERSION, "edge");
         verifyBrowserVersion(options, "edge");
     }
 
     @Test
     public void testBrowserVersionCapabilityWithVendorSpecificKey() {
-        HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
+        final HtmlUnitDriverOptions options = new HtmlUnitDriverOptions();
         options.setCapability(HtmlUnitDriverOptions.BROWSER_VERSION, "firefox");
         verifyBrowserVersion(options, "firefox");
     }
 
-    private static void verifyBrowserVersion(Capabilities capabilities, String version) {
+    private static void verifyBrowserVersion(final Capabilities capabilities, final String version) {
         // get value of [browserVersion] from capabilities map
         assertNull(capabilities.asMap().get(CapabilityType.BROWSER_VERSION));
         // get value of [garg:browserVersion] from capabilities map

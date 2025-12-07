@@ -86,7 +86,7 @@ import org.w3c.dom.NamedNodeMap;
  * It also handles submit logic for forms, manages element state checks
  * (like visibility, enabled/disabled, stale elements), and supports
  * reading CSS values and DOM properties.
- * 
+ *
  * @author Alexei Barantsev
  * @author Ahmed Ashour
  * @author Javier Neira

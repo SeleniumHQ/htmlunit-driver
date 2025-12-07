@@ -350,7 +350,7 @@ public class HtmlUnitElementFinder {
      * <p>
      * This class provides methods to locate a single element or multiple elements
      * on a page or within a specific element by applying a CSS selector string.
-     * If the CSS selector is invalid or does not match any {@link DomElement}, 
+     * If the CSS selector is invalid or does not match any {@link DomElement},
      * a {@link NoSuchElementException} is thrown.
      */
     public static class FindByCssSelector extends HtmlUnitElementLocator {
@@ -777,7 +777,6 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-        	// TODO Auto-generated method stub
             return null;
         }
 

@@ -17,9 +17,9 @@
 
 package org.openqa.selenium.htmlunit.options;
 
-import static org.openqa.selenium.remote.Browser.HTMLUNIT;
-import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
 import static org.openqa.selenium.htmlunit.HtmlUnitDriver.DOWNLOAD_IMAGES_CAPABILITY;
+import static org.openqa.selenium.htmlunit.HtmlUnitDriver.JAVASCRIPT_ENABLED;
+import static org.openqa.selenium.remote.Browser.HTMLUNIT;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -168,7 +168,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
 
     /**
      * Constructs HtmlUnitDriverOptions with a specific {@link BrowserVersion}.
-     * 
+     *
      * @param version the browser version to use
      */
     public HtmlUnitDriverOptions(final BrowserVersion version) {
@@ -179,7 +179,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
     /**
      * Constructs HtmlUnitDriverOptions with a specific {@link BrowserVersion} and
      * JavaScript support enabled/disabled.
-     * 
+     *
      * @param version the browser version to use
      * @param enableJavascript true to enable JavaScript support, false to disable
      */
@@ -195,7 +195,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
      * Transfers mapped capabilities and legacy HtmlUnit options. If the source is
      * another HtmlUnitDriverOptions instance, copies the {@link WebClientOptions}
      * and {@link BrowserVersion} from it.
-     * 
+     *
      * @param source source capabilities to copy
      */
     public HtmlUnitDriverOptions(final Capabilities source) {
@@ -248,7 +248,7 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
 
     /**
      * Constructs HtmlUnitDriverOptions from a map of options.
-     * 
+     *
      * @param optionsMap map containing option key-value pairs
      */
     public HtmlUnitDriverOptions(final Map<String, Object> optionsMap) {

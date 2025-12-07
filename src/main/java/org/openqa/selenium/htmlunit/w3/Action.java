@@ -218,7 +218,7 @@ public class Action {
      * <p>
      * The result depends on the action {@code type} and {@code subtype}:
      *
-     * <h4>Pointer actions</h4>
+     * <strong>Pointer actions</strong>
      * <ul>
      *   <li>{@code pointerMove} → {@link PointerMoveHtmlUnitAction}</li>
      *   <li>{@code pointerDown} → {@link PointerDownHtmlUnitAction}</li>
@@ -226,14 +226,14 @@ public class Action {
      *   <li>{@code pause} → {@code null}</li>
      * </ul>
      *
-     * <h4>Keyboard actions</h4>
+     * <strong>Keyboard actions</strong>
      * <ul>
      *   <li>{@code keyDown} → {@link KeyDownHtmlUnitAction}</li>
      *   <li>{@code keyUp} → {@link KeyUpHtmlUnitAction}</li>
      *   <li>{@code pause} → {@code null}</li>
      * </ul>
      *
-     * <h4>None actions</h4>
+     * <strong>None actions</strong>
      * <ul>
      *   <li>Always return {@code null}</li>
      * </ul>

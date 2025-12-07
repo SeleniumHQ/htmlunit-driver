@@ -23,7 +23,7 @@ import java.util.Map;
  * Represents an enumerated option that can be configured on a driver.
  * Provides methods to access the option's key, property name, type, default value,
  * and to apply, encode, or decode its value.
- * 
+ *
  * @author Scott Babcock
  */
 public interface OptionEnum {

@@ -146,8 +146,10 @@ class AsyncScriptExecutor {
         final Function function = (Function) result.getJavaScriptResult();
 
         // Finally, update the script with the callback host object.
-        TypeInfo staticType = TypeInfoFactory.getOrElse(function, TypeInfoFactory.GLOBAL).create(AsyncScriptResult.class);
-        NativeJavaObject nativeJavaObject = new NativeJavaObject(function, asyncResult, staticType);
+        final TypeInfo staticType = TypeInfoFactory
+                                    .getOrElse(function, TypeInfoFactory.GLOBAL)
+                                    .create(AsyncScriptResult.class);
+        final NativeJavaObject nativeJavaObject = new NativeJavaObject(function, asyncResult, staticType);
         function.put("host", function, nativeJavaObject);
 
         return function;

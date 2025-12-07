@@ -35,8 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
@@ -209,7 +209,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     /**
      * Constructs a new instance with the specified desired and required {@link Capabilities}.
-     * 
+     *
      * @param desiredCapabilities desired capabilities
      * @param requiredCapabilities required capabilities
      */
@@ -1795,7 +1795,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * Implementation of {@link WebDriver.Options} for {@link HtmlUnitDriver}.
      *
      * <p>This inner class provides driver-scoped configuration objects such as
-     * logging support ({@link HtmlUnitLogs}) and timeout management 
+     * logging support ({@link HtmlUnitLogs}) and timeout management
      * ({@link HtmlUnitTimeouts}).</p>
      *
      * <p>Instances are typically created by the enclosing {@link HtmlUnitDriver}

@@ -23,9 +23,9 @@ import java.net.URL;
 
 /**
  * Represents a key store configuration.
- * 
+ *
  * <p>Holds information about the key store URL, password, and type.</p>
- * 
+ *
  * @author Scott Babcock
  * @author Ronald Brill
  */
@@ -41,7 +41,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Gets the key store URL as a string.
-     * 
+     *
      * @return the key store URL
      */
     public String getUrl() {
@@ -50,7 +50,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Sets the key store URL.
-     * 
+     *
      * @param url the key store URL
      */
     public void setUrl(final String url) {
@@ -59,7 +59,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Gets the password for the key store.
-     * 
+     *
      * @return the key store password
      */
     public String getPassword() {
@@ -68,7 +68,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Sets the password for the key store.
-     * 
+     *
      * @param password the key store password
      */
     public void setPassword(final String password) {
@@ -77,7 +77,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Gets the type of the key store.
-     * 
+     *
      * @return the key store type
      */
     public String getType() {
@@ -86,7 +86,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Sets the type of the key store.
-     * 
+     *
      * @param type the key store type
      */
     public void setType(final String type) {
@@ -95,7 +95,7 @@ public class KeyStoreBean implements Serializable {
 
     /**
      * Creates a {@link URL} object from the key store URL string.
-     * 
+     *
      * @return a {@link URL} object representing the key store URL
      * @throws MalformedURLException if the URL string is not valid
      */

@@ -42,7 +42,7 @@ import org.htmlunit.ProxyConfig;
  * bean.setBypassHosts(Arrays.asList("localhost", "127.0.0.1"));
  * ProxyConfig proxyConfig = bean.build();
  * </pre>
- * 
+ *
  * @author Scott Babcock
  * @author Ronald Brill
  */
@@ -225,7 +225,8 @@ public class ProxyConfigBean implements Serializable {
             proxyBypassHostsField.setAccessible(true);
             final Map<String, Pattern> proxyBypassHosts = (Map<String, Pattern>) proxyBypassHostsField.get(value);
             return new ArrayList<>(proxyBypassHosts.keySet());
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        }
+        catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             return null;
         }
     }
