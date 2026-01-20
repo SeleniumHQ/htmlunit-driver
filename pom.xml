@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.40.0-SNAPSHOT</version>
+    <version>4.40.0</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -18,6 +18,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.release>17</maven.compiler.release>
+
+        <maven.version.ignore>(?i).*-(alpha|beta|m|rc)([\.-]?\d+)?</maven.version.ignore>
 
         <selenium.version>4.40.0</selenium.version>
         <selenium.devtools.artifactId>selenium-devtools-v144</selenium.devtools.artifactId>
@@ -35,7 +37,7 @@
         <dependencycheck.version>12.1.9</dependencycheck.version>
 
         <!-- plugins -->
-        <central-publishing-plugin.version>0.9.0</central-publishing-plugin.version>
+        <central-publishing-plugin.version>0.10.0</central-publishing-plugin.version>
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
         <spotbugs-plugin.version>4.9.8.2</spotbugs-plugin.version>
         <gpg-plugin.version>3.2.8</gpg-plugin.version>
