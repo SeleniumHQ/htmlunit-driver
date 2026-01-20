@@ -182,7 +182,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
 
     /**
      * Path to the directory to be used for storing the response content in a
-     * temporary file. The specified directory is created if if doesn't exist.
+     * temporary file. The specified directory is created if it doesn't exist.
      * <p>
      * property: <b>webdriver.htmlunit.tempFileDirectory</b><br>
      * type: {@link File}<br>
@@ -754,7 +754,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * <p>
      * property: <b>webdriver.htmlunit.webSocketMaxTextMessageSize</b><br>
      * type: {@code int}<br>
-     * default: -1 {use default size)
+     * default: -1 (use default size)
      */
     WEB_SOCKET_MAX_TEXT_MESSAGE_SIZE(optWebSocketMaxTextMessageSize, int.class, -1) {
         @Override
@@ -773,7 +773,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * <p>
      * property: <b>webdriver.htmlunit.webSocketMaxTextMessageBufferSize</b><br>
      * type: {@code int}<br>
-     * default: -1 {use default size)
+     * default: -1 (use default size)
      */
     WEB_SOCKET_MAX_TEXT_MESSAGE_BUFFER_SIZE(optWebSocketMaxTextMessageBufferSize, int.class, -1) {
         @Override
@@ -792,7 +792,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * <p>
      * property: <b>webdriver.htmlunit.webSocketMaxBinaryMessageSize</b><br>
      * type: {@code int}<br>
-     * default: -1 {use default size)
+     * default: -1 (use default size)
      */
     WEB_SOCKET_MAX_BINARY_MESSAGE_SIZE(optWebSocketMaxBinaryMessageSize, int.class, -1) {
         @Override
@@ -811,7 +811,7 @@ public enum HtmlUnitOption implements HtmlUnitOptionNames, OptionEnum {
      * <p>
      * property: <b>webdriver.htmlunit.webSocketMaxBinaryMessageBufferSize</b><br>
      * type: {@code int}<br>
-     * default: -1 {use default size)
+     * default: -1 (use default size)
      */
     WEB_SOCKET_MAX_BINARY_MESSAGE_BUFFER_SIZE(optWebSocketMaxBinaryMessageBufferSize, int.class, -1) {
         @Override

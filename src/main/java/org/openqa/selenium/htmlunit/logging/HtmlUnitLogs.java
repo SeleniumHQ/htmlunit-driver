@@ -18,6 +18,7 @@
 package org.openqa.selenium.htmlunit.logging;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -104,9 +105,7 @@ public class HtmlUnitLogs implements Logs {
                 result = new ArrayList<>(insertPos_);
             }
 
-            for (int i = 0; i < insertPos_; i++) {
-                result.add(buffer_[i]);
-            }
+            result.addAll(Arrays.asList(buffer_).subList(0, insertPos_));
 
             insertPos_ = 0;
             isFull_ = false;

@@ -295,7 +295,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 }
 
                 // Check if the event window refers to us or one of our parent windows
-                // setup the currentWindow appropriately if necessary
+                // set up the currentWindow appropriately if necessary
                 WebWindow ourCurrentWindow = currentWindow_.getWebWindow();
                 final WebWindow ourCurrentTopWindow = currentWindow_.getWebWindow().getTopWindow();
                 do {
@@ -430,7 +430,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     /**
-     * Performs a double-click on the specified element.
+     * Performs a double click on the specified element.
      * <p>
      * This simulates a WebDriver double-click gesture by issuing two click
      * sequences in rapid succession and dispatching a {@code dblclick} event.
@@ -760,7 +760,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         getAlert().setAutoAccept(false);
         try {
             // we can't use webClient.getPage(url) here because selenium has a different
-            // idea of the current window and we like to load into to selenium current one
+            // idea of the current window, and we like to load into to selenium current one
             final BrowserVersion browser = getBrowserVersion();
             final WebRequest request = new WebRequest(fullUrl, browser.getHtmlAcceptHeader(),
                     browser.getAcceptEncodingHeader());
@@ -779,10 +779,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         catch (final SocketTimeoutException e) {
             throw new TimeoutException(e);
         }
-        catch (final NoSuchSessionException e) {
-            throw e;
-        }
-        catch (final NoSuchWindowException e) {
+        catch (final NoSuchSessionException | NoSuchWindowException e) {
             throw e;
         }
         catch (final SSLHandshakeException e) {
@@ -1851,7 +1848,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 return;
             }
 
-            if ("".equals(domain)) {
+            if (domain.length() == 0) {
                 throw new InvalidCookieDomainException(
                         "Domain must not be an empty string. Consider using null instead");
             }

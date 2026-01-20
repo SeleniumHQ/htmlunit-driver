@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringUtils;
 import org.htmlunit.ScriptResult;
@@ -288,12 +287,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     void verifyCanInteractWithElement(final boolean ignoreDisabled) {
         assertElementNotStale();
 
-        final Boolean displayed = driver_.implicitlyWaitFor(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return isDisplayed();
-            }
-        });
+        final Boolean displayed = driver_.implicitlyWaitFor(this::isDisplayed);
 
         if (displayed == null || !displayed) {
             throw new ElementNotInteractableException("You may only interact with visible elements");
@@ -322,7 +316,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         final boolean jsEnabled = driver_.isJavascriptEnabled();
         final boolean oldActiveEqualsCurrent = oldActiveElement.equals(this);
         try {
-            final boolean isBody = oldActiveElement.getTagName().toLowerCase().equals("body");
+            final boolean isBody = "body".equalsIgnoreCase(oldActiveElement.getTagName());
             if (jsEnabled && !oldActiveEqualsCurrent && !isBody) {
                 oldActiveElement.element_.blur();
             }
@@ -357,63 +351,58 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             return trueOrNull(((HtmlInput) element_).isChecked());
         }
 
-        if ("href".equals(lowerName)) {
-            final String href = element_.getAttribute(name);
-            if (ATTRIBUTE_NOT_DEFINED == href) {
-                return null;
+        switch (lowerName) {
+            case "href": {
+                final String href = element_.getAttribute(name);
+                if (ATTRIBUTE_NOT_DEFINED == href) {
+                    return null;
+                }
+                final HtmlPage page = (HtmlPage) element_.getPage();
+                try {
+                    return page.getFullyQualifiedUrl(href.trim()).toString();
+                } catch (final MalformedURLException e) {
+                    return null;
+                }
             }
-            final HtmlPage page = (HtmlPage) element_.getPage();
-            try {
-                return page.getFullyQualifiedUrl(href.trim()).toString();
+            case "src": {
+                final String link = element_.getAttribute(name);
+                if (ATTRIBUTE_NOT_DEFINED == link) {
+                    return "";
+                }
+                final HtmlPage page = (HtmlPage) element_.getPage();
+                try {
+                    return page.getFullyQualifiedUrl(link.trim()).toString();
+                } catch (final MalformedURLException e) {
+                    return null;
+                }
             }
-            catch (final MalformedURLException e) {
-                return null;
-            }
-        }
+            case "value":
+                if (element_ instanceof HtmlInput) {
+                    return ((HtmlInput) element_).getValue();
+                }
+                if (element_ instanceof HtmlTextArea) {
+                    return ((HtmlTextArea) element_).getText();
+                }
 
-        if ("src".equals(lowerName)) {
-            final String link = element_.getAttribute(name);
-            if (ATTRIBUTE_NOT_DEFINED == link) {
-                return "";
-            }
-            final HtmlPage page = (HtmlPage) element_.getPage();
-            try {
-                return page.getFullyQualifiedUrl(link.trim()).toString();
-            }
-            catch (final MalformedURLException e) {
-                return null;
-            }
-        }
+                // According to
+                // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
+                // if the value attribute doesn't exist, getting the "value" attribute defers to
+                // the
+                // option's content.
+                if (element_ instanceof HtmlOption && !element_.hasAttribute("value")) {
+                    return getText();
+                }
 
-        if ("value".equals(lowerName)) {
-            if (element_ instanceof HtmlInput) {
-                return ((HtmlInput) element_).getValue();
-            }
-            if (element_ instanceof HtmlTextArea) {
-                return ((HtmlTextArea) element_).getText();
-            }
-
-            // According to
-            // http://www.w3.org/TR/1999/REC-html401-19991224/interact/forms.html#adef-value-OPTION
-            // if the value attribute doesn't exist, getting the "value" attribute defers to
-            // the
-            // option's content.
-            if (element_ instanceof HtmlOption && !element_.hasAttribute("value")) {
-                return getText();
-            }
-
-            final String attributeValue = element_.getAttribute(name);
-            if (ATTRIBUTE_NOT_DEFINED == attributeValue) {
-                return null;
-            }
-            return attributeValue;
-        }
-
-        if ("disabled".equals(lowerName)) {
-            if (element_ instanceof DisabledElement) {
-                return trueOrNull(((DisabledElement) element_).isDisabled());
-            }
-            return "true";
+                final String attributeValue = element_.getAttribute(name);
+                if (ATTRIBUTE_NOT_DEFINED == attributeValue) {
+                    return null;
+                }
+                return attributeValue;
+            case "disabled":
+                if (element_ instanceof DisabledElement) {
+                    return trueOrNull(((DisabledElement) element_).isDisabled());
+                }
+                return "true";
         }
 
         if ("multiple".equals(lowerName) && element_ instanceof HtmlSelect) {

@@ -217,7 +217,7 @@ public class HtmlUnitMouse {
     }
 
     /**
-     * Performs a double-click on the specified {@link DomElement}, including
+     * Performs a double click on the specified {@link DomElement}, including
      * hover-out behavior if necessary and dispatch of modifier-key state.
      *
      * @param element the element to be double-clicked; must not be {@code null}

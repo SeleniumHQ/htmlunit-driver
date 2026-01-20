@@ -307,14 +307,12 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
         }
         final HtmlUnitOption option = HtmlUnitOption.fromCapabilityKey(capabilityName);
         if (option != null) {
-            switch (option) {
-                case WEB_CLIENT_VERSION:
-                    webClientVersion_ = (BrowserVersion) option.decode(value);
-                    return;
-                default:
-                    option.insert(webClientOptions_, value);
-                    return;
+            if (option == HtmlUnitOption.WEB_CLIENT_VERSION) {
+                webClientVersion_ = (BrowserVersion) option.decode(value);
+                return;
             }
+            option.insert(webClientOptions_, value);
+            return;
         }
         if (BrowserVersionTrait.fromCapabilityKey(capabilityName) != null) {
             throw new UnsupportedOperationException(
