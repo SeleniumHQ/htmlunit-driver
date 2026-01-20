@@ -62,8 +62,9 @@ Before submitting a pull request:
    ```
 
 3. Update version numbers:
-    - Update version in `pom.xml` (remove `-SNAPSHOT` suffix)
-    - Update version in `README.md`
+    - Update version in 'pom.xml' (remove '-SNAPSHOT' suffix)
+    - Update version in 'README.md'
+    - Update 'docs\compatibility.md
     - Commit these changes
 
 ### Build and Deploy
