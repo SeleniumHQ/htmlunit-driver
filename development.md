@@ -2,67 +2,114 @@
 
 ## HtmlUnitDriver Development
 
-These instructions will get you a copy of the project up and running on your local machine 
-for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will help you set up the project on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-You simply only need a local maven installation.
-
+You only need:
+- Java Development Kit (JDK) 8 or higher
+- Apache Maven (latest stable version recommended)
 
 ### Building
 
-Create a local clone of the repository and you are ready to start.
+1. Clone the repository to your local machine:
+   ```bash
+   git clone https://github.com/SeleniumHQ/htmlunit-driver.git
+   cd htmlunit-driver
+   ```
 
-Open a command line window from the root folder of the project and call
+2. Compile the project:
+   ```bash
+   mvn compile
+   ```
 
-```
-mvn compile
-```
+### Running the Tests
 
-### Running the tests
+Execute the test suite with:
+    ```bash
+    mvn test
+    ```
 
-```
-mvn test
-```
+To run a clean build with all tests:
+    ```bash
+    mvn clean test
+    ```
 
 ## Contributing
 
-Pull Requests and all other Community Contributions are essential for open source software.
-Every contribution - from bug reports to feature requests, typos to full new features - are greatly appreciated.
+Pull requests and all other community contributions are essential for open source software.
+Every contribution—from bug reports to feature requests, typos to full new features—is greatly appreciated.
+
+Before submitting a pull request:
+- Ensure all tests pass
+- Follow the existing code style
+- Add tests for new features
+- Update documentation as needed
 
 ## Deployment and Versioning
 
-This part is intended for committer who are packaging a release.
+**This section is intended for committers who are packaging a release.**
 
-* Check all your files are checked in
-* Execute these mvn commands to be sure all tests are passing and everything is up to data
+### Pre-release Checklist
 
-```
+1. Ensure all changes are committed and pushed
+
+2. Verify everything is up to date and all tests pass:
+   ```bash
    mvn versions:display-plugin-updates
    mvn versions:display-dependency-updates
    mvn -U clean test
-```
+   ```
 
-* Update the version number in pom.xml and README.md
-* Commit the changes
+3. Update version numbers:
+    - Update version in `pom.xml` (remove `-SNAPSHOT` suffix)
+    - Update version in `README.md`
+    - Commit these changes
 
+### Build and Deploy
 
-* Build and deploy the artifacts
-
-```
+1. Build and deploy artifacts to Maven Central:
+   ```bash
    mvn -up clean deploy
-```
+   ```
 
-* Go to [Maven Central Portal](https://central.sonatype.com/) and process the deploy
-    - publish the package and wait until it is processed
+2. Publish to Maven Central:
+    - Go to [Maven Central Portal](https://central.sonatype.com/)
+    - Log in and locate your deployment
+    - Verify the contents
+    - Publish the package
+    - Wait for processing to complete (usually 10-30 minutes)
 
-* Create the version on GitHub
-    * login to GitHub and open project https://github.com/HtmlUnit/htmlunit-cssparser
-    * click Releases > Draft new release
-    * fill the tag and title field with the release number (e.g. 4.0.0)
-    * append/ the build artifacts and
-    * publish the release
+### Create GitHub Release
 
-* Update the version number in pom.xml to start next snapshot development
-* Update the htmlunit pom to use the new release
+1. Navigate to https://github.com/SeleniumHQ/htmlunit-driver
+2. Click **Releases** → **Draft a new release**
+3. Fill in the release information:
+    - **Tag**: Version number (e.g., `4.0.0`)
+    - **Release title**: Same as tag (e.g., `4.0.0`)
+    - **Description**: Add release notes highlighting new features, fixes, and breaking changes
+4. Attach build artifacts (JARs)
+5. Click **Publish release**
+
+### Post-release Tasks
+
+1. Update `pom.xml` to next SNAPSHOT version:
+   ```xml
+   <version>X.Y.Z-SNAPSHOT</version>
+   ```
+
+2. Commit the snapshot version:
+   ```bash
+   git commit -am "Begin development of X.Y.Z-SNAPSHOT"
+   git push
+   ```
+
+3. Update dependent projects:
+    - Update the HtmlUnit `pom.xml` to reference the new release version
+
+### Versioning
+
+We use [Semantic Versioning](https://semver.org/):
+- **MAJOR** version for incompatible API changes
+- **MINOR** version for backwards-compatible functionality additions
+- **PATCH** version for backwards-compatible bug fixes
