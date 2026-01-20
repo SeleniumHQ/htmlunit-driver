@@ -6,6 +6,8 @@ Version 4.39.0 / December 07, 2025
 
 [![Maven Central Version](https://img.shields.io/maven-central/v/org.seleniumhq.selenium/htmlunit3-driver)](https://central.sonatype.com/artifact/org.seleniumhq.selenium/htmlunit3-driver)
 
+:heart: [Sponsor](https://github.com/sponsors/rbri)
+
 ## News
 
 **[Developer Blog](https://htmlunit.github.io/htmlunit-blog/)**
@@ -102,3 +104,17 @@ can be found in these [tables](docs/compatibility.md).
 ## License
 
 **HtmlUnitDriver** is distributed under Apache License 2.0.
+
+## Development Tools
+
+Special thanks to:
+
+<a href="https://www.jetbrains.com/community/opensource/"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" alt="JetBrains" width="42"></a>
+<a href="https://www.jetbrains.com/idea/"><img src="https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.svg" alt="IntelliJ IDEA" width="42"></a>  
+**[JetBrains](https://www.jetbrains.com/)** for providing IntelliJ IDEA under their [open source development license](https://www.jetbrains.com/community/opensource/) and
+
+<a href="https://www.eclipse.org/"><img src="https://www.eclipse.org/eclipse.org-common/themes/solstice/public/images/logo/eclipse-foundation-grey-orange.svg" alt="Eclipse Foundation" width="80"></a>  
+Eclipse Foundation for their Eclipse IDE
+
+<a href="https://www.syntevo.com/smartgit/"><img src="https://www.syntevo.com/assets/images/logos/smartgit-8c1aa1e2.svg" alt="SmartGit" width="54"></a>  
+to **[Syntevo](https://www.syntevo.com/)** for their excellent [SmartGit](https://www.smartgit.dev/)!
