@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.40.0</version>
+    <version>4.41.0-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -21,8 +21,8 @@
 
         <maven.version.ignore>(?i).*-(alpha|beta|m|rc)([\.-]?\d+)?</maven.version.ignore>
 
-        <selenium.version>4.40.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v144</selenium.devtools.artifactId>
+        <selenium.version>4.41.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v145</selenium.devtools.artifactId>
         <htmlunit.version>4.21.0</htmlunit.version>
 
         <jetty.version>9.4.58.v20250814</jetty.version>
@@ -42,7 +42,7 @@
         <spotbugs-plugin.version>4.9.8.2</spotbugs-plugin.version>
         <gpg-plugin.version>3.2.8</gpg-plugin.version>
         <enforcer-plugin.version>3.6.2</enforcer-plugin.version>
-        <compiler-plugin.version>3.14.1</compiler-plugin.version>
+        <compiler-plugin.version>3.15.0</compiler-plugin.version>
         <assembly-plugin.version>3.8.0</assembly-plugin.version>
         <source-plugin.version>3.4.0</source-plugin.version>
         <javadoc-plugin.version>3.12.0</javadoc-plugin.version>
@@ -108,12 +108,6 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-chrome-driver</artifactId>
-            <version>${selenium.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-ie-driver</artifactId>
             <version>${selenium.version}</version>
             <scope>test</scope>
         </dependency>
