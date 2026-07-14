@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '17', '21' ]
+        java: [ '21' ]
       fail-fast: false
 
     name: Java ${{ matrix.Java }} seed dependencies
@@ -66,8 +66,10 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-${{ matrix.java }}
+          key: nvd-cache-${{ runner.os }}-${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
+            nvd-cache-${{ runner.os }}-${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
+            nvd-cache-${{ runner.os }}-${{ matrix.java }}
             nvd-cache-${{ runner.os }}-
 
       - name: Get Versions
@@ -102,7 +104,7 @@ jobs:
         if: ${{ always() }}
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-${{ matrix.java }}
+          key: nvd-cache-${{ runner.os }}-${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
 
       - name: Test Summary ${{ matrix.java }}
         uses: test-summary/action@v2.6
@@ -146,8 +148,9 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-owasp
+          key: nvd-cache-${{ runner.os }}-owasp-${{ github.run_id }}
           restore-keys: |
+            nvd-cache-${{ runner.os }}-owasp-
             nvd-cache-${{ runner.os }}-
 
       - name: OWASP Dependency check
@@ -160,4 +163,4 @@ jobs:
         if: ${{ always() }}
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-owasp
+          key: nvd-cache-${{ runner.os }}-owasp-${{ github.run_id }}
