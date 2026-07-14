@@ -62,7 +62,7 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}
+          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-${{ matrix.java }}
           restore-keys: |
             nvd-cache-${{ runner.os }}-
 
@@ -98,7 +98,7 @@ jobs:
         if: ${{ always() }}
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}
+          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-${{ matrix.java }}
 
       - name: Test Summary ${{ matrix.java }}
         uses: test-summary/action@v2.6
@@ -110,7 +110,7 @@ jobs:
       
       
       - name: Upload test summary ${{ matrix.java }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: test-summary ${{ matrix.java }}
           path: test-summary.md
@@ -142,11 +142,11 @@ jobs:
         uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}
+          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-owasp
           restore-keys: |
             nvd-cache-${{ runner.os }}-
 
-      - name: Build with Maven with X Frame Buffer
+      - name: OWASP Dependency check
         run:  mvn org.owasp:dependency-check-maven:check -Powasp-nvd-mirror
         env:
             NVD_NIST_APIKEY: ${{ secrets.NVD_NIST_APIKEY}}
@@ -156,4 +156,4 @@ jobs:
         if: ${{ always() }}
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
-          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}
+          key: nvd-cache-${{ runner.os }}-${{ github.run_id }}-owasp

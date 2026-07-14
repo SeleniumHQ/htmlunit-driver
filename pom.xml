@@ -293,9 +293,7 @@
                             <suppressionFiles>owasp-suppressions.xml</suppressionFiles>
                             <failBuildOnCVSS>0</failBuildOnCVSS>
                             <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
-                            <nvdDatafeedUrl>
-                                https://mirror.cveb.in/nvd/json/cve/1.1/nvdcve-1.1-{0}.json.gz
-                            </nvdDatafeedUrl>
+                            <nvdDatafeedUrl>https://dependency-check.github.io/DependencyCheck_Builder/nvd_cache/nvdcve-{0}.json.gz</nvdDatafeedUrl>
                             <skip>${owasp.skip}</skip>
                         </configuration>
                         <executions>
