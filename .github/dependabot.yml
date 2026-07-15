@@ -1,0 +1,64 @@
+version: 2
+updates:
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+    time: "07:00"
+    timezone: "Australia/Brisbane"
+- package-ecosystem: maven
+  directories:
+    - "**/*"
+  schedule:
+    interval: daily
+    time: "07:00"
+    timezone: "Australia/Brisbane"
+  groups:
+    jackson:
+      patterns:
+        - "jackson-version"
+        - "jackson*"
+        - "org.openapitools:jackson-*"
+        - "com.fasterxml.jackson*"
+    spotless-maven-plugin:
+      patterns:
+        - "com.diffplug.spotless:spotless-maven-plugin"
+    exec-maven-plugin:
+      patterns:
+        - "org.codehaus.mojo:*"
+    spring-boot-dependencies:
+      patterns:
+        - "org.springframework.boot:*"
+    openapi-generator-maven-plugin:
+      patterns:
+        - "org.openapitools:*"
+    org-apache-maven-plugins:
+      patterns:
+        - "org.apache.maven.plugins:*"
+    hamcrest:
+      patterns:
+        - "org.hamcrest:hamcrest"
+    mockito-core:
+      patterns:
+        - "org.mockito:mockito-core"
+    commons-lang3:
+      patterns:
+        - "org.apache.commons:commons-lang3"
+    jakarta-annotation-api:
+      patterns:
+        - "jakarta.annotation*"
+    junit-jupiter:
+      patterns:
+        - "org.junit.jupiter:*"
+    assertj:
+      patterns:
+        - "org.assertj:*"
+    slf4j-api:
+      patterns:
+        - "org.slf4j:*"
+    selenium:
+      patterns:
+        - "*selenium*"
+        - "*webdrivermanager*"
+  open-pull-requests-limit: 20
+

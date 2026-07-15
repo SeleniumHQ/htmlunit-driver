@@ -3,4 +3,20 @@
     <suppress>
         <cve>CVE-2024-6763</cve>
     </suppress>
+    <suppress until="2026-07-30">
+        <notes><![CDATA[
+    httpcore-4.4.x has no patch for this CVE just yet.
+    file name: httpcore-4.4.16.jar
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpcore@.*$</packageUrl>
+        <cve>CVE-2026-54399</cve>
+    </suppress>
+    <suppress until="2026-07-30">
+        <notes><![CDATA[
+    httpcore-4.4.x has no patch for this CVE just yet.
+    file name: httpcore-4.4.16.jar
+    ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.apache\.httpcomponents/httpcore@.*$</packageUrl>
+        <cve>CVE-2026-54428</cve>
+    </suppress>
 </suppressions>

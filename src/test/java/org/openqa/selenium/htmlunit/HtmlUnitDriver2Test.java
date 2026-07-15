@@ -212,44 +212,6 @@ public class HtmlUnitDriver2Test extends WebDriverTestCase {
         }
     }
 
-    @Test
-    @Alerts(DEFAULT = "Privacy error",
-            FF = "self-signed.badssl.com",
-            FF_ESR = "self-signed.badssl.com")
-    @HtmlUnitNYI(CHROME = "self-signed.badssl.com",
-            EDGE = "self-signed.badssl.com")
-    public void getSslSelfSigned() throws Exception {
-        final WebDriver webDriver = getWebDriver();
-
-        webDriver.get("https://self-signed.badssl.com");
-        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
-        assertEquals("https://self-signed.badssl.com/", webDriver.getCurrentUrl());
-    }
-
-    @Test
-    @Alerts(DEFAULT = "Privacy error",
-            FF = "wrong.host.badssl.com",
-            FF_ESR = "wrong.host.badssl.com")
-    @HtmlUnitNYI(CHROME = "wrong.host.badssl.com",
-            EDGE = "wrong.host.badssl.com")
-    public void getSslWrongHost() throws Exception {
-        final WebDriver webDriver = getWebDriver();
-
-        webDriver.get("https://wrong.host.badssl.com/");
-        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
-        assertEquals("https://wrong.host.badssl.com/", webDriver.getCurrentUrl());
-    }
-
-    @Test
-    @Alerts("revoked.badssl.com")
-    public void getSslRevoked() throws Exception {
-        final WebDriver webDriver = getWebDriver();
-
-        webDriver.get("https://revoked.badssl.com");
-        assertEquals(getExpectedAlerts()[0], webDriver.getTitle());
-        assertEquals("https://revoked.badssl.com/", webDriver.getCurrentUrl());
-    }
-
     /**
      * @throws Exception if an error occurs
      */

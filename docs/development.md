@@ -1,5 +1,13 @@
 # ![HtmlUnitDriver Logo](https://github.com/SeleniumHQ/htmlunit-driver/blob/master/htmlunit_webdriver.png)
 
+## Versioning
+
+We use [Semantic Versioning](https://semver.org/):
+- **MAJOR** version for incompatible API changes
+- **MINOR** version for backwards-compatible functionality additions
+- **PATCH** version for backwards-compatible bug fixes
+
+
 ## HtmlUnitDriver Development
 
 These instructions will help you set up the project on your local machine for development and testing purposes.
@@ -50,6 +58,24 @@ Before submitting a pull request:
 
 **This section is intended for committers who are packaging a release.**
 
+### New Commiter configuration 
+
+Ensure you have been securely given credentials to deploy to Central
+
+Update ~/.m2/settings.xml to include a central server auth details
+
+```xml
+  <server>
+      ...
+      <server>
+          <id>central</id>
+          <username>${username-hash}</username>
+          <password>${apitoken}</password>
+      </server>
+  </servers>
+
+```
+
 ### Pre-release Checklist
 
 1. Ensure all changes are committed and pushed
@@ -61,17 +87,35 @@ Before submitting a pull request:
    mvn -U clean test
    ```
 
-3. Update version numbers:
-    - Update version in 'pom.xml' (remove '-SNAPSHOT' suffix)
-    - Update version in 'README.md'
-    - Update 'docs\compatibility.md
-    - Commit these changes
+3. Update expected version details 
+   - Update version in 'README.md'
+   - Update 'docs\compatibility.md'
+   - Commit these changes
 
-### Build and Deploy
+### Maven release process (Preferred)
+
+1. Use the release prepare, perform steps which will do the version increments and tagging
+   - This will give sane patch level increments, if this is not a patch then override the suggestion given.
+
+   - Prepare release
+   ```shell
+   mvn release:prepare -Prelease
+   ```
+   - Perform release
+   ```shell
+   mvn release:perform -Prelease
+   ```
+
+### Manual Deployment process
+
+1. Update version numbers:
+    - Update version in 'pom.xml' (remove '-SNAPSHOT' suffix)
+
+#### Build and Deploy
 
 1. Build and deploy artifacts to Maven Central:
    ```bash
-   mvn -up clean deploy
+   mvn -up clean deploy -Prelease
    ```
 
 2. Publish to Maven Central:
@@ -92,7 +136,9 @@ Before submitting a pull request:
 4. Attach build artifacts (JARs)
 5. Click **Publish release**
 
-### Post-release Tasks
+### Post-release Tasks (Manual process only)
+
+Note: `Maven release process (Preferred)` will do this for you.
 
 1. Update `pom.xml` to next SNAPSHOT version:
    ```xml
@@ -107,10 +153,3 @@ Before submitting a pull request:
 
 3. Update dependent projects:
     - Update the HtmlUnit `pom.xml` to reference the new release version
-
-### Versioning
-
-We use [Semantic Versioning](https://semver.org/):
-- **MAJOR** version for incompatible API changes
-- **MINOR** version for backwards-compatible functionality additions
-- **PATCH** version for backwards-compatible bug fixes

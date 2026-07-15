@@ -1,0 +1,32 @@
+# .github/release.yml
+# https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes
+# https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels
+
+changelog:
+  categories:
+    - title: Breaking Changes 🛠
+      labels:
+        - Semver-Major
+        - breaking-change
+
+    - title: 🏕 Features
+      labels:
+        - '*'
+      exclude:
+        labels:
+          - dependencies
+          - bug
+          - Semver-Major
+          - breaking-change
+        authors:
+          - dependabot[bot]
+
+    - title: 🐛 Bug Fixes
+      labels:
+        - bug
+
+    - title: 👒 Dependencies
+      labels:
+        - dependencies
+      authors:
+        - dependabot[bot]
