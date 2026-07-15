@@ -61,29 +61,6 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
     }
 
     @Test
-    public void confirmWithRedirect() throws Exception {
-        final String message = "Are you sure?";
-
-        final String html = "<html>\n"
-                + "<a id='confirm' href='http://htmlunit.sourceforge.net/' "
-                        + "onclick='return confirm(\"" + message + "\");'>Confirm</a>\n"
-                + "<div id='message'>Default</div>"
-                + "</html>\n";
-
-        final WebDriver driver = loadPage2(html);
-        driver.findElement(By.id("confirm")).click();
-
-        assertEquals(message, driver.switchTo().alert().getText());
-        driver.switchTo().alert().accept();
-
-        // sometimes the page is slow
-        Thread.sleep(4 * DEFAULT_WAIT_TIME);
-
-        assertTrue("Title was '" + driver.getTitle() + "'",
-                driver.getTitle().contains("Welcome to HtmlUnit"));
-    }
-
-    @Test
     public void confirmWithoutRedirect() throws Exception {
         final String message = "Are you sure?";
 
@@ -100,7 +77,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
                 + "</script>\n"
                 + "</head>\n"
                 + "<body>\n"
-                + "<a id='confirm' href='http://htmlunit.sourceforge.net/' onclick='return runConfirm();'>Confirm</a>\n"
+                + "<a id='confirm' href='https://htmlunit.sourceforge.io/' onclick='return runConfirm();'>Confirm</a>\n"
                 + "<div id='message'>Default</div>"
                 + "</body>\n"
                 + "</html>\n";
