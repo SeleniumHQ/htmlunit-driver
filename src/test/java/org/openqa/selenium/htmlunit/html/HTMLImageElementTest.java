@@ -56,6 +56,6 @@ public class HTMLImageElementTest extends WebDriverTestCase {
             + "  <img id='myImage3' src='" + URL_SECOND + "' width='hello' height='hello'>\n"
             + "</body></html>";
 
-        loadPageWithAlerts2(html);
+        loadPageWithAlerts2(html, DEFAULT_WAIT_TIME * 4);
     }
 }

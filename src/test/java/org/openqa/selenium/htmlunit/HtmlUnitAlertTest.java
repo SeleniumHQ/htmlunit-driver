@@ -65,7 +65,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         final String message = "Are you sure?";
 
         final String html = "<html>\n"
-                + "<a id='confirm' href='http://htmlunit.sourceforge.net/' "
+                + "<a id='confirm' href='https://www.htmlunit.org/' "
                         + "onclick='return confirm(\"" + message + "\");'>Confirm</a>\n"
                 + "<div id='message'>Default</div>"
                 + "</html>\n";
@@ -77,10 +77,20 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         driver.switchTo().alert().accept();
 
         // sometimes the page is slow
-        Thread.sleep(4 * DEFAULT_WAIT_TIME);
+        final String expectedTitle = "HtmlUnit – Welcome to HtmlUnit";
+        final long maxWait = System.currentTimeMillis() + (DEFAULT_WAIT_TIME * 4);
 
-        assertTrue("Title was '" + driver.getTitle() + "'",
-                driver.getTitle().contains("Welcome to HtmlUnit"));
+        while (System.currentTimeMillis() < maxWait) {
+            try {
+                final String title = driver.getTitle();
+                assertEquals(expectedTitle, title);
+                return;
+            }
+            catch (final AssertionError e) {
+                // ignore and wait
+            }
+        }
+        assertEquals(expectedTitle, driver.getTitle());
     }
 
     @Test
@@ -100,7 +110,7 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
                 + "</script>\n"
                 + "</head>\n"
                 + "<body>\n"
-                + "<a id='confirm' href='http://htmlunit.sourceforge.net/' onclick='return runConfirm();'>Confirm</a>\n"
+                + "<a id='confirm' href='https://www.htmlunit.org/' onclick='return runConfirm();'>Confirm</a>\n"
                 + "<div id='message'>Default</div>"
                 + "</body>\n"
                 + "</html>\n";
