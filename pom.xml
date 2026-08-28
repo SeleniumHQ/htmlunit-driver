@@ -5,7 +5,7 @@
 
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.47.0</version>
+    <version>4.48.0-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>WebDriver compatible driver for HtmlUnit headless browser</description>
@@ -21,9 +21,9 @@
 
         <maven.version.ignore>(?i).*-(alpha|beta|m|rc)([\.-]?\d+)?</maven.version.ignore>
 
-        <selenium.version>4.47.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v151</selenium.devtools.artifactId>
-        <htmlunit.version>5.4.0</htmlunit.version>
+        <selenium.version>4.48.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v152</selenium.devtools.artifactId>
+        <htmlunit.version>5.5.0-SNAPSHOT</htmlunit.version>
 
         <jetty.version>12.1.12</jetty.version>
 
@@ -313,6 +313,8 @@
                             <goal>single</goal>
                         </goals>
                         <configuration>
+                            <!-- exclude this form artifact deployment to central -->
+                            <attach>false</attach>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
