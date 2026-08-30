@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit.html;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
@@ -39,10 +40,11 @@ public class HTMLImageElementTest extends WebDriverTestCase {
 
         final String html = "<html><head>\n"
             + "<script>\n"
+            + LOG_TITLE_FUNCTION
             + "  function showInfo(imageId) {\n"
             + "    var img = document.getElementById(imageId);\n"
-            + "    alert(typeof(img.width) + ': ' + img.width);\n"
-            + "    alert(typeof(img.height) + ': ' + img.height);\n"
+            + "    log(typeof(img.width) + ': ' + img.width);\n"
+            + "    log(typeof(img.height) + ': ' + img.height);\n"
             + "  }\n"
             + "  function test() {\n"
             + "    showInfo('myImage1');\n"
@@ -56,6 +58,7 @@ public class HTMLImageElementTest extends WebDriverTestCase {
             + "  <img id='myImage3' src='" + URL_SECOND + "' width='hello' height='hello'>\n"
             + "</body></html>";
 
-        loadPageWithAlerts2(html, DEFAULT_WAIT_TIME * 4);
+        final WebDriver driver = loadPage2(html);
+        verifyTitle2(DEFAULT_WAIT_TIME, driver, getExpectedAlerts());
     }
 }
