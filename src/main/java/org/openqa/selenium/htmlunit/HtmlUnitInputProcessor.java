@@ -121,6 +121,11 @@ public class HtmlUnitInputProcessor {
     }
 
     /**
+    /**
+     * Adds the given action to the queue, attempting to merge it with the
+     * immediately preceding action.
+     * @param action the action to enqueue; must not be {@code null}
+     *
      * @deprecated Use {@link #enqueueAction(Action)} instead. This method
      *             exists only for binary compatibility and will be removed in a
      *             future release.

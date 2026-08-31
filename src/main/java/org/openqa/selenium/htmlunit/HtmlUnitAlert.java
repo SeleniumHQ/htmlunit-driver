@@ -44,7 +44,7 @@ import org.openqa.selenium.remote.CapabilityType;
  * {@link #lock_} or declared {@code volatile} to ensure correct visibility
  * across threads.</p>
  *
- * <p>The alert lifecycle is as follows:
+ * <p>The alert lifecycle is as follows:</p>
  * <ol>
  *   <li>HtmlUnit's JS thread invokes a handler (e.g. {@code alertHandler}),
  *       sets {@link #holder_} and {@link #webWindow_}, then blocks inside
@@ -53,7 +53,6 @@ import org.openqa.selenium.remote.CapabilityType;
  *       which signals {@link #condition_} and clears {@link #holder_}, allowing
  *       the JS thread to resume.</li>
  * </ol>
- * </p>
  *
  * @author Ahmed Ashour
  * @author A aftakhov

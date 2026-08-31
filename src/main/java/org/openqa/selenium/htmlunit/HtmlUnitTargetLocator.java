@@ -124,13 +124,13 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
     /**
      * Switches focus to the frame identified by the given name or ID.
      *
-     * <p>The lookup order is:
+     * <p>The lookup order is:</p>
      * <ol>
      *   <li>Frame {@code name} attribute — searched on the current page's frame list.</li>
      *   <li>Frame {@code id} attribute — searched on the top-level document to match
      *       WebDriver spec behaviour (frame IDs are looked up in the top-level context.</li>
      * </ol>
-     * If neither lookup produces a match, {@link NoSuchFrameException} is thrown.</p>
+     * If neither lookup produces a match, {@link NoSuchFrameException} is thrown.
      *
      * @param nameOrId the {@code name} or {@code id} attribute of the frame element
      * @return the driver, now focused on the matched frame
@@ -222,7 +222,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
     /**
      * Switches the driver to the window identified by {@code windowId}.
      *
-     * <p>The lookup strategy is:
+     * <p>The lookup strategy is:</p>
      * <ol>
      *   <li>Window {@code name} — via {@link org.htmlunit.WebClient#getWebWindowByName}.</li>
      *   <li>Window handle — compared against the string representation of each top-level
@@ -231,7 +231,6 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
      *       same hash, the first match is returned. Callers should treat window handles
      *       as opaque tokens and not construct them manually.</li>
      * </ol>
-     * </p>
      *
      * @param windowId the window name or opaque window handle to switch to
      * @return the driver, now focused on the target window

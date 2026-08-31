@@ -362,7 +362,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     /**
      * Returns the value of the named attribute, following WebDriver semantics.
      *
-     * <p>Special cases handled:
+     * <p>Special cases handled:</p>
      * <ul>
      *   <li>{@code href} and {@code src} — resolved to absolute URLs.</li>
      *   <li>{@code value} — read from the live element state for inputs and
@@ -374,7 +374,6 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
      *   <li>HTML boolean attributes — returns {@code "true"} if present, {@code null}
      *       if absent.</li>
      * </ul>
-     * </p>
      *
      * @param name the attribute name; case-insensitive
      * @return the attribute value, or {@code null} if not present
@@ -546,7 +545,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
      * Returns the serialised value of the named DOM attribute as it appears in the
      * markup, without resolving URLs or applying other WebDriver transformations.
      *
-     * <p>Notable behaviour:
+     * <p>Notable behaviour:</p>
      * <ul>
      *   <li>{@code disabled} — returns {@code "true"}/{@code null} based on the
      *       actual disabled state of {@link DisabledElement}s.</li>
@@ -557,7 +556,6 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
      *   <li>{@code selected} — returns {@code "true"}/{@code null} based on the
      *       selected state of {@code <option>} elements.</li>
      * </ul>
-     * </p>
      */
     @Override
     public String getDomAttribute(final String name) {
