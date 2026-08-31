@@ -73,11 +73,12 @@ public class HtmlUnitAlertTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         driver.findElement(By.id("confirm")).click();
 
-        assertEquals(message, driver.switchTo().alert().getText());
-        driver.switchTo().alert().accept();
+        Alert confirm = driver.switchTo().alert();
+        assertEquals(message, confirm.getText());
+        confirm.accept();
 
+        final String expectedTitle = "Welcome to HtmlUnit – HtmlUnit";
         // sometimes the page is slow
-        final String expectedTitle = "HtmlUnit – Welcome to HtmlUnit";
         final long maxWait = System.currentTimeMillis() + (DEFAULT_WAIT_TIME * 4);
 
         while (System.currentTimeMillis() < maxWait) {
