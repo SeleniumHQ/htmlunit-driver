@@ -59,13 +59,44 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "<head>\n"
                         + "</head>\n"
                         + "<body>\n"
-                        + "  <div id='testDivId' disabled>TestDiv</div>\n"
+                        + "  <div id='testDivId' abcd='xx'>TestDiv</div>\n"
+                        + "  <div id='testDivId2' abcd=''>TestDiv</div>\n"
+                        + "  <div id='testDivId3' abcd>TestDiv</div>\n"
+                        + "  <div id='testDivId4'>TestDiv</div>\n"
                         + "</body>\n"
                         + "</html>\n";
 
         final WebDriver driver = loadPage2(html);
-        final WebElement elem = driver.findElement(By.id("testDivId"));
+        WebElement elem = driver.findElement(By.id("testDivId"));
+        assertEquals("xx", elem.getAttribute("abcd"));
+
+        elem = driver.findElement(By.id("testDivId2"));
+        assertEquals("", elem.getAttribute("abcd"));
+
+        elem = driver.findElement(By.id("testDivId3"));
+        assertEquals("", elem.getAttribute("abcd"));
+
+        elem = driver.findElement(By.id("testDivId4"));
+        assertNull(elem.getAttribute("abcd"));
+    }
+
+    @Test
+    public void unsupportedDisplayAttribute() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testDivId' disabled>TestDiv</div>\n"
+                        + "  <div id='testDivId2'>TestDiv</div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        WebElement elem = driver.findElement(By.id("testDivId"));
         assertEquals("true", elem.getAttribute("disabled"));
+
+        elem = driver.findElement(By.id("testDivId2"));
+        assertNull(elem.getAttribute("disabled"));
     }
 
     @Test

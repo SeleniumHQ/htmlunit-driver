@@ -23,6 +23,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 
 /**
  * Test class for the HtmlUnitWebElement.
@@ -82,7 +83,9 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
      */
     @Test
     public void title() throws Exception {
-        final String html = "<html><head><title>abc</title></head>\n" + "<body></body>\n" + "</html>";
+        final String html = "<html><head><title>abc</title></head>\n"
+                        + "<body></body>\n"
+                + "</html>";
         final WebDriver webDriver = loadPage2(html);
         final WebElement body = webDriver.findElement(By.tagName("body"));
         assertEquals("", body.getAttribute("title"));
@@ -95,13 +98,69 @@ public class HtmlUnitWebElementTest extends WebDriverTestCase {
      */
     @Test
     public void clearHasToFixTheSelectionAlso() throws Exception {
-        final String html = "<html>\n" + "<head><title>abc</title></head>\n" + "<body>\n" + "<form id='form1'>\n"
-                + "  <input id='foo' type='text' value='0815'>\n" + "</form>\n" + "</body>\n" + "</html>";
+        final String html = "<html>\n"
+                        + "<head><title>abc</title></head>\n"
+                        + "<body>\n"
+                        + "<form id='form1'>\n"
+                        + "  <input id='foo' type='text' value='0815'>\n"
+                        + "</form>\n"
+                        + "</body>\n"
+                        + "</html>";
         final WebDriver webDriver = loadPage2(html);
 
         final WebElement input = webDriver.findElement(By.id("foo"));
         input.clear();
         input.sendKeys("4711");
+    }
+
+    /**
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("changed")
+    public void clearInputTriggersOnChange() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "  <script>"
+                        + LOG_TITLE_FUNCTION
+                        + "  </script>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<form id='form1'>\n"
+                        + "  <input id='foo' type='text' value='0815' onchange='log(\"changed\")'>\n"
+                        + "</form>\n" + "</body>\n" + "</html>";
+
+        final WebDriver webDriver = loadPage2(html);
+        verifyTitle2(webDriver);
+
+        final WebElement input = webDriver.findElement(By.id("foo"));
+        input.clear();
+        verifyTitle2(webDriver, getExpectedAlerts());
+    }
+
+    /**
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("changed")
+    public void clearTextareaTriggersOnChange() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "  <script>"
+                        + LOG_TITLE_FUNCTION
+                        + "  </script>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "<form id='form1'>\n"
+                        + "  <textarea id='foo' onchange='log(\"changed\")'>abcd</textarea>\n"
+                        + "</form>\n" + "</body>\n" + "</html>";
+
+        final WebDriver webDriver = loadPage2(html);
+        verifyTitle2(webDriver);
+
+        final WebElement input = webDriver.findElement(By.id("foo"));
+        input.clear();
+        verifyTitle2(webDriver, getExpectedAlerts());
     }
 
     @Test

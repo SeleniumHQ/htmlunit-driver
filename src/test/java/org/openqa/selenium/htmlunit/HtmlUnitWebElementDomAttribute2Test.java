@@ -20,6 +20,7 @@ package org.openqa.selenium.htmlunit;
 import static org.junit.Assert.assertThrows;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -260,7 +261,7 @@ public class HtmlUnitWebElementDomAttribute2Test extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
 
         final String style = driver.findElement(By.id("red-item")).getDomAttribute("style");
-        assertTrue(style.toLowerCase().contains("background-color"));
+        assertTrue(style.toLowerCase(Locale.ROOT).contains("background-color"));
     }
 
     @Test

@@ -19,6 +19,7 @@ package org.openqa.selenium.htmlunit;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -157,7 +158,7 @@ public class HtmlUnitWebElementDomProperty2Test extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
 
         final WebElement element = driver.findElement(By.id("red-item"));
-        assertTrue(element.getDomProperty("style").toLowerCase().contains("background-color"));
+        assertTrue(element.getDomProperty("style").toLowerCase(Locale.ROOT).contains("background-color"));
     }
 
     @Test
