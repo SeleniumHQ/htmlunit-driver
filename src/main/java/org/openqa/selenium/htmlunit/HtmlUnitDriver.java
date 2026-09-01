@@ -201,7 +201,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * write immediately after the condition signal.</p>
      */
     private volatile RuntimeException exception_;
-    private final ExecutorService defaultExecutor_;
+    private final ExecutorService defaultExecutorService_;
     private Executor executor_;
 
     /**
@@ -288,8 +288,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         alert_.handleBrowserCapabilities(driverOptions);
         currentWindow_ = new HtmlUnitWindow(webClient_.getCurrentWindow());
 
-        defaultExecutor_ = Executors.newCachedThreadPool();
-        executor_ = defaultExecutor_;
+        defaultExecutorService_ = Executors.newCachedThreadPool();
+        executor_ = defaultExecutorService_;
 
         // Now put us on the home page, like a real browser
         get(clientOptions.getHomePage());
@@ -388,7 +388,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *       until the executed runnable signals completion.</li>
      * </ul>
      *
-     * <p><b>Thread-safety design:</b>
+     * <p><b>Thread-safety design:</b></p>
      * <ul>
      *   <li>The lock is acquired <em>before</em> setting {@code runAsyncRunning_}
      *       and before submitting the task, eliminating the TOCTOU window where
@@ -404,7 +404,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *   <li>{@code runAsyncRunning_} and {@code exception_} are {@code volatile}
      *       for visibility between the worker and calling threads.</li>
      * </ul>
-     * </p>
      *
      * @param r the task to execute; must not be {@code null}
      * @throws RuntimeException if the task throws a runtime exception
@@ -1020,7 +1019,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                     webClient_.close();
                     webClient_ = null;
                 }
-                defaultExecutor_.shutdown();
+                defaultExecutorService_.shutdown();
             }
             finally {
                 runAsyncRunning_ = false;
@@ -1720,10 +1719,6 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * <p>Element wrappers are automatically removed when the associated page is removed,
      * preventing memory leaks. Page-level maps are stored in a {@link WeakHashMap},
      * allowing them to be reclaimed when their pages are no longer referenced.</p>
-     */
-    /**
-     * Maintains a bidirectional mapping between {@link DomElement} instances and their
-     * corresponding {@link HtmlUnitWebElement} wrappers.
      *
      * <p><b>Thread safety:</b> all public methods are {@code synchronized} on {@code this}.
      * Both {@link #elementsMapByPage_} ({@link WeakHashMap}) and
@@ -1867,7 +1862,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     /**
      * Opens a new, blank browser window and sets it as the driver's current window.
      *
-     * <p>This method calls {@code webClient_.openWindow()} using {@code about:blank}
+     * <p>This method calls {@code getWebClient().openWindow()} using {@code about:blank}
      * as the initial page, then updates the driver's internal window reference to
      * point to the newly created window.</p>
      *
@@ -1875,7 +1870,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * but implemented using HtmlUnit's headless window model.</p>
      */
     public void openNewWindow() {
-        final WebWindow newWindow = webClient_.openWindow(UrlUtils.URL_ABOUT_BLANK, "");
+        final WebWindow newWindow = getWebClient().openWindow(UrlUtils.URL_ABOUT_BLANK, "");
         currentWindow_ = new HtmlUnitWindow(newWindow);
     }
 
@@ -2008,7 +2003,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             // does not have a valid 'hostname' part and cannot be used for creating
             // cookies based on it - return an empty set.
 
-            if (!url.toString().startsWith("http")) {
+            if (url == null || !url.toString().startsWith("http")) {
                 return Collections.emptySet();
             }
 

@@ -40,7 +40,7 @@ import org.openqa.selenium.interactions.Coordinates;
  * used internally by the HtmlUnit-backed WebDriver implementation; not
  * intended for direct instantiation by callers.</p>
  *
- * <p><b>Error handling policy:</b>
+ * <p><b>Error handling policy:</b></p>
  * <ul>
  *   <li>{@link IOException} from HtmlUnit event dispatch is always rethrown
  *       as {@link WebDriverException}.</li>
@@ -54,7 +54,6 @@ import org.openqa.selenium.interactions.Coordinates;
  *       and suppressed; hover-script errors are considered non-fatal because
  *       they should not prevent the primary interaction from being attempted.</li>
  * </ul>
- * </p>
  *
  * <p>This class is not thread-safe; all calls are expected to originate from
  * the WebDriver/test thread.</p>
