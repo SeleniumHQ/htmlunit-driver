@@ -78,6 +78,7 @@ public class MouseTest extends WebDriverTestCase {
 
         verifyAlerts(driver, getExpectedAlerts());
     }
+
     /**
      * @throws Exception if an error occurs
      */
