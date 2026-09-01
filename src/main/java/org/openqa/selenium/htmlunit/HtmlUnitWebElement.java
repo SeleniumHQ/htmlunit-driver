@@ -223,6 +223,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
             if (submit == null) {
                 submit = e;
+                break;
             }
         }
 
@@ -448,6 +449,9 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
         if ("index".equals(lowerName) && element_ instanceof HtmlOption) {
             final HtmlSelect select = ((HtmlOption) element_).getEnclosingSelect();
+            if (select == null) {
+                return "0";
+            }
             final List<HtmlOption> allOptions = select.getOptions();
             for (int i = 0; i < allOptions.size(); i++) {
                 if (element_.equals(select.getOption(i))) {
@@ -838,27 +842,24 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     }
 
     private static Colors getColorsOf(String name) {
-        name = name.toUpperCase();
-        for (final Colors colors : Colors.values()) {
-            if (colors.name().equals(name)) {
-                return colors;
-            }
+        try {
+            return Colors.valueOf(name.toUpperCase(Locale.ROOT));
+        } catch (final IllegalArgumentException e) {
+            return null;
         }
-        return null;
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof WebElement other)) {
+        if (!(obj instanceof WebElement)) {
             return false;
         }
 
-        if (other instanceof WrapsElement) {
-            other = ((WrapsElement) obj).getWrappedElement();
-        }
+        WebElement unwrapped = obj instanceof WrapsElement
+                ? ((WrapsElement) obj).getWrappedElement()
+                : (WebElement) obj;
 
-        return other instanceof HtmlUnitWebElement
-                && element_.equals(((HtmlUnitWebElement) other).element_);
+        return unwrapped instanceof HtmlUnitWebElement huOther && element_.equals(huOther.element_);
     }
 
     @Override

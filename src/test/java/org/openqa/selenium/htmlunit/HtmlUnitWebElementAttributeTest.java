@@ -161,6 +161,7 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
                         + "    <option id='o3'>option  three    \n    second line</option>\n"
                         + "    <option id='o4' value='4'>option four</option>\n"
                         + "  </select>\n"
+                        + "  <option id='o5' value='5'>option five</option>\n"
                         + "</form>\n"
                         + "</body>\n"
                         + "</html>\n";
@@ -178,6 +179,9 @@ public class HtmlUnitWebElementAttributeTest extends WebDriverTestCase {
 
         elem = driver.findElement(By.id("o4"));
         assertEquals("3", elem.getAttribute("index"));
+
+        elem = driver.findElement(By.id("o5"));
+        assertEquals("0", elem.getAttribute("index"));
     }
 
     @Test
