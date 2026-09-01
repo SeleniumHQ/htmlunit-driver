@@ -133,15 +133,36 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabilities, Interactive {
 
-    private static final int sleepTime = 200;
+    /** Polling interval in milliseconds used by implicit-wait loops. */
+    private static final int SLEEP_TIME_MS = 200;
 
     private WebClient webClient_;
     private final HtmlUnitAlert alert_;
-    private HtmlUnitWindow currentWindow_;
+
+    /**
+     * The currently focused window.
+     * <p>Declared {@code volatile} because it is written by the WebDriver thread
+     * (e.g. via {@link #setCurrentWindow}) and read by HtmlUnit's
+     * {@link WebWindowListener} callbacks which may fire on the event thread.</p>
+     */
+    private volatile HtmlUnitWindow currentWindow_;
     private HtmlUnitKeyboard keyboard_;
     private HtmlUnitMouse mouse_;
     private final TargetLocator targetLocator_;
-    private AsyncScriptExecutor asyncScriptExecutor_;
+
+    /**
+     * Cached {@link Navigation} instance — stateless, so one instance per driver suffices.
+     */
+    private final Navigation navigation_;
+
+    /**
+     * The {@link AsyncScriptExecutor} for the currently running async script, or
+     * {@code null} when none is active.
+     * <p>Declared {@code volatile}: written by the WebDriver thread inside
+     * {@link #executeAsyncScript} and read by HtmlUnit's alert/JS thread inside
+     * {@link #isProcessAlert()}.</p>
+     */
+    private volatile AsyncScriptExecutor asyncScriptExecutor_;
     private PageLoadStrategy pageLoadStrategy_ = PageLoadStrategy.NORMAL;
     private final ElementsMap elementsMap_ = new ElementsMap();
     private final Options options_;
@@ -165,8 +186,21 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      */
     private final Lock conditionLock_ = new ReentrantLock();
     private final Condition mainCondition_ = conditionLock_.newCondition();
-    private boolean runAsyncRunning_;
-    private RuntimeException exception_;
+
+    /**
+     * {@code true} while a task submitted to {@link #runAsync} is executing.
+     * <p>Declared {@code volatile} so that the WebDriver thread and the worker
+     * thread both see consistent values without requiring the full lock on
+     * every read.</p>
+     */
+    private volatile boolean runAsyncRunning_;
+
+    /**
+     * Captures any {@link RuntimeException} thrown by the most recent async task.
+     * <p>Declared {@code volatile} so the WebDriver thread observes the worker's
+     * write immediately after the condition signal.</p>
+     */
+    private volatile RuntimeException exception_;
     private final ExecutorService defaultExecutor_;
     private Executor executor_;
 
@@ -262,6 +296,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         options_ = new HtmlUnitWebDriverOptions(this);
         targetLocator_ = new HtmlUnitTargetLocator(this);
+        navigation_ = new HtmlUnitNavigation();
 
         webClient_.addWebWindowListener(new WebWindowListener() {
             @Override
@@ -336,9 +371,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     }
 
     /**
-     * Executes the given task asynchronously on the driver's internal executor,
-     * optionally blocking the calling thread until completion depending on the
-     * configured {@link PageLoadStrategy}.
+     * Executes the given task on the driver's internal executor, optionally
+     * blocking the calling thread until completion.
      *
      * <p>This method provides a unified mechanism for running mouse, keyboard,
      * and element operations in a background thread while preserving WebDriver's
@@ -354,31 +388,45 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *       until the executed runnable signals completion.</li>
      * </ul>
      *
-     * <p>Only one synchronous operation (i.e., one operation requiring waiting)
-     * may run at a time. If another such operation is already executing, the
-     * calling thread waits until the previous task finishes.</p>
+     * <p><b>Thread-safety design:</b>
+     * <ul>
+     *   <li>The lock is acquired <em>before</em> setting {@code runAsyncRunning_}
+     *       and before submitting the task, eliminating the TOCTOU window where
+     *       a previous implementation checked the flag, then took the lock, then
+     *       set it — allowing a racing worker to signal the condition before
+     *       {@code awaitUninterruptibly()} was entered.</li>
+     *   <li>{@code conditionLock_.unlock()} is called from a {@code finally} block
+     *       so the lock is never leaked even if {@code awaitUninterruptibly()}
+     *       is interrupted.</li>
+     *   <li>The old spin-wait ({@code while (runAsyncRunning_) Thread.sleep(10)})
+     *       is replaced by a condition-wait inside the lock, which is both
+     *       efficient and race-free.</li>
+     *   <li>{@code runAsyncRunning_} and {@code exception_} are {@code volatile}
+     *       for visibility between the worker and calling threads.</li>
+     * </ul>
+     * </p>
      *
-     * <p>Any {@link RuntimeException} thrown by the task is captured and
-     * re-thrown on the calling thread after the task completes, preserving
-     * WebDriver-consistent error reporting.</p>
-     *
-     * @param r the runnable task to execute; must not be {@code null}
-     * @throws RuntimeException if the task throws a runtime exception during execution
+     * @param r the task to execute; must not be {@code null}
+     * @throws RuntimeException if the task throws a runtime exception
      */
     protected void runAsync(final Runnable r) {
         final boolean loadStrategyWait = pageLoadStrategy_ != PageLoadStrategy.NONE;
 
         if (loadStrategyWait) {
-            while (runAsyncRunning_) {
-                try {
-                    Thread.sleep(10);
-                }
-                catch (final InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
             conditionLock_.lock();
-            runAsyncRunning_ = true;
+            // Wait (under the lock) for any currently running task to finish,
+            // then mark ourselves as the new running task — atomically.
+            try {
+                while (runAsyncRunning_) {
+                    mainCondition_.awaitUninterruptibly();
+                }
+                runAsyncRunning_ = true;
+            }
+            catch (final Throwable t) {
+                conditionLock_.unlock();
+                throw t;
+            }
+            // Lock is intentionally held here; we release it after awaitUninterruptibly below.
         }
 
         exception_ = null;
@@ -393,7 +441,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 conditionLock_.lock();
                 try {
                     runAsyncRunning_ = false;
-                    mainCondition_.signal();
+                    mainCondition_.signalAll();
                 }
                 finally {
                     conditionLock_.unlock();
@@ -402,9 +450,24 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         };
         executor_.execute(wrapped);
 
-        if (loadStrategyWait && runAsyncRunning_) {
-            mainCondition_.awaitUninterruptibly();
-            conditionLock_.unlock();
+        if (loadStrategyWait) {
+            try {
+                // If the executor is synchronous (e.g. r -> r.run()), the task runs
+                // on the calling thread before execute() returns. Because ReentrantLock
+                // is reentrant, wrapped's finally block re-acquires the lock, sets
+                // runAsyncRunning_ = false, signals, and releases — all before we
+                // reach here. The signal would therefore be lost if we called
+                // awaitUninterruptibly() unconditionally.
+                // Guard: only await if the task has not already finished.
+                if (runAsyncRunning_) {
+                    // Lock is still held from above; await releases it atomically and
+                    // re-acquires it on wakeup — so we cannot miss a genuinely async signal.
+                    mainCondition_.awaitUninterruptibly();
+                }
+            }
+            finally {
+                conditionLock_.unlock();
+            }
         }
 
         if (exception_ != null) {
@@ -575,7 +638,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      *               must not be {@code null}
      */
     public void setCurrentWindow(final WebWindow window) {
-        if (currentWindow_.getWebWindow() != window) {
+        // currentWindow_ can be null after the last window is closed (set by the
+        // WebWindowListener). Guard before dereferencing to avoid NPE.
+        if (currentWindow_ == null || currentWindow_.getWebWindow() != window) {
             currentWindow_ = new HtmlUnitWindow(window);
         }
     }
@@ -775,7 +840,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             throw new WebDriverException(e);
         }
         catch (final ConnectException e) {
-            // This might be expected
+            // Connection refused — the server may not be running yet.
+            // Don't throw so that the driver remains usable.
         }
         catch (final SocketTimeoutException e) {
             throw new TimeoutException(e);
@@ -835,7 +901,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     @Override
     public List<WebElement> findElements(final By by) {
         final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
-        if (implicitWait < sleepTime) {
+        if (implicitWait < SLEEP_TIME_MS) {
             return elementFinder_.findElements(this, by);
         }
 
@@ -846,7 +912,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             if (!found.isEmpty()) {
                 return found;
             }
-            sleepQuietly(sleepTime);
+            sleepQuietly(SLEEP_TIME_MS);
         }
         while (System.currentTimeMillis() < end);
 
@@ -887,7 +953,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      */
     public List<WebElement> findElements(final HtmlUnitWebElement element, final By by) {
         final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
-        if (implicitWait < sleepTime) {
+        if (implicitWait < SLEEP_TIME_MS) {
             return elementFinder_.findElements(element, by);
         }
 
@@ -898,7 +964,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             if (!found.isEmpty()) {
                 return found;
             }
-            sleepQuietly(sleepTime);
+            sleepQuietly(SLEEP_TIME_MS);
         }
         while (System.currentTimeMillis() < end);
 
@@ -940,29 +1006,28 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public void quit() {
-        // closing the web client while some async processes are running
-        // will produce strange effects; therefore wait until they are done
-        while (runAsyncRunning_) {
-            try {
-                Thread.sleep(10);
-            }
-            catch (final InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
+        // Wait under the lock for any running async task to finish before tearing
+        // down the WebClient, to avoid concurrent access during shutdown.
         conditionLock_.lock();
-        runAsyncRunning_ = true;
         try {
-            if (webClient_ != null) {
-                alert_.close();
-                webClient_.close();
-                webClient_ = null;
+            while (runAsyncRunning_) {
+                mainCondition_.awaitUninterruptibly();
             }
-            defaultExecutor_.shutdown();
+            runAsyncRunning_ = true;
+            try {
+                if (webClient_ != null) {
+                    alert_.close();
+                    webClient_.close();
+                    webClient_ = null;
+                }
+                defaultExecutor_.shutdown();
+            }
+            finally {
+                runAsyncRunning_ = false;
+                mainCondition_.signalAll();
+            }
         }
         finally {
-            runAsyncRunning_ = false;
             conditionLock_.unlock();
         }
     }
@@ -1339,6 +1404,21 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         return value;
     }
 
+    /**
+     * Reads a private field from {@code o} by reflection.
+     *
+     * <p><b>Fragility warning:</b> this method is used solely to read
+     * {@code NativeDate.date} (an internal HtmlUnit field) because no public
+     * HtmlUnit API exposes the underlying epoch-millisecond value of a JavaScript
+     * {@code Date} object. If HtmlUnit renames, removes, or restricts access to
+     * that field (e.g. via Java module encapsulation), this will throw at runtime.
+     * Replace this with a public HtmlUnit API as soon as one becomes available.</p>
+     *
+     * @param o         the object to read the field from
+     * @param fieldName the name of the private field
+     * @return the field value
+     * @throws RuntimeException wrapping any reflection exception
+     */
     private static Object getPrivateField(final Object o, final String fieldName) {
         try {
             final Field field = o.getClass().getDeclaredField(fieldName);
@@ -1346,7 +1426,9 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return field.get(o);
         }
         catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Failed to read private field '" + fieldName + "' from " + o.getClass().getName()
+                    + ". This reflection-based access may have broken due to a HtmlUnit internal change.", e);
         }
     }
 
@@ -1378,7 +1460,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     @Override
     public Navigation navigate() {
-        return new HtmlUnitNavigation();
+        // Return the cached instance — HtmlUnitNavigation is stateless.
+        return navigation_;
     }
 
     /**
@@ -1482,7 +1565,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
     protected <X> X implicitlyWaitFor(final Callable<X> condition) {
         final long implicitWait = options_.timeouts().getImplicitWaitTimeout().toMillis();
 
-        if (implicitWait < sleepTime) {
+        if (implicitWait < SLEEP_TIME_MS) {
             try {
                 return condition.call();
             }
@@ -1514,7 +1597,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                 return toReturn;
             }
 
-            sleepQuietly(sleepTime);
+            sleepQuietly(SLEEP_TIME_MS);
         }
         while (System.currentTimeMillis() < end);
 
@@ -1621,7 +1704,10 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         try {
             Thread.sleep(ms);
         }
-        catch (final InterruptedException ignored) {
+        catch (final InterruptedException e) {
+            // Restore the interrupt flag so callers (e.g. test framework timeouts)
+            // can observe and honour the interruption rather than looping indefinitely.
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -1640,6 +1726,18 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
      * <p>Element wrappers are automatically removed when the associated page is removed,
      * preventing memory leaks. Page-level maps are stored in a {@link WeakHashMap},
      * allowing them to be reclaimed when their pages are no longer referenced.</p>
+     */
+    /**
+     * Maintains a bidirectional mapping between {@link DomElement} instances and their
+     * corresponding {@link HtmlUnitWebElement} wrappers.
+     *
+     * <p><b>Thread safety:</b> all public methods are {@code synchronized} on {@code this}.
+     * Both {@link #elementsMapByPage_} ({@link WeakHashMap}) and
+     * {@link #elementsMapById_} ({@link HashMap}) are unsynchronised by themselves;
+     * they are only ever accessed while the instance lock is held. This is necessary
+     * because {@link #remove(Page)} may be called from HtmlUnit's
+     * {@link WebWindowListener} on the event thread, while {@link #addIfAbsent} and
+     * {@link #getWebElement} are called from the WebDriver thread.</p>
      */
     protected static class ElementsMap {
 
@@ -1674,7 +1772,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
          * @param element the DOM element to wrap; must not be {@code null}
          * @return the existing or newly created {@link HtmlUnitWebElement}
          */
-        public HtmlUnitWebElement addIfAbsent(final HtmlUnitDriver driver, final DomElement element) {
+        public synchronized HtmlUnitWebElement addIfAbsent(final HtmlUnitDriver driver, final DomElement element) {
             final Map<DomElement, HtmlUnitWebElement> pageMap =
                     elementsMapByPage_.computeIfAbsent(element.getPage(), k -> new HashMap<>());
 
@@ -1690,14 +1788,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
         /**
          * Removes all element mappings associated with the specified {@link Page}.
+         * Called from the WebWindowListener on the event thread.
          *
-         * <p>This method is typically invoked when a page is navigated away from or discarded,
-         * removing stale element references and freeing associated memory.</p>
-         *
-         * @param page the page whose element mappings should be removed;
-         *             may be {@code null}, in which case nothing is removed
+         * @param page the page whose element mappings should be removed; may be {@code null}
          */
-        public void remove(final Page page) {
+        public synchronized void remove(final Page page) {
             final Map<DomElement, HtmlUnitWebElement> pageMap = elementsMapByPage_.remove(page);
             if (pageMap != null) {
                 pageMap.values().forEach(element ->
@@ -1716,7 +1811,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
          * @return the associated {@link HtmlUnitWebElement}; never {@code null}
          * @throws StaleElementReferenceException if no element is registered under the given ID
          */
-        public HtmlUnitWebElement getWebElement(final String elementId) {
+        public synchronized HtmlUnitWebElement getWebElement(final String elementId) {
             final HtmlUnitWebElement webElement = elementsMapById_.get(elementId);
             if (webElement == null) {
                 throw new StaleElementReferenceException(
