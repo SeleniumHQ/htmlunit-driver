@@ -292,9 +292,8 @@ final class TypeCodec {
      * @return encoded {@code BrowserVersion} object
      */
     static Map<String, Object> encodeBrowserVersion(final Object value) {
-        if (value instanceof BrowserVersion) {
+        if (value instanceof BrowserVersion browserVersion) {
             final Map<String, Object> optionsMap = new HashMap<>();
-            final BrowserVersion browserVersion = (BrowserVersion) value;
             for (final BrowserVersionTrait trait : BrowserVersionTrait.values()) {
                 final Object traitValue = trait.obtain(browserVersion);
                 if (!trait.isDefaultValue(traitValue)) {

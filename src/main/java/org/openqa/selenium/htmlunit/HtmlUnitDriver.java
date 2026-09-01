@@ -1146,13 +1146,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
                     "Argument must be a string, number, boolean or WebElement: " + arg + " (" + arg.getClass() + ")");
         }
 
-        if (arg instanceof HtmlUnitWebElement) {
-            final HtmlUnitWebElement webElement = (HtmlUnitWebElement) arg;
+        if (arg instanceof HtmlUnitWebElement webElement) {
             assertElementNotStale(webElement.getElement());
             return webElement.getElement().getScriptableObject();
         }
-        else if (arg instanceof HtmlElement) {
-            final HtmlElement element = (HtmlElement) arg;
+        else if (arg instanceof HtmlElement element) {
             assertElementNotStale(element);
             return element.getScriptableObject();
         }
@@ -1207,8 +1205,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
 
-        else if (arg instanceof Map<?, ?>) {
-            final Map<?, ?> map = (Map<?, ?>) arg;
+        else if (arg instanceof Map<?, ?> map) {
             final Scriptable obj = Context.getCurrentContext().newObject(scope);
             for (final Map.Entry<?, ?> entry : map.entrySet()) {
                 obj.put((String) entry.getKey(), obj, parseArgumentIntoJavascriptParameter(scope, entry.getValue()));
@@ -1333,8 +1330,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             throw new WebDriverException("Do not know how to coerce to an HTMLElement: " + element);
         }
 
-        if (value instanceof Number) {
-            final Number n = (Number) value;
+        if (value instanceof Number n) {
             final String s = n.toString();
             if (!s.contains(".") || s.endsWith(".0")) { // how safe it is? enough for the unit tests!
                 return n.longValue();
@@ -1355,8 +1351,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return convertLocationToMap((Location) value);
         }
 
-        if (value instanceof NativeArray) {
-            final NativeArray array = (NativeArray) value;
+        if (value instanceof NativeArray array) {
 
             final JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
                 @Override
@@ -1373,8 +1368,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return parseJavascriptResultsList(collection);
         }
 
-        if (value instanceof HTMLCollection) {
-            final HTMLCollection array = (HTMLCollection) value;
+        if (value instanceof HTMLCollection array) {
 
             final JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
                 @Override

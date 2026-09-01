@@ -252,8 +252,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         if (element instanceof HtmlImageInput && !((HtmlImageInput) element).isDisabled()) {
             return true;
         }
-        if (element instanceof HtmlButton) {
-            final HtmlButton button = (HtmlButton) element;
+        if (element instanceof HtmlButton button) {
             return "submit".equalsIgnoreCase(button.getTypeAttribute()) && !button.isDisabled();
         }
         return false;
@@ -263,8 +262,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     public void clear() {
         assertElementNotStale();
 
-        if (element_ instanceof HtmlInput) {
-            final HtmlInput htmlInput = (HtmlInput) element_;
+        if (element_ instanceof HtmlInput htmlInput) {
             if (htmlInput.isReadOnly()) {
                 throw new InvalidElementStateException("You may only edit editable elements");
             }
@@ -277,8 +275,7 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
             }
             htmlInput.fireEvent("change");
         }
-        else if (element_ instanceof HtmlTextArea) {
-            final HtmlTextArea htmlTextArea = (HtmlTextArea) element_;
+        else if (element_ instanceof HtmlTextArea htmlTextArea) {
             if (htmlTextArea.isReadOnly()) {
                 throw new InvalidElementStateException("You may only edit editable elements");
             }
@@ -852,11 +849,10 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
     @Override
     public boolean equals(final Object obj) {
-        if (!(obj instanceof WebElement)) {
+        if (!(obj instanceof WebElement other)) {
             return false;
         }
 
-        WebElement other = (WebElement) obj;
         if (other instanceof WrapsElement) {
             other = ((WrapsElement) obj).getWrappedElement();
         }
