@@ -20,91 +20,149 @@ package org.openqa.selenium.htmlunit;
 import static org.openqa.selenium.Keys.ENTER;
 import static org.openqa.selenium.Keys.RETURN;
 
+import java.util.Locale;
+
 /**
- * Converts a group of character sequences to a string to be sent by sendKeys.
+ * Accumulates a sequence of {@link CharSequence} values into a single string
+ * suitable for dispatch via {@code sendKeys}.
+ *
+ * <p><b>Submit-key detection:</b> the constructor scans the concatenated input
+ * for the earliest occurrence of any submit key: a literal newline ({@code \n}),
+ * {@link org.openqa.selenium.Keys#ENTER}, or
+ * {@link org.openqa.selenium.Keys#RETURN}. If {@code trimPastEnterKey} is
+ * {@code true}, everything from that position to the end of the buffer is
+ * removed (simulating form submission on Enter in a text input).</p>
+ *
+ * <p><b>Key normalisation in {@link #toString()}:</b> {@code ENTER}, {@code RETURN},
+ * and literal {@code \n} are all normalised to {@code \n} so that HtmlUnit
+ * receives a consistent line-ending regardless of which variant the caller used.
+ * Capitalisation (when enabled via {@link #setCapitalization(boolean)}) is applied
+ * with {@link Locale#ROOT} to avoid locale-specific character mappings (e.g. the
+ * Turkish "dotted I" problem).</p>
+ *
+ * <p>This class is not thread-safe; instances should be used by a single thread.</p>
  *
  * @author Alexei Barantsev
  * @author Ahmed Ashour
  * @author Rob Winch
  */
 public class InputKeysContainer {
+
+    /** All recognised submit-key literals, checked when scanning for form submission. */
+    private static final String[] SUBMIT_KEY_NEEDLES = {
+        "\n",
+        ENTER.toString(),
+        RETURN.toString()
+    };
+
     private final StringBuilder builder_ = new StringBuilder();
     private final boolean submitKeyFound_;
-    private boolean capitalize_ = false;
+
+    /** Whether the output string should be uppercased before dispatch. */
+    private boolean capitalize_;
 
     /**
-     * Creates a new {@link InputKeysContainer} containing the specified character sequences.
-     * <p>
-     * This constructor does not trim characters past an ENTER or RETURN key if present.
+     * Creates a new {@link InputKeysContainer} from the given character sequences
+     * without trimming past any submit key.
      *
-     * @param sequences one or more sequences of characters to include in the container
+     * @param sequences the key sequences to include; must not be {@code null}
      */
     public InputKeysContainer(final CharSequence... sequences) {
         this(false, sequences);
     }
 
     /**
-     * Creates a new {@link InputKeysContainer} containing the specified character sequences,
-     * with the option to trim content after the first ENTER or RETURN key.
-     * <p>
-     * If {@code trimPastEnterKey} is {@code true} and the character sequences contain an ENTER
-     * or RETURN key, the container will truncate the content at the first occurrence of that key.
+     * Creates a new {@link InputKeysContainer} from the given character sequences,
+     * optionally truncating the buffer at the first submit key found.
      *
-     * @param trimPastEnterKey if {@code true}, truncate content after the first ENTER/RETURN key
-     * @param sequences one or more sequences of characters to include in the container
+     * <p>The first submit key is defined as the one with the lowest index among
+     * all occurrences of {@code \n}, {@link org.openqa.selenium.Keys#ENTER}, and
+     * {@link org.openqa.selenium.Keys#RETURN} in the concatenated input. If
+     * {@code trimPastEnterKey} is {@code true} and a submit key is found, the
+     * buffer is truncated at (not including) that index, simulating the behaviour
+     * of pressing Enter in a single-line text input to submit a form.</p>
+     *
+     * @param trimPastEnterKey if {@code true}, truncate the buffer at the first
+     *                         submit key occurrence
+     * @param sequences        the key sequences to include; must not be {@code null}
      */
     public InputKeysContainer(final boolean trimPastEnterKey, final CharSequence... sequences) {
         for (final CharSequence seq : sequences) {
             builder_.append(seq);
         }
 
-        final int indexOfSubmitKey = indexOfSubmitKey();
+        final int indexOfSubmitKey = indexOfEarliestSubmitKey();
         submitKeyFound_ = indexOfSubmitKey != -1;
 
-        // If inputting keys to an input element, and the string contains one of
-        // ENTER or RETURN, break the string at that point and submit the form
-        if (trimPastEnterKey && (indexOfSubmitKey != -1)) {
+        if (trimPastEnterKey && submitKeyFound_) {
             builder_.delete(indexOfSubmitKey, builder_.length());
         }
     }
 
-    private int indexOfSubmitKey() {
-        final CharSequence[] terminators = {"\n", ENTER, RETURN};
-        for (final CharSequence terminator : terminators) {
-            final String needle = String.valueOf(terminator);
+    /**
+     * Returns the index of the <em>earliest</em> submit key in the current
+     * buffer, or {@code -1} if no submit key is present.
+     *
+     * @return the lowest index at which any submit key occurs, or {@code -1}
+     */
+    private int indexOfEarliestSubmitKey() {
+        int earliest = -1;
+        for (final String needle : SUBMIT_KEY_NEEDLES) {
             final int index = builder_.indexOf(needle);
-            if (index != -1) {
-                return index;
+            if (index != -1 && (earliest == -1 || index < earliest)) {
+                earliest = index;
             }
         }
-
-        return -1;
+        return earliest;
     }
 
+    /**
+     * Returns the accumulated key sequence as a string, with submit keys
+     * normalised and optional capitalisation applied.
+     *
+     * <p>All occurrences of {@link org.openqa.selenium.Keys#ENTER},
+     * {@link org.openqa.selenium.Keys#RETURN}, and literal {@code \n} are
+     * replaced with {@code \n} so that HtmlUnit receives a consistent line-ending
+     * regardless of which variant the caller used.</p>
+     *
+     * <p>Capitalisation uses {@link Locale#ROOT} to avoid locale-sensitive
+     * character mappings (e.g. {@code "i".toUpperCase()} produces {@code "İ"}
+     * in the Turkish locale, which would corrupt ASCII input).</p>
+     *
+     * @return the normalised, optionally capitalised key string
+     */
     @Override
     public String toString() {
+        // Use literal replace (not replaceAll/regex) for correctness and clarity.
+        // Normalise all submit-key variants to "\n" for consistent HtmlUnit handling.
         String toReturn = builder_.toString();
-        toReturn = toReturn.replaceAll(ENTER.toString(), "\r");
-        toReturn = toReturn.replaceAll(RETURN.toString(), "\r");
+        toReturn = toReturn.replace(ENTER.toString(), "\r");
+        toReturn = toReturn.replace(RETURN.toString(), "\r");
+        // "\n" literals are already in the correct form; no replacement needed.
+
         if (capitalize_) {
-            return toReturn.toUpperCase();
+            return toReturn.toUpperCase(Locale.ROOT);
         }
         return toReturn;
     }
 
     /**
-     * Returns whether a submit key (ENTER or RETURN) was found in the input sequences.
+     * Returns {@code true} if a submit key ({@code \n}, {@link org.openqa.selenium.Keys#ENTER},
+     * or {@link org.openqa.selenium.Keys#RETURN}) was found in the input sequences.
      *
-     * @return {@code true} if a submit key was found; {@code false} otherwise
+     * @return {@code true} if a submit key was present
      */
     public boolean wasSubmitKeyFound() {
         return submitKeyFound_;
     }
 
     /**
-     * Sets whether the input sequences should be capitalized.
+     * Controls whether the string returned by {@link #toString()} is
+     * uppercased. Typically set to {@code true} when the Shift modifier key is
+     * active.
      *
-     * @param capitalize {@code true} to enable capitalization; {@code false} to disable
+     * @param capitalize {@code true} to uppercase the output; {@code false} to
+     *                   leave it as-is
      */
     public void setCapitalization(final boolean capitalize) {
         capitalize_ = capitalize;
