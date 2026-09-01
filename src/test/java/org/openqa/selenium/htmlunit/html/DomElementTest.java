@@ -22,8 +22,12 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
 
 @RunWith(BrowserRunner.class)
 public class DomElementTest extends WebDriverTestCase {
@@ -40,6 +44,24 @@ public class DomElementTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
         driver.findElement(By.id("link")).click();
+    }
+
+    /**
+     * @throws Exception on test failure
+     */
+    // Chrome throws an ElementNotInteractableException
+    // FF throws a MoveTargetOutOfBoundsException
+    @Test(expected = WebDriverException.class)
+    public void clickActionInvisible() throws Exception {
+        final String html = "<html>\n"
+            + "<body>\n"
+            + "  <a id='link' style='display: none'>Click me</a>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement element = driver.findElement(By.id("link"));
+        final Action click = new Actions(driver).click(element).build();
+        click.perform();
     }
 }
 
