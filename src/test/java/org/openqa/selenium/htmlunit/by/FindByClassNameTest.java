@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -128,5 +129,19 @@ public class FindByClassNameTest extends WebDriverTestCase {
         catch (final NoSuchElementException e) {
             assertEquals(getExpectedAlerts()[0], "");
         }
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void invalidSelectorByClassName() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testId' class='testClass'></div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.className("selector with blank"));
     }
 }

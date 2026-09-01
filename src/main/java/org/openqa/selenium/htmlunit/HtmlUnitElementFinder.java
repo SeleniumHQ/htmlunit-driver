@@ -44,7 +44,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.locators.RelativeLocator.RelativeBy;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Martin Bartoš
@@ -189,13 +188,13 @@ public class HtmlUnitElementFinder {
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
             final String id = getValue(locator);
-            return new FindByXPath().findElement(element, By.xpath(".//*[@id = '" + id + "']"));
+            return new FindByXPath().findElement(element, By.xpath(".//*[@id = " + xpathStringLiteral(id) + "]"));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
             final String id = getValue(locator);
-            return new FindByXPath().findElements(element, By.xpath(".//*[@id = '" + id + "']"));
+            return new FindByXPath().findElements(element, By.xpath(".//*[@id = " + xpathStringLiteral(id) + "]"));
         }
     }
 
@@ -211,7 +210,7 @@ public class HtmlUnitElementFinder {
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
             if (!(lastPage instanceof HtmlPage)) {
-                throw new IllegalStateException("Cannot find elements by id for " + lastPage);
+                throw new IllegalStateException("Cannot find elements by name; not on a HtmlPage (" + lastPage.getClass().getSimpleName() + ")");
             }
 
             final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(getValue(locator));
@@ -255,7 +254,7 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
             final String expectedText = getValue(locator);
-            final List<? extends HtmlElement> htmlElements = element.getElement().getElementsByTagName("a");
+            final DomNodeList<HtmlElement> htmlElements = element.getElement().getElementsByTagName("a");
 
             final List<WebElement> toReturn = new ArrayList<>();
             for (final DomElement e : htmlElements) {
@@ -323,13 +322,13 @@ public class HtmlUnitElementFinder {
          *
          * @param locator the {@link By} locator specifying the class name
          * @return the validated class name
-         * @throws NoSuchElementException if the class name contains spaces
+         * @throws InvalidSelectorException if the class name contains spaces
          */
         private String checkValue(final By locator) {
             final String value = getValue(locator);
 
             if (value.indexOf(' ') != -1) {
-                throw new NoSuchElementException("Compound class names not permitted");
+                throw new InvalidSelectorException("Compound class names not permitted; contains blank");
             }
             return value;
         }
@@ -363,7 +362,7 @@ public class HtmlUnitElementFinder {
                 node = getLastPage(driver).querySelector(getValue(locator));
             }
             catch (final CSSException ex) {
-                throw new NoSuchElementException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
             if (node instanceof DomElement) {
@@ -381,7 +380,7 @@ public class HtmlUnitElementFinder {
                 allNodes = getLastPage(driver).querySelectorAll(getValue(locator));
             }
             catch (final CSSException ex) {
-                throw new NoSuchElementException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
             final List<WebElement> toReturn = new ArrayList<>();
@@ -406,7 +405,7 @@ public class HtmlUnitElementFinder {
                 allNodes = element.getElement().querySelectorAll(getValue(locator));
             }
             catch (final CSSException ex) {
-                throw new NoSuchElementException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
             final List<WebElement> toReturn = new ArrayList<>();
@@ -431,7 +430,7 @@ public class HtmlUnitElementFinder {
                 node = element.getElement().querySelector(getValue(locator));
             }
             catch (final CSSException ex) {
-                throw new NoSuchElementException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
             if (node instanceof DomElement) {
@@ -454,12 +453,13 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            final NodeList allElements = getLastPage(driver).getElementsByTagName(getValue(locator));
+            final String tagName = getValue(locator);
+            final DomNodeList<DomElement> allElements = getLastPage(driver).getElementsByTagName(tagName);
             if (allElements.getLength() > 0) {
                 return driver.toWebElement((HtmlElement) allElements.item(0));
             }
 
-            throw new NoSuchElementException("Unable to locate element with name: " + getValue(locator));
+            throw new NoSuchElementException("Unable to locate element with name: '" + tagName + "'");
         }
 
         @Override
@@ -477,7 +477,7 @@ public class HtmlUnitElementFinder {
                 return Collections.emptyList();
             }
 
-            final NodeList allElements = lastPage.getElementsByTagName(name);
+            final DomNodeList<DomElement> allElements = lastPage.getElementsByTagName(name);
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
                 final Node item = allElements.item(i);
@@ -490,7 +490,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            final NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(getValue(locator));
             if (allElements.getLength() > 0) {
                 return element.getDriver().toWebElement((HtmlElement) allElements.item(0));
             }
@@ -500,7 +500,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            final NodeList allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(getValue(locator));
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
                 final Node item = allElements.item(i);
@@ -761,6 +761,38 @@ public class HtmlUnitElementFinder {
         }
 
         return toReturn;
+    }
+
+    /**
+     * Returns an XPath string literal that safely represents {@code value},
+     * regardless of whether it contains single quotes, double quotes, or both.
+     *
+     * <p>Strategy:
+     * <ul>
+     *   <li>No single quote → wrap in single quotes: {@code 'value'}</li>
+     *   <li>No double quote → wrap in double quotes: {@code "value"}</li>
+     *   <li>Both → split on single quotes and reassemble with XPath
+     *       {@code concat()}: {@code concat('it',"'",'s ok')}</li>
+     * </ul>
+     */
+    private static String xpathStringLiteral(final String value) {
+        if (!value.contains("'")) {
+            return "'" + value + "'";
+        }
+        if (!value.contains("\"")) {
+            return "\"" + value + "\"";
+        }
+        // Value contains both quote types — use concat()
+        final StringBuilder sb = new StringBuilder("concat(");
+        final String[] parts = value.split("'", -1);
+        for (int i = 0; i < parts.length; i++) {
+            if (i > 0) {
+                sb.append(",\"'\",");
+            }
+            sb.append("'").append(parts[i]).append("'");
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     /**

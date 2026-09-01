@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -103,5 +104,19 @@ public class FindByCssSelectorTest extends WebDriverTestCase {
         final List<WebElement> elements = ctx.findElements(By.cssSelector(".testClass"));
         assertEquals(1, elements.size());
         assertEquals("testId2", elements.get(0).getAttribute("id"));
+    }
+
+    @Test(expected = InvalidSelectorException.class)
+    public void invalidSelectorByCssSelector() throws Exception {
+        final String html = "<html>\n"
+                        + "<head>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "  <div id='testId' class='testClass'></div>\n"
+                        + "</body>\n"
+                        + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElements(By.cssSelector(""));
     }
 }

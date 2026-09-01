@@ -153,4 +153,90 @@ public class FindByIdTest extends WebDriverTestCase {
         final List<WebElement> elements = ctx.findElements(By.id("testDivId"));
         assertEquals(0, elements.size());
     }
+
+    /**
+     * FindByID within an element context uses XPath internally.
+     * An id containing a single quote must not break the expression.
+     */
+    @Test
+    public void findByIdWithSingleQuoteInId() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span id=\"it's-fine\">target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        // Must find the element rather than throw InvalidSelectorException
+        final WebElement element = ctx.findElement(By.id("it's-fine"));
+        assertEquals("it's-fine", element.getAttribute("id"));
+    }
+
+    /**
+     * findElements by id within an element context with a single quote in the id.
+     */
+    @Test
+    public void findElementsByIdWithSingleQuoteInId() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span id=\"it's-fine\">first</span>\n"
+                + "    <span id=\"it's-fine\">second</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final List<WebElement> elements = ctx.findElements(By.id("it's-fine"));
+        assertEquals(2, elements.size());
+    }
+
+
+    /**
+     * An id containing both single and double quotes — the pathological case
+     * that defeats simple quoting strategies.
+     */
+    @Test
+    public void findByIdWithBothQuoteTypesInId() throws Exception {
+        // id = it's a "test"
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span id='it&apos;s a &quot;test&quot;'>target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.id("it's a \"test\""));
+        assertEquals("it's a \"test\"", element.getAttribute("id"));
+    }
+
+    /**
+     * Closing-bracket in an id value must not terminate the XPath predicate early.
+     */
+    @Test
+    public void findByIdWithClosingBracketInId() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span id='tricky]id'>target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.id("tricky]id"));
+        assertEquals("tricky]id", element.getAttribute("id"));
+    }
 }

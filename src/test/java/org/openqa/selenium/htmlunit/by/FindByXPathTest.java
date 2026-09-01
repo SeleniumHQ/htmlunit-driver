@@ -210,4 +210,68 @@ public class FindByXPathTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         driver.findElement(By.xpath("  \t "));
     }
+
+    /**
+     * XPath with a string literal containing a single quote.
+     * Without proper handling this breaks the XPath expression.
+     */
+    @Test
+    public void elementByXPathWithSingleQuoteInValue() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span class=\"it's-fine\">target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.xpath(".//*[@class = \"it's-fine\"]"));
+        assertEquals("target", element.getText());
+    }
+
+    /**
+     * XPath with a string literal containing a double quote.
+     */
+    @Test
+    public void elementByXPathWithDoubleQuoteInValue() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span class='say &quot;hello&quot;'>target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.xpath(".//*[@class = 'say \"hello\"']"));
+        assertEquals("target", element.getText());
+    }
+
+    /**
+     * XPath using concat() to match a value containing both quote types —
+     * the only pure XPath 1.0 way to express such a literal.
+     */
+    @Test
+    public void elementByXPathWithBothQuoteTypesUsingConcat() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <span class='it&apos;s a &quot;test&quot;'>target</span>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        // XPath 1.0 has no escape sequences — concat() is the only solution
+        final WebElement element = ctx.findElement(
+                By.xpath(".//*[@class = concat('it', \"'\", 's a \"test\"')]"));
+        assertEquals("target", element.getText());
+    }
 }

@@ -22,6 +22,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -111,5 +112,45 @@ public class FindByNameTest extends WebDriverTestCase {
         final List<WebElement> elements = ctx.findElements(By.name("testName"));
         assertEquals(1, elements.size());
         assertEquals("testId", elements.get(0).getAttribute("id"));
+    }
+
+    /**
+     * FindByName within an element context uses XPath internally.
+     * A name containing a single quote breaks the expression.
+     */
+    @Test(expected = InvalidSelectorException.class)
+    public void findByNameWithSingleQuoteInName() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <input name=\"user's-input\" value='target'/>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        ctx.findElement(By.name("user's-input"));
+    }
+
+    /**
+     * A name containing a double quote should also be handled safely.
+     */
+    @Test
+    public void findByNameWithDoubleQuoteInName() throws Exception {
+        final String html = "<html>\n"
+                + "<head></head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <input name='say &quot;hello&quot;' value='found'/>\n"
+                + "  </div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement element = ctx.findElement(By.name("say \"hello\""));
+        assertEquals("found", element.getAttribute("value"));
     }
 }
