@@ -29,6 +29,7 @@ import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlHtml;
 import org.htmlunit.html.HtmlPage;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.NoSuchFrameException;
@@ -149,28 +150,18 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
             }
         }
 
-        // Second: match by frame element ID, searching the top-level document.
-        // Per the WebDriver spec, the ID lookup should be performed against the
-        // top-level browsing context, not the currently focused frame. This avoids
-        // mistakenly finding a non-frame element with a matching ID in a nested frame.
+        // Next, check for a frame with a matching ID. For simplicity, assume the ID is unique.
         //
         // Users needing to switch to a frame with a non-unique ID can use the
         // WebElement overload:
         //   WebElement el = driver.findElement(By.xpath("//frame[@id='foo']"));
         //   driver.switchTo().frame(el);
         try {
-            final Page topPage = driver_.getCurrentWindow().getWebWindow().getTopWindow().getEnclosedPage();
-            if (topPage instanceof HtmlPage) {
-                final HtmlUnitWebElement element =
-                        (HtmlUnitWebElement) driver_.toWebElement(
-                                ((HtmlPage) topPage).getElementById(nameOrId));
-                if (element != null) {
-                    final DomElement domElement = element.getElement();
-                    if (domElement instanceof BaseFrameElement) {
-                        driver_.setCurrentWindow(((BaseFrameElement) domElement).getEnclosedWindow());
-                        return driver_;
-                    }
-                }
+            final HtmlUnitWebElement element = (HtmlUnitWebElement) driver_.findElement(By.id(nameOrId));
+            final DomElement domElement = element.getElement();
+            if (domElement instanceof BaseFrameElement) {
+                driver_.setCurrentWindow(((BaseFrameElement) domElement).getEnclosedWindow());
+                return driver_;
             }
         }
         catch (final NoSuchElementException ignored) {

@@ -17,14 +17,19 @@
 
 package org.openqa.selenium.htmlunit.html;
 
+import static org.junit.Assert.assertThrows;
+
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.htmlunit.MockWebConnection;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchFrameException;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.NoSuchWindowException;
 import org.openqa.selenium.WebDriver;
@@ -342,5 +347,159 @@ public class WindowsTest extends WebDriverTestCase {
         catch (final NoSuchSessionException e) {
             // expected
         }
+    }
+
+    /**
+     * Test, the correct frame is used for a target, even if some frames
+     * have the same name.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void targetResolution() throws Exception {
+        final String framesContent =
+                "<html><head><title>Top Page</title></head>\n"
+                + "<body><div id='content'>Body of top frame</div>\n"
+                + "  <iframe src='left.html' id='id-left' name='left'></iframe>\n"
+                + "  <iframe src='right.html' id='id-right' name='right'></iframe>\n"
+                + "</body>\n"
+                + "</html>";
+
+        final String rightFrame =
+                "<html><head><title>Right Frame</title></head>\n"
+                + "<body><div id='content'>Body of right frame</div></body>\n"
+                + "</html>";
+
+        final String leftFrame =
+                "<html><head><title>Left Frame</title></head>\n"
+                + "<body>\n"
+                + "  <div id='content'>Body of left frame</div>\n"
+                + "  <a id='link' name='link' href='new_inner.html' target='right'>Click link</a>\n"
+                + "  <iframe id='id-inner' name='right' width='100' height='100' src='inner.html'></iframe>\n"
+                + "</body>\n"
+                + "</html>";
+
+        final String innerFrame =
+                "<html><head><title>Inner Frame</title></head>\n"
+                + "<body><div id='content'>Body of inner frame</div></body>\n"
+                + "</html>";
+
+        final String newInnerFrame =
+                "<html><head><title>New inner Frame</title></head>\n"
+                + "<body><div id='content'>Body of new inner frame</div></body>\n"
+                + "</html>";
+
+        final String baseUrl = URL_FIRST.toString();
+
+        final URL leftFrameUrl = new URL(baseUrl + "left.html");
+        final URL rightFrameUrl = new URL(baseUrl + "right.html");
+        final URL innerFrameURL = new URL(baseUrl + "inner.html");
+        final URL newInnerFrameURL = new URL(baseUrl + "new_inner.html");
+
+        final MockWebConnection webConnection = getMockWebConnection();
+        webConnection.setResponse(leftFrameUrl, leftFrame);
+        webConnection.setResponse(rightFrameUrl, rightFrame);
+        webConnection.setResponse(innerFrameURL, innerFrame);
+        webConnection.setResponse(newInnerFrameURL, newInnerFrame);
+
+        final WebDriver driver = loadPage2(framesContent);
+
+        // top frame
+        assertTitle(driver, "Top Page");
+        assertEquals("Body of top frame", driver.findElement(By.id("content")).getText());
+
+        // left frame
+        driver.switchTo().frame("id-left");
+        assertEquals("Body of left frame", driver.findElement(By.id("content")).getText());
+        // inner frame
+        driver.switchTo().frame("id-inner");
+        assertEquals("Body of inner frame", driver.findElement(By.id("content")).getText());
+        // right frame
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame("id-right");
+        assertEquals("Body of right frame", driver.findElement(By.id("content")).getText());
+
+        // clicking on a link which contains a target 'right'. But this target frame is defined two times.
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame("id-left");
+        driver.findElement(By.id("link")).click();
+
+        // left frame
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame("id-left");
+        assertEquals("Body of left frame", driver.findElement(By.id("content")).getText());
+        // inner frame
+        driver.switchTo().frame("id-inner");
+        assertEquals("Body of new inner frame", driver.findElement(By.id("content")).getText());
+        // right frame
+        driver.switchTo().defaultContent();
+        driver.switchTo().frame("id-right");
+        assertEquals("Body of right frame", driver.findElement(By.id("content")).getText());
+    }
+
+    /**
+     * Proves that switching to a nested frame requires stepping through parent frames sequentially.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void switchToNestedFrameStepByStep() throws Exception {
+        final String html = "<html><body>\n"
+                + "  <iframe id='level1-frame' src='level1.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level1Html = "<html><body>\n"
+                + "  <iframe id='level2-frame' src='level2.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level2Html = "<html><body>\n"
+                + "  <div id='content'>Deep Nested Content</div>\n"
+                + "</body></html>";
+
+        final URL baseUrl = URL_FIRST;
+        final MockWebConnection webConnection = getMockWebConnection();
+        webConnection.setResponse(new URL(baseUrl, "level1.html"), level1Html);
+        webConnection.setResponse(new URL(baseUrl, "level2.html"), level2Html);
+
+        final WebDriver driver = loadPage2(html);
+
+        // Step 1: Switch to direct child of top-level
+        driver.switchTo().frame("level1-frame");
+
+        // Step 2: Switch to direct child of level1-frame
+        driver.switchTo().frame("level2-frame");
+
+        assertEquals("Deep Nested Content", driver.findElement(By.id("content")).getText());
+    }
+
+    /**
+     * Proves that attempting to switch to a non-direct child frame from top-level
+     * throws NoSuchFrameException in W3C WebDriver.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void switchToDeepNestedFrameFailsFromTop() throws Exception {
+        final String html = "<html><body>\n"
+                + "  <iframe id='level1-frame' src='level1.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level1Html = "<html><body>\n"
+                + "  <iframe id='level2-frame' src='level2.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level2Html = "<html><body>\n"
+                + "  <div id='content'>Deep Nested Content</div>\n"
+                + "</body></html>";
+
+        final URL baseUrl = URL_FIRST;
+        final MockWebConnection webConnection = getMockWebConnection();
+        webConnection.setResponse(new URL(baseUrl, "level1.html"), level1Html);
+        webConnection.setResponse(new URL(baseUrl, "level2.html"), level2Html);
+
+        final WebDriver driver = loadPage2(html);
+
+        // Expect NoSuchFrameException because level2-frame is not a direct child of top-level
+        assertThrows(NoSuchFrameException.class, () -> driver.switchTo().frame("level2-frame"));
     }
 }
