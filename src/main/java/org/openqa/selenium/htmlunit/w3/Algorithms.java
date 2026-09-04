@@ -28,7 +28,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitWebElement;
 import org.openqa.selenium.interactions.Sequence;
 
 /**
- * To follow the spec as close as possible we have this collection of mehtods
+ * To follow the spec as close as possible we have this collection of methods
  * and no object oriented design.
  *
  * @author Ronald Brill
@@ -522,7 +522,7 @@ public final class Algorithms {
 
         for (final List<Action> actions : actionsByTick) {
             for (final Action action : actions) {
-                inputProcessor.enqueuAction(action);
+                inputProcessor.enqueueAction(action);
             }
         }
 
