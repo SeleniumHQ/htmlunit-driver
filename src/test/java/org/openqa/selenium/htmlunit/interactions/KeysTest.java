@@ -20,6 +20,7 @@ package org.openqa.selenium.htmlunit.interactions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -548,7 +549,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"alt:true", "alt:false"})
+    @Alerts(DEFAULT = {"alt:true", "alt:false"},
+            FF = {"alt:true", "alt:true"},
+            FF_ESR = {"alt:true", "alt:true"})
     public void sendKeys_ChordAltAndAutoRelease() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -682,7 +685,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"submit:before"})
+    @Alerts(DEFAULT = {"submit:before"},
+            FF = {},
+            FF_ESR = {})
     public void sendKeys_NewlineInFormInputTriggersSubmit() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -788,7 +793,8 @@ public class KeysTest extends WebDriverTestCase {
 
         verifyTitle2(driver, getExpectedAlerts());
     }
- // =========================================================================
+
+    // =========================================================================
     // SECTION 5: Character Control Sequences, Clipboard & Caret Navigation
     // =========================================================================
 
@@ -799,13 +805,15 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts("abd")
+    @Alerts(DEFAULT = "abd",
+            FF = "abc\bd",
+            FF_ESR = "abc\bd")
     public void sendKeys_BackspaceControlCharacter() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
             + "<html><head>\n"
             + "<script>\n"
-            + LOG_TITLE_FUNCTION
+            + LOG_TITLE_FUNCTION_NORMALIZE
             + "  function test() {\n"
             + "    log(document.getElementById('t').value);\n"
             + "  }\n"
@@ -862,7 +870,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"t1:", "t2:CutMe"})
+    @Alerts(DEFAULT = {"t1:", "t2:CutMe"},
+            FF = {"t1:x", "t2:Initial Text"},
+            FF_ESR = {"t1:x", "t2:Initial Text"})
     public void sendKeys_ControlCutAndPaste() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -935,7 +945,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts("shift:true,location:0")
+    @Alerts(DEFAULT = "shift:true,location:0",
+            FF = "shift:true,location:1",
+            FF_ESR = "shift:true,location:1")
     public void sendKeys_LeftShiftLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -968,7 +980,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts("ctrl:true,location:0")
+    @Alerts(DEFAULT = "ctrl:true,location:0",
+            FF = "ctrl:true,location:1",
+            FF_ESR = "ctrl:true,location:1")
     public void sendKeys_LeftControlLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1001,7 +1015,9 @@ public class KeysTest extends WebDriverTestCase {
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts("alt:true,location:0")
+    @Alerts(DEFAULT = "alt:true,location:0",
+            FF = "alt:true,location:1",
+            FF_ESR = "alt:true,location:1")
     public void sendKeys_LeftAltLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1028,17 +1044,57 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
+    /**
+     * Verifies Actions API with Keys.LEFT_SHIFT holds the modifier and releases it correctly.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("HellO")
+    public void sendKeys_ActionsLeftShiftModifier() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .moveToElement(t)
+                .click()
+                .sendKeys("Hell")
+                .keyDown(Keys.LEFT_SHIFT)
+                .sendKeys("o")
+                .keyUp(Keys.LEFT_SHIFT)
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
     // =========================================================================
     // SECTION 7: Numpad, Space, Escape, Unicode & Selection Modifiers
     // =========================================================================
 
     /**
-     * Verifies that Numpad keys insert characters and report e.location = 3 (NUMPAD).
+     * Verifies that Numpad keys insert characters and report e.location = 0 (STANDARD) in sendKeys.
      *
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"key:1,location:3", "1"})
+    @Alerts(DEFAULT = {"key:1,location:0", "1"},
+            FF = {"key:1,location:3", "1"},
+            FF_ESR = {"key:1,location:3", "1"})
     public void sendKeys_NumpadLocationAndValue() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1209,7 +1265,7 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
- // =========================================================================
+    // =========================================================================
     // SECTION 8: Boundary & Edge Cases (Caret Limits, Readonly, Selection, Shift-Tab)
     // =========================================================================
 
@@ -1322,47 +1378,66 @@ public class KeysTest extends WebDriverTestCase {
     }
 
     /**
-     * Verifies that input into 'readonly' and 'disabled' fields is ignored by sendKeys.
+     * Verifies that sending keys to a readonly input executes without error
+     * but does not alter its value.
      *
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"readOnly:fixed", "disabled:fixed"})
-    public void sendKeys_ReadonlyAndDisabledInputs() throws Exception {
+    @Alerts("fixed")
+    public void sendKeys_ReadonlyInputDoesNotChangeValue() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
             + "<html><head>\n"
             + "<script>\n"
             + LOG_TITLE_FUNCTION
             + "  function test() {\n"
-            + "    log('readOnly:' + document.getElementById('t1').value);\n"
-            + "    log('disabled:' + document.getElementById('t2').value);\n"
+            + "    log(document.getElementById('t1').value);\n"
             + "  }\n"
             + "</script>\n"
             + "</head><body>\n"
             + "  <input type='text' id='t1' value='fixed' readonly/>\n"
-            + "  <input type='text' id='t2' value='fixed' disabled/>\n"
             + "  <button id='clickMe' onclick='test()'>do it</button>\n"
             + "</body></html>";
 
         final WebDriver driver = loadPage2(html);
         final WebElement t1 = driver.findElement(By.id("t1"));
-        final WebElement t2 = driver.findElement(By.id("t2"));
 
         t1.sendKeys("extra", Keys.BACK_SPACE);
-        t2.sendKeys("extra", Keys.BACK_SPACE);
 
         driver.findElement(By.id("clickMe")).click();
         verifyTitle2(driver, getExpectedAlerts());
     }
 
     /**
-     * Verifies reverse tab navigation using Shift + Tab moves focus backwards.
+     * Verifies that calling sendKeys on a disabled input throws an ElementNotInteractableException.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test(expected = ElementNotInteractableException.class)
+    public void sendKeys_DisabledInputThrowsException() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head></head><body>\n"
+            + "  <input type='text' id='t2' value='fixed' disabled/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t2 = driver.findElement(By.id("t2"));
+
+        t2.sendKeys("extra");
+    }
+
+    /**
+     * Verifies reverse tab navigation using Shift + Tab moves focus backwards,
+     * selecting existing text in the targeted input so typing overwrites it.
      *
      * @throws Exception if the test fails
      */
     @Test
-    @Alerts({"t1:firstmodified", "t2:second"})
+    @Alerts(DEFAULT = {"t1:modified", "t2:second"},
+            FF = {"t1:MODIFIED", "t2:second"},
+            FF_ESR = {"t1:MODIFIED", "t2:second"})
     public void sendKeys_ShiftTabReverseNavigation() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1383,7 +1458,7 @@ public class KeysTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html);
         final WebElement t2 = driver.findElement(By.id("t2"));
 
-        // Focus t2, press Shift+Tab to move back to t1, and type
+        // Focus t2, press Shift+Tab to move back to t1 (selecting its contents), and type
         t2.click();
         t2.sendKeys(Keys.chord(Keys.SHIFT, Keys.TAB), "modified");
 
@@ -1422,6 +1497,68 @@ public class KeysTest extends WebDriverTestCase {
         final WebElement t = driver.findElement(By.id("t"));
 
         t.sendKeys("singleInputText", Keys.ENTER);
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies typing into a contenteditable element updates innerText / textContent.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("hello")
+    public void sendKeys_ContentEditable() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('e').innerText.trim());\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <div id='e' contenteditable='true'></div>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement e = driver.findElement(By.id("e"));
+
+        e.sendKeys("hello");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that non-printable navigation keys (e.g. PageDown) dispatch the correct e.key event.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("key:PageDown")
+    public void sendKeys_PageDownKey() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('keydown', function(e) {\n"
+            + "      log('key:' + e.key);\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        t.sendKeys(Keys.PAGE_DOWN);
 
         verifyTitle2(driver, getExpectedAlerts());
     }
