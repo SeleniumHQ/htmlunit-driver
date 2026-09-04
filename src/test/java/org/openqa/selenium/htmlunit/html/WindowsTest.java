@@ -502,4 +502,70 @@ public class WindowsTest extends WebDriverTestCase {
         // Expect NoSuchFrameException because level2-frame is not a direct child of top-level
         assertThrows(NoSuchFrameException.class, () -> driver.switchTo().frame("level2-frame"));
     }
+
+    /**
+     * Proves that switching to a nested frame by name requires stepping through parent frames sequentially.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void switchToNestedFrameByNameStepByStep() throws Exception {
+        final String html = "<html><body>\n"
+                + "  <iframe name='level1-frame' src='level1.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level1Html = "<html><body>\n"
+                + "  <iframe name='level2-frame' src='level2.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level2Html = "<html><body>\n"
+                + "  <div id='content'>Deep Nested Content</div>\n"
+                + "</body></html>";
+
+        final URL baseUrl = URL_FIRST;
+        final MockWebConnection webConnection = getMockWebConnection();
+        webConnection.setResponse(new URL(baseUrl, "level1.html"), level1Html);
+        webConnection.setResponse(new URL(baseUrl, "level2.html"), level2Html);
+
+        final WebDriver driver = loadPage2(html);
+
+        // Step 1: Switch to direct child by frame name
+        driver.switchTo().frame("level1-frame");
+
+        // Step 2: Switch to nested child by frame name from level1 context
+        driver.switchTo().frame("level2-frame");
+
+        assertEquals("Deep Nested Content", driver.findElement(By.id("content")).getText());
+    }
+
+    /**
+     * Proves that attempting to switch to a non-direct child frame by name from top-level
+     * throws NoSuchFrameException in real browsers.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    public void switchToDeepNestedFrameByNameFailsFromTop() throws Exception {
+        final String html = "<html><body>\n"
+                + "  <iframe name='level1-frame' src='level1.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level1Html = "<html><body>\n"
+                + "  <iframe name='level2-frame' src='level2.html'></iframe>\n"
+                + "</body></html>";
+
+        final String level2Html = "<html><body>\n"
+                + "  <div id='content'>Deep Nested Content</div>\n"
+                + "</body></html>";
+
+        final URL baseUrl = URL_FIRST;
+        final MockWebConnection webConnection = getMockWebConnection();
+        webConnection.setResponse(new URL(baseUrl, "level1.html"), level1Html);
+        webConnection.setResponse(new URL(baseUrl, "level2.html"), level2Html);
+
+        final WebDriver driver = loadPage2(html);
+
+        // Expect NoSuchFrameException because level2-frame is not a direct child of top-level
+        assertThrows(NoSuchFrameException.class, () -> driver.switchTo().frame("level2-frame"));
+    }
 }
