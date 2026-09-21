@@ -101,9 +101,9 @@ public final class BrowserVersionDeterminer {
         }
 
         final Object rawLanguage = capabilities.getCapability(HtmlUnitDriver.BROWSER_LANGUAGE_CAPABILITY);
-        if (rawLanguage instanceof String) {
+        if (rawLanguage instanceof String lang) {
             return new BrowserVersion.BrowserVersionBuilder(browserVersionObject)
-                    .setBrowserLanguage((String) rawLanguage).build();
+                    .setBrowserLanguage(lang).build();
         }
 
         return browserVersionObject;

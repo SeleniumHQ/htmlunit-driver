@@ -206,9 +206,9 @@ public class HtmlUnitDriverOptions extends AbstractDriverOptions<HtmlUnitDriverO
             // ensure browser name is correct
             setCapability(CapabilityType.BROWSER_NAME, HTMLUNIT.browserName());
 
-            if (source instanceof HtmlUnitDriverOptions) {
+            if (source instanceof HtmlUnitDriverOptions huOptions) {
                 // transfer web client option from source capabilities
-                transfer(((HtmlUnitDriverOptions) source).webClientOptions_, webClientOptions_);
+                transfer(huOptions.webClientOptions_, webClientOptions_);
                 // copy web client version from source capabilities
                 webClientVersion_ = ((HtmlUnitDriverOptions) source).webClientVersion_;
             }

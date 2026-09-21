@@ -161,12 +161,12 @@ public class HtmlUnitElementFinder {
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage)) {
+            if (!(lastPage instanceof HtmlPage htmlPage)) {
                 throw new IllegalStateException("Cannot find elements by id for " + lastPage);
             }
 
             final String id = getValue(locator);
-            final DomElement element = ((HtmlPage) lastPage).getElementById(id);
+            final DomElement element = htmlPage.getElementById(id);
 
             if (element == null) {
                 throw new NoSuchElementException("Unable to locate element with ID: '" + id + "'");
@@ -177,11 +177,11 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage)) {
+            if (!(lastPage instanceof HtmlPage htmlPage)) {
                 throw new IllegalStateException("Cannot find elements by id for " + lastPage);
             }
 
-            final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsById(getValue(locator));
+            final List<DomElement> allElements = htmlPage.getElementsById(getValue(locator));
             return convertRawDomElementsToWebElements(driver, allElements);
         }
 
@@ -209,11 +209,11 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage)) {
+            if (!(lastPage instanceof HtmlPage htmlPage)) {
                 throw new IllegalStateException("Cannot find elements by name; not on a HtmlPage (" + lastPage.getClass().getSimpleName() + ")");
             }
 
-            final List<DomElement> allElements = ((HtmlPage) lastPage).getElementsByName(getValue(locator));
+            final List<DomElement> allElements = htmlPage.getElementsByName(getValue(locator));
             return convertRawDomElementsToWebElements(driver, allElements);
         }
 
@@ -235,12 +235,12 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage)) {
+            if (!(lastPage instanceof HtmlPage htmlPage)) {
                 throw new IllegalStateException("Cannot find links for " + lastPage);
             }
 
             final String expectedText = getValue(locator);
-            final List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
+            final List<HtmlAnchor> anchors = htmlPage.getAnchors();
 
             final List<WebElement> toReturn = new ArrayList<>();
             for (final HtmlAnchor anchor : anchors) {
@@ -278,12 +278,12 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage)) {
+            if (!(lastPage instanceof HtmlPage htmlPage)) {
                 throw new IllegalStateException("Cannot find links for " + lastPage);
             }
 
             final String expectedText = getValue(locator);
-            final List<HtmlAnchor> anchors = ((HtmlPage) lastPage).getAnchors();
+            final List<HtmlAnchor> anchors = htmlPage.getAnchors();
             final List<WebElement> toReturn = new ArrayList<>();
             for (final HtmlAnchor anchor : anchors) {
                 if (anchor.asNormalizedText().contains(expectedText)) {
@@ -365,8 +365,8 @@ public class HtmlUnitElementFinder {
                 throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
-            if (node instanceof DomElement) {
-                return driver.toWebElement((DomElement) node);
+            if (node instanceof DomElement domElement) {
+                return driver.toWebElement(domElement);
             }
 
             throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element");
@@ -386,8 +386,8 @@ public class HtmlUnitElementFinder {
             final List<WebElement> toReturn = new ArrayList<>();
 
             for (final DomNode node : allNodes) {
-                if (node instanceof DomElement) {
-                    toReturn.add(driver.toWebElement((DomElement) node));
+                if (node instanceof DomElement domElement) {
+                    toReturn.add(driver.toWebElement(domElement));
                 }
                 else {
                     throw new NoSuchElementException("Returned node was not a DOM element");
@@ -411,8 +411,8 @@ public class HtmlUnitElementFinder {
             final List<WebElement> toReturn = new ArrayList<>();
 
             for (final DomNode node : allNodes) {
-                if (node instanceof DomElement) {
-                    toReturn.add(element.getDriver().toWebElement((DomElement) node));
+                if (node instanceof DomElement domElement) {
+                    toReturn.add(element.getDriver().toWebElement(domElement));
                 }
                 else {
                     throw new NoSuchElementException("Returned node was not a DOM element");
@@ -433,8 +433,8 @@ public class HtmlUnitElementFinder {
                 throw new InvalidSelectorException("Unable to locate element using css", ex);
             }
 
-            if (node instanceof DomElement) {
-                return element.getDriver().toWebElement((DomElement) node);
+            if (node instanceof DomElement domElement) {
+                return element.getDriver().toWebElement(domElement);
             }
 
             throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element");
@@ -481,8 +481,8 @@ public class HtmlUnitElementFinder {
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
                 final Node item = allElements.item(i);
-                if (item instanceof DomElement) {
-                    toReturn.add(driver.toWebElement((DomElement) item));
+                if (item instanceof DomElement domElement) {
+                    toReturn.add(driver.toWebElement(domElement));
                 }
             }
             return toReturn;
@@ -504,8 +504,8 @@ public class HtmlUnitElementFinder {
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
                 final Node item = allElements.item(i);
-                if (item instanceof DomElement) {
-                    toReturn.add(element.getDriver().toWebElement((DomElement) item));
+                if (item instanceof DomElement domElement) {
+                    toReturn.add(element.getDriver().toWebElement(domElement));
                 }
             }
             return toReturn;
@@ -539,8 +539,8 @@ public class HtmlUnitElementFinder {
             if (node == null) {
                 throw new NoSuchElementException("Unable to locate a node using " + value);
             }
-            if (node instanceof DomElement) {
-                return driver.toWebElement((DomElement) node);
+            if (node instanceof DomElement domElement) {
+                return driver.toWebElement(domElement);
             }
             // The xpath expression selected something different than a WebElement.
             // The selector is therefore invalid
@@ -572,12 +572,12 @@ public class HtmlUnitElementFinder {
                 // There exist elements in the nodes list which could not be converted to
                 // WebElements.
                 // A valid xpath selector should only select WebElements.
-                if (!(node instanceof DomElement)) {
+                if (!(node instanceof DomElement domElement)) {
                     // We only want to know the type of one invalid element so that we can give this
                     // information in the exception. We can throw the exception immediately.
                     throw new InvalidSelectorException(String.format(INVALIDSELECTIONERROR, value, node.getClass()));
                 }
-                toReturn.add(driver.toWebElement((DomElement) node));
+                toReturn.add(driver.toWebElement(domElement));
             }
 
             return toReturn;
@@ -598,8 +598,8 @@ public class HtmlUnitElementFinder {
             if (node == null) {
                 throw new NoSuchElementException("Unable to find an element with xpath " + value);
             }
-            if (node instanceof HtmlElement) {
-                return element.getDriver().toWebElement((HtmlElement) node);
+            if (node instanceof HtmlElement elem) {
+                return element.getDriver().toWebElement(elem);
             }
             // The xpath selector selected something different than a WebElement. The
             // selector is therefore
@@ -623,8 +623,8 @@ public class HtmlUnitElementFinder {
             }
 
             for (final Object e : domElements) {
-                if (e instanceof DomElement) {
-                    toReturn.add(element.getDriver().toWebElement((DomElement) e));
+                if (e instanceof DomElement domElement) {
+                    toReturn.add(element.getDriver().toWebElement(domElement));
                 }
                 else {
                     // The xpath selector selected something different than a WebElement. The
@@ -711,10 +711,10 @@ public class HtmlUnitElementFinder {
          * @throws IllegalStateException if the locator is not remotable
          */
         protected static By.Remotable getRemotable(final By locator) {
-            if (!(locator instanceof By.Remotable)) {
+            if (!(locator instanceof By.Remotable remotable)) {
                 throw new IllegalStateException("Cannot convert locator to Remotable");
             }
-            return (By.Remotable) locator;
+            return remotable;
         }
 
         /**
@@ -726,10 +726,10 @@ public class HtmlUnitElementFinder {
          */
         protected SgmlPage getLastPage(final HtmlUnitDriver driver) {
             final Page lastPage = driver.getCurrentWindow().lastPage();
-            if (!(lastPage instanceof SgmlPage)) {
+            if (!(lastPage instanceof SgmlPage sgmlPage)) {
                 throw new IllegalStateException("Current page is not a SgmlPage");
             }
-            return (SgmlPage) lastPage;
+            return sgmlPage;
         }
 
         /**

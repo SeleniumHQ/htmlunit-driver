@@ -181,14 +181,14 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
      */
     void submitImpl() {
         try {
-            if (element_ instanceof HtmlForm) {
-                submitForm((HtmlForm) element_);
+            if (element_ instanceof HtmlForm form) {
+                submitForm(form);
             }
             else if ((element_ instanceof HtmlSubmitInput) || (element_ instanceof HtmlImageInput)) {
                 element_.click();
             }
-            else if (element_ instanceof HtmlInput) {
-                final HtmlForm form = ((HtmlElement) element_).getEnclosingForm();
+            else if (element_ instanceof HtmlInput input) {
+                final HtmlForm form = input.getEnclosingForm();
                 if (form == null) {
                     throw new UnsupportedOperationException(
                             "To submit an element, it must be nested inside a form element");
@@ -271,8 +271,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
                 throw new InvalidElementStateException("You may only interact with enabled elements");
             }
             htmlInput.setValue("");
-            if (htmlInput instanceof SelectableTextInput) {
-                ((SelectableTextInput) htmlInput).setSelectionEnd(0);
+            if (htmlInput instanceof SelectableTextInput selectableTextInput) {
+                selectableTextInput.setSelectionEnd(0);
             }
             htmlInput.fireEvent("change");
         }
@@ -414,11 +414,11 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
                 }
             }
             case "value":
-                if (element_ instanceof HtmlInput) {
-                    return ((HtmlInput) element_).getValue();
+                if (element_ instanceof HtmlInput input) {
+                    return input.getValue();
                 }
-                if (element_ instanceof HtmlTextArea) {
-                    return ((HtmlTextArea) element_).getText();
+                if (element_ instanceof HtmlTextArea textArea) {
+                    return textArea.getText();
                 }
                 // Per the HTML spec, if an <option> has no value attribute its
                 // text content is used as the value.
@@ -432,23 +432,23 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
                 return attributeValue;
 
             case "disabled":
-                if (element_ instanceof DisabledElement) {
-                    return trueOrNull(((DisabledElement) element_).isDisabled());
+                if (element_ instanceof DisabledElement disabledElement) {
+                    return trueOrNull(disabledElement.isDisabled());
                 }
                 // Elements that cannot be disabled (e.g. <div>) have no disabled
                 // attribute - fall back.
         }
 
-        if ("multiple".equals(lowerName) && element_ instanceof HtmlSelect) {
-            final String multipleAttribute = ((HtmlSelect) element_).getMultipleAttribute();
+        if ("multiple".equals(lowerName) && element_ instanceof HtmlSelect select) {
+            final String multipleAttribute = select.getMultipleAttribute();
             if ("".equals(multipleAttribute)) {
                 return trueOrNull(element_.hasAttribute("multiple"));
             }
             return "true";
         }
 
-        if ("index".equals(lowerName) && element_ instanceof HtmlOption) {
-            final HtmlSelect select = ((HtmlOption) element_).getEnclosingSelect();
+        if ("index".equals(lowerName) && element_ instanceof HtmlOption option) {
+            final HtmlSelect select = option.getEnclosingSelect();
             if (select == null) {
                 return "0";
             }
@@ -474,8 +474,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
                 final HtmlUnitScriptable scriptable = element_.getScriptableObject();
                 if (scriptable != null) {
                     final Object slotVal = ScriptableObject.getProperty(scriptable, name);
-                    if (slotVal instanceof String) {
-                        return (String) slotVal;
+                    if (slotVal instanceof String string) {
+                        return string;
                     }
                 }
             }
@@ -499,12 +499,12 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
                 return null;
             }
 
-            if (propValue instanceof CSSStyleDeclaration) {
-                return ((CSSStyleDeclaration) propValue).getCssText();
+            if (propValue instanceof CSSStyleDeclaration css) {
+                return (css.getCssText());
             }
 
-            if (propValue instanceof DOMTokenList) {
-                final String value = ((DOMTokenList) propValue).getValue();
+            if (propValue instanceof DOMTokenList tokenList) {
+                final String value = tokenList.getValue();
                 if (value != null) {
                     return '[' + String.join(", ", StringUtils.split(value, " \t\r\n\u000C")) + ']';
                 }
@@ -516,17 +516,17 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
 
         // JS disabled — fall back to direct DOM queries for the most common properties.
         if ("disabled".equals(name)) {
-            if (element_ instanceof DisabledElement) {
-                return trueOrFalse(((DisabledElement) element_).isDisabled());
+            if (element_ instanceof DisabledElement disabledElement) {
+                return trueOrFalse(disabledElement.isDisabled());
             }
         }
 
         if ("checked".equals(name)) {
-            if (element_ instanceof HtmlCheckBoxInput) {
-                return trueOrFalse(((HtmlCheckBoxInput) element_).isChecked());
+            if (element_ instanceof HtmlCheckBoxInput checkBox) {
+                return trueOrFalse(checkBox.isChecked());
             }
-            else if (element_ instanceof HtmlRadioButtonInput) {
-                return trueOrFalse(((HtmlRadioButtonInput) element_).isChecked());
+            else if (element_ instanceof HtmlRadioButtonInput radio) {
+                return trueOrFalse(radio.isChecked());
             }
         }
 
@@ -569,17 +569,17 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         }
 
         if ("disabled".equals(lowerName)) {
-            if (element_ instanceof DisabledElement) {
-                return trueOrNull(((DisabledElement) element_).isDisabled());
+            if (element_ instanceof DisabledElement disabledElement) {
+                return trueOrNull(disabledElement.isDisabled());
             }
         }
 
         if ("checked".equals(lowerName)) {
-            if (element_ instanceof HtmlCheckBoxInput) {
-                return trueOrNull(((HtmlCheckBoxInput) element_).isChecked());
+            if (element_ instanceof HtmlCheckBoxInput checkBox) {
+                return trueOrNull(checkBox.isChecked());
             }
-            else if (element_ instanceof HtmlRadioButtonInput) {
-                return trueOrNull(((HtmlRadioButtonInput) element_).isChecked());
+            else if (element_ instanceof HtmlRadioButtonInput radio) {
+                return trueOrNull(radio.isChecked());
             }
         }
 
@@ -590,8 +590,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         }
 
         if ("selected".equals(lowerName)) {
-            if (element_ instanceof HtmlOption) {
-                return trueOrNull(((HtmlOption) element_).isSelected());
+            if (element_ instanceof HtmlOption option) {
+                return trueOrNull(option.isSelected());
             }
         }
 
@@ -610,11 +610,11 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     public boolean isSelected() {
         assertElementNotStale();
 
-        if (element_ instanceof HtmlInput) {
-            return ((HtmlInput) element_).isChecked();
+        if (element_ instanceof HtmlInput input) {
+            return input.isChecked();
         }
-        else if (element_ instanceof HtmlOption) {
-            return ((HtmlOption) element_).isSelected();
+        else if (element_ instanceof HtmlOption option) {
+            return option.isSelected();
         }
 
         throw new UnsupportedOperationException(
@@ -625,8 +625,8 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
     public boolean isEnabled() {
         assertElementNotStale();
 
-        if (element_ instanceof DisabledElement) {
-            return !((DisabledElement) element_).isDisabled();
+        if (element_ instanceof DisabledElement disabledElement) {
+            return !disabledElement.isDisabled();
         }
         return true;
     }
@@ -726,10 +726,10 @@ public class HtmlUnitWebElement implements WrapsDriver, WebElement, Coordinates,
         final List<?> allChildren = element_.getByXPath(".//" + tagName);
         final List<WebElement> elements = new ArrayList<>();
         for (final Object o : allChildren) {
-            if (!(o instanceof HtmlElement)) {
+            if (!(o instanceof HtmlElement elem)) {
                 continue;
             }
-            elements.add(getDriver().toWebElement((HtmlElement) o));
+            elements.add(getDriver().toWebElement(elem));
         }
         return elements;
     }

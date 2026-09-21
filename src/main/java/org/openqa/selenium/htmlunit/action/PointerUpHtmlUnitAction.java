@@ -40,9 +40,7 @@ public final class PointerUpHtmlUnitAction extends PointerHtmlUnitAction {
      */
     @Override
     public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-        if (previousAction instanceof PointerDownHtmlUnitAction) {
-            final PointerDownHtmlUnitAction pointerDownAction =
-                    (PointerDownHtmlUnitAction) previousAction;
+        if (previousAction instanceof PointerDownHtmlUnitAction pointerDownAction) {
             if (pointerDownAction.getDomElement() == getDomElement()
                     && pointerDownAction.getButton() == getButton()) {
                 return new PointerClickHtmlUnitAction(getDomElement(), getButton());

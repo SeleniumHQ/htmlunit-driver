@@ -159,8 +159,7 @@ public class HtmlUnitKeyboard {
         final String keysSequence = keysToSend.toString();
 
         // HtmlElement.type() does not modify HtmlFileInput values — handle separately.
-        if (element instanceof HtmlFileInput) {
-            final HtmlFileInput fileInput = (HtmlFileInput) element;
+        if (element instanceof HtmlFileInput fileInput) {
             fileInput.setValue(keysSequence);
             // Release modifiers even for file inputs if requested, so the modifier
             // state stays consistent with what the caller intended.

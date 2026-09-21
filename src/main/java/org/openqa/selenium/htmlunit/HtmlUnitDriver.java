@@ -977,8 +977,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return null;
         }
 
-        if (page instanceof SgmlPage) {
-            return ((SgmlPage) page).asXml();
+        if (page instanceof SgmlPage sgmlPage) {
+            return sgmlPage.asXml();
         }
         final WebResponse response = page.getWebResponse();
         return response.getContentAsString();
@@ -1115,11 +1115,11 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
         }
 
         final Page lastPage = getCurrentWindow().lastPage();
-        if (!(lastPage instanceof HtmlPage)) {
+        if (!(lastPage instanceof HtmlPage htmlPage)) {
             throw new UnsupportedOperationException("Cannot execute JS against a plain text page");
         }
 
-        return (HtmlPage) lastPage;
+        return htmlPage;
     }
 
     private Object parseArgumentIntoJavascriptParameter(final VarScope scope, Object arg) {
@@ -1153,24 +1153,24 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             assertElementNotStale(element);
             return element.getScriptableObject();
         }
-        else if (arg instanceof Collection<?>) {
+        else if (arg instanceof Collection<?> coll) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (Collection<?>) arg) {
+            for (final Object o : coll) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
 
-        else if (arg instanceof Object[]) {
+        else if (arg instanceof Object[] objArray) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (Object[]) arg) {
+            for (final Object o : objArray) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
-        else if (arg instanceof int[]) {
+        else if (arg instanceof int[] intArray) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (int[]) arg) {
+            for (final Object o : intArray) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
@@ -1182,23 +1182,23 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
-        else if (arg instanceof float[]) {
+        else if (arg instanceof float[] floatArray) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (float[]) arg) {
+            for (final Object o : floatArray) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
-        else if (arg instanceof double[]) {
+        else if (arg instanceof double[] doubleArray) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (double[]) arg) {
+            for (final Object o : doubleArray) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
         }
-        else if (arg instanceof boolean[]) {
+        else if (arg instanceof boolean[] boolArray) {
             final List<Object> list = new ArrayList<>();
-            for (final Object o : (boolean[]) arg) {
+            for (final Object o : boolArray) {
                 list.add(parseArgumentIntoJavascriptParameter(scope, o));
             }
             return Context.getCurrentContext().newArray(scope, list.toArray());
@@ -1311,20 +1311,20 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
 
     private Object parseNativeJavascriptResult(final Object result) {
         final Object value;
-        if (result instanceof ScriptResult) {
-            value = ((ScriptResult) result).getJavaScriptResult();
+        if (result instanceof ScriptResult scriptResult) {
+            value = scriptResult.getJavaScriptResult();
         }
         else {
             value = result;
         }
-        if (value instanceof HTMLElement) {
-            return toWebElement(((HTMLElement) value).getDomNodeOrDie());
+        if (value instanceof HTMLElement htmlElem) {
+            return toWebElement(htmlElem.getDomNodeOrDie());
         }
 
-        if (value instanceof DocumentProxy) {
-            final Element element = ((DocumentProxy) value).getDelegee().getDocumentElement();
-            if (element instanceof HTMLElement) {
-                return toWebElement(((HTMLElement) element).getDomNodeOrDie());
+        if (value instanceof DocumentProxy proxy) {
+            final Element element = proxy.getDelegee().getDocumentElement();
+            if (element instanceof HTMLElement elem) {
+                return toWebElement(elem.getDomNodeOrDie());
             }
             throw new WebDriverException("Do not know how to coerce to an HTMLElement: " + element);
         }
@@ -1346,8 +1346,8 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return map;
         }
 
-        if (value instanceof Location) {
-            return convertLocationToMap((Location) value);
+        if (value instanceof Location location) {
+            return convertLocationToMap(location);
         }
 
         if (value instanceof NativeArray array) {
@@ -1367,17 +1367,17 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             return parseJavascriptResultsList(collection);
         }
 
-        if (value instanceof HTMLCollection array) {
+        if (value instanceof HTMLCollection coll) {
 
             final JavaScriptResultsCollection collection = new JavaScriptResultsCollection() {
                 @Override
                 public int getLength() {
-                    return array.getLength();
+                    return coll.getLength();
                 }
 
                 @Override
                 public Object item(final int index) {
-                    return array.get(index);
+                    return coll.get(index);
                 }
             };
 
