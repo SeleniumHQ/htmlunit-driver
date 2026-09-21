@@ -38,10 +38,6 @@ import org.openqa.selenium.interactions.Actions;
 @RunWith(BrowserRunner.class)
 public class KeysTest extends WebDriverTestCase {
 
-    // =========================================================================
-    // SECTION 1: Basic Text Input Across All Selenium API Pathways
-    // =========================================================================
-
     /**
      * @throws Exception if the test fails
      */
@@ -192,9 +188,434 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
-    // =========================================================================
-    // SECTION 2: Special Editing and Navigation Keys
-    // =========================================================================
+    /**
+     * Verifies that sendKeys appends to an input that already has a value
+     * (start-at-end behaviour).
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("prefixabc")
+    public void sendKeys_AppendsToPreexistingValue() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t' value='prefix'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("abc");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that sendKeys with an empty string is a no-op on value.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("abc")
+    public void sendKeys_EmptyStringIsNoop() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t' value='abc'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that sendKeys fires keydown, keypress, and keyup events in
+     * that order for a single printable character.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("keydown,keypress,keyup")
+    public void sendKeys_EventOrderForSingleChar() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    const t = document.getElementById('t');\n"
+            + "    const events = [];\n"
+            + "    t.addEventListener('keydown',  function() { events.push('keydown');  });\n"
+            + "    t.addEventListener('keypress', function() { events.push('keypress'); });\n"
+            + "    t.addEventListener('keyup',    function() { events.push('keyup');    });\n"
+            + "    t.addEventListener('keyup', function() { log(events.join(',')); });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("a");
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that the input event fires after the value is updated by sendKeys.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("input:a")
+    public void sendKeys_InputEventFires() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('input', function(e) {\n"
+            + "      log('input:' + e.target.value);\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("a");
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that the change event fires when focus leaves a field
+     * whose value was changed by sendKeys.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("changed:abc")
+    public void sendKeys_ChangeEventOnBlur() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('change', function(e) {\n"
+            + "      log('changed:' + e.target.value);\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <input type='text' id='other'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("abc");
+        driver.findElement(By.id("other")).click();   // move focus away
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that maxlength on an input is respected — characters beyond the
+     * limit are silently discarded.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("ab")
+    public void sendKeys_MaxLengthRespected() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t' maxlength='2'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("abcdef");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that textarea respects maxlength.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("ab")
+    public void sendKeys_TextareaMaxLengthRespected() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t' maxlength='2'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("abcdef");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that HOME in a textarea moves the caret to the start of the
+     * current line, not the start of the whole text.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("line1\\nXline2")
+    public void sendKeys_TextareaHomeMovesToLineStart() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // type two lines, move to start of second line with HOME, insert 'X'
+        t.sendKeys("line1\nline2", Keys.HOME, "X");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that ARROW_UP in a textarea moves the caret to the previous line.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("line1X\\nline2")
+    public void sendKeys_TextareaArrowUpMovesToPreviousLine() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // caret is at end of line2; move up to end of line1 and insert 'X'
+        t.sendKeys("line1\nline2", Keys.ARROW_UP, Keys.END, "X");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that ARROW_DOWN in a textarea moves the caret to the next line.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("line1\\nXline2")
+    public void sendKeys_TextareaArrowDownMovesToNextLine() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // start at end of line1, move down to line2 start, insert 'X'
+        t.sendKeys("line1\nline2", Keys.HOME, Keys.ARROW_UP, Keys.END, Keys.ARROW_DOWN, Keys.HOME, "X");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that CTRL+HOME in a textarea moves the caret to the very start
+     * of the text (across all lines).
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("Xline1\\nline2")
+    public void sendKeys_TextareaCtrlHomeMovesToDocumentStart() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .click(t)
+                .sendKeys("line1\nline2")
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.HOME)
+                .keyUp(Keys.CONTROL)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that CTRL+END in a textarea moves the caret to the very end
+     * of the text (across all lines).
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("line1\\nline2X")
+    public void sendKeys_TextareaCtrlEndMovesToDocumentEnd() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <textarea id='t'></textarea>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .click(t)
+                .sendKeys("line1\nline2")
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.HOME)    // go to start
+                .keyUp(Keys.CONTROL)
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.END)     // go to end
+                .keyUp(Keys.CONTROL)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that ENTER does NOT submit the form when sent to a textarea
+     * (it only inserts a newline).
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("line1\\nline2")
+    public void sendKeys_TextareaEnterDoesNotSubmitForm() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION_NORMALIZE
+            + "  function init() {\n"
+            + "    document.getElementById('f').addEventListener('submit', function(e) {\n"
+            + "      log('SUBMITTED');\n"
+            + "      e.preventDefault();\n"
+            + "    });\n"
+            + "  }\n"
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <form id='f'>\n"
+            + "    <textarea id='t'></textarea>\n"
+            + "    <input type='submit' id='sub'/>\n"
+            + "  </form>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("line1", Keys.ENTER, "line2");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
 
     /**
      * @throws Exception if the test fails
@@ -372,9 +793,286 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
-    // =========================================================================
-    // SECTION 3: Modifiers and Chords (SHIFT, CONTROL, ALT)
-    // =========================================================================
+    /**
+     * Verifies that CTRL+Z (undo) restores the previous value.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("")
+    public void sendKeys_ControlUndo() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .click(t)
+                .sendKeys("abc")
+                .keyDown(Keys.CONTROL)
+                .sendKeys("z")
+                .keyUp(Keys.CONTROL)
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies CTRL+SHIFT+END selects from the current caret position to the
+     * end of the input and that typing replaces the selection.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("aX")
+    public void sendKeys_CtrlShiftEndSelectsToEnd() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // type 'abcd', go to start, move one right, select to end, replace
+        new Actions(driver)
+                .click(t)
+                .sendKeys("abcd")
+                .sendKeys(Keys.HOME)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .keyDown(Keys.SHIFT)
+                .sendKeys(Keys.END)
+                .keyUp(Keys.SHIFT)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies CTRL+SHIFT+HOME selects from the current caret position to
+     * the start of the input and that typing replaces the selection.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("Xd")
+    public void sendKeys_CtrlShiftHomeSelectsToStart() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // type 'abcd', move one left, select back to start, replace
+        new Actions(driver)
+                .click(t)
+                .sendKeys("abcd")
+                .sendKeys(Keys.ARROW_LEFT)
+                .keyDown(Keys.SHIFT)
+                .sendKeys(Keys.HOME)
+                .keyUp(Keys.SHIFT)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that CTRL+BACKSPACE deletes the word immediately before the caret.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("hello ")
+    public void sendKeys_CtrlBackspaceDeletesWord() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .click(t)
+                .sendKeys("hello world")
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.BACK_SPACE)
+                .keyUp(Keys.CONTROL)
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that CTRL+DELETE deletes the word immediately after the caret.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("hello ")
+    public void sendKeys_CtrlDeleteDeletesWordForward() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        new Actions(driver)
+                .click(t)
+                .sendKeys("hello world")
+                .sendKeys(Keys.HOME)
+                .sendKeys(Keys.ARROW_RIGHT) // move past "hello "
+                .sendKeys(Keys.ARROW_RIGHT)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.DELETE)
+                .keyUp(Keys.CONTROL)
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies CTRL+ARROW_RIGHT (word jump) moves the caret one word forward.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("hello Xworld")
+    public void sendKeys_CtrlArrowRightJumpsWord() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // type, go to start, jump one word right, insert 'X'
+        new Actions(driver)
+                .click(t)
+                .sendKeys("hello world")
+                .sendKeys(Keys.HOME)
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.ARROW_RIGHT)
+                .keyUp(Keys.CONTROL)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies CTRL+ARROW_LEFT (word jump) moves the caret one word backward.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("Xhello world")
+    public void sendKeys_CtrlArrowLeftJumpsWord() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // at end of "hello world", jump two words left, insert 'X'
+        new Actions(driver)
+                .click(t)
+                .sendKeys("hello world")
+                .keyDown(Keys.CONTROL)
+                .sendKeys(Keys.ARROW_LEFT)
+                .sendKeys(Keys.ARROW_LEFT)
+                .keyUp(Keys.CONTROL)
+                .sendKeys("X")
+                .perform();
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
 
     /**
      * @throws Exception if the test fails
@@ -639,10 +1337,6 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
-    // =========================================================================
-    // SECTION 4: Form Submission via ENTER / Newline in Form Inputs
-    // =========================================================================
-
     /**
      * Verifies that sending Keys.ENTER to a form text input triggers form submission
      * with the input value present up to the ENTER key.
@@ -794,10 +1488,6 @@ public class KeysTest extends WebDriverTestCase {
         verifyTitle2(driver, getExpectedAlerts());
     }
 
-    // =========================================================================
-    // SECTION 5: Character Control Sequences, Clipboard & Caret Navigation
-    // =========================================================================
-
     /**
      * Verifies that the backspace control character ('\b') embedded in a string
      * removes the preceding character during typing.
@@ -934,10 +1624,6 @@ public class KeysTest extends WebDriverTestCase {
         driver.findElement(By.id("clickMe")).click();
         verifyTitle2(driver, getExpectedAlerts());
     }
-
-    // =========================================================================
-    // SECTION 6: Left / Right Specific Modifiers & Event Locations
-    // =========================================================================
 
     /**
      * Verifies that Keys.LEFT_SHIFT sets shiftKey=true and location=0 (STANDARD) in sendKeys.
@@ -1081,10 +1767,6 @@ public class KeysTest extends WebDriverTestCase {
         driver.findElement(By.id("clickMe")).click();
         verifyTitle2(driver, getExpectedAlerts());
     }
-
-    // =========================================================================
-    // SECTION 7: Numpad, Space, Escape, Unicode & Selection Modifiers
-    // =========================================================================
 
     /**
      * Verifies that Numpad keys insert characters and report e.location = 0 (STANDARD) in sendKeys.
@@ -1264,10 +1946,6 @@ public class KeysTest extends WebDriverTestCase {
         driver.findElement(By.id("clickMe")).click();
         verifyTitle2(driver, getExpectedAlerts());
     }
-
-    // =========================================================================
-    // SECTION 8: Boundary & Edge Cases (Caret Limits, Readonly, Selection, Shift-Tab)
-    // =========================================================================
 
     /**
      * Verifies that pressing BACK_SPACE when the cursor is already at position 0 (left edge)
@@ -1560,6 +2238,270 @@ public class KeysTest extends WebDriverTestCase {
 
         t.sendKeys(Keys.PAGE_DOWN);
 
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that F1–F12 dispatch keydown events with the correct e.key values.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("F1,F2,F5,F12")
+    public void sendKeys_FunctionKeys() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    const keys = [];\n"
+            + "    document.getElementById('t').addEventListener('keydown', function(e) {\n"
+            + "      if (e.key && e.key.startsWith('F')) { keys.push(e.key); }\n"
+            + "      if (keys.length === 4) { log(keys.join(',')); }\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        t.sendKeys(Keys.F1, Keys.F2, Keys.F5, Keys.F12);
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that Keys.INSERT dispatches a keydown event with e.key = 'Insert'.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("key:Insert")
+    public void sendKeys_InsertKey() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('keydown', function(e) {\n"
+            + "      if (e.key === 'Insert') { log('key:' + e.key); }\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys(Keys.INSERT);
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that Keys.RIGHT_SHIFT sets shiftKey=true.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts(DEFAULT = "shift:true,location:0",
+            FF = "shift:true,location:2",
+            FF_ESR = "shift:true,location:2")
+    public void sendKeys_RightShiftLocationAndFlag() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('keydown', function(e) {\n"
+            + "      if (e.key === 'Shift') {\n"
+            + "        log('shift:' + e.shiftKey + ',location:' + e.location);\n"
+            + "      }\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys(Keys.RIGHT_SHIFT);
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that Keys.RIGHT_CONTROL sets ctrlKey=true.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts(DEFAULT = "ctrl:true,location:0",
+            FF = "ctrl:true,location:2",
+            FF_ESR = "ctrl:true,location:2")
+    public void sendKeys_RightControlLocationAndFlag() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function init() {\n"
+            + "    document.getElementById('t').addEventListener('keydown', function(e) {\n"
+            + "      if (e.key === 'Control') {\n"
+            + "        log('ctrl:' + e.ctrlKey + ',location:' + e.location);\n"
+            + "      }\n"
+            + "    });\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body onload='init()'>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys(Keys.RIGHT_CONTROL);
+
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that pressing ARROW_LEFT when the caret is already at position 0
+     * is a no-op (does not underflow or error).
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("abc")
+    public void sendKeys_ArrowLeftAtLeftBoundaryIsNoop() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t' value='abc'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        t.sendKeys(Keys.HOME, Keys.ARROW_LEFT, Keys.ARROW_LEFT);
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that pressing ARROW_RIGHT when the caret is already at the end
+     * is a no-op.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("abc")
+    public void sendKeys_ArrowRightAtRightBoundaryIsNoop() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t' value='abc'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        t.sendKeys(Keys.END, Keys.ARROW_RIGHT, Keys.ARROW_RIGHT);
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that modifier keys are implicitly released between separate
+     * element.sendKeys() calls — a second sendKeys must not inherit the
+     * modifier state of a prior Actions sequence.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("ABCdef")
+    public void sendKeys_ModifierNotLeakedAcrossSendKeysCalls() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement t = driver.findElement(By.id("t"));
+
+        // first sendKeys with SHIFT held for "abc" -> "ABC"
+        new Actions(driver)
+                .click(t)
+                .keyDown(Keys.SHIFT)
+                .sendKeys("abc")
+                .keyUp(Keys.SHIFT)
+                .perform();
+
+        // separate sendKeys call — Shift must NOT still be active
+        t.sendKeys("def");
+
+        driver.findElement(By.id("clickMe")).click();
+        verifyTitle2(driver, getExpectedAlerts());
+    }
+
+    /**
+     * Verifies that a supplementary-plane Unicode character (emoji, U+1F600)
+     * round-trips correctly through sendKeys and appears in the input value.
+     *
+     * @throws Exception if the test fails
+     */
+    @Test
+    @Alerts("a\uD83D\uDE00b")
+    public void sendKeys_EmojiSurrogatePair() throws Exception {
+        final String html =
+            STANDARDS_MODE_PREFIX_
+            + "<html><head>\n"
+            + "<script>\n"
+            + LOG_TITLE_FUNCTION
+            + "  function test() {\n"
+            + "    log(document.getElementById('t').value);\n"
+            + "  }\n"
+            + "</script>\n"
+            + "</head><body>\n"
+            + "  <input type='text' id='t'/>\n"
+            + "  <button id='clickMe' onclick='test()'>do it</button>\n"
+            + "</body></html>";
+
+        final WebDriver driver = loadPage2(html);
+        driver.findElement(By.id("t")).sendKeys("a\uD83D\uDE00b");   // a😀b
+
+        driver.findElement(By.id("clickMe")).click();
         verifyTitle2(driver, getExpectedAlerts());
     }
 }
