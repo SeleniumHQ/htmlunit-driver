@@ -426,7 +426,7 @@ public class HtmlUnitMouse {
      *
      * @param element the element to move the mouse to; must not be {@code null}
      */
-    void mouseMove(final DomElement element) {
+    public void mouseMove(final DomElement element) {
         moveOutIfNeeded(element);
         updateActiveElement(element);
     }

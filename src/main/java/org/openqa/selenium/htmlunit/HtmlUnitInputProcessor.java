@@ -20,10 +20,8 @@ package org.openqa.selenium.htmlunit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.htmlunit.html.DomElement;
 import org.openqa.selenium.htmlunit.action.HtmlUnitAction;
 import org.openqa.selenium.htmlunit.w3.Action;
-import org.openqa.selenium.interactions.Coordinates;
 
 /**
  * Processes and executes input-related {@link HtmlUnitAction} instances for a
@@ -47,17 +45,17 @@ public class HtmlUnitInputProcessor {
     /**
      * W3C WebDriver button index for the primary (left) mouse button.
      */
-    private static final int BUTTON_PRIMARY = 0;
+    public static final int BUTTON_PRIMARY = 0;
 
     /**
      * W3C WebDriver button index for the auxiliary (middle) mouse button.
      */
-    private static final int BUTTON_AUXILIARY = 1;
+    public static final int BUTTON_AUXILIARY = 1;
 
     /**
      * W3C WebDriver button index for the secondary (right) mouse button.
      */
-    private static final int BUTTON_SECONDARY = 2;
+    public static final int BUTTON_SECONDARY = 2;
 
     /**
      * The {@link HtmlUnitDriver} instance used to execute input actions.
@@ -174,244 +172,6 @@ public class HtmlUnitInputProcessor {
             // Replace the two tail entries with the merged action and try again.
             htmlUnitActions_.set(secondLastPos, joinedAction);
             htmlUnitActions_.remove(lastPos);
-        }
-    }
-
-    /**
-     * Base class for actions that target a specific {@link DomElement}.
-     */
-    private abstract static class DomElementHtmlUnitAction implements HtmlUnitAction {
-        private final DomElement domElement_;
-
-        DomElementHtmlUnitAction(final DomElement domElement) {
-            domElement_ = domElement;
-        }
-
-        /**
-         * Returns the {@link DomElement} targeted by this action.
-         *
-         * @return the target element; may be {@code null} if constructed without one
-         */
-        protected DomElement getDomElement() {
-            return domElement_;
-        }
-    }
-
-    /**
-     * An {@link HtmlUnitAction} that moves the pointer to the specified
-     * {@link DomElement}. Updates the driver's simulated mouse position without
-     * performing a click.
-     *
-     * <p>Mouse-move actions are never merged with adjacent actions.</p>
-     */
-    public static final class PointerMoveHtmlUnitAction extends DomElementHtmlUnitAction {
-
-        /**
-         * Creates a new pointer-move action targeting the given DOM element.
-         *
-         * @param domElement the element to move the pointer to; must not be {@code null}
-         */
-        public PointerMoveHtmlUnitAction(final DomElement domElement) {
-            super(domElement);
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            driver.getMouse().mouseMove(getDomElement());
-        }
-
-        /** Mouse-move actions are never merged; always returns {@code this}. */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            return this;
-        }
-    }
-
-    /**
-     * Base class for pointer actions that operate on a specific mouse button.
-     * Subclasses represent concrete pointer events such as press or release.
-     */
-    public abstract static class PointerHtmlUnitAction extends DomElementHtmlUnitAction {
-        private final int button_;
-
-        /**
-         * Creates a new pointer action for the specified element and button.
-         *
-         * @param domElement the target element associated with the pointer event;
-         *                   must not be {@code null}
-         * @param button     the W3C button index (0 = primary/left, 1 = auxiliary/middle,
-         *                   2 = secondary/right)
-         */
-        public PointerHtmlUnitAction(final DomElement domElement, final int button) {
-            super(domElement);
-            button_ = button;
-        }
-
-        /**
-         * Returns the W3C button index associated with this action.
-         *
-         * @return 0 for primary, 1 for auxiliary, 2 for secondary
-         */
-        public int getButton() {
-            return button_;
-        }
-    }
-
-    /**
-     * A pointer action that presses a specific mouse button (mouse-down event).
-     *
-     * <p><b>Note:</b> HtmlUnit's {@code Mouse} API does not accept explicit
-     * coordinates or a target element for {@code mouseDown}; the element and
-     * button stored in this action are used only for merge decisions in
-     * {@link PointerUpHtmlUnitAction#join(HtmlUnitAction)} and are not passed
-     * to the underlying driver call.</p>
-     *
-     * <p>Pointer-down actions are never merged with a preceding action.</p>
-     */
-    public static final class PointerDownHtmlUnitAction extends PointerHtmlUnitAction {
-
-        /**
-         * Creates a new pointer-down action for the given element and button.
-         *
-         * @param domElement the element at which the button is pressed
-         * @param button     the W3C button index
-         */
-        public PointerDownHtmlUnitAction(final DomElement domElement, final int button) {
-            super(domElement, button);
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            // HtmlUnit's Mouse API does not expose per-element / per-button mouseDown;
-            // the element and button are used only for merge decisions.
-            driver.getMouse().mouseDown((Coordinates) null);
-        }
-
-        /** Pointer-down actions are never merged; always returns {@code this}. */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            return this;
-        }
-    }
-
-    /**
-     * A pointer action that releases a specific mouse button (mouse-up event).
-     *
-     * <p>When preceded by a {@link PointerDownHtmlUnitAction} targeting the
-     * same element with the same button, this action merges into a
-     * {@link PointerClickHtmlUnitAction}.</p>
-     *
-     * <p><b>Note:</b> like {@link PointerDownHtmlUnitAction}, HtmlUnit's API
-     * does not support per-element / per-button {@code mouseUp}; the stored
-     * element and button are used only for merge decisions.</p>
-     */
-    public static final class PointerUpHtmlUnitAction extends PointerHtmlUnitAction {
-
-        /**
-         * Creates a new pointer-up action for the given element and button.
-         *
-         * @param domElement the element at which the button is released
-         * @param button     the W3C button index
-         */
-        public PointerUpHtmlUnitAction(final DomElement domElement, final int button) {
-            super(domElement, button);
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            // HtmlUnit's Mouse API does not expose per-element / per-button mouseUp;
-            // the element and button are used only for merge decisions.
-            driver.getMouse().mouseUp((Coordinates) null);
-        }
-
-        /**
-         * Merges with a preceding {@link PointerDownHtmlUnitAction} on the same
-         * element and button into a {@link PointerClickHtmlUnitAction}.
-         */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            if (previousAction instanceof PointerDownHtmlUnitAction) {
-                final PointerDownHtmlUnitAction pointerDownAction =
-                        (PointerDownHtmlUnitAction) previousAction;
-                if (pointerDownAction.getDomElement() == getDomElement()
-                        && pointerDownAction.getButton() == getButton()) {
-                    return new PointerClickHtmlUnitAction(getDomElement(), getButton());
-                }
-            }
-            return this;
-        }
-    }
-
-    /**
-     * A synthesised click action produced by merging a pointer-down and a
-     * pointer-up on the same element with the same button.
-     *
-     * <p>Two successive clicks on the same element (regardless of button) are
-     * further merged into a {@link PointerDblClickHtmlUnitAction}.</p>
-     */
-    private static final class PointerClickHtmlUnitAction extends PointerHtmlUnitAction {
-
-        PointerClickHtmlUnitAction(final DomElement domElement, final int button) {
-            super(domElement, button);
-        }
-
-        /**
-         * Dispatches the click. Primary button (0) triggers a standard click;
-         * secondary button (2) triggers a context-click. The auxiliary (middle)
-         * button and any other button fall back to a standard click because
-         * HtmlUnit's {@code Mouse} API does not expose a dedicated middle-click.
-         */
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            if (BUTTON_SECONDARY == getButton()) {
-                driver.getMouse().contextClick(null);
-                return;
-            }
-            // BUTTON_PRIMARY (0) and BUTTON_AUXILIARY (1) both map to click();
-            // HtmlUnit has no dedicated middle-click API.
-            driver.getMouse().click(null);
-        }
-
-        /**
-         * Merges two successive clicks on the same element <em>with the same
-         * button</em> into a double-click. The button must match to avoid
-         * combining e.g. a right-click and a left-click into a left double-click.
-         */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            if (previousAction instanceof PointerClickHtmlUnitAction) {
-                final PointerClickHtmlUnitAction pointerClickAction =
-                        (PointerClickHtmlUnitAction) previousAction;
-                if (pointerClickAction.getDomElement() == getDomElement()
-                        && pointerClickAction.getButton() == getButton()) {
-                    return new PointerDblClickHtmlUnitAction(getDomElement());
-                }
-            }
-            return this;
-        }
-    }
-
-    /**
-     * A synthesised double-click action produced by merging two successive
-     * {@link PointerClickHtmlUnitAction}s on the same element.
-     *
-     * <p>Double-click actions are never merged further.</p>
-     */
-    private static final class PointerDblClickHtmlUnitAction extends DomElementHtmlUnitAction {
-
-        PointerDblClickHtmlUnitAction(final DomElement domElement) {
-            super(domElement);
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            driver.getMouse().doubleClick((Coordinates) null);
-        }
-
-        /** Double-click actions are never merged further; always returns {@code this}. */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            return this;
         }
     }
 }
