@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.htmlunit.html.DomElement;
+import org.openqa.selenium.htmlunit.action.HtmlUnitAction;
 import org.openqa.selenium.htmlunit.w3.Action;
 import org.openqa.selenium.interactions.Coordinates;
 
@@ -174,41 +175,6 @@ public class HtmlUnitInputProcessor {
             htmlUnitActions_.set(secondLastPos, joinedAction);
             htmlUnitActions_.remove(lastPos);
         }
-    }
-
-    /**
-     * Represents a low-level input action that can be executed by an
-     * {@link HtmlUnitDriver}.
-     *
-     * <p>Implementations define how a specific input event (keyboard, mouse,
-     * etc.) is dispatched and how it may be merged with a preceding action to
-     * produce a higher-level event (e.g. down + up → click).</p>
-     */
-    public interface HtmlUnitAction {
-
-        /**
-         * Dispatches this action through the given {@link HtmlUnitDriver}.
-         *
-         * @param driver the driver used to execute the action; never {@code null}
-         */
-        void process(HtmlUnitDriver driver);
-
-        /**
-         * Attempts to merge this action with the immediately preceding action.
-         *
-         * <p>If a meaningful merge is possible (e.g. a pointer-up following a
-         * pointer-down on the same element with the same button can become a
-         * click), implementations return a new {@link HtmlUnitAction} representing
-         * the combined event. If no merge is possible, implementations return
-         * {@code this}. The caller uses an identity check ({@code joinedAction
-         * == this}) to detect the no-merge case.</p>
-         *
-         * @param previousAction the action immediately before this one in the
-         *                       queue; never {@code null}
-         * @return a merged {@link HtmlUnitAction} if a merge was possible,
-         *         or {@code this} if no merge applies
-         */
-        HtmlUnitAction join(HtmlUnitAction previousAction);
     }
 
     /**
@@ -445,121 +411,6 @@ public class HtmlUnitInputProcessor {
         /** Double-click actions are never merged further; always returns {@code this}. */
         @Override
         public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            return this;
-        }
-    }
-
-    /**
-     * An {@link HtmlUnitAction} that represents a key-down (key-press) event.
-     * Presses the specified key through the driver's keyboard.
-     *
-     * <p>Key-down actions are never merged with a preceding action.</p>
-     */
-    public static final class KeyDownHtmlUnitAction implements HtmlUnitAction {
-        private final String value_;
-
-        /**
-         * Creates a new key-down action for the given key value.
-         *
-         * @param value the key to press; must not be {@code null}
-         */
-        public KeyDownHtmlUnitAction(final String value) {
-            value_ = value;
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            driver.getKeyboard().pressKey(value_);
-        }
-
-        /** Key-down actions are never merged; always returns {@code this}. */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            return this;
-        }
-    }
-
-    /**
-     * An {@link HtmlUnitAction} that represents a key-up (key-release) event.
-     * Releases the specified key through the driver's keyboard.
-     *
-     * <p>When preceded by a {@link KeyDownHtmlUnitAction} for the same key, this
-     * action merges into a {@link KeySendHtmlUnitAction}, which sends the key as
-     * a complete keystroke rather than as separate press/release events.</p>
-     */
-    public static final class KeyUpHtmlUnitAction implements HtmlUnitAction {
-        private final String value_;
-
-        /**
-         * Creates a new key-up action for the given key value.
-         *
-         * @param value the key to release; must not be {@code null}
-         */
-        public KeyUpHtmlUnitAction(final String value) {
-            value_ = value;
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            driver.getKeyboard().releaseKey(value_);
-        }
-
-        /**
-         * Merges with a preceding {@link KeyDownHtmlUnitAction} for the same key
-         * into a {@link KeySendHtmlUnitAction}.
-         *
-         * <p>{@code value_} is guaranteed non-null by the constructor; no null
-         * check is required here because {@code previousAction} is never
-         * {@code null} (the merge loop only calls {@code join} when there are at
-         * least two entries in the queue).</p>
-         */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            if (previousAction instanceof KeyDownHtmlUnitAction) {
-                final KeyDownHtmlUnitAction keyDownAction = (KeyDownHtmlUnitAction) previousAction;
-                if (value_.equals(keyDownAction.value_)) {
-                    return new KeySendHtmlUnitAction(value_);
-                }
-            }
-            return this;
-        }
-    }
-
-    /**
-     * An {@link HtmlUnitAction} representing a complete keystroke (press +
-     * release). Sends the key value directly through the driver's keyboard.
-     *
-     * <p>Consecutive {@link KeySendHtmlUnitAction}s are merged by concatenating
-     * their values, allowing multi-character type sequences to be dispatched in
-     * a single {@code sendKeys} call.</p>
-     */
-    public static final class KeySendHtmlUnitAction implements HtmlUnitAction {
-        private final String value_;
-
-        /**
-         * Creates a new key-send action for the given key value.
-         *
-         * @param value the key value to send; must not be {@code null}
-         */
-        public KeySendHtmlUnitAction(final String value) {
-            value_ = value;
-        }
-
-        @Override
-        public void process(final HtmlUnitDriver driver) {
-            driver.getKeyboard().sendKeys(value_);
-        }
-
-        /**
-         * Merges with a preceding {@link KeySendHtmlUnitAction} by concatenating
-         * the two key values into a single action.
-         */
-        @Override
-        public HtmlUnitAction join(final HtmlUnitAction previousAction) {
-            if (previousAction instanceof KeySendHtmlUnitAction) {
-                final KeySendHtmlUnitAction keySendAction = (KeySendHtmlUnitAction) previousAction;
-                return new KeySendHtmlUnitAction(keySendAction.value_ + value_);
-            }
             return this;
         }
     }
