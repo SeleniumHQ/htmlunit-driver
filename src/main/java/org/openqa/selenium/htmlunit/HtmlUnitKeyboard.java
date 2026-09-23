@@ -66,7 +66,7 @@ public class HtmlUnitKeyboard {
      * The owning {@link HtmlUnitDriver} used to resolve the active element,
      * manage focus changes, and integrate with other input devices.
      */
-    private final HtmlUnitDriver parent_;
+    private final HtmlUnitDriver htmlunitDriver_;
 
     /**
      * The last element that received keyboard input. Used to determine whether
@@ -78,10 +78,10 @@ public class HtmlUnitKeyboard {
     /**
      * Creates a new {@link HtmlUnitKeyboard} associated with the specified driver.
      *
-     * @param parent the driver instance that owns this keyboard; must not be {@code null}
+     * @param driver the driver instance that owns this keyboard; must not be {@code null}
      */
-    HtmlUnitKeyboard(final HtmlUnitDriver parent) {
-        parent_ = parent;
+    HtmlUnitKeyboard(final HtmlUnitDriver driver) {
+        htmlunitDriver_ = driver;
     }
 
     /**
@@ -98,7 +98,7 @@ public class HtmlUnitKeyboard {
      * @throws WebDriverException     if an I/O error occurs while dispatching the keys
      */
     public void sendKeys(final CharSequence... keysToSend) {
-        final Object activeElement = parent_.switchTo().activeElement();
+        final Object activeElement = htmlunitDriver_.switchTo().activeElement();
         if (!(activeElement instanceof HtmlUnitWebElement huWebElement)) {
             throw new IllegalStateException(
                     "Active element is not an HtmlUnitWebElement: "
@@ -211,7 +211,7 @@ public class HtmlUnitKeyboard {
      * @throws WebDriverException if an {@link IOException} occurs during dispatch
      */
     public void pressKey(final CharSequence keyToPress) {
-        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();
+        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) htmlunitDriver_.switchTo().activeElement();
         final HtmlElement element = (HtmlElement) htmlElement.getElement();
 
         final List<Runnable> pendingStateChanges = new ArrayList<>();
@@ -241,7 +241,7 @@ public class HtmlUnitKeyboard {
      * @throws WebDriverException if an {@link IOException} occurs during dispatch
      */
     public void releaseKey(final CharSequence keyToRelease) {
-        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) parent_.switchTo().activeElement();
+        final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) htmlunitDriver_.switchTo().activeElement();
         final HtmlElement element = (HtmlElement) htmlElement.getElement();
 
         final List<Runnable> pendingStateChanges = new ArrayList<>();
