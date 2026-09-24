@@ -328,7 +328,7 @@ public class HtmlUnitElementFinder {
             final String value = getValue(locator);
 
             if (value.indexOf(' ') != -1) {
-                throw new InvalidSelectorException("Compound class names not permitted; contains blank: " + value);
+                throw new InvalidSelectorException("Compound class names not permitted; contains blank: \"" + value + '"');
             }
             return value;
         }
