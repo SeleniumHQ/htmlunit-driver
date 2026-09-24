@@ -328,7 +328,7 @@ public class HtmlUnitElementFinder {
             final String value = getValue(locator);
 
             if (value.indexOf(' ') != -1) {
-                throw new InvalidSelectorException("Compound class names not permitted; contains blank");
+                throw new InvalidSelectorException("Compound class names not permitted; contains blank: " + value);
             }
             return value;
         }
@@ -356,31 +356,37 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
+            final String value = getValue(locator);
             final DomNode node;
 
             try {
-                node = getLastPage(driver).querySelector(getValue(locator));
+                node = getLastPage(driver).querySelector(value);
             }
             catch (final CSSException ex) {
-                throw new InvalidSelectorException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element for css: " + value, ex);
             }
 
             if (node instanceof DomElement domElement) {
                 return driver.toWebElement(domElement);
             }
+            
+            if (node == null) {
+                throw new NoSuchElementException("Unable to locate element for css: " + value);
+            }
 
-            throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element");
+            throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element for css: " + value);
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
+            final String value = getValue(locator);
             final DomNodeList<DomNode> allNodes;
 
             try {
-                allNodes = getLastPage(driver).querySelectorAll(getValue(locator));
+                allNodes = getLastPage(driver).querySelectorAll(value);
             }
             catch (final CSSException ex) {
-                throw new InvalidSelectorException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element for css: " + value, ex);
             }
 
             final List<WebElement> toReturn = new ArrayList<>();
@@ -390,7 +396,7 @@ public class HtmlUnitElementFinder {
                     toReturn.add(driver.toWebElement(domElement));
                 }
                 else {
-                    throw new NoSuchElementException("Returned node was not a DOM element");
+                    throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element for css: " + value);
                 }
             }
 
@@ -399,13 +405,14 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
+            final String value = getValue(locator);
             final DomNodeList<DomNode> allNodes;
 
             try {
-                allNodes = element.getElement().querySelectorAll(getValue(locator));
+                allNodes = element.getElement().querySelectorAll(value);
             }
             catch (final CSSException ex) {
-                throw new InvalidSelectorException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element for css: " + value, ex);
             }
 
             final List<WebElement> toReturn = new ArrayList<>();
@@ -415,7 +422,7 @@ public class HtmlUnitElementFinder {
                     toReturn.add(element.getDriver().toWebElement(domElement));
                 }
                 else {
-                    throw new NoSuchElementException("Returned node was not a DOM element");
+                    throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element for css: " + value);
                 }
             }
 
@@ -424,20 +431,25 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
+            final String value = getValue(locator);
             final DomNode node;
 
             try {
-                node = element.getElement().querySelector(getValue(locator));
+                node = element.getElement().querySelector(value);
             }
             catch (final CSSException ex) {
-                throw new InvalidSelectorException("Unable to locate element using css", ex);
+                throw new InvalidSelectorException("Unable to locate element for css: " + value, ex);
             }
 
             if (node instanceof DomElement domElement) {
                 return element.getDriver().toWebElement(domElement);
             }
 
-            throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element");
+            if (node == null) {
+                throw new NoSuchElementException("Unable to locate element for css: " + value);
+            }
+
+            throw new NoSuchElementException("Returned node (" + node + ") was not a DOM element for css: " + value);
         }
     }
 
@@ -537,7 +549,7 @@ public class HtmlUnitElementFinder {
             }
 
             if (node == null) {
-                throw new NoSuchElementException("Unable to locate a node using " + value);
+                throw new NoSuchElementException("Unable to locate a node for xpath " + value);
             }
             if (node instanceof DomElement domElement) {
                 return driver.toWebElement(domElement);
@@ -663,7 +675,7 @@ public class HtmlUnitElementFinder {
             if (!toReturn.isEmpty()) {
                 return toReturn.get(0);
             }
-            throw new NoSuchElementException("Unable to locate element");
+            throw new NoSuchElementException("Unable to locate element: " + locator);
         }
 
         /**
@@ -691,7 +703,7 @@ public class HtmlUnitElementFinder {
             if (!toReturn.isEmpty()) {
                 return toReturn.get(0);
             }
-            throw new NoSuchElementException("Unable to locate element");
+            throw new NoSuchElementException("Unable to locate element: " + locator);
         }
 
         /**
