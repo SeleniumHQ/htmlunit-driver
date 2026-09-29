@@ -155,7 +155,6 @@ public class HtmlUnitKeyboard {
      */
     private void sendKeys(final HtmlElement element,
             final InputKeysContainer keysToSend, final boolean releaseAllAtEnd) {
-        keysToSend.setCapitalization(modifiersState_.isShiftPressed());
         final String keysSequence = keysToSend.toString();
 
         // HtmlElement.type() does not modify HtmlFileInput values — handle separately.
@@ -173,19 +172,7 @@ public class HtmlUnitKeyboard {
         try {
             final boolean startAtEnd = lastElement_ != element && !(element instanceof HtmlNumberInput);
             final List<Runnable> pendingStateChanges = new ArrayList<>();
-            final Keyboard keyboard = buildKeyboard(startAtEnd, keysSequence, true, pendingStateChanges);
-
-            if (releaseAllAtEnd) {
-                if (isShiftPressed()) {
-                    addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false, pendingStateChanges);
-                }
-                if (isAltPressed()) {
-                    addToKeyboard(keyboard, Keys.ALT.charAt(0), false, pendingStateChanges);
-                }
-                if (isCtrlPressed()) {
-                    addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false, pendingStateChanges);
-                }
-            }
+            final Keyboard keyboard = buildKeyboard(startAtEnd, keysSequence, true, releaseAllAtEnd, pendingStateChanges);
 
             element.type(keyboard);
 
@@ -216,7 +203,7 @@ public class HtmlUnitKeyboard {
 
         final List<Runnable> pendingStateChanges = new ArrayList<>();
         final Keyboard keyboard = buildKeyboard(
-                lastElement_ != element, keyToPress, true, pendingStateChanges);
+                lastElement_ != element, keyToPress, true, false, pendingStateChanges);
         try {
             element.type(keyboard);
         }
@@ -246,7 +233,7 @@ public class HtmlUnitKeyboard {
 
         final List<Runnable> pendingStateChanges = new ArrayList<>();
         final Keyboard keyboard = buildKeyboard(
-                lastElement_ != element, keyToRelease, false, pendingStateChanges);
+                lastElement_ != element, keyToRelease, false, false, pendingStateChanges);
         try {
             element.type(keyboard);
         }
@@ -279,11 +266,38 @@ public class HtmlUnitKeyboard {
      * @return the constructed {@link Keyboard} ready for dispatch
      */
     private Keyboard buildKeyboard(final boolean startAtEnd, final CharSequence keysSequence,
-            final boolean isPress, final List<Runnable> pendingStateChanges) {
+            final boolean isPress, final boolean releaseAllAtEnd, final List<Runnable> pendingStateChanges) {
         final Keyboard keyboard = new Keyboard(startAtEnd);
-        for (int i = 0; i < keysSequence.length(); i++) {
-            addToKeyboard(keyboard, keysSequence.charAt(i), isPress, pendingStateChanges);
+        // to track the sequence
+        final KeyboardModifiersState currentModifier = new KeyboardModifiersState();
+
+        // reflect current modifier state
+        if (isShiftPressed()) {
+            addToKeyboard(keyboard, Keys.SHIFT.charAt(0), true, pendingStateChanges, currentModifier);
         }
+        if (isAltPressed()) {
+            addToKeyboard(keyboard, Keys.ALT.charAt(0), true, pendingStateChanges, currentModifier);
+        }
+        if (isCtrlPressed()) {
+            addToKeyboard(keyboard, Keys.CONTROL.charAt(0), true, pendingStateChanges, currentModifier);
+        }
+
+        for (int i = 0; i < keysSequence.length(); i++) {
+            addToKeyboard(keyboard, keysSequence.charAt(i), isPress, pendingStateChanges, currentModifier);
+        }
+
+        if (releaseAllAtEnd) {
+            if (currentModifier.isShiftPressed() || isShiftPressed()) {
+                addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+            if (currentModifier.isAltPressed() || isAltPressed()) {
+                addToKeyboard(keyboard, Keys.ALT.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+            if (currentModifier.isCtrlPressed() || isCtrlPressed()) {
+                addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+        }
+
         return keyboard;
     }
 
@@ -297,19 +311,43 @@ public class HtmlUnitKeyboard {
      * @param ch                  the character to process
      * @param isPress             {@code true} for press; {@code false} for release
      * @param pendingStateChanges deferred modifier-state updates
+     * @param currentModifier     we have to track the modifiers triggered in this sequence
      */
     private void addToKeyboard(final Keyboard keyboard, final char ch, final boolean isPress,
-            final List<Runnable> pendingStateChanges) {
+            final List<Runnable> pendingStateChanges, final KeyboardModifiersState currentModifier) {
+
+        // 0 signals release all modifiers
+        if (ch == Keys.NULL.charAt(0)) {
+            if (currentModifier.isShiftPressed() || isShiftPressed()) {
+                addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+            if (currentModifier.isAltPressed() || isAltPressed()) {
+                addToKeyboard(keyboard, Keys.ALT.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+            if (currentModifier.isCtrlPressed() || isCtrlPressed()) {
+                addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false, pendingStateChanges, currentModifier);
+            }
+
+            return;
+        }
+
         if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
             final int keyCode = HtmlUnitKeyboardMapping.getKeysMapping(ch);
             if (isPress) {
                 keyboard.press(keyCode);
+                currentModifier.storeKeyDown(ch);
                 pendingStateChanges.add(() -> modifiersState_.storeKeyDown(ch));
+                return;
             }
-            else {
-                keyboard.release(keyCode);
-                pendingStateChanges.add(() -> modifiersState_.storeKeyUp(ch));
-            }
+
+            keyboard.release(keyCode);
+            currentModifier.storeKeyUp(ch);
+            pendingStateChanges.add(() -> modifiersState_.storeKeyUp(ch));
+            return;
+        }
+
+        if (currentModifier.isShiftPressed() || isShiftPressed()) {
+            keyboard.type(Character.toUpperCase(ch));
         }
         else {
             keyboard.type(ch);

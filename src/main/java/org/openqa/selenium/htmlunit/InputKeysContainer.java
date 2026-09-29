@@ -58,9 +58,6 @@ public class InputKeysContainer {
     private final StringBuilder builder_ = new StringBuilder();
     private final boolean submitKeyFound_;
 
-    /** Whether the output string should be uppercased before dispatch. */
-    private boolean capitalize_;
-
     /**
      * Creates a new {@link InputKeysContainer} from the given character sequences
      * without trimming past any submit key.
@@ -140,9 +137,6 @@ public class InputKeysContainer {
         toReturn = toReturn.replace(RETURN.toString(), "\r");
         // "\n" literals are already in the correct form; no replacement needed.
 
-        if (capitalize_) {
-            return toReturn.toUpperCase(Locale.ROOT);
-        }
         return toReturn;
     }
 
@@ -154,17 +148,5 @@ public class InputKeysContainer {
      */
     public boolean wasSubmitKeyFound() {
         return submitKeyFound_;
-    }
-
-    /**
-     * Controls whether the string returned by {@link #toString()} is
-     * uppercased. Typically set to {@code true} when the Shift modifier key is
-     * active.
-     *
-     * @param capitalize {@code true} to uppercase the output; {@code false} to
-     *                   leave it as-is
-     */
-    public void setCapitalization(final boolean capitalize) {
-        capitalize_ = capitalize;
     }
 }
