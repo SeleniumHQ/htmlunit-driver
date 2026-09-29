@@ -74,13 +74,15 @@ public final class HtmlUnitKeyboardMapping {
         // the second put is a harmless no-op.
         map.put(Keys.ENTER.charAt(0),         KeyboardEvent.DOM_VK_RETURN);
 
-        // Keys.SHIFT and Keys.LEFT_SHIFT both map to DOM_VK_SHIFT.
+        // Keys.SHIFT and Keys.RIGHT_SHIFT both map to DOM_VK_SHIFT.
+        // Keys.SHIFT and Keys.LEFT_SHIFT have the same value
         map.put(Keys.SHIFT.charAt(0),         KeyboardEvent.DOM_VK_SHIFT);
-        map.put(Keys.LEFT_SHIFT.charAt(0),    KeyboardEvent.DOM_VK_SHIFT);
+        map.put(Keys.RIGHT_SHIFT.charAt(0),    KeyboardEvent.DOM_VK_SHIFT);
 
-        // Keys.CONTROL and Keys.LEFT_CONTROL both map to DOM_VK_CONTROL.
+        // Keys.CONTROL and Keys.RIGHT_CONTROL both map to DOM_VK_CONTROL.
+        // Keys.CONTROL and Keys.LEFT_SHIFT have the same value
         map.put(Keys.CONTROL.charAt(0),       KeyboardEvent.DOM_VK_CONTROL);
-        map.put(Keys.LEFT_CONTROL.charAt(0),  KeyboardEvent.DOM_VK_CONTROL);
+        map.put(Keys.RIGHT_CONTROL.charAt(0),  KeyboardEvent.DOM_VK_CONTROL);
 
         // Keys.ALT and Keys.LEFT_ALT both map to DOM_VK_ALT.
         map.put(Keys.ALT.charAt(0),           KeyboardEvent.DOM_VK_ALT);
