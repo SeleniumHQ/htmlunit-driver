@@ -24,32 +24,32 @@
         <enforcer.require.maven.version>3.9.0</enforcer.require.maven.version>
         <enforcer.require.java.version>17</enforcer.require.java.version>
 
-        <selenium.version>4.48.0</selenium.version>
-        <selenium.devtools.artifactId>selenium-devtools-v152</selenium.devtools.artifactId>
+        <selenium.version>4.49.0</selenium.version>
+        <selenium.devtools.artifactId>selenium-devtools-v153</selenium.devtools.artifactId>
         <htmlunit.version>5.6.0-SNAPSHOT</htmlunit.version>
 
-        <jetty.version>12.1.12</jetty.version>
+        <jetty.version>12.1.13</jetty.version>
 
         <!-- test dependencies -->
         <junit.version>4.13.2</junit.version>
 
         <!-- quality -->
         <checkstyle.version>12.3.1</checkstyle.version>
-        <spotbugs.version>4.10.3</spotbugs.version>
-        <archunit.version>1.4.2</archunit.version>
+        <spotbugs.version>4.10.4</spotbugs.version>
+        <archunit.version>1.5.1</archunit.version>
         <dependencycheck.version>12.1.9</dependencycheck.version>
 
         <!-- plugins -->
         <central-publishing-plugin.version>0.11.0</central-publishing-plugin.version>
         <checkstyle-plugin.version>3.6.0</checkstyle-plugin.version>
-        <spotbugs-plugin.version>4.10.3.0</spotbugs-plugin.version>
+        <spotbugs-plugin.version>4.10.4.1</spotbugs-plugin.version>
         <gpg-plugin.version>3.2.8</gpg-plugin.version>
         <enforcer-plugin.version>3.6.3</enforcer-plugin.version>
-        <compiler-plugin.version>3.15.0</compiler-plugin.version>
+        <compiler-plugin.version>3.16.0</compiler-plugin.version>
         <assembly-plugin.version>3.8.0</assembly-plugin.version>
         <source-plugin.version>3.4.0</source-plugin.version>
         <javadoc-plugin.version>3.12.0</javadoc-plugin.version>
-        <surefire-plugin.version>3.5.6</surefire-plugin.version>
+        <surefire-plugin.version>3.6.0</surefire-plugin.version>
         <cyclonedx-plugin.version>2.9.3</cyclonedx-plugin.version>
     </properties>
 

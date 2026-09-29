@@ -36,9 +36,7 @@ import java.util.Locale;
  * <p><b>Key normalisation in {@link #toString()}:</b> {@code ENTER}, {@code RETURN},
  * and literal {@code \n} are all normalised to {@code \n} so that HtmlUnit
  * receives a consistent line-ending regardless of which variant the caller used.
- * Capitalisation (when enabled via {@link #setCapitalization(boolean)}) is applied
- * with {@link Locale#ROOT} to avoid locale-specific character mappings (e.g. the
- * Turkish "dotted I" problem).</p>
+ * </p>
  *
  * <p>This class is not thread-safe; instances should be used by a single thread.</p>
  *

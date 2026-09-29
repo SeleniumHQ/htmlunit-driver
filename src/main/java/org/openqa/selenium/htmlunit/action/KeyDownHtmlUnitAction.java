@@ -48,6 +48,9 @@ public final class KeyDownHtmlUnitAction implements HtmlUnitAction {
         return this;
     }
 
+    /**
+     * @return the value
+     */
     public String getValue() {
         return value_;
     }
