@@ -200,7 +200,7 @@ public class HtmlUnitMouse {
             // Press on regardless
 
             // maybe this... or at least logging
-            throw new WebDriverException("Script error during click: " + e.getMessage(), e);
+            // throw new WebDriverException("Script error during click: " + e.getMessage(), e);
         }
         catch (final RuntimeException e) {
             final Throwable cause = e.getCause();
