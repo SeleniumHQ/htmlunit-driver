@@ -110,14 +110,14 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
     public WebDriver frame(final int index) {
         final Page page = driver_.getCurrentWindow().lastPage();
         if (!(page instanceof HtmlPage)) {
-            throw new NoSuchFrameException("Cannot find frame: " + index
-                    + " (current page is not an HTML page)");
+            throw new NoSuchFrameException("Unable to locate frame by index '" + index
+                    + "'; current page is not an HTML page.");
         }
         try {
             driver_.setCurrentWindow(((HtmlPage) page).getFrames().get(index));
         }
         catch (final IndexOutOfBoundsException ignored) {
-            throw new NoSuchFrameException("Cannot find frame: " + index);
+            throw new NoSuchFrameException("Unable to locate frame by index: '" + index + "'.");
         }
         return driver_;
     }
@@ -167,7 +167,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
         catch (final NoSuchElementException ignored) {
         }
 
-        throw new NoSuchFrameException("Unable to locate frame with name or ID: " + nameOrId);
+        throw new NoSuchFrameException("Unable to locate frame with name or ID: '" + nameOrId + "'.");
     }
 
     /**
@@ -190,7 +190,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
 
         final DomElement domElement = webElement.getElement();
         if (!(domElement instanceof BaseFrameElement)) {
-            throw new NoSuchFrameException(webElement.getTagName() + " is not a frame element.");
+            throw new NoSuchFrameException("Element '" + webElement.getTagName() + "' is not a frame element.");
         }
 
         driver_.setCurrentWindow(((BaseFrameElement) domElement).getEnclosedWindow());
@@ -241,7 +241,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
                     return finishSelecting(top);
                 }
             }
-            throw new NoSuchWindowException("Cannot find window: " + windowId);
+            throw new NoSuchWindowException("Unable to locate window with name or handle: '" + windowId + "'.");
         }
     }
 
@@ -296,7 +296,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
             }
         }
 
-        throw new NoSuchElementException("Unable to locate element with focus or body tag");
+        throw new NoSuchElementException("Unable to locate element with focus or body tag.");
     }
 
     /**
@@ -348,7 +348,7 @@ public class HtmlUnitTargetLocator implements WebDriver.TargetLocator {
                 && !isChild(currentWindow, alertWindow)
                 && !isChild(alertWindow, currentWindow)) {
             throw new TimeoutException(
-                    "Alert belongs to a window that is not related to the current window context");
+                    "Alert belongs to a window that is not related to the current window context.");
         }
         return alert;
     }

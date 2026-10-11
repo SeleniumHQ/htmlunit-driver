@@ -20,8 +20,6 @@ package org.openqa.selenium.htmlunit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.htmlunit.javascript.host.event.KeyboardEvent;
 import org.openqa.selenium.Keys;
@@ -50,7 +48,7 @@ import org.openqa.selenium.Keys;
  */
 public final class HtmlUnitKeyboardMapping {
 
-    private static final Logger LOG = Logger.getLogger(HtmlUnitKeyboardMapping.class.getName());
+    // private static final Logger LOG = Logger.getLogger(HtmlUnitKeyboardMapping.class.getName());
 
     /**
      * Immutable mapping from a {@link Keys} character (PUA code point) to its
@@ -191,9 +189,9 @@ public final class HtmlUnitKeyboardMapping {
     static int getKeysMapping(final char ch) {
         final Integer keyCode = SPECIAL_KEYS_MAP.get(ch);
         if (keyCode == null) {
-            LOG.log(Level.WARNING,
-                    "No DOM_VK_* mapping for special key character U+{0}; key event will be skipped.",
-                    Integer.toHexString(ch).toUpperCase());
+            // LOG.log(Level.WARNING,
+            //         "No DOM_VK_* mapping for special key character U+{0}; key event will be skipped.",
+            //        Integer.toHexString(ch).toUpperCase());
             return 0;
         }
         return keyCode;

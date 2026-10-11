@@ -130,7 +130,7 @@ public class HtmlUnitMouse {
 
         if (currentActiveElement_ == null) {
             throw new NoSuchElementException(
-                    "About to perform an interaction that relies on the active element, but there isn't one.");
+                    "Cannot perform mouse interaction; no active element has been established.");
         }
 
         return currentActiveElement_;
@@ -177,7 +177,7 @@ public class HtmlUnitMouse {
      */
     void click(final DomElement element, final boolean directClick) {
         if (!element.isDisplayed()) {
-            throw new ElementNotInteractableException("You may only interact with visible elements");
+            throw new ElementNotInteractableException("You may only interact with visible elements.");
         }
 
         moveOutIfNeeded(element);
@@ -198,6 +198,9 @@ public class HtmlUnitMouse {
             // TODO(simon): This isn't good enough.
             System.out.println(e.getMessage());
             // Press on regardless
+
+            // maybe this... or at least logging
+            throw new WebDriverException("Script error during click: " + e.getMessage(), e);
         }
         catch (final RuntimeException e) {
             final Throwable cause = e.getCause();
@@ -290,7 +293,7 @@ public class HtmlUnitMouse {
      */
     void doubleClick(final DomElement element) {
         if (!element.isDisplayed()) {
-            throw new ElementNotInteractableException("You may only interact with visible elements");
+            throw new ElementNotInteractableException("You may only interact with visible elements.");
         }
 
         moveOutIfNeeded(element);
@@ -300,8 +303,7 @@ public class HtmlUnitMouse {
             updateActiveElement(element);
         }
         catch (final IOException e) {
-            // TODO: What should we do in case of error?
-            e.printStackTrace();
+            throw new WebDriverException("I/O error during double-click: " + e.getMessage(), e);
         }
         catch (final ScriptException e) {
             throw new WebDriverException("Script error during double-click: " + e.getMessage(), e);
@@ -329,7 +331,7 @@ public class HtmlUnitMouse {
         final DomElement element = getElementForOperation(elementCoordinates);
 
         if (!element.isDisplayed()) {
-            throw new ElementNotInteractableException("You may only interact with visible elements");
+            throw new ElementNotInteractableException("You may only interact with visible elements.");
         }
 
         moveOutIfNeeded(element);
@@ -361,7 +363,7 @@ public class HtmlUnitMouse {
      */
     void mouseDown(final DomElement element) {
         if (!element.isDisplayed()) {
-            throw new ElementNotInteractableException("You may only interact with visible elements");
+            throw new ElementNotInteractableException("You may only interact with visible elements.");
         }
 
         moveOutIfNeeded(element);
@@ -393,7 +395,7 @@ public class HtmlUnitMouse {
      */
     void mouseUp(final DomElement element) {
         if (!element.isDisplayed()) {
-            throw new ElementNotInteractableException("You may only interact with visible elements");
+            throw new ElementNotInteractableException("You may only interact with visible elements.");
         }
 
         moveOutIfNeeded(element);
@@ -440,6 +442,6 @@ public class HtmlUnitMouse {
      * @throws UnsupportedOperationException always
      */
     public void mouseMove(final Coordinates where, final long xOffset, final long yOffset) {
-        throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates not supported.");
+        throw new UnsupportedOperationException("Moving to arbitrary X,Y coordinates is not supported.");
     }
 }
