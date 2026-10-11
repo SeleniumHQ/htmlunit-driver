@@ -888,7 +888,7 @@ public class HtmlUnitDriver implements WebDriver, JavascriptExecutor, HasCapabil
             page = getCurrentWindow().getWebWindow().getTopWindow().getEnclosedPage();
         }
 
-        return ((HtmlPage) page).getTitleText();
+        return ((HtmlPage) page).getDocumentTitle();
     }
 
     @Override
