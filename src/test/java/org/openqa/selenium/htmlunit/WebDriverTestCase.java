@@ -79,7 +79,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
-import org.openqa.selenium.devtools.v153.emulation.Emulation;
+import org.openqa.selenium.devtools.v155.emulation.Emulation;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -198,6 +198,7 @@ public abstract class WebDriverTestCase extends WebTestCase {
                     + "msg = msg.replace(/\\n/g, '\\\\n'); "
                     + "msg = msg.replace(/\\r/g, '\\\\r'); "
                     + "msg = msg.replace(/\\t/g, '\\\\t'); "
+                    + "msg = msg.replace(/\\u00a0/g, '\\\\u00a0'); "
                     + "msg = msg.replace(/\\u001e/g, '\\\\u001e'); "
                     + "window.document.title += msg + '\u00A7';}\n"
 
