@@ -43,6 +43,13 @@ public final class ArchitectureTest {
     public static final ArchRule noGuava = noClasses()
             .should().dependOnClassesThat().resideInAPackage("com.google.common..");
 
+    /**
+     * Make sure to not use java.util.logging.
+     */
+    @ArchTest
+    public static final ArchRule noJavaUtilLoggingLogger = noClasses()
+            .should().dependOnClassesThat().haveFullyQualifiedName("java.util.logging.Logger");
+
     private ArchitectureTest() {
     }
 }
