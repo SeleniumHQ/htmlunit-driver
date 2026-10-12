@@ -220,7 +220,7 @@ public class HtmlUnitElementFinder {
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
             final String name = getValue(locator);
-            return new FindByXPath().findElements(element, By.xpath(".//*[@name = '" + name + "']"));
+            return new FindByXPath().findElements(element, By.xpath(".//*[@name = '" + xpathStringLiteral(name) + "']"));
         }
     }
 
