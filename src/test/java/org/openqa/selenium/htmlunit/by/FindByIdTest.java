@@ -17,12 +17,18 @@
 
 package org.openqa.selenium.htmlunit.by;
 
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -238,5 +244,264 @@ public class FindByIdTest extends WebDriverTestCase {
         final WebElement ctx = driver.findElement(By.id("ctx"));
         final WebElement element = ctx.findElement(By.id("tricky]id"));
         assertEquals("tricky]id", element.getAttribute("id"));
+    }
+
+    // ------------------------------------------------------------------
+    // helpers
+    // ------------------------------------------------------------------
+
+    private static String html(final String body) {
+        return "<html>\n"
+                + "<head>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + body
+                + "</body>\n"
+                + "</html>\n";
+    }
+
+    private static List<String> classes(final List<WebElement> elements) {
+        final List<String> classes = new ArrayList<>();
+        for (final WebElement element : elements) {
+            classes.add(element.getAttribute("class"));
+        }
+        return classes;
+    }
+
+    private static String escapeAttribute(final String value) {
+        return value.replace("&", "&amp;")
+                .replace("'", "&#39;")
+                .replace("\"", "&quot;")
+                .replace("<", "&lt;");
+    }
+
+    private static boolean found(final SearchContext context, final String id) {
+        return !context.findElements(By.id(id)).isEmpty();
+    }
+
+    private static void assertEmptyIdNeverMatches(final SearchContext context) {
+        // depending on the implementation an empty id is either simply not found or an invalid selector
+        try {
+            assertEquals(0, context.findElements(By.id("")).size());
+        }
+        catch (final InvalidSelectorException e) {
+            // acceptable
+        }
+
+        try {
+            context.findElement(By.id(""));
+            fail("an empty id must never match an element");
+        }
+        catch (final NoSuchElementException | InvalidSelectorException e) {
+            // expected
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // duplicates and ordering
+    // ------------------------------------------------------------------
+
+    @Test
+    public void elementsByIdWithDuplicates() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='testDivId' class='one'></div>\n"
+                + "  <div id='other'></div>\n"
+                + "  <div id='testDivId' class='two'></div>\n"));
+
+        assertEquals(Arrays.asList("one", "two"), classes(driver.findElements(By.id("testDivId"))));
+        assertEquals("one", driver.findElement(By.id("testDivId")).getAttribute("class"));
+    }
+
+    @Test
+    public void relativeElementsByIdInDocumentOrder() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='before' class='outside-before'></div>\n"
+                + "  <div id='ctx'>\n"
+                + "    <div id='testDivId' class='one'>\n"
+                + "      <span id='testDivId' class='nested'></span>\n"
+                + "    </div>\n"
+                + "    <div id='testDivId' class='three'></div>\n"
+                + "  </div>\n"
+                + "  <div id='testDivId' class='outside-after'></div>\n"));
+
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        assertEquals(Arrays.asList("one", "nested", "three"), classes(ctx.findElements(By.id("testDivId"))));
+        assertEquals("one", ctx.findElement(By.id("testDivId")).getAttribute("class"));
+    }
+
+    // ------------------------------------------------------------------
+    // scope
+    // ------------------------------------------------------------------
+
+    @Test(expected = NoSuchElementException.class)
+    public void relativeElementByIdDoesNotFindContext() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <div id='child'></div>\n"
+                + "  </div>\n"));
+
+        driver.findElement(By.id("ctx")).findElement(By.id("ctx"));
+    }
+
+    @Test
+    public void relativeElementsByIdDoesNotFindContext() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <div id='child'></div>\n"
+                + "  </div>\n"));
+
+        assertTrue(driver.findElement(By.id("ctx")).findElements(By.id("ctx")).isEmpty());
+    }
+
+    @Test
+    public void relativeElementByIdFindsDeepDescendant() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <div id='level1'>\n"
+                + "      <div id='level2'>\n"
+                + "        <span id='deep'>deep</span>\n"
+                + "      </div>\n"
+                + "    </div>\n"
+                + "  </div>\n"));
+
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        assertEquals("deep", ctx.findElement(By.id("deep")).getText());
+        assertEquals(1, ctx.findElements(By.id("deep")).size());
+
+        // chained lookups
+        assertEquals("deep", ctx.findElement(By.id("level1")).findElement(By.id("deep")).getText());
+    }
+
+    // ------------------------------------------------------------------
+    // matching semantics
+    // ------------------------------------------------------------------
+
+    @Test
+    public void exactIdMatchOnly() throws Exception {
+        final String html = "<!DOCTYPE html>\n"
+                + html("  <div id='ctx'>\n"
+                    + "    <div id='testDivId' class='hit'></div>\n"
+                    + "    <div id='testDivId2'></div>\n"
+                    + "    <div id='xtestDivId'></div>\n"
+                    + "    <div id='testdivid'></div>\n"
+                    + "    <div id=' padded '></div>\n"
+                    + "  </div>\n");
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+
+        assertEquals(Arrays.asList("hit"), classes(driver.findElements(By.id("testDivId"))));
+        assertEquals(Arrays.asList("hit"), classes(ctx.findElements(By.id("testDivId"))));
+
+        // no case folding in standards mode, no trimming of the attribute value
+        assertFalse(found(driver, "TESTDIVID"));
+        assertFalse(found(ctx, "TESTDIVID"));
+        assertFalse(found(driver, "padded"));
+        assertFalse(found(ctx, "padded"));
+    }
+
+    @Test
+    public void specialCharactersInId() throws Exception {
+        final String[] ids = {
+            "it's-fine", "it's a \"test\"", "a\"b", "tricky]id", "a[b]", "a b",
+            "a:b", "a.b", "a#b", "a>b", "a+b", "a~b", "a,b", "a*b", "a=b", "a@b", "a/b", "a\\b",
+            "a%b", "a&b", "a$b", "a(b)", "a<b",
+            "1abc", "-", "_", "--x", "[id]"
+            // "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
+        };
+
+        for (final String id : ids) {
+            final WebDriver driver = loadPage2(html(
+                    "  <div id='ctx'>\n"
+                    + "    <div id='a'></div>\n"
+                    + "    <div id='b'></div>\n"
+                    + "    <div id='foo'></div>\n"
+                    + "    <div id='bar'></div>\n"
+                    + "    <div id='" + escapeAttribute(id) + "'></div>\n"
+                    + "  </div>\n"));
+            final WebElement ctx = driver.findElement(By.id("ctx"));
+
+            // driver scope
+            assertEquals(id, id, driver.findElement(By.id(id)).getAttribute("id"));
+            assertEquals(id, 1, driver.findElements(By.id(id)).size());
+
+            // element scope
+            assertEquals(id, id, ctx.findElement(By.id(id)).getAttribute("id"));
+            assertEquals(id, 1, ctx.findElements(By.id(id)).size());
+        }
+    }
+
+    @Test
+    public void emptyId() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <span id=''>empty</span>\n"
+                + "    <span>no id</span>\n"
+                + "  </div>\n"));
+
+        assertEmptyIdNeverMatches(driver);
+        assertEmptyIdNeverMatches(driver.findElement(By.id("ctx")));
+    }
+
+    @Test
+    public void hiddenElementsAreFound() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <div id='hidden' style='display: none'>hidden</div>\n"
+                + "  </div>\n"));
+
+        assertEquals("hidden", driver.findElement(By.id("hidden")).getAttribute("id"));
+        assertEquals("hidden", driver.findElement(By.id("ctx")).findElement(By.id("hidden")).getAttribute("id"));
+    }
+
+    // ------------------------------------------------------------------
+    // dynamic DOM
+    // ------------------------------------------------------------------
+
+    @Test
+    public void idsChangedByScript() throws Exception {
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <div id='a'></div>\n"
+                + "    <div id='b'></div>\n"
+                + "    <div id='x'></div>\n"
+                + "    <div id='out'></div>\n"
+                + "  </div>\n"
+                + "  <div id='m'></div>\n"
+                + "  <script>\n"
+                + "    var ctx = document.getElementById('ctx');\n"
+                + "    document.getElementById('a').id = 'a2';\n"
+                + "    document.getElementById('b').setAttribute('id', 'b2');\n"
+                + "    document.getElementById('x').removeAttribute('id');\n"
+                + "    var c = document.createElement('div');\n"
+                + "    c.id = 'c';\n"
+                + "    ctx.appendChild(c);\n"
+                + "    var d = document.createElement('div');\n"
+                + "    d.id = 'd';\n"
+                + "    ctx.appendChild(d);\n"
+                + "    d.parentNode.removeChild(d);\n"
+                + "    ctx.appendChild(document.getElementById('m'));\n"
+                + "    document.body.appendChild(document.getElementById('out'));\n"
+                + "  </script>\n"));
+
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+
+        for (final SearchContext scope : new SearchContext[] {driver, ctx}) {
+            // old / removed ids are gone
+            assertFalse("a", found(scope, "a"));
+            assertFalse("b", found(scope, "b"));
+            assertFalse("x", found(scope, "x"));
+            assertFalse("d", found(scope, "d"));
+
+            // new ids are found
+            assertTrue("a2", found(scope, "a2"));
+            assertTrue("b2", found(scope, "b2"));
+            assertTrue("c", found(scope, "c"));
+            assertTrue("m", found(scope, "m"));
+        }
+
+        // 'out' was moved out of the context element
+        assertTrue(found(driver, "out"));
+        assertFalse(found(ctx, "out"));
     }
 }

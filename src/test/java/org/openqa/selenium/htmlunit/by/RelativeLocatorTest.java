@@ -17,11 +17,13 @@
 
 package org.openqa.selenium.htmlunit.by;
 
+import static org.junit.Assert.fail;
 import static org.openqa.selenium.By.cssSelector;
 import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.By.xpath;
 import static org.openqa.selenium.support.locators.RelativeLocator.with;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -316,6 +318,280 @@ public class RelativeLocatorTest extends WebDriverTestCase {
         }
         catch (final NoSuchElementException e) {
             assertTrue(e.getMessage().contains("Cannot locate an element using"));
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // helpers
+    // ------------------------------------------------------------------
+
+    /**
+     * 3x3 grid of absolutely positioned 50x50 cells with a gap of 50px.
+     * <pre>
+     *   tl tc tr
+     *   ml mc mr
+     *   bl bc br
+     * </pre>
+     */
+    private static String grid(final String extraBody) {
+        return "<html>\n"
+                + "<head>\n"
+                + "  <style>\n"
+                + "    body { margin: 0; }\n"
+                + "    .c { position: absolute; width: 50px; height: 50px; }\n"
+                + "  </style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div id='tl' class='c' name='cell' style='left: 0px; top: 0px;'></div>\n"
+                + "  <div id='tc' class='c' name='cell' style='left: 100px; top: 0px;'></div>\n"
+                + "  <div id='tr' class='c' name='cell' style='left: 200px; top: 0px;'></div>\n"
+                + "  <div id='ml' class='c' name='cell' style='left: 0px; top: 100px;'></div>\n"
+                + "  <div id='mc' class='c' name='cell' style='left: 100px; top: 100px;'></div>\n"
+                + "  <div id='mr' class='c' name='cell' style='left: 200px; top: 100px;'></div>\n"
+                + "  <div id='bl' class='c' name='cell' style='left: 0px; top: 200px;'></div>\n"
+                + "  <div id='bc' class='c' name='cell' style='left: 100px; top: 200px;'></div>\n"
+                + "  <div id='br' class='c' name='cell' style='left: 200px; top: 200px;'></div>\n"
+                + extraBody
+                + "</body>\n"
+                + "</html>\n";
+    }
+
+    private static List<String> ids(final List<WebElement> elements) {
+        return elements.stream().map(e -> e.getAttribute("id")).collect(Collectors.toList());
+    }
+
+    private static List<String> sortedIds(final List<WebElement> elements) {
+        return elements.stream().map(e -> e.getAttribute("id")).sorted().collect(Collectors.toList());
+    }
+
+    // ------------------------------------------------------------------
+    // single filters
+    // ------------------------------------------------------------------
+
+    @Test
+    public void above() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertEquals(Arrays.asList("tc", "tl", "tr"), sortedIds(driver.findElements(with(tagName("div")).above(mc))));
+        // the closest element comes first
+        assertEquals("tc", driver.findElement(with(tagName("div")).above(mc)).getAttribute("id"));
+    }
+
+    @Test
+    public void below() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertEquals(Arrays.asList("bc", "bl", "br"), sortedIds(driver.findElements(with(tagName("div")).below(mc))));
+        assertEquals("bc", driver.findElement(with(tagName("div")).below(mc)).getAttribute("id"));
+    }
+
+    @Test
+    public void toLeftOf() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertEquals(Arrays.asList("bl", "ml", "tl"),
+                sortedIds(driver.findElements(with(tagName("div")).toLeftOf(mc))));
+        assertEquals("ml", driver.findElement(with(tagName("div")).toLeftOf(mc)).getAttribute("id"));
+    }
+
+    @Test
+    public void toRightOf() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertEquals(Arrays.asList("br", "mr", "tr"),
+                sortedIds(driver.findElements(with(tagName("div")).toRightOf(mc))));
+        assertEquals("mr", driver.findElement(with(tagName("div")).toRightOf(mc)).getAttribute("id"));
+    }
+
+    @Test
+    public void referenceGivenAsLocator() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertEquals(sortedIds(driver.findElements(with(tagName("div")).above(mc))),
+                sortedIds(driver.findElements(with(tagName("div")).above(By.id("mc")))));
+        assertEquals(sortedIds(driver.findElements(with(tagName("div")).toRightOf(mc))),
+                sortedIds(driver.findElements(with(tagName("div")).toRightOf(By.id("mc")))));
+    }
+
+    @Test
+    public void referenceElementIsNeverPartOfTheResult() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        assertFalse(ids(driver.findElements(with(tagName("div")).above(mc))).contains("mc"));
+        assertFalse(ids(driver.findElements(with(tagName("div")).below(mc))).contains("mc"));
+        assertFalse(ids(driver.findElements(with(tagName("div")).toLeftOf(mc))).contains("mc"));
+        assertFalse(ids(driver.findElements(with(tagName("div")).toRightOf(mc))).contains("mc"));
+        assertFalse(ids(driver.findElements(with(tagName("div")).near(mc, 1000))).contains("mc"));
+    }
+
+    // ------------------------------------------------------------------
+    // combined filters
+    // ------------------------------------------------------------------
+
+    @Test
+    public void combinedFilters() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+        final WebElement tc = driver.findElement(By.id("tc"));
+        final WebElement bc = driver.findElement(By.id("bc"));
+
+        assertEquals(Arrays.asList("tl"),
+                sortedIds(driver.findElements(with(tagName("div")).above(mc).toLeftOf(mc))));
+        assertEquals(Arrays.asList("br"),
+                sortedIds(driver.findElements(with(tagName("div")).below(mc).toRightOf(mc))));
+
+        // the middle row: below the top row and above the bottom row
+        assertEquals(Arrays.asList("mc", "ml", "mr"),
+                sortedIds(driver.findElements(with(tagName("div")).below(tc).above(bc))));
+    }
+
+    // ------------------------------------------------------------------
+    // root locators
+    // ------------------------------------------------------------------
+
+    @Test
+    public void rootLocatorTypes() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        final By[] roots = {
+            tagName("div"), cssSelector("div"), cssSelector(".c"), xpath("//div[@class='c']"),
+            By.className("c"), By.name("cell")
+        };
+        for (final By root : roots) {
+            assertEquals(root.toString(), Arrays.asList("tc", "tl", "tr"),
+                    sortedIds(driver.findElements(with(root).above(mc))));
+        }
+    }
+
+    @Test
+    public void rootLocatorRestrictsTheCandidates() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        // tl is above mc, br is not
+        assertEquals(Arrays.asList("tl"), ids(driver.findElements(with(By.id("tl")).above(mc))));
+        assertTrue(driver.findElements(with(By.id("br")).above(mc)).isEmpty());
+    }
+
+    // ------------------------------------------------------------------
+    // no match
+    // ------------------------------------------------------------------
+
+    @Test
+    public void noMatchFindElementsReturnsEmptyList() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement tl = driver.findElement(By.id("tl"));
+
+        // nothing is above or left of the top left cell
+        assertTrue(driver.findElements(with(tagName("div")).above(tl)).isEmpty());
+        assertTrue(driver.findElements(with(tagName("div")).toLeftOf(tl)).isEmpty());
+        assertTrue(driver.findElements(with(tagName("span")).below(tl)).isEmpty());
+    }
+
+    @Test
+    public void noMatchFindElementThrows() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement tl = driver.findElement(By.id("tl"));
+
+        try {
+            driver.findElement(with(tagName("div")).above(tl));
+            fail("expected NoSuchElementException");
+        }
+        catch (final NoSuchElementException e) {
+            assertTrue(e.getMessage().contains("Cannot locate an element using"));
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // near
+    // ------------------------------------------------------------------
+
+    @Test
+    public void nearWithDefaultAndExplicitDistance() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "  <style>\n"
+                + "    body { margin: 0; }\n"
+                + "    .c { position: absolute; width: 50px; height: 50px; }\n"
+                + "  </style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div id='ref' class='c' style='left: 100px; top: 100px;'></div>\n"
+                + "  <div id='a' class='c' style='left: 140px; top: 100px;'></div>\n"
+                + "  <div id='b' class='c' style='left: 100px; top: 140px;'></div>\n"
+                + "  <div id='far' class='c' style='left: 400px; top: 400px;'></div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ref = driver.findElement(By.id("ref"));
+
+        // equally far away: DOM order
+        assertEquals(Arrays.asList("a", "b"), ids(driver.findElements(with(tagName("div")).near(ref))));
+        assertEquals(Arrays.asList("a", "b"), ids(driver.findElements(with(tagName("div")).near(ref, 100))));
+
+        // a far away element is not near, neither as filter nor as root
+        assertFalse(ids(driver.findElements(with(tagName("div")).near(ref, 100))).contains("far"));
+        try {
+            driver.findElement(with(By.id("far")).near(ref));
+            fail("expected NoSuchElementException");
+        }
+        catch (final NoSuchElementException e) {
+            assertTrue(e.getMessage().contains("Cannot locate an element using"));
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // dynamic layout
+    // ------------------------------------------------------------------
+
+    @Test
+    public void layoutChangedByScript() throws Exception {
+        final WebDriver driver = loadPage2(grid(
+                "  <script>\n"
+                + "    var tl = document.getElementById('tl');\n"
+                + "    tl.style.left = '100px';\n"
+                + "    tl.style.top = '400px';\n"
+                + "  </script>\n"));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        // tl moved from the top left to below the grid
+        assertEquals(Arrays.asList("tc", "tr"), sortedIds(driver.findElements(with(tagName("div")).above(mc))));
+        assertEquals(Arrays.asList("bc", "bl", "br", "tl"),
+                sortedIds(driver.findElements(with(tagName("div")).below(mc))));
+    }
+
+    // ------------------------------------------------------------------
+    // element context
+    // ------------------------------------------------------------------
+
+    @Test
+    public void elementContextNeverReturnsNull() throws Exception {
+        final WebDriver driver = loadPage2(grid(""));
+        final WebElement body = driver.findElement(By.tagName("body"));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        // whatever the semantic is (searching the whole page like the driver, or being unsupported),
+        // a relative locator must never produce null or a NullPointerException
+        try {
+            assertNotNull(body.findElements(with(tagName("div")).above(mc)));
+        }
+        catch (final UnsupportedOperationException e) {
+            // acceptable
+        }
+
+        try {
+            body.findElement(with(tagName("div")).above(mc));
+        }
+        catch (final NoSuchElementException | UnsupportedOperationException e) {
+            // acceptable
         }
     }
 }

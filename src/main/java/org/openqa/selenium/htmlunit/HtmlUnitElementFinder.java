@@ -158,6 +158,15 @@ public class HtmlUnitElementFinder {
      */
     public static class FindByID extends HtmlUnitElementLocator {
 
+        private static String checkValue(final By locator) {
+            final String value = getValue(locator);
+
+            if (value.isEmpty()) {
+                throw new InvalidSelectorException("Invalid id selector; id cannot be empty");
+            }
+            return value;
+        }
+
         @Override
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
             final SgmlPage lastPage = getLastPage(driver);
@@ -165,7 +174,7 @@ public class HtmlUnitElementFinder {
                 throw new IllegalStateException("Cannot find elements by id; not on a HtmlPage (found: " + lastPage.getClass().getSimpleName() + ")");
             }
 
-            final String id = getValue(locator);
+            final String id = checkValue(locator);
             final DomElement element = htmlPage.getElementById(id);
 
             if (element == null) {
@@ -181,19 +190,20 @@ public class HtmlUnitElementFinder {
                 throw new IllegalStateException("Cannot find elements by id; not on a HtmlPage (found: " + lastPage.getClass().getSimpleName() + ")");
             }
 
-            final List<DomElement> allElements = htmlPage.getElementsById(getValue(locator));
+            final String id = checkValue(locator);
+            final List<DomElement> allElements = htmlPage.getElementsById(id);
             return convertRawDomElementsToWebElements(driver, allElements);
         }
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            final String id = getValue(locator);
+            final String id = checkValue(locator);
             return new FindByXPath().findElement(element, By.xpath(".//*[@id = " + xpathStringLiteral(id) + "]"));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            final String id = getValue(locator);
+            final String id = checkValue(locator);
             return new FindByXPath().findElements(element, By.xpath(".//*[@id = " + xpathStringLiteral(id) + "]"));
         }
     }
@@ -312,35 +322,39 @@ public class HtmlUnitElementFinder {
      * Locator strategy for finding elements by their CSS class name.
      * <p>
      * This class ensures that only single class names are used. Compound class names
-     * (containing spaces) are not permitted. Internally, the search is delegated
-     * to {@link FindByCssSelector} using a CSS class selector.
+     * (containing whitespace) are not permitted. Internally, the search is delegated
+     * to {@link FindByXPath} using a whitespace-delimited match on the {@code class}
+     * attribute, so special characters in the class name need no escaping.
      */
     public static class FindByClassName extends HtmlUnitElementLocator {
 
-        /**
-         * Validates the provided locator value and ensures it represents a single class name.
-         *
-         * @param locator the {@link By} locator specifying the class name
-         * @return the validated class name
-         * @throws InvalidSelectorException if the class name contains spaces
-         */
-        private String checkValue(final By locator) {
+        private static String checkValue(final By locator) {
             final String value = getValue(locator);
 
-            if (value.indexOf(' ') != -1) {
-                throw new InvalidSelectorException("Invalid class selector; compound class names not permitted (blank found): '" + value + "'");
+            if (value.isEmpty()) {
+                throw new InvalidSelectorException("Invalid class selector; class name cannot be empty");
+            }
+            if (value.chars().anyMatch(Character::isWhitespace)) {
+                throw new InvalidSelectorException(
+                        "Invalid class selector; compound class names not permitted (whitespace found): '" + value + "'");
             }
             return value;
         }
 
+        private static By byClass(final By locator, final String prefix) {
+            final String padded = " " + checkValue(locator) + " ";
+            return By.xpath(prefix + "*[contains(concat(' ', normalize-space(@class), ' '), "
+                    + xpathStringLiteral(padded) + ")]");
+        }
+
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            return new FindByCssSelector().findElements(driver, By.cssSelector("." + checkValue(locator)));
+            return new FindByXPath().findElements(driver, byClass(locator, "//"));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            return new FindByCssSelector().findElements(element, By.cssSelector("." + checkValue(locator)));
+            return new FindByXPath().findElements(element, byClass(locator, ".//"));
         }
     }
 
@@ -464,10 +478,26 @@ public class HtmlUnitElementFinder {
      */
     public static class FindByTagName extends HtmlUnitElementLocator {
 
-        @Override
+        /**
+         * Validates the provided locator value and ensures it represents a single class name.
+         *
+         * @param locator the {@link By} locator specifying the class name
+         * @return the validated class name
+         * @throws InvalidSelectorException if the class name contains spaces
+         */
+        private String checkValue(final By locator) {
+            final String value = getValue(locator);
+            if ("".equals(value)) {
+                throw new InvalidSelectorException("Tag name cannot be empty");
+            }
+
+            return value;
+        }
+
         public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            final String tagName = getValue(locator);
-            final DomNodeList<DomElement> allElements = getLastPage(driver).getElementsByTagName(tagName);
+            final String name = checkValue(locator);
+
+            final DomNodeList<DomElement> allElements = getLastPage(driver).getElementsByTagName(name);
             if (allElements.getLength() > 0) {
                 return driver.toWebElement((HtmlElement) allElements.item(0));
             }
@@ -477,10 +507,7 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            final String name = getValue(locator);
-            if ("".equals(name)) {
-                throw new InvalidSelectorException("Tag name cannot be empty");
-            }
+            final String name = checkValue(locator);
 
             final SgmlPage lastPage;
             try {
@@ -503,7 +530,9 @@ public class HtmlUnitElementFinder {
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final String name = checkValue(locator);
+
+            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(name);
             if (allElements.getLength() > 0) {
                 return element.getDriver().toWebElement((HtmlElement) allElements.item(0));
             }
@@ -513,7 +542,9 @@ public class HtmlUnitElementFinder {
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(getValue(locator));
+            final String name = checkValue(locator);
+
+            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(name);
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
             for (int i = 0; i < allElements.getLength(); i++) {
                 final Node item = allElements.item(i);
