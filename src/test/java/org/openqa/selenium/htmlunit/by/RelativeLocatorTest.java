@@ -594,4 +594,38 @@ public class RelativeLocatorTest extends WebDriverTestCase {
             // acceptable
         }
     }
+
+    @Test
+    public void elementContextRestrictsTheCandidates() throws Exception {
+        final String html = "<html>\n"
+                + "<head>\n"
+                + "  <style>\n"
+                + "    body { margin: 0; }\n"
+                + "    .c { position: absolute; width: 50px; height: 50px; }\n"
+                + "  </style>\n"
+                + "</head>\n"
+                + "<body>\n"
+                + "  <div id='ctx'>\n"
+                + "    <div id='tl' class='c' style='left: 0px; top: 0px;'></div>\n"
+                + "    <div id='tr' class='c' style='left: 200px; top: 0px;'></div>\n"
+                + "    <div id='bl' class='c' style='left: 0px; top: 200px;'></div>\n"
+                + "  </div>\n"
+                + "  <div id='tc' class='c' style='left: 100px; top: 0px;'></div>\n"
+                + "  <div id='mc' class='c' style='left: 100px; top: 100px;'></div>\n"
+                + "  <div id='bc' class='c' style='left: 100px; top: 200px;'></div>\n"
+                + "</body>\n"
+                + "</html>\n";
+
+        final WebDriver driver = loadPage2(html);
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+        final WebElement mc = driver.findElement(By.id("mc"));
+
+        // the reference element may be outside of the context, only the candidates are restricted
+        assertEquals(Arrays.asList("tl", "tr"), sortedIds(ctx.findElements(with(By.className("c")).above(mc))));
+        assertEquals(Arrays.asList("bl"), sortedIds(ctx.findElements(with(By.className("c")).below(mc))));
+
+        // the search on the page finds all of them
+        assertEquals(Arrays.asList("tc", "tl", "tr"),
+                sortedIds(driver.findElements(with(By.className("c")).above(mc))));
+    }
 }

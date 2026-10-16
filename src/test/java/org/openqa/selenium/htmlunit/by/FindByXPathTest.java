@@ -303,11 +303,38 @@ public class FindByXPathTest extends WebDriverTestCase {
         return ids;
     }
 
+    /**
+     * Escapes the value for the usage inside of a html attribute. All non ASCII characters are written as
+     * numeric character reference; this way the result does not depend on the charset the page is served with
+     * (a real browser might decode a page without charset declaration differently than we have encoded it
+     * and the class in the page would not match the one searched for).
+     */
     private static String escapeAttribute(final String value) {
-        return value.replace("&", "&amp;")
-                .replace("'", "&#39;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;");
+        final StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length();) {
+            final int codePoint = value.codePointAt(i);
+            i += Character.charCount(codePoint);
+
+            if (codePoint == '&') {
+                result.append("&amp;");
+            }
+            else if (codePoint == '\'') {
+                result.append("&#39;");
+            }
+            else if (codePoint == '"') {
+                result.append("&quot;");
+            }
+            else if (codePoint == '<') {
+                result.append("&lt;");
+            }
+            else if (codePoint > 127) {
+                result.append("&#").append(codePoint).append(';');
+            }
+            else {
+                result.append((char) codePoint);
+            }
+        }
+        return result.toString();
     }
 
     private static String literal(final String value) {
@@ -510,8 +537,8 @@ public class FindByXPathTest extends WebDriverTestCase {
     @Test
     public void specialCharactersInLiterals() throws Exception {
         final String[] values = {
-            "a]b", "a[b", "a/b", "a|b", "a&b", "a<b", "a=b", "a@b", "a b", "a'b", "a\\b", "a:b", "a(b)"
-            // "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
+            "a]b", "a[b", "a/b", "a|b", "a&b", "a<b", "a=b", "a@b", "a b", "a'b", "a\\b", "a:b", "a(b)",
+            "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
         };
 
         for (final String value : values) {
@@ -642,6 +669,7 @@ public class FindByXPathTest extends WebDriverTestCase {
 
     @Test
     public void nonElementResultsAreInvalid() throws Exception {
+        // produces strange errors when running with real FF/FF_ESR
         final WebDriver driver = loadPage2(html(
                 "  <div id='ctx' class='c'>text<!-- comment --></div>\n"));
         final WebElement ctx = driver.findElement(By.id("ctx"));

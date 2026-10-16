@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,6 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.locators.RelativeLocator.RelativeBy;
-import org.w3c.dom.Node;
 
 /**
  * @author Martin Bartoš
@@ -211,26 +211,27 @@ public class HtmlUnitElementFinder {
     /**
      * Locator strategy for finding elements by their {@code name} attribute.
      * <p>
+     * Selenium (and with it the real browsers) handles {@code By.name} as the css selector
+     * {@code *[name='value']}. To behave identically, including the handling of special characters
+     * like quotes and backslashes, this locator does the same.
+     * <p>
      * Supports searching both on the {@link HtmlUnitDriver} page and within a
      * {@link HtmlUnitWebElement} context.
      */
     public static class FindByName extends HtmlUnitElementLocator {
 
+        private By toCssSelector(final By locator) {
+            return By.cssSelector("*[name='" + getValue(locator) + "']");
+        }
+
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            final SgmlPage lastPage = getLastPage(driver);
-            if (!(lastPage instanceof HtmlPage htmlPage)) {
-                throw new IllegalStateException("Cannot find elements by name; not on a HtmlPage (found: " + lastPage.getClass().getSimpleName() + ")");
-            }
-
-            final List<DomElement> allElements = htmlPage.getElementsByName(getValue(locator));
-            return convertRawDomElementsToWebElements(driver, allElements);
+            return new FindByCssSelector().findElements(driver, toCssSelector(locator));
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            final String name = getValue(locator);
-            return new FindByXPath().findElements(element, By.xpath(".//*[@name = '" + xpathStringLiteral(name) + "']"));
+            return new FindByCssSelector().findElements(element, toCssSelector(locator));
         }
     }
 
@@ -424,7 +425,8 @@ public class HtmlUnitElementFinder {
             final DomNodeList<DomNode> allNodes;
 
             try {
-                allNodes = element.getElement().querySelectorAll(value);
+                DomElement domElem = element.getElement();
+                allNodes = domElem.querySelectorAll(value, domElem);
             }
             catch (final CSSException ex) {
                 throw new InvalidSelectorException("Unable to locate element by CSS selector: '" + value + "'", ex);
@@ -450,7 +452,8 @@ public class HtmlUnitElementFinder {
             final DomNode node;
 
             try {
-                node = element.getElement().querySelector(value);
+                DomElement domElem = element.getElement();
+                node = domElem.querySelector(value, domElem);
             }
             catch (final CSSException ex) {
                 throw new InvalidSelectorException("Unable to locate element by CSS selector: '" + value + "'", ex);
@@ -471,43 +474,50 @@ public class HtmlUnitElementFinder {
     /**
      * Locator strategy for finding elements by their tag name.
      * <p>
-     * This class provides methods to locate a single element or multiple elements
-     * on a page or within a specific element by tag name. If no matching elements
-     * are found, a {@link NoSuchElementException} is thrown. If the tag name is
-     * empty, an {@link InvalidSelectorException} is thrown.
+     * Supports searching both on the {@link HtmlUnitDriver} page and within a
+     * {@link HtmlUnitWebElement} context. The wildcard {@code *} matches every element.
+     *
+     * @throws InvalidSelectorException if the tag name is empty
      */
     public static class FindByTagName extends HtmlUnitElementLocator {
 
-        /**
-         * Validates the provided locator value and ensures it represents a single class name.
-         *
-         * @param locator the {@link By} locator specifying the class name
-         * @return the validated class name
-         * @throws InvalidSelectorException if the class name contains spaces
-         */
-        private String checkValue(final By locator) {
-            final String value = getValue(locator);
-            if ("".equals(value)) {
+        private static String checkValue(final By locator) {
+            final String name = getValue(locator);
+            if (name.isEmpty()) {
                 throw new InvalidSelectorException("Tag name cannot be empty");
             }
-
-            return value;
+            return name;
         }
 
-        public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
-            final String name = checkValue(locator);
-
-            final DomNodeList<DomElement> allElements = getLastPage(driver).getElementsByTagName(name);
-            if (allElements.getLength() > 0) {
-                return driver.toWebElement((HtmlElement) allElements.item(0));
+        /**
+         * Same matching as {@code SgmlPage.getElementsByTagName(String)}. We can't use
+         * {@code DomElement.getElementsByTagName(String)} for the element context because it supports no
+         * wildcard and looks at {@code HtmlElement} descendants only; e.g. the children of an svg element
+         * are no {@code HtmlElement}s and would be missed.
+         */
+        private static boolean matches(final DomElement candidate, final String tagName,
+                final boolean caseSensitive) {
+            if ("*".equals(tagName)) {
+                return true;
             }
+            final String localName = candidate.getLocalName();
+            return localName.equals(tagName) || (!caseSensitive && localName.equalsIgnoreCase(tagName));
+        }
 
-            throw new NoSuchElementException("Unable to locate element by tag name: '" + getValue(locator) + "'");
+        @Override
+        public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
+            final String tagName = checkValue(locator);
+
+            final Iterator<DomElement> iterator = getLastPage(driver).getElementsByTagName(tagName).iterator();
+            if (iterator.hasNext()) {
+                return driver.toWebElement(iterator.next());
+            }
+            throw new NoSuchElementException("Unable to locate element by tag name: '" + tagName + "'");
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
-            final String name = checkValue(locator);
+            final String tagName = checkValue(locator);
 
             final SgmlPage lastPage;
             try {
@@ -517,39 +527,38 @@ public class HtmlUnitElementFinder {
                 return Collections.emptyList();
             }
 
-            final DomNodeList<DomElement> allElements = lastPage.getElementsByTagName(name);
+            final DomNodeList<DomElement> allElements = lastPage.getElementsByTagName(tagName);
             final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
-            for (int i = 0; i < allElements.getLength(); i++) {
-                final Node item = allElements.item(i);
-                if (item instanceof DomElement domElement) {
-                    toReturn.add(driver.toWebElement(domElement));
-                }
+            for (final DomElement domElement : allElements) {
+                toReturn.add(driver.toWebElement(domElement));
             }
             return toReturn;
         }
 
         @Override
         public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
-            final String name = checkValue(locator);
+            final String tagName = checkValue(locator);
 
-            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(name);
-            if (allElements.getLength() > 0) {
-                return element.getDriver().toWebElement((HtmlElement) allElements.item(0));
+            final DomElement context = element.getElement();
+            final boolean caseSensitive = context.getPage().hasCaseSensitiveTagNames();
+            for (final DomElement candidate : context.getDomElementDescendants()) {
+                if (matches(candidate, tagName, caseSensitive)) {
+                    return element.getDriver().toWebElement(candidate);
+                }
             }
-
-            throw new NoSuchElementException("Unable to locate element by tag name: '" + getValue(locator) + "'");
+            throw new NoSuchElementException("Unable to locate element by tag name: '" + tagName + "'");
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            final String name = checkValue(locator);
+            final String tagName = checkValue(locator);
 
-            final DomNodeList<HtmlElement> allElements = element.getElement().getElementsByTagName(name);
-            final List<WebElement> toReturn = new ArrayList<>(allElements.getLength());
-            for (int i = 0; i < allElements.getLength(); i++) {
-                final Node item = allElements.item(i);
-                if (item instanceof DomElement domElement) {
-                    toReturn.add(element.getDriver().toWebElement(domElement));
+            final DomElement context = element.getElement();
+            final boolean caseSensitive = context.getPage().hasCaseSensitiveTagNames();
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final DomElement candidate : context.getDomElementDescendants()) {
+                if (matches(candidate, tagName, caseSensitive)) {
+                    toReturn.add(element.getDriver().toWebElement(candidate));
                 }
             }
             return toReturn;
@@ -840,20 +849,54 @@ public class HtmlUnitElementFinder {
     }
 
     /**
-     * Locator implementation that handles {@link RelativeBy} selectors for
-     * finding elements relative to other elements.
+     * Locator strategy for relative locators ({@code RelativeLocator.with(...)}), evaluated by a
+     * JavaScript snippet in the page.
      */
     public static class FindByRelativeLocator extends HtmlUnitElementLocator {
 
         @Override
+        @SuppressWarnings("unchecked")
         public List<WebElement> findElements(final HtmlUnitDriver driver, final By locator) {
             // Executes a JavaScript snippet to find elements according to the relative locator
-            return (List<WebElement>) driver.executeScript(FIND_ELEMENTS_JS, asParameter(locator));
+            final List<WebElement> elements =
+                    (List<WebElement>) driver.executeScript(FIND_ELEMENTS_JS, asParameter(locator));
+            return elements == null ? Collections.emptyList() : elements;
         }
 
         @Override
         public List<WebElement> findElements(final HtmlUnitWebElement element, final By locator) {
-            return null;
+            // Like Selenium, only the candidates are restricted to the descendants of the context element;
+            // the elements the filters refer to (above(...), near(...), ...) may be anywhere on the page.
+            final DomElement context = element.getElement();
+
+            final List<WebElement> toReturn = new ArrayList<>();
+            for (final WebElement candidate : findElements(element.getDriver(), locator)) {
+                if (candidate instanceof HtmlUnitWebElement webElement) {
+                    final DomElement domElement = webElement.getElement();
+                    if (domElement != context && context.isAncestorOf(domElement)) {
+                        toReturn.add(candidate);
+                    }
+                }
+            }
+            return toReturn;
+        }
+
+        @Override
+        public WebElement findElement(final HtmlUnitDriver driver, final By locator) {
+            final List<WebElement> elements = findElements(driver, locator);
+            if (elements.isEmpty()) {
+                throw new NoSuchElementException("Cannot locate an element using " + locator);
+            }
+            return elements.get(0);
+        }
+
+        @Override
+        public WebElement findElement(final HtmlUnitWebElement element, final By locator) {
+            final List<WebElement> elements = findElements(element, locator);
+            if (elements.isEmpty()) {
+                throw new NoSuchElementException("Cannot locate an element using " + locator);
+            }
+            return elements.get(0);
         }
 
         /**

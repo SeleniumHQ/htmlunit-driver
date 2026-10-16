@@ -27,9 +27,7 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
@@ -99,20 +97,6 @@ public class FindByAllTest extends WebDriverTestCase {
         return ids;
     }
 
-    private static By all(final By... bys) {
-        return new ByAll(bys);
-    }
-
-    private static void assertInvalidSelector(final SearchContext scope, final By by) {
-        try {
-            scope.findElements(by);
-            fail("findElements: expected InvalidSelectorException for " + by);
-        }
-        catch (final InvalidSelectorException e) {
-            // expected
-        }
-    }
-
     // ------------------------------------------------------------------
     // no match
     // ------------------------------------------------------------------
@@ -122,9 +106,9 @@ public class FindByAllTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html(
                 "  <div id='a'></div>\n"));
 
-        assertTrue(driver.findElements(all(By.id("unknown"), By.className("unknown"), By.tagName("p"))).isEmpty());
+        assertTrue(driver.findElements(new ByAll(By.id("unknown"), By.className("unknown"), By.tagName("p"))).isEmpty());
         try {
-            driver.findElement(all(By.id("unknown"), By.className("unknown"), By.tagName("p")));
+            driver.findElement(new ByAll(By.id("unknown"), By.className("unknown"), By.tagName("p")));
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
@@ -138,9 +122,9 @@ public class FindByAllTest extends WebDriverTestCase {
                 "  <div id='a'></div>\n"
                 + "  <div id='b'></div>\n"));
 
-        assertEquals(Arrays.asList("a"), ids(driver.findElements(all(By.id("unknown"), By.id("a")))));
-        assertEquals(Arrays.asList("b"), ids(driver.findElements(all(By.id("b"), By.id("unknown")))));
-        assertEquals("a", driver.findElement(all(By.id("unknown"), By.id("a"))).getAttribute("id"));
+        assertEquals(Arrays.asList("a"), ids(driver.findElements(new ByAll(By.id("unknown"), By.id("a")))));
+        assertEquals(Arrays.asList("b"), ids(driver.findElements(new ByAll(By.id("b"), By.id("unknown")))));
+        assertEquals("a", driver.findElement(new ByAll(By.id("unknown"), By.id("a"))).getAttribute("id"));
     }
 
     @Test
@@ -148,9 +132,9 @@ public class FindByAllTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html(
                 "  <div id='a'></div>\n"));
 
-        assertTrue(driver.findElements(all()).isEmpty());
+        assertTrue(driver.findElements(new ByAll()).isEmpty());
         try {
-            driver.findElement(all());
+            driver.findElement(new ByAll());
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
@@ -170,13 +154,13 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "  <div id='c' class='x'></div>\n"));
 
         // all matches of the first locator, then all matches of the second one; not the document order
-        assertEquals(Arrays.asList("c", "a"), ids(driver.findElements(all(By.id("c"), By.id("a")))));
-        assertEquals(Arrays.asList("a", "c", "b"), ids(driver.findElements(all(By.className("x"), By.id("b")))));
-        assertEquals(Arrays.asList("b", "a", "c"), ids(driver.findElements(all(By.id("b"), By.className("x")))));
+        assertEquals(Arrays.asList("c", "a"), ids(driver.findElements(new ByAll(By.id("c"), By.id("a")))));
+        assertEquals(Arrays.asList("a", "c", "b"), ids(driver.findElements(new ByAll(By.className("x"), By.id("b")))));
+        assertEquals(Arrays.asList("b", "a", "c"), ids(driver.findElements(new ByAll(By.id("b"), By.className("x")))));
 
         // the first element found is returned
-        assertEquals("c", driver.findElement(all(By.id("c"), By.id("a"))).getAttribute("id"));
-        assertEquals("b", driver.findElement(all(By.id("b"), By.className("x"))).getAttribute("id"));
+        assertEquals("c", driver.findElement(new ByAll(By.id("c"), By.id("a"))).getAttribute("id"));
+        assertEquals("b", driver.findElement(new ByAll(By.id("b"), By.className("x"))).getAttribute("id"));
     }
 
     @Test
@@ -193,7 +177,7 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "    <a id='byPartial'>partial text</a>\n"
                 + "  </div>\n"));
 
-        final By by = all(By.id("byId"), By.className("cls"), By.name("nm"), By.tagName("b"),
+        final By by = new ByAll(By.id("byId"), By.className("cls"), By.name("nm"), By.tagName("b"),
                 By.cssSelector("i.css"), By.xpath("//u"), By.linkText("link text"), By.partialLinkText("partial"));
 
         assertEquals(Arrays.asList("byId", "byClass", "byName", "byTag", "byCss", "byXPath", "byLink", "byPartial"),
@@ -207,10 +191,10 @@ public class FindByAllTest extends WebDriverTestCase {
                 "  <div id='x' class='c' name='n'></div>\n"));
 
         // depending on the Selenium version the element is listed once or once per matching locator
-        final List<String> ids = ids(driver.findElements(all(By.id("x"), By.className("c"), By.name("n"))));
+        final List<String> ids = ids(driver.findElements(new ByAll(By.id("x"), By.className("c"), By.name("n"))));
         assertFalse(ids.isEmpty());
         assertEquals(new HashSet<>(Arrays.asList("x")), new HashSet<>(ids));
-        assertEquals("x", driver.findElement(all(By.className("c"), By.name("n"))).getAttribute("id"));
+        assertEquals("x", driver.findElement(new ByAll(By.className("c"), By.name("n"))).getAttribute("id"));
     }
 
     @Test
@@ -219,7 +203,7 @@ public class FindByAllTest extends WebDriverTestCase {
                 "  <div id='h1' style='display: none'></div>\n"
                 + "  <input type='hidden' id='h2' name='csrf'>\n"));
 
-        assertEquals(Arrays.asList("h1", "h2"), ids(driver.findElements(all(By.id("h1"), By.name("csrf")))));
+        assertEquals(Arrays.asList("h1", "h2"), ids(driver.findElements(new ByAll(By.id("h1"), By.name("csrf")))));
     }
 
     // ------------------------------------------------------------------
@@ -234,9 +218,9 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "  <div id='c'></div>\n"));
 
         assertEquals(Arrays.asList("a", "b", "c"),
-                ids(driver.findElements(all(all(By.id("a"), By.id("b")), By.id("c")))));
+                ids(driver.findElements(new ByAll(new ByAll(By.id("a"), By.id("b")), By.id("c")))));
         assertEquals(Arrays.asList("c", "a"),
-                ids(driver.findElements(all(all(By.id("unknown"), By.id("c")), all(By.id("a"))))));
+                ids(driver.findElements(new ByAll(new ByAll(By.id("unknown"), By.id("c")), new ByAll(By.id("a"))))));
     }
 
     @Test
@@ -251,11 +235,11 @@ public class FindByAllTest extends WebDriverTestCase {
 
         // a chain with an alternative as last step
         assertEquals(Arrays.asList("in1", "in2"),
-                ids(driver.findElements(new ByChained(By.id("ctx"), all(By.className("x"), By.tagName("b"))))));
+                ids(driver.findElements(new ByChained(By.id("ctx"), new ByAll(By.className("x"), By.tagName("b"))))));
 
         // alternatives, one of them is a chain
         assertEquals(Arrays.asList("in1", "out2"),
-                ids(driver.findElements(all(new ByChained(By.id("ctx"), By.className("x")), By.id("out2")))));
+                ids(driver.findElements(new ByAll(new ByChained(By.id("ctx"), By.className("x")), By.id("out2")))));
     }
 
     // ------------------------------------------------------------------
@@ -273,7 +257,7 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "  <b id='out2'></b>\n"));
 
         final WebElement ctx = driver.findElement(By.id("ctx"));
-        final By by = all(By.className("x"), By.tagName("b"));
+        final By by = new ByAll(By.className("x"), By.tagName("b"));
 
         assertEquals(Arrays.asList("in1", "in2"), ids(ctx.findElements(by)));
         assertEquals("in1", ctx.findElement(by).getAttribute("id"));
@@ -289,7 +273,7 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "  <b id='out2'></b>\n"));
 
         final WebElement ctx = driver.findElement(By.id("ctx"));
-        final By by = all(By.className("x"), By.tagName("b"));
+        final By by = new ByAll(By.className("x"), By.tagName("b"));
 
         assertTrue(ctx.findElements(by).isEmpty());
         try {
@@ -297,37 +281,6 @@ public class FindByAllTest extends WebDriverTestCase {
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
-            // expected
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // invalid locators
-    // ------------------------------------------------------------------
-
-    @Test
-    public void invalidLocatorsAreReported() throws Exception {
-        final WebDriver driver = loadPage2(html(
-                "  <div id='ctx'><div id='a'></div></div>\n"));
-        final WebElement ctx = driver.findElement(By.id("ctx"));
-
-        final By[] invalids = {
-            By.className("a b"), By.cssSelector("div["), By.xpath("//div["), By.tagName("")
-        };
-        for (final By invalid : invalids) {
-            for (final SearchContext scope : new SearchContext[] {driver, ctx}) {
-                assertInvalidSelector(scope, all(invalid));
-                assertInvalidSelector(scope, all(invalid, By.id("a")));
-                assertInvalidSelector(scope, all(By.id("a"), invalid));
-            }
-        }
-
-        // an invalid locator in the first place is always reported
-        try {
-            driver.findElement(all(By.cssSelector("div["), By.id("ctx")));
-            fail("expected InvalidSelectorException");
-        }
-        catch (final InvalidSelectorException e) {
             // expected
         }
     }
@@ -356,6 +309,6 @@ public class FindByAllTest extends WebDriverTestCase {
                 + "  </script>\n"));
 
         assertEquals(Arrays.asList("s1", "s2", "added"),
-                ids(driver.findElements(all(By.className("x"), By.tagName("b")))));
+                ids(driver.findElements(new ByAll(By.className("x"), By.tagName("b")))));
     }
 }

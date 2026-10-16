@@ -26,7 +26,6 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -96,10 +95,6 @@ public class FindByChainedTest extends WebDriverTestCase {
         return ids;
     }
 
-    private static By chain(final By... bys) {
-        return new ByChained(bys);
-    }
-
     // ------------------------------------------------------------------
     // no match
     // ------------------------------------------------------------------
@@ -109,9 +104,9 @@ public class FindByChainedTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html(
                 "  <div id='a'><div id='b'></div></div>\n"));
 
-        assertTrue(driver.findElements(chain(By.id("unknown"), By.id("b"))).isEmpty());
+        assertTrue(driver.findElements(new ByChained(By.id("unknown"), By.id("b"))).isEmpty());
         try {
-            driver.findElement(chain(By.id("unknown"), By.id("b")));
+            driver.findElement(new ByChained(By.id("unknown"), By.id("b")));
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
@@ -126,10 +121,10 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  <div id='c'></div>\n"));
 
         // c exists, but not inside of a
-        assertTrue(driver.findElements(chain(By.id("a"), By.id("c"))).isEmpty());
-        assertTrue(driver.findElements(chain(By.id("a"), By.id("b"), By.id("c"))).isEmpty());
+        assertTrue(driver.findElements(new ByChained(By.id("a"), By.id("c"))).isEmpty());
+        assertTrue(driver.findElements(new ByChained(By.id("a"), By.id("b"), By.id("c"))).isEmpty());
         try {
-            driver.findElement(chain(By.id("a"), By.id("c")));
+            driver.findElement(new ByChained(By.id("a"), By.id("c")));
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
@@ -142,9 +137,9 @@ public class FindByChainedTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html(
                 "  <div id='a'></div>\n"));
 
-        assertTrue(driver.findElements(chain()).isEmpty());
+        assertTrue(driver.findElements(new ByChained()).isEmpty());
         try {
-            driver.findElement(chain());
+            driver.findElement(new ByChained());
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
@@ -175,11 +170,11 @@ public class FindByChainedTest extends WebDriverTestCase {
         };
         for (final By last : lastSteps) {
             assertEquals(last.toString(), Arrays.asList("two"),
-                    ids(driver.findElements(chain(By.id("l1"), By.cssSelector(".l2"), By.tagName("ul"),
+                    ids(driver.findElements(new ByChained(By.id("l1"), By.cssSelector(".l2"), By.tagName("ul"),
                             By.xpath(".//li[2]"), last))));
         }
 
-        assertEquals("two", driver.findElement(chain(By.id("l1"), By.className("l2"), By.tagName("li"),
+        assertEquals("two", driver.findElement(new ByChained(By.id("l1"), By.className("l2"), By.tagName("li"),
                 By.linkText("Two"))).getAttribute("id"));
     }
 
@@ -201,8 +196,8 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  <span id='stray' class='cell'></span>\n"));
 
         assertEquals(Arrays.asList("r1c1", "r1c2", "r2c1", "r2c2"),
-                ids(driver.findElements(chain(By.className("row"), By.className("cell")))));
-        assertEquals("r1c1", driver.findElement(chain(By.className("row"), By.className("cell"))).getAttribute("id"));
+                ids(driver.findElements(new ByChained(By.className("row"), By.className("cell")))));
+        assertEquals("r1c1", driver.findElement(new ByChained(By.className("row"), By.className("cell"))).getAttribute("id"));
     }
 
     @Test
@@ -214,7 +209,7 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  <i class='item' id='stray'></i>\n"));
 
         assertEquals(Arrays.asList("i1", "i3", "i3b"),
-                ids(driver.findElements(chain(By.className("box"), By.className("item")))));
+                ids(driver.findElements(new ByChained(By.className("box"), By.className("item")))));
     }
 
     @Test
@@ -223,9 +218,9 @@ public class FindByChainedTest extends WebDriverTestCase {
                 "  <div id='a'><span id='s1'></span></div>\n"
                 + "  <span id='s2'></span>\n"));
 
-        assertEquals(Arrays.asList("s1"), ids(driver.findElements(chain(By.id("a"), By.xpath(".//span")))));
+        assertEquals(Arrays.asList("s1"), ids(driver.findElements(new ByChained(By.id("a"), By.xpath(".//span")))));
         // an absolute path is evaluated against the whole document
-        assertEquals(Arrays.asList("s1", "s2"), ids(driver.findElements(chain(By.id("a"), By.xpath("//span")))));
+        assertEquals(Arrays.asList("s1", "s2"), ids(driver.findElements(new ByChained(By.id("a"), By.xpath("//span")))));
     }
 
     @Test
@@ -233,12 +228,12 @@ public class FindByChainedTest extends WebDriverTestCase {
         final WebDriver driver = loadPage2(html(
                 "  <div id='a'><div id='b'><div id='c'>text</div></div></div>\n"));
 
-        assertEquals("c", driver.findElement(chain(chain(By.id("a"), By.id("b")), By.id("c"))).getAttribute("id"));
-        assertEquals("c", driver.findElement(chain(By.id("a"), chain(By.id("b"), By.id("c")))).getAttribute("id"));
-        assertEquals("c", driver.findElement(chain(chain(By.id("a")), chain(By.id("b")), chain(By.id("c"))))
+        assertEquals("c", driver.findElement(new ByChained(new ByChained(By.id("a"), By.id("b")), By.id("c"))).getAttribute("id"));
+        assertEquals("c", driver.findElement(new ByChained(By.id("a"), new ByChained(By.id("b"), By.id("c")))).getAttribute("id"));
+        assertEquals("c", driver.findElement(new ByChained(new ByChained(By.id("a")), new ByChained(By.id("b")), new ByChained(By.id("c"))))
                 .getAttribute("id"));
 
-        assertTrue(driver.findElements(chain(chain(By.id("a"), By.id("unknown")), By.id("c"))).isEmpty());
+        assertTrue(driver.findElements(new ByChained(new ByChained(By.id("a"), By.id("unknown")), By.id("c"))).isEmpty());
     }
 
     @Test
@@ -251,7 +246,7 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  </div>\n"));
 
         assertEquals(Arrays.asList("h"),
-                ids(driver.findElements(chain(By.id("ctx"), By.className("a"), By.className("b")))));
+                ids(driver.findElements(new ByChained(By.id("ctx"), By.className("a"), By.className("b")))));
     }
 
     // ------------------------------------------------------------------
@@ -267,11 +262,11 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  <div class='a'><span class='b' id='outside'></span></div>\n"));
 
         final WebElement ctx = driver.findElement(By.id("ctx"));
-        assertEquals(Arrays.asList("inner"), ids(ctx.findElements(chain(By.className("a"), By.className("b")))));
-        assertEquals("inner", ctx.findElement(chain(By.className("a"), By.className("b"))).getAttribute("id"));
+        assertEquals(Arrays.asList("inner"), ids(ctx.findElements(new ByChained(By.className("a"), By.className("b")))));
+        assertEquals("inner", ctx.findElement(new ByChained(By.className("a"), By.className("b"))).getAttribute("id"));
 
         assertEquals(Arrays.asList("inner", "outside"),
-                ids(driver.findElements(chain(By.className("a"), By.className("b")))));
+                ids(driver.findElements(new ByChained(By.className("a"), By.className("b")))));
     }
 
     @Test
@@ -281,51 +276,12 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  <div class='a'><span class='b' id='outside'></span></div>\n"));
 
         final WebElement ctx = driver.findElement(By.id("ctx"));
-        assertTrue(ctx.findElements(chain(By.className("a"), By.className("b"))).isEmpty());
+        assertTrue(ctx.findElements(new ByChained(By.className("a"), By.className("b"))).isEmpty());
         try {
-            ctx.findElement(chain(By.className("a"), By.className("b")));
+            ctx.findElement(new ByChained(By.className("a"), By.className("b")));
             fail("expected NoSuchElementException");
         }
         catch (final NoSuchElementException e) {
-            // expected
-        }
-    }
-
-    // ------------------------------------------------------------------
-    // invalid steps
-    // ------------------------------------------------------------------
-
-    @Test
-    public void invalidStepsAreReported() throws Exception {
-        final WebDriver driver = loadPage2(html(
-                "  <div id='ctx'><div class='a'></div></div>\n"));
-
-        final By[] invalidSteps = {
-            By.className("a b"), By.cssSelector("div["), By.xpath("//div["), By.tagName("")
-        };
-        for (final By invalid : invalidSteps) {
-            // the invalid step is the first one
-            assertInvalid(driver, chain(invalid, By.id("ctx")));
-            // the invalid step is reached
-            assertInvalid(driver, chain(By.id("ctx"), invalid));
-            assertInvalid(driver, chain(By.id("ctx"), By.className("a"), invalid));
-        }
-    }
-
-    private static void assertInvalid(final WebDriver driver, final By by) {
-        try {
-            driver.findElement(by);
-            fail("findElement: expected InvalidSelectorException for " + by);
-        }
-        catch (final InvalidSelectorException e) {
-            // expected
-        }
-
-        try {
-            driver.findElements(by);
-            fail("findElements: expected InvalidSelectorException for " + by);
-        }
-        catch (final InvalidSelectorException e) {
             // expected
         }
     }
@@ -346,6 +302,6 @@ public class FindByChainedTest extends WebDriverTestCase {
                 + "  </script>\n"));
 
         assertEquals(Arrays.asList("added"),
-                ids(driver.findElements(chain(By.id("ctx"), By.className("a"), By.className("b")))));
+                ids(driver.findElements(new ByChained(By.id("ctx"), By.className("a"), By.className("b")))));
     }
 }

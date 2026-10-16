@@ -24,12 +24,14 @@ import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
+import org.openqa.selenium.InvalidSelectorException;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.WebDriverTestCase;
 import org.openqa.selenium.htmlunit.junit.BrowserRunner;
+import org.openqa.selenium.htmlunit.junit.BrowserRunner.Alerts;
 
 /**
  * Tests for By.name.
@@ -118,10 +120,12 @@ public class FindByNameTest extends WebDriverTestCase {
     }
 
     /**
-     * FindByName within an element context uses XPath internally.
-     * A name containing a single quote must not break the expression.
+     * Selenium converts By.name into the css selector [name='...'], this is invalid for a name
+     * containing a single quote; real browsers throw an InvalidSelectorException.
+     * HtmlUnit is more tolerant and finds the element.
      */
     @Test
+    @Alerts("InvalidSelectorException")
     public void findByNameWithSingleQuoteInName() throws Exception {
         final String html = "<html>\n"
                 + "<head></head>\n"
@@ -134,8 +138,14 @@ public class FindByNameTest extends WebDriverTestCase {
 
         final WebDriver driver = loadPage2(html);
         final WebElement ctx = driver.findElement(By.id("ctx"));
-        final WebElement element = ctx.findElement(By.name("user's-input"));
-        assertEquals("target", element.getAttribute("value"));
+        String result;
+        try {
+            result = ctx.findElement(By.name("user's-input")).getAttribute("value");
+        }
+        catch (final InvalidSelectorException e) {
+            result = "InvalidSelectorException";
+        }
+        assertEquals(getExpectedAlerts()[0], result);
     }
 
     /**
@@ -180,11 +190,38 @@ public class FindByNameTest extends WebDriverTestCase {
         return ids;
     }
 
+    /**
+     * Escapes the value for the usage inside of a html attribute. All non ASCII characters are written as
+     * numeric character reference; this way the result does not depend on the charset the page is served with
+     * (a real browser would decode a page without charset declaration as ISO-8859-1 and the name in the page
+     * would not match the name searched for).
+     */
     private static String escapeAttribute(final String value) {
-        return value.replace("&", "&amp;")
-                .replace("'", "&#39;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;");
+        final StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length();) {
+            final int codePoint = value.codePointAt(i);
+            i += Character.charCount(codePoint);
+
+            if (codePoint == '&') {
+                result.append("&amp;");
+            }
+            else if (codePoint == '\'') {
+                result.append("&#39;");
+            }
+            else if (codePoint == '"') {
+                result.append("&quot;");
+            }
+            else if (codePoint == '<') {
+                result.append("&lt;");
+            }
+            else if (codePoint > 127) {
+                result.append("&#").append(codePoint).append(';');
+            }
+            else {
+                result.append((char) codePoint);
+            }
+        }
+        return result.toString();
     }
 
     // ------------------------------------------------------------------
@@ -300,12 +337,12 @@ public class FindByNameTest extends WebDriverTestCase {
     @Test
     public void specialCharactersInName() throws Exception {
         final String[] names = {
-            "user's-input", "say \"hello\"", "a'b\"c", "a'\"b",
+            "say \"hello\"",
             "a]b", "a[b]", "items[]", "user[name]", "a b",
-            "a:b", "a.b", "a#b", "a>b", "a+b", "a~b", "a,b", "a*b", "a=b", "a@b", "a/b", "a\\b",
+            "a:b", "a.b", "a#b", "a>b", "a+b", "a~b", "a,b", "a*b", "a=b", "a@b", "a/b",
             "a%b", "a&b", "a$b", "a(b)", "a<b",
-            "1abc", "-", "_", "--x"
-            // "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
+            "1abc", "-", "_", "--x",
+            "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
         };
 
         for (final String name : names) {
@@ -337,6 +374,80 @@ public class FindByNameTest extends WebDriverTestCase {
         for (final SearchContext scope : new SearchContext[] {driver, ctx}) {
             assertEquals(Arrays.asList("h1", "h2"), ids(scope.findElements(By.name("csrf"))));
         }
+    }
+
+    /**
+     * Selenium converts By.name into the css selector [name='...'], this is invalid for a name
+     * containing a single quote; real browsers throw an InvalidSelectorException.
+     * HtmlUnit is more tolerant and finds the element.
+     * <p>
+     * The expected values are in the order: driver.findElement, driver.findElements,
+     * element.findElement, element.findElements.
+     */
+    @Test
+    @Alerts({"InvalidSelectorException", "InvalidSelectorException",
+             "InvalidSelectorException", "InvalidSelectorException"})
+    public void singleQuoteInName() throws Exception {
+        final String[] names = {"user's-input", "a'b\"c", "a'\"b", "'"};
+
+        for (final String name : names) {
+            final WebDriver driver = loadPage2(html(
+                    "  <div id='ctx'>\n"
+                    + "    <input id='hit' name='" + escapeAttribute(name) + "'>\n"
+                    + "  </div>\n"));
+            final WebElement ctx = driver.findElement(By.id("ctx"));
+
+            assertEquals(name, getExpectedAlerts()[0], findOne(driver, name));
+            assertEquals(name, getExpectedAlerts()[1], findMany(driver, name));
+            assertEquals(name, getExpectedAlerts()[2], findOne(ctx, name));
+            assertEquals(name, getExpectedAlerts()[3], findMany(ctx, name));
+        }
+    }
+
+    private static String findOne(final SearchContext scope, final String name) {
+        try {
+            return scope.findElement(By.name(name)).getAttribute("id");
+        }
+        catch (final InvalidSelectorException e) {
+            return "InvalidSelectorException";
+        }
+        catch (final NoSuchElementException e) {
+            return "NoSuchElementException";
+        }
+    }
+
+    private static String findMany(final SearchContext scope, final String name) {
+        try {
+            return String.valueOf(scope.findElements(By.name(name)).size());
+        }
+        catch (final InvalidSelectorException e) {
+            return "InvalidSelectorException";
+        }
+    }
+
+    /**
+     * Selenium converts By.name into the css selector [name='...']; inside of such a css string the
+     * backslash starts an escape sequence, so real browsers do not find an element with a backslash
+     * in its name. HtmlUnit compares the name as it is and finds the element.
+     * <p>
+     * The expected values are in the order: driver.findElement, driver.findElements,
+     * element.findElement, element.findElements.
+     */
+    @Test
+    @Alerts({"NoSuchElementException", "0", "NoSuchElementException", "0"})
+    public void backslashInName() throws Exception {
+        final String name = "a\\b";
+
+        final WebDriver driver = loadPage2(html(
+                "  <div id='ctx'>\n"
+                + "    <input id='hit' name='" + escapeAttribute(name) + "'>\n"
+                + "  </div>\n"));
+        final WebElement ctx = driver.findElement(By.id("ctx"));
+
+        assertEquals(getExpectedAlerts()[0], findOne(driver, name));
+        assertEquals(getExpectedAlerts()[1], findMany(driver, name));
+        assertEquals(getExpectedAlerts()[2], findOne(ctx, name));
+        assertEquals(getExpectedAlerts()[3], findMany(ctx, name));
     }
 
     // ------------------------------------------------------------------

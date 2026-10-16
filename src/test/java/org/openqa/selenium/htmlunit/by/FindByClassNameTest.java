@@ -172,11 +172,38 @@ public class FindByClassNameTest extends WebDriverTestCase {
         return ids;
     }
 
+    /**
+     * Escapes the value for the usage inside of a html attribute. All non ASCII characters are written as
+     * numeric character reference; this way the result does not depend on the charset the page is served with
+     * (a real browser would decode a page without charset declaration as ISO-8859-1 and the name in the page
+     * would not match the name searched for).
+     */
     private static String escapeAttribute(final String value) {
-        return value.replace("&", "&amp;")
-                .replace("'", "&#39;")
-                .replace("\"", "&quot;")
-                .replace("<", "&lt;");
+        final StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length();) {
+            final int codePoint = value.codePointAt(i);
+            i += Character.charCount(codePoint);
+
+            if (codePoint == '&') {
+                result.append("&amp;");
+            }
+            else if (codePoint == '\'') {
+                result.append("&#39;");
+            }
+            else if (codePoint == '"') {
+                result.append("&quot;");
+            }
+            else if (codePoint == '<') {
+                result.append("&lt;");
+            }
+            else if (codePoint > 127) {
+                result.append("&#").append(codePoint).append(';');
+            }
+            else {
+                result.append((char) codePoint);
+            }
+        }
+        return result.toString();
     }
 
     private static void assertInvalidSelector(final SearchContext context, final String name) {
@@ -286,8 +313,8 @@ public class FindByClassNameTest extends WebDriverTestCase {
             "foo.bar", "a:b", "a#b", "a[b]", "a(b)", "a>b", "a+b", "a~b", "a,b", "a*b", "a=b",
             "a@b", "a/b", "a\\b", "a%b", "a&b", "a$b",
             "1abc", "-", "_", "--x", "test-class_1",
-            "a'b", "a\"b", "a'\"b"
-            // "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
+            "a'b", "a\"b", "a'\"b",
+            "gr\u00f6\u00dfe", "\u65e5\u672c\u8a9e"
         };
 
         for (final String name : names) {
