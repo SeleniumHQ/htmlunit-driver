@@ -476,8 +476,6 @@ public class HtmlUnitElementFinder {
      * <p>
      * Supports searching both on the {@link HtmlUnitDriver} page and within a
      * {@link HtmlUnitWebElement} context. The wildcard {@code *} matches every element.
-     *
-     * @throws InvalidSelectorException if the tag name is empty
      */
     public static class FindByTagName extends HtmlUnitElementLocator {
 
