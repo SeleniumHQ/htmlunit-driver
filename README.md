@@ -1,6 +1,6 @@
 # ![HtmlUnitDriver Logo](https://github.com/SeleniumHQ/htmlunit-driver/blob/master/htmlunit_webdriver.png)
 
-Version 4.51.0 / October 11, 2026
+Version 4.52.0 / November 03, 2026
 
 :heart: [Sponsor](https://github.com/sponsors/rbri)
 
@@ -60,7 +60,7 @@ Using HtmlUnit through the WebDriver API gives you
 #### Selenium and JDK compatibility
 
 The driver uses the same version number as the Selenium release it is built for -
-e.g. HtmlUnitDriver 4.51.0 is for Selenium 4.51.0.
+e.g. HtmlUnitDriver 4.52.0 is for Selenium 4.52.0.
 
 > [!IMPORTANT]
 > Selenium itself still runs on **JDK 11**, but starting with version 4.44.0
@@ -85,7 +85,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.51.0</version>
+    <version>4.52.0</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.51.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.52.0'
 ```
 
 
@@ -187,10 +187,6 @@ HtmlUnitDriver is a thin layer on top of HtmlUnit; please check the HtmlUnit inf
 
 Constantly updating and maintaining the HtmlUnit and HtmlUnitDriver code base already takes a lot of time.
 
-I would like to make 2 major extensions in the next few months
-* [Add HTTP/2 support](https://github.com/HtmlUnit/htmlunit/issues/370)
-* [Replace the Rhino based JavaScript engine](https://github.com/HtmlUnit/htmlunit/issues/755)
-
 For doing this I need your [sponsoring](https://github.com/sponsors/rbri).
 
 
@@ -237,7 +233,7 @@ Add the snapshot repository and dependency to your `pom.xml`:
       <dependency>
           <groupId>org.seleniumhq.selenium</groupId>
           <artifactId>htmlunit3-driver</artifactId>
-          <version>4.52.0-SNAPSHOT</version>
+          <version>4.53.0-SNAPSHOT</version>
       </dependency>
       <!-- ... -->
     </dependencies>
