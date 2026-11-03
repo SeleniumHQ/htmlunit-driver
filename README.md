@@ -2,36 +2,82 @@
 
 Version 4.51.0 / October 11, 2026
 
-**HtmlUnitDriver** is a WebDriver compatible driver for the [HtmlUnit](https://www.htmlunit.org) headless browser.
+:heart: [Sponsor](https://github.com/sponsors/rbri)
 
 [![Maven Central Version](https://img.shields.io/maven-central/v/org.seleniumhq.selenium/htmlunit3-driver)](https://central.sonatype.com/artifact/org.seleniumhq.selenium/htmlunit3-driver)
 
-:heart: [Sponsor](https://github.com/sponsors/rbri)
+### Homepage
 
-## News
+[htmlunit.org](https://www.htmlunit.org)
+
+### News
 
 **[Developer Blog](https://htmlunit.github.io/htmlunit-blog/)**
 
 [HtmlUnit@mastodon](https://fosstodon.org/@HtmlUnit) | [HtmlUnit@bsky](https://bsky.app/profile/htmlunit.bsky.social) | [HtmlUnit@Twitter](https://twitter.com/HtmlUnit)
 
 
-[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
+## Table of Contents
+- [Overview](#overview)
+- [Get it!](#get-it)
+  - [Maven](#maven)
+  - [Gradle](#gradle)
+- [Getting Started](#getting-started)
+  - [Simple](#simple)
+  - [Customization](#customization)
+  - [A complete example](#a-complete-example)
+- [Vulnerabilities](#vulnerabilities)
+- [Sponsoring](#sponsoring)
+- [Contributing](#contributing)
+- [Last CI build](#last-ci-build)
+  - [Maven](#maven-1)
+  - [Gradle](#gradle-1)
+- [License](#license)
 
-## HtmlUnit Remote - Selenium 4 Grid support
 
-Please have a look at the **[HtmlUnit Remote](https://github.com/sbabcoc/htmlunit-remote)** project if you like to use
-this driver from [Selenium 4 Grid](https://www.selenium.dev/documentation/grid).
+## Overview
+
+**HtmlUnitDriver** is a [Selenium](https://www.selenium.dev/)
+[WebDriver](https://www.selenium.dev/documentation/webdriver/) compatible driver for the
+[HtmlUnit](https://www.htmlunit.org) headless browser.
+
+HtmlUnit is a "GUI-less browser for Java programs". It models HTML documents, has fairly good
+JavaScript support (which is constantly improving) and is able to work even with quite complex
+AJAX libraries, simulating Chrome, Firefox or Edge depending on the configuration used.
+
+Using HtmlUnit through the WebDriver API gives you
+* **fast test execution** - there is no browser process to start, no window to render
+* **no external dependencies** - a pure Java solution, no browser and no driver binary needs to be installed
+* **easy CI integration** - runs everywhere a JVM runs, including containers without a display
+* **the standard WebDriver API** - switch between HtmlUnitDriver and a real browser driver without changing your tests,
+  including cookies, frames, windows, alerts and the Actions API
+* **browser simulation** - Chrome, Edge, Firefox and Firefox ESR (`BrowserVersion`), with JavaScript support switched on or off
+* **customization** of the underlying HtmlUnit `WebClient` via **HtmlUnitDriverOptions**
+  (e.g. script error handling, CSS, timeouts, SSL, proxy) - see [options](docs/options.md)
+* **Selenium 4 Grid support** via the **[HtmlUnit Remote](https://github.com/sbabcoc/htmlunit-remote)** project
+
+
+#### Selenium and JDK compatibility
+
+The driver uses the same version number as the Selenium release it is built for -
+e.g. HtmlUnitDriver 4.51.0 is for Selenium 4.51.0.
+
+> [!IMPORTANT]
+> Selenium itself still runs on **JDK 11**, but starting with version 4.44.0
+> **HtmlUnitDriver requires JDK 17 or higher**, because it is based on HtmlUnit 5.x.
+> If you are bound to JDK 11, use HtmlUnitDriver 4.43.0 or older.
+
+:point_right: **[Compatibility tables](docs/compatibility.md)** - which HtmlUnitDriver version matches
+which Selenium release, which HtmlUnit version is used and which JDK is required.
 
 
 ## Get it!
 
-An overview of the different versions, the HtmlUnit version used in each case and the compatibility 
-can be found in these [tables](docs/compatibility.md).
+* [Maven Central](https://central.sonatype.com/artifact/org.seleniumhq.selenium/htmlunit3-driver)
+* [Release History](https://github.com/SeleniumHQ/htmlunit-driver/releases)
+* [Compatibility tables](docs/compatibility.md) - Selenium / HtmlUnit / JDK versions
 
 ### Maven
-
-Simply add a dependency on the latest `htmlunit3-driver` version available in the
-[Maven Central](https://repo.maven.apache.org/maven2/org/seleniumhq/selenium/htmlunit3-driver/) repository.
 
 Add to your `pom.xml`:
 
@@ -52,11 +98,11 @@ implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', versi
 ```
 
 
-## Usage
+## Getting Started
 
 ### Simple
 
-You can simply use one of the constructors from the **HtmlUnit** driver class
+You can simply use one of the constructors from the **HtmlUnitDriver** class
 
 ```java
 // simple case - no javascript support
@@ -78,11 +124,10 @@ WebDriver webDriver = new HtmlUnitDriver(true);
 WebDriver webDriver = new HtmlUnitDriver(BrowserVersion.FIREFOX, true);
 ```
 
-
 ### Customization
 
-**HtmlUnit** offers many customization options. Similar to the other WebDriver implementations, the **HtmlUnitDriverOptions**
-class can be used to customize your **HtmlUnit** driver.
+**HtmlUnit** offers many customization options. Similar to the other WebDriver implementations,
+the **HtmlUnitDriverOptions** class can be used to customize your **HtmlUnit** driver.
 
 ```java
 final HtmlUnitDriverOptions driverOptions = new HtmlUnitDriverOptions(BrowserVersion.FIREFOX);
@@ -96,14 +141,131 @@ HtmlUnitDriver webDriver = new HtmlUnitDriver(driverOptions);
 
 **NOTE**: Complete details for the **HtmlUnitDriverOptions** class can be found [here](docs/options.md).
 
-### Selenium compatibility
+### A complete example
 
-An overview of the different versions, the **HtmlUnit** version used in each case and the compatibility 
-can be found in these [tables](docs/compatibility.md).
+```java
+import org.htmlunit.BrowserVersion;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+
+public class HtmlUnitDriverExample {
+
+    public static void main(String[] args) {
+        final WebDriver driver = new HtmlUnitDriver(BrowserVersion.CHROME, true);
+        try {
+            driver.get("https://www.htmlunit.org/");
+            System.out.println("Title: " + driver.getTitle());
+
+            for (final WebElement link : driver.findElements(By.tagName("a"))) {
+                System.out.println(link.getText() + " -> " + link.getAttribute("href"));
+            }
+        }
+        finally {
+            driver.quit();
+        }
+    }
+}
+```
+
+More about using HtmlUnit itself:
+* [HtmlUnit - Getting Started](https://www.htmlunit.org/gettingStarted.html)
+* [Selenium WebDriver documentation](https://www.selenium.dev/documentation/webdriver/)
+
+
+## Vulnerabilities
+
+HtmlUnitDriver is a thin layer on top of HtmlUnit; please check the HtmlUnit information:
+
+[List of Vulnerabilities](https://github.com/HtmlUnit/htmlunit/blob/master/CVE.md)
+
+[Security Policy](https://github.com/HtmlUnit/htmlunit/blob/master/SECURITY.md)
+
+
+## Sponsoring
+
+Constantly updating and maintaining the HtmlUnit and HtmlUnitDriver code base already takes a lot of time.
+
+I would like to make 2 major extensions in the next few months
+* [Add HTTP/2 support](https://github.com/HtmlUnit/htmlunit/issues/370)
+* [Replace the Rhino based JavaScript engine](https://github.com/HtmlUnit/htmlunit/issues/755)
+
+For doing this I need your [sponsoring](https://github.com/sponsors/rbri).
+
+
+## Contributing
+
+Pull Requests and all other Community Contributions are essential for open source software.
+Every contribution - from bug reports to feature requests, typos to full new features - are greatly appreciated.
+
+Please try to keep your pull requests small (don't bundle unrelated changes) and try to include test cases.
+
+If your problem is caused by the browser simulation itself (JavaScript, CSS, DOM, ...),
+please open the issue in the [HtmlUnit](https://github.com/HtmlUnit/htmlunit/issues) project.
+
+
+## Last CI build
+
+The latest builds are available from our
+[Jenkins CI build server](https://jenkins.wetator.org/view/HtmlUnit%20Driver/)
+
+[![Build Status](https://jenkins.wetator.org/buildStatus/icon?job=HtmlUnitDriver+-+Selenium+4)](https://jenkins.wetator.org/view/HtmlUnit%20Driver/job/HtmlUnitDriver%20-%20Selenium%204/)
+
+Read on if you want to try the latest bleeding-edge snapshot.
+
+### Maven
+
+Add the snapshot repository and dependency to your `pom.xml`:
+
+```xml
+    <!-- ... -->
+    <repository>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+
+    <!-- ... -->
+    <dependencies>
+      <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>htmlunit3-driver</artifactId>
+          <version>4.52.0-SNAPSHOT</version>
+      </dependency>
+      <!-- ... -->
+    </dependencies>
+
+    <!-- ... -->
+```
+
+### Gradle
+
+Add the snapshot repository and dependency to your `build.gradle`:
+
+```groovy
+repositories {
+  maven { url "https://central.sonatype.com/repository/maven-snapshots/" }
+  // ...
+}
+// ...
+dependencies {
+    implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.52.0-SNAPSHOT'
+  // ...
+}
+```
+
 
 ## License
 
-**HtmlUnitDriver** is distributed under Apache License 2.0.
+This project is licensed under the Apache 2.0 License
+
 
 ## Development Tools
 
