@@ -46,6 +46,8 @@ import org.openqa.selenium.support.locators.RelativeLocator;
 import org.openqa.selenium.support.locators.RelativeLocator.RelativeBy;
 
 /**
+ * Manages and executes element lookup strategies for {@link HtmlUnitDriver} and {@link HtmlUnitWebElement}.
+ *
  * @author Martin Bartoš
  * @author Ronald Brill
  */
