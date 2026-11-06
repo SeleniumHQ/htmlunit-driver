@@ -18,8 +18,6 @@
 package org.openqa.selenium.htmlunit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlFileInput;
@@ -57,7 +55,7 @@ import org.openqa.selenium.WebDriverException;
 public class HtmlUnitKeyboard {
 
     /**
-     * Tracks the current state of keyboard modifier keys (Shift, Ctrl, Alt).
+     * Tracks the current state of keyboard modifier keys (Shift, Ctrl, Alt, Meta).
      * Updated only after a key event has been successfully dispatched.
      */
     private final KeyboardModifiersState modifiersState_ = new KeyboardModifiersState();
@@ -142,16 +140,32 @@ public class HtmlUnitKeyboard {
     }
 
     /**
+     * The modifier keys in the order they are released at the end of
+     * {@code sendKeys} or by {@link Keys#NULL} (like in Chrome: shift, control, alt, meta;
+     * each with the left-hand and the right-hand key).
+     */
+    private static final char[] MODIFIERS_RELEASE_ORDER = {
+        Keys.SHIFT.charAt(0), Keys.RIGHT_SHIFT.charAt(0),
+        Keys.CONTROL.charAt(0), Keys.RIGHT_CONTROL.charAt(0),
+        Keys.ALT.charAt(0), Keys.RIGHT_ALT.charAt(0),
+        Keys.META.charAt(0), Keys.RIGHT_COMMAND.charAt(0)
+    };
+
+    /** How the keys of a sequence are dispatched. */
+    private enum Mode {
+        /** Type the keys (sendKeys); modifiers stay pressed, all other keys are pressed and released. */
+        TYPE,
+        /** Only press the keys (Actions keyDown). */
+        DOWN,
+        /** Only release the keys (Actions keyUp). */
+        UP
+    }
+
+    /**
      * Core dispatch method: builds the HtmlUnit {@link Keyboard} from the key
      * container, appends any modifier-release events if requested, dispatches
      * the whole sequence to {@code element}, and then — only on success —
      * commits the modifier-state changes and updates {@link #lastElement_}.
-     *
-     * <p><b>Modifier-state integrity:</b> keyboard construction collects pending
-     * state changes in a {@link List} without touching {@link #modifiersState_}.
-     * The changes are applied to {@link #modifiersState_} only after
-     * {@code element.type()} returns normally, so a failed dispatch leaves the
-     * modifier state unchanged.</p>
      */
     private void sendKeys(final HtmlElement element,
             final InputKeysContainer keysToSend, final boolean releaseAllAtEnd) {
@@ -169,26 +183,14 @@ public class HtmlUnitKeyboard {
             return;
         }
 
-        try {
-            final boolean startAtEnd = lastElement_ != element && !(element instanceof HtmlNumberInput);
-            final List<Runnable> pendingStateChanges = new ArrayList<>();
-            final Keyboard keyboard = buildKeyboard(startAtEnd, keysSequence, true, releaseAllAtEnd, pendingStateChanges);
-
-            element.type(keyboard);
-
-            // Dispatch succeeded — now commit the modifier state changes.
-            pendingStateChanges.forEach(Runnable::run);
-        }
-        catch (final IOException e) {
-            throw new WebDriverException(e);
-        }
-
-        lastElement_ = element;
+        final boolean startAtEnd = lastElement_ != element && !(element instanceof HtmlNumberInput);
+        dispatch(element, startAtEnd, keysSequence, Mode.TYPE, releaseAllAtEnd);
     }
 
     /**
      * Sends a key-down event for each character in {@code keyToPress} to the
-     * currently active element, then updates the modifier state.
+     * currently active element; the keys stay pressed until they are released
+     * by {@link #releaseKey(CharSequence)}.
      *
      * <p>Modifier state is updated only after the key events have been
      * successfully dispatched. {@link #lastElement_} is updated on success so
@@ -200,25 +202,12 @@ public class HtmlUnitKeyboard {
     public void pressKey(final CharSequence keyToPress) {
         final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) htmlunitDriver_.switchTo().activeElement();
         final HtmlElement element = (HtmlElement) htmlElement.getElement();
-
-        final List<Runnable> pendingStateChanges = new ArrayList<>();
-        final Keyboard keyboard = buildKeyboard(
-                lastElement_ != element, keyToPress, true, false, pendingStateChanges);
-        try {
-            element.type(keyboard);
-        }
-        catch (final IOException e) {
-            throw new WebDriverException(e);
-        }
-
-        // Commit modifier state only after successful dispatch.
-        pendingStateChanges.forEach(Runnable::run);
-        lastElement_ = element;
+        dispatch(element, lastElement_ != element, keyToPress, Mode.DOWN, false);
     }
 
     /**
      * Sends a key-up event for each character in {@code keyToRelease} to the
-     * currently active element, then updates the modifier state.
+     * currently active element.
      *
      * <p>Modifier state is updated only after the key events have been
      * successfully dispatched. {@link #lastElement_} is updated on success so
@@ -230,10 +219,42 @@ public class HtmlUnitKeyboard {
     public void releaseKey(final CharSequence keyToRelease) {
         final HtmlUnitWebElement htmlElement = (HtmlUnitWebElement) htmlunitDriver_.switchTo().activeElement();
         final HtmlElement element = (HtmlElement) htmlElement.getElement();
+        dispatch(element, lastElement_ != element, keyToRelease, Mode.UP, false);
+    }
 
-        final List<Runnable> pendingStateChanges = new ArrayList<>();
-        final Keyboard keyboard = buildKeyboard(
-                lastElement_ != element, keyToRelease, false, false, pendingStateChanges);
+    /**
+     * Builds the HtmlUnit {@link Keyboard} for the given key sequence, dispatches it
+     * to the element and commits the modifier state afterwards.
+     *
+     * <p><b>Modifier-state integrity:</b> the keyboard is built using a copy of
+     * {@link #modifiersState_}. The copy is committed only after
+     * {@code element.type()} returns normally, so a failed dispatch leaves the
+     * modifier state unchanged.</p>
+     *
+     * @param element         the element to type into
+     * @param startAtEnd      whether the keyboard should position the cursor at
+     *                        the end of the element's current value before typing
+     * @param keysSequence    the sequence of characters to process
+     * @param mode            how the keys are dispatched
+     * @param releaseAllAtEnd whether all pressed modifiers are released at the end
+     */
+    private void dispatch(final HtmlElement element, final boolean startAtEnd, final CharSequence keysSequence,
+            final Mode mode, final boolean releaseAllAtEnd) {
+        final KeyboardModifiersState state = new KeyboardModifiersState();
+        state.copyFrom(modifiersState_);
+
+        final Keyboard keyboard = new Keyboard(startAtEnd);
+        // the modifiers pressed before are still pressed, but there are no new events for them
+        keyboard.setPressedModifiers(state.isShiftPressed(), state.isCtrlPressed(),
+                state.isAltPressed(), state.isMetaPressed());
+
+        for (int i = 0; i < keysSequence.length(); i++) {
+            addToKeyboard(keyboard, keysSequence.charAt(i), mode, state);
+        }
+        if (releaseAllAtEnd) {
+            releaseModifiers(keyboard, state);
+        }
+
         try {
             element.type(keyboard);
         }
@@ -241,116 +262,83 @@ public class HtmlUnitKeyboard {
             throw new WebDriverException(e);
         }
 
-        // Commit modifier state only after successful dispatch.
-        pendingStateChanges.forEach(Runnable::run);
+        // Dispatch succeeded — now commit the modifier state changes.
+        modifiersState_.copyFrom(state);
         lastElement_ = element;
     }
 
     /**
-     * Builds a HtmlUnit {@link Keyboard} from the given key sequence without
-     * mutating {@link #modifiersState_} yet. Instead, each modifier-state change
-     * that would result from dispatching the sequence is recorded as a
-     * {@link Runnable} in {@code pendingStateChanges}. The caller is responsible
-     * for invoking those runnables after a successful {@code element.type()} call.
+     * Appends a single character to the given {@link Keyboard} and updates the
+     * given modifier state.
      *
-     * <p>This separation ensures that a failed dispatch does not leave the
-     * modifier state partially updated.</p>
-     *
-     * @param startAtEnd          whether the keyboard should position the cursor at
-     *                            the end of the element's current value before typing
-     * @param keysSequence        the sequence of characters to process
-     * @param isPress             {@code true} to generate key-press events;
-     *                            {@code false} to generate key-release events
-     * @param pendingStateChanges mutable list to which modifier-state update
-     *                            runnables are appended; must not be {@code null}
-     * @return the constructed {@link Keyboard} ready for dispatch
+     * @param keyboard the keyboard to append to
+     * @param ch       the character to process
+     * @param mode     how the key is dispatched
+     * @param state    the modifier state of the sequence
      */
-    private Keyboard buildKeyboard(final boolean startAtEnd, final CharSequence keysSequence,
-            final boolean isPress, final boolean releaseAllAtEnd, final List<Runnable> pendingStateChanges) {
-        final Keyboard keyboard = new Keyboard(startAtEnd);
-        // to track the sequence
-        final KeyboardModifiersState currentModifier = new KeyboardModifiersState();
+    private static void addToKeyboard(final Keyboard keyboard, final char ch, final Mode mode,
+            final KeyboardModifiersState state) {
 
-        // reflect current modifier state
-        if (isShiftPressed()) {
-            addToKeyboard(keyboard, Keys.SHIFT.charAt(0), true, pendingStateChanges, currentModifier);
-        }
-        if (isAltPressed()) {
-            addToKeyboard(keyboard, Keys.ALT.charAt(0), true, pendingStateChanges, currentModifier);
-        }
-        if (isCtrlPressed()) {
-            addToKeyboard(keyboard, Keys.CONTROL.charAt(0), true, pendingStateChanges, currentModifier);
-        }
-
-        for (int i = 0; i < keysSequence.length(); i++) {
-            addToKeyboard(keyboard, keysSequence.charAt(i), isPress, pendingStateChanges, currentModifier);
-        }
-
-        if (releaseAllAtEnd) {
-            if (currentModifier.isShiftPressed() || isShiftPressed()) {
-                addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-            if (currentModifier.isAltPressed() || isAltPressed()) {
-                addToKeyboard(keyboard, Keys.ALT.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-            if (currentModifier.isCtrlPressed() || isCtrlPressed()) {
-                addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-        }
-
-        return keyboard;
-    }
-
-    /**
-     * Appends a single character to the given {@link Keyboard}. For special
-     * (modifier/function) keys, the appropriate press or release event is added
-     * and the corresponding modifier-state update is deferred into
-     * {@code pendingStateChanges}. For regular characters, a type event is added.
-     *
-     * @param keyboard            the keyboard to append to
-     * @param ch                  the character to process
-     * @param isPress             {@code true} for press; {@code false} for release
-     * @param pendingStateChanges deferred modifier-state updates
-     * @param currentModifier     we have to track the modifiers triggered in this sequence
-     */
-    private void addToKeyboard(final Keyboard keyboard, final char ch, final boolean isPress,
-            final List<Runnable> pendingStateChanges, final KeyboardModifiersState currentModifier) {
-
-        // 0 signals release all modifiers
+        // NULL signals release all modifiers
         if (ch == Keys.NULL.charAt(0)) {
-            if (currentModifier.isShiftPressed() || isShiftPressed()) {
-                addToKeyboard(keyboard, Keys.SHIFT.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-            if (currentModifier.isAltPressed() || isAltPressed()) {
-                addToKeyboard(keyboard, Keys.ALT.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-            if (currentModifier.isCtrlPressed() || isCtrlPressed()) {
-                addToKeyboard(keyboard, Keys.CONTROL.charAt(0), false, pendingStateChanges, currentModifier);
-            }
-
+            releaseModifiers(keyboard, state);
             return;
         }
 
         if (HtmlUnitKeyboardMapping.isSpecialKey(ch)) {
             final int keyCode = HtmlUnitKeyboardMapping.getKeysMapping(ch);
-            if (isPress) {
-                keyboard.press(keyCode);
-                currentModifier.storeKeyDown(ch);
-                pendingStateChanges.add(() -> modifiersState_.storeKeyDown(ch));
+            if (keyCode == 0) {
+                // no HtmlUnit equivalent
                 return;
             }
+            final int location = HtmlUnitKeyboardMapping.getLocation(ch);
 
-            keyboard.release(keyCode);
-            currentModifier.storeKeyUp(ch);
-            pendingStateChanges.add(() -> modifiersState_.storeKeyUp(ch));
+            if (mode == Mode.UP) {
+                keyboard.keyUp(keyCode, location);
+                state.storeKeyUp(ch);
+            }
+            else if (mode == Mode.DOWN) {
+                keyboard.keyDown(keyCode, location);
+                state.storeKeyDown(ch);
+            }
+            else if (HtmlUnitKeyboardMapping.isModifier(ch)) {
+                // a modifier stays pressed until the end of sendKeys or a NULL
+                if (!state.isPressed(ch)) {
+                    keyboard.keyDown(keyCode, location);
+                    state.storeKeyDown(ch);
+                }
+            }
+            else {
+                keyboard.press(keyCode);
+            }
             return;
         }
 
-        if (currentModifier.isShiftPressed() || isShiftPressed()) {
-            keyboard.type(Character.toUpperCase(ch));
+        final char toType = state.isShiftPressed() ? Character.toUpperCase(ch) : ch;
+        if (mode == Mode.UP) {
+            keyboard.keyUp(toType);
+        }
+        else if (mode == Mode.DOWN) {
+            keyboard.keyDown(toType);
         }
         else {
-            keyboard.type(ch);
+            keyboard.type(toType);
+        }
+    }
+
+    /**
+     * Releases all pressed modifier keys in the order of {@link #MODIFIERS_RELEASE_ORDER}.
+     *
+     * @param keyboard the keyboard to append the releases to
+     * @param state    the modifier state of the sequence
+     */
+    private static void releaseModifiers(final Keyboard keyboard, final KeyboardModifiersState state) {
+        for (final char modifier : MODIFIERS_RELEASE_ORDER) {
+            if (state.isPressed(modifier)) {
+                keyboard.keyUp(HtmlUnitKeyboardMapping.getKeysMapping(modifier),
+                        HtmlUnitKeyboardMapping.getLocation(modifier));
+                state.storeKeyUp(modifier);
+            }
         }
     }
 
@@ -361,14 +349,8 @@ public class HtmlUnitKeyboard {
      * is requested.
      */
     private void releaseAllModifiers() {
-        if (isShiftPressed()) {
-            modifiersState_.storeKeyUp(Keys.SHIFT.charAt(0));
-        }
-        if (isAltPressed()) {
-            modifiersState_.storeKeyUp(Keys.ALT.charAt(0));
-        }
-        if (isCtrlPressed()) {
-            modifiersState_.storeKeyUp(Keys.CONTROL.charAt(0));
+        for (final char modifier : MODIFIERS_RELEASE_ORDER) {
+            modifiersState_.storeKeyUp(modifier);
         }
     }
 
@@ -397,6 +379,15 @@ public class HtmlUnitKeyboard {
      */
     public boolean isAltPressed() {
         return modifiersState_.isAltPressed();
+    }
+
+    /**
+     * Returns whether the Meta key is currently pressed.
+     *
+     * @return {@code true} if Meta is pressed
+     */
+    public boolean isMetaPressed() {
+        return modifiersState_.isMetaPressed();
     }
 
     /**

@@ -23,7 +23,12 @@ import org.openqa.selenium.Keys;
 
 /**
  * Tracks the pressed/released state of keyboard modifier keys (Shift, Ctrl,
- * Alt) and arbitrary special keys during a WebDriver input sequence.
+ * Alt, Meta) and arbitrary special keys during a WebDriver input sequence.
+ *
+ * <p><b>Right-hand keys:</b> the right-hand modifier keys ({@link Keys#RIGHT_SHIFT},
+ * {@link Keys#RIGHT_CONTROL}, {@link Keys#RIGHT_ALT} and {@link Keys#RIGHT_COMMAND})
+ * have their own code points; they are stored separately but count for the
+ * corresponding modifier (e.g. {@link #isShiftPressed()}).</p>
  *
  * <p><b>Alias handling:</b> WebDriver defines both a primary constant and a
  * "left-hand" alias for each modifier key (e.g. {@link Keys#SHIFT} and
@@ -63,6 +68,11 @@ class KeyboardModifiersState {
     private static final int LEFT_CTRL   = Keys.LEFT_CONTROL.charAt(0);
     private static final int ALT_KEY     = Keys.ALT.charAt(0);
     private static final int LEFT_ALT    = Keys.LEFT_ALT.charAt(0);
+    private static final int META_KEY    = Keys.META.charAt(0);
+    private static final int RIGHT_SHIFT = Keys.RIGHT_SHIFT.charAt(0);
+    private static final int RIGHT_CTRL  = Keys.RIGHT_CONTROL.charAt(0);
+    private static final int RIGHT_ALT   = Keys.RIGHT_ALT.charAt(0);
+    private static final int RIGHT_META  = Keys.RIGHT_COMMAND.charAt(0);
 
     /**
      * Tracks which special-key characters are currently in the "pressed" state.
@@ -124,33 +134,53 @@ class KeyboardModifiersState {
     }
 
     /**
-     * Returns {@code true} if the Shift key (primary or left-hand alias) is
-     * currently pressed.
+     * Returns {@code true} if a Shift key (primary, left-hand alias or the
+     * right-hand key) is currently pressed.
      *
      * @return {@code true} if Shift is down
      */
     boolean isShiftPressed() {
-        return pressedKeys_.get(SHIFT_KEY) || pressedKeys_.get(LEFT_SHIFT);
+        return pressedKeys_.get(SHIFT_KEY) || pressedKeys_.get(LEFT_SHIFT) || pressedKeys_.get(RIGHT_SHIFT);
     }
 
     /**
-     * Returns {@code true} if the Control key (primary or left-hand alias) is
-     * currently pressed.
+     * Returns {@code true} if a Control key (primary, left-hand alias or the
+     * right-hand key) is currently pressed.
      *
      * @return {@code true} if Ctrl is down
      */
     boolean isCtrlPressed() {
-        return pressedKeys_.get(CTRL_KEY) || pressedKeys_.get(LEFT_CTRL);
+        return pressedKeys_.get(CTRL_KEY) || pressedKeys_.get(LEFT_CTRL) || pressedKeys_.get(RIGHT_CTRL);
     }
 
     /**
-     * Returns {@code true} if the Alt key (primary or left-hand alias) is
-     * currently pressed.
+     * Returns {@code true} if an Alt key (primary, left-hand alias or the
+     * right-hand key) is currently pressed.
      *
      * @return {@code true} if Alt is down
      */
     boolean isAltPressed() {
-        return pressedKeys_.get(ALT_KEY) || pressedKeys_.get(LEFT_ALT);
+        return pressedKeys_.get(ALT_KEY) || pressedKeys_.get(LEFT_ALT) || pressedKeys_.get(RIGHT_ALT);
+    }
+
+    /**
+     * Returns {@code true} if a Meta key ({@link Keys#META}/{@link Keys#COMMAND} or
+     * {@link Keys#RIGHT_COMMAND}) is currently pressed.
+     *
+     * @return {@code true} if Meta is down
+     */
+    boolean isMetaPressed() {
+        return pressedKeys_.get(META_KEY) || pressedKeys_.get(RIGHT_META);
+    }
+
+    /**
+     * Replaces the state of this instance by the state of the given one.
+     *
+     * @param other the state to copy
+     */
+    void copyFrom(final KeyboardModifiersState other) {
+        pressedKeys_.clear();
+        pressedKeys_.or(other.pressedKeys_);
     }
 
     /**

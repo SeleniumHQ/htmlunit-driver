@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.htmlunit.html.Keyboard;
 import org.htmlunit.javascript.host.event.KeyboardEvent;
 import org.openqa.selenium.Keys;
 
@@ -33,8 +34,8 @@ import org.openqa.selenium.Keys;
  * {@link #isSpecialKey(char)} detects characters in this range. Each detected
  * character is looked up in the internal mapping table; if a mapping exists,
  * the corresponding {@code DOM_VK_*} integer constant is returned. If no
- * mapping exists (e.g. {@link Keys#COMMAND} or {@link Keys#ZENKAKU_HANKAKU},
- * which have no HtmlUnit equivalent), {@link #getKeysMapping(char)} returns
+ * mapping exists (e.g. {@link Keys#ZENKAKU_HANKAKU},
+ * which has no HtmlUnit equivalent), {@link #getKeysMapping(char)} returns
  * {@code 0} as a sentinel value and logs a warning. Callers should treat a
  * return value of {@code 0} as "no applicable key code" and skip the
  * press/release.</p>
@@ -72,19 +73,17 @@ public final class HtmlUnitKeyboardMapping {
         // the second put is a harmless no-op.
         map.put(Keys.ENTER.charAt(0),         KeyboardEvent.DOM_VK_RETURN);
 
-        // Keys.SHIFT and Keys.RIGHT_SHIFT both map to DOM_VK_SHIFT.
-        // Keys.SHIFT and Keys.LEFT_SHIFT have the same value
+        // the modifiers; Keys.SHIFT and Keys.LEFT_SHIFT (Keys.CONTROL and Keys.LEFT_CONTROL,
+        // Keys.ALT and Keys.LEFT_ALT, Keys.META and Keys.COMMAND) have the same value.
+        // The right-hand keys use the same key code (see #getLocation(char)).
         map.put(Keys.SHIFT.charAt(0),         KeyboardEvent.DOM_VK_SHIFT);
-        map.put(Keys.RIGHT_SHIFT.charAt(0),    KeyboardEvent.DOM_VK_SHIFT);
-
-        // Keys.CONTROL and Keys.RIGHT_CONTROL both map to DOM_VK_CONTROL.
-        // Keys.CONTROL and Keys.LEFT_SHIFT have the same value
+        map.put(Keys.RIGHT_SHIFT.charAt(0),   KeyboardEvent.DOM_VK_SHIFT);
         map.put(Keys.CONTROL.charAt(0),       KeyboardEvent.DOM_VK_CONTROL);
-        map.put(Keys.RIGHT_CONTROL.charAt(0),  KeyboardEvent.DOM_VK_CONTROL);
-
-        // Keys.ALT and Keys.LEFT_ALT both map to DOM_VK_ALT.
+        map.put(Keys.RIGHT_CONTROL.charAt(0), KeyboardEvent.DOM_VK_CONTROL);
         map.put(Keys.ALT.charAt(0),           KeyboardEvent.DOM_VK_ALT);
-        map.put(Keys.LEFT_ALT.charAt(0),      KeyboardEvent.DOM_VK_ALT);
+        map.put(Keys.RIGHT_ALT.charAt(0),     KeyboardEvent.DOM_VK_ALT);
+        map.put(Keys.META.charAt(0),          KeyboardEvent.DOM_VK_META);
+        map.put(Keys.RIGHT_COMMAND.charAt(0), KeyboardEvent.DOM_VK_META);
 
         map.put(Keys.PAUSE.charAt(0),         KeyboardEvent.DOM_VK_PAUSE);
         map.put(Keys.ESCAPE.charAt(0),        KeyboardEvent.DOM_VK_ESCAPE);
@@ -147,9 +146,6 @@ public final class HtmlUnitKeyboardMapping {
         map.put(Keys.F11.charAt(0),           KeyboardEvent.DOM_VK_F11);
         map.put(Keys.F12.charAt(0),           KeyboardEvent.DOM_VK_F12);
 
-        map.put(Keys.META.charAt(0),          KeyboardEvent.DOM_VK_META);
-
-        // Keys.COMMAND has no HtmlUnit DOM_VK_* equivalent and is intentionally omitted.
         // Keys.ZENKAKU_HANKAKU has no HtmlUnit DOM_VK_* equivalent and is intentionally omitted.
 
         SPECIAL_KEYS_MAP = Collections.unmodifiableMap(map);
@@ -162,7 +158,7 @@ public final class HtmlUnitKeyboardMapping {
      *
      * <p>Note that this range is broader than the set of characters that have a
      * corresponding entry in the mapping table. Characters in the range that are
-     * not mapped (e.g. {@link Keys#COMMAND}) will cause
+     * not mapped (e.g. {@link Keys#ZENKAKU_HANKAKU}) will cause
      * {@link #getKeysMapping(char)} to return {@code 0}.</p>
      *
      * @param ch the character to test
@@ -176,7 +172,7 @@ public final class HtmlUnitKeyboardMapping {
      * Returns the HtmlUnit {@code DOM_VK_*} constant corresponding to the given
      * WebDriver special-key character.
      *
-     * <p>If no mapping exists for {@code ch} (e.g. for {@link Keys#COMMAND} or
+     * <p>If no mapping exists for {@code ch} (e.g. for
      * {@link Keys#ZENKAKU_HANKAKU}), this method returns {@code 0} as a sentinel
      * value and logs a WARNING. Callers should treat {@code 0} as "no applicable
      * key code" and skip the press/release operation.</p>
@@ -195,6 +191,41 @@ public final class HtmlUnitKeyboardMapping {
             return 0;
         }
         return keyCode;
+    }
+
+    /**
+     * Returns whether the given WebDriver special-key character is a modifier key
+     * (Shift, Control, Alt or Meta; the left-hand or the right-hand one). A modifier
+     * stays pressed until it is released explicitly or by {@link Keys#NULL}.
+     *
+     * @param ch the character to test
+     * @return {@code true} if the character is a modifier key
+     */
+    static boolean isModifier(final char ch) {
+        final int keyCode = getKeysMapping(ch);
+        return keyCode == KeyboardEvent.DOM_VK_SHIFT
+                || keyCode == KeyboardEvent.DOM_VK_CONTROL
+                || keyCode == KeyboardEvent.DOM_VK_ALT
+                || keyCode == KeyboardEvent.DOM_VK_META;
+    }
+
+    /**
+     * Returns the location of the key for the given WebDriver special-key character;
+     * the right-hand modifier keys ({@link Keys#RIGHT_SHIFT}, {@link Keys#RIGHT_CONTROL},
+     * {@link Keys#RIGHT_ALT} and {@link Keys#RIGHT_COMMAND}) are located on the right side,
+     * all other keys use the default location of their key code.
+     *
+     * @param ch the character
+     * @return {@link KeyboardEvent#DOM_KEY_LOCATION_RIGHT} or {@link Keyboard#DEFAULT_LOCATION}
+     */
+    static int getLocation(final char ch) {
+        if (ch == Keys.RIGHT_SHIFT.charAt(0)
+                || ch == Keys.RIGHT_CONTROL.charAt(0)
+                || ch == Keys.RIGHT_ALT.charAt(0)
+                || ch == Keys.RIGHT_COMMAND.charAt(0)) {
+            return KeyboardEvent.DOM_KEY_LOCATION_RIGHT;
+        }
+        return Keyboard.DEFAULT_LOCATION;
     }
 
     /** Utility class; not instantiable. */

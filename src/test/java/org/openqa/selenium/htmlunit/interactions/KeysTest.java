@@ -589,7 +589,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("line1\\nline2")
-    @Ignore
     public void sendKeys_TextareaEnterDoesNotSubmitForm() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -742,7 +741,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("line1\\nline2")
-    @Ignore
     public void sendKeys_EnterInTextarea() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1653,9 +1651,10 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "shift:true,location:0",
             FF = "shift:true,location:1",
             FF_ESR = "shift:true,location:1")
+    // chromedriver does not set the location of the key events
     @HtmlUnitNYI(
-            FF = "shift:true,location:0",
-            FF_ESR = "shift:true,location:0")
+            CHROME = "shift:true,location:1",
+            EDGE = "shift:true,location:1")
     public void sendKeys_LeftShiftLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1691,9 +1690,10 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "ctrl:true,location:0",
             FF = "ctrl:true,location:1",
             FF_ESR = "ctrl:true,location:1")
+    // chromedriver does not set the location of the key events
     @HtmlUnitNYI(
-            FF = "ctrl:true,location:0",
-            FF_ESR = "ctrl:true,location:0")
+            CHROME = "ctrl:true,location:1",
+            EDGE = "ctrl:true,location:1")
     public void sendKeys_LeftControlLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1729,9 +1729,10 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "alt:true,location:0",
             FF = "alt:true,location:1",
             FF_ESR = "alt:true,location:1")
+    // chromedriver does not set the location of the key events
     @HtmlUnitNYI(
-            FF = "alt:true,location:0",
-            FF_ESR = "alt:true,location:0")
+            CHROME = "alt:true,location:1",
+            EDGE = "alt:true,location:1")
     public void sendKeys_LeftAltLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1805,7 +1806,9 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = {"key:1,location:0", "1"},
             FF = {"key:1,location:3", "1"},
             FF_ESR = {"key:1,location:3", "1"})
-    @Ignore
+    // chromedriver does not set the location of the key events
+    @HtmlUnitNYI(CHROME = {"key:1,location:3", "1"},
+            EDGE = {"key:1,location:3", "1"})
     public void sendKeys_NumpadLocationAndValue() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -1878,7 +1881,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("key:Escape")
-    @Ignore
     public void sendKeys_EscapeKey() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2251,7 +2253,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("key:PageDown")
-    @Ignore
     public void sendKeys_PageDownKey() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2283,7 +2284,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("F1,F2,F5,F12")
-    @Ignore
     public void sendKeys_FunctionKeys() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2317,7 +2317,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts("key:Insert")
-    @Ignore
     public void sendKeys_InsertKey() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2349,9 +2348,10 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "shift:true,location:0",
             FF = "shift:true,location:2",
             FF_ESR = "shift:true,location:2")
+    // chromedriver does not set the location of the key events
     @HtmlUnitNYI(
-            FF = "shift:true,location:0",
-            FF_ESR = "shift:true,location:0")
+            CHROME = "shift:true,location:2",
+            EDGE = "shift:true,location:2")
     public void sendKeys_RightShiftLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2385,7 +2385,9 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = "ctrl:true,location:0",
             FF = "ctrl:true,location:2",
             FF_ESR = "ctrl:true,location:2")
-    @Ignore
+    // chromedriver does not set the location of the key events
+    @HtmlUnitNYI(CHROME = "ctrl:true,location:2",
+            EDGE = "ctrl:true,location:2")
     public void sendKeys_RightControlLocationAndFlag() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
