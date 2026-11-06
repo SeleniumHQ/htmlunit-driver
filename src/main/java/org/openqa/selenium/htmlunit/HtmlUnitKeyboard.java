@@ -23,6 +23,7 @@ import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlFileInput;
 import org.htmlunit.html.HtmlInput;
 import org.htmlunit.html.HtmlNumberInput;
+import org.htmlunit.html.HtmlPage;
 import org.htmlunit.html.Keyboard;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.Keys;
@@ -264,7 +265,16 @@ public class HtmlUnitKeyboard {
 
         // Dispatch succeeded — now commit the modifier state changes.
         modifiersState_.copyFrom(state);
-        lastElement_ = element;
+
+        // the tab key may have moved the focus to another element (and selected its text);
+        // the next keys for this element must not move the cursor to the end
+        if (element.getPage() instanceof HtmlPage page
+                && page.getFocusedElement() instanceof HtmlElement focused) {
+            lastElement_ = focused;
+        }
+        else {
+            lastElement_ = element;
+        }
     }
 
     /**

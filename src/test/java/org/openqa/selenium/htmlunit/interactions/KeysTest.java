@@ -770,7 +770,6 @@ public class KeysTest extends WebDriverTestCase {
      */
     @Test
     @Alerts({"first", "second"})
-    @Ignore
     public void sendKeys_TabNavigationBetweenFields() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
@@ -2150,7 +2149,9 @@ public class KeysTest extends WebDriverTestCase {
     @Alerts(DEFAULT = {"t1:modified", "t2:second"},
             FF = {"t1:MODIFIED", "t2:second"},
             FF_ESR = {"t1:MODIFIED", "t2:second"})
-    @Ignore
+    // geckodriver does not release the shift key at the end of the chord
+    @HtmlUnitNYI(FF = {"t1:modified", "t2:second"},
+            FF_ESR = {"t1:modified", "t2:second"})
     public void sendKeys_ShiftTabReverseNavigation() throws Exception {
         final String html =
             STANDARDS_MODE_PREFIX_
