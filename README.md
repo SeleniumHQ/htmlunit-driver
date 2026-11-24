@@ -1,6 +1,6 @@
 # ![HtmlUnitDriver Logo](https://github.com/SeleniumHQ/htmlunit-driver/blob/master/htmlunit_webdriver.png)
 
-Version 4.52.0 / November 03, 2026
+Version 4.54.0 / November 24, 2026
 
 :heart: [Sponsor](https://github.com/sponsors/rbri)
 
@@ -60,7 +60,7 @@ Using HtmlUnit through the WebDriver API gives you
 #### Selenium and JDK compatibility
 
 The driver uses the same version number as the Selenium release it is built for -
-e.g. HtmlUnitDriver 4.52.0 is for Selenium 4.52.0.
+e.g. HtmlUnitDriver 4.54.0 is for Selenium 4.54.0.
 
 > [!IMPORTANT]
 > Selenium itself still runs on **JDK 11**, but starting with version 4.44.0
@@ -85,7 +85,7 @@ Add to your `pom.xml`:
 <dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>htmlunit3-driver</artifactId>
-    <version>4.52.0</version>
+    <version>4.54.0</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ Add to your `pom.xml`:
 Add to your `build.gradle`:
 
 ```groovy
-implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.52.0'
+implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.54.0'
 ```
 
 
@@ -233,7 +233,7 @@ Add the snapshot repository and dependency to your `pom.xml`:
       <dependency>
           <groupId>org.seleniumhq.selenium</groupId>
           <artifactId>htmlunit3-driver</artifactId>
-          <version>4.53.0-SNAPSHOT</version>
+          <version>4.55.0-SNAPSHOT</version>
       </dependency>
       <!-- ... -->
     </dependencies>
@@ -252,7 +252,7 @@ repositories {
 }
 // ...
 dependencies {
-    implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.52.0-SNAPSHOT'
+    implementation group: 'org.seleniumhq.selenium', name: 'htmlunit3-driver', version: '4.55.0-SNAPSHOT'
   // ...
 }
 ```
